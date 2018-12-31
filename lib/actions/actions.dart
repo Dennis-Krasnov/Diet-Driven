@@ -11,5 +11,9 @@ abstract class Actions extends ReduxActions {
   Actions._();
 
 //  ActionDispatcher<void> get increment;
+  // Bottom navigation
   ActionDispatcher<Page> updateTab;
+  ActionDispatcher<bool> setShowBottomNavigation;
+  ActionDispatcher<List<Page>> reorderBottomNavigation;
+  ActionDispatcher resetBottomNavigation;
 }

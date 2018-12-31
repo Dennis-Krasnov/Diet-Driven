@@ -1,7 +1,10 @@
 import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/presentation/diary_page.dart';
+import 'package:diet_driven/presentation/settings_page.dart';
 import 'package:flutter/material.dart';
 
 abstract class PageFactory {
+  // TODO: internationalization library
   static String toText(Page page) {
     String name;
     switch (page) {
@@ -23,6 +26,18 @@ abstract class PageFactory {
 
       case Page.settings:
         name = "Settings";
+        break;
+
+      case Page.adherence:
+        name = "Adherence";
+        break;
+
+      case Page.statistics:
+        name = "Statistics";
+        break;
+
+      case Page.manual:
+        name = "Manual";
         break;
 
       default:
@@ -54,6 +69,18 @@ abstract class PageFactory {
         icon = Icon(Icons.settings);
         break;
 
+      case Page.adherence:
+        icon = Icon(Icons.save);
+        break;
+
+      case Page.statistics:
+        icon = Icon(Icons.ac_unit);
+        break;
+
+      case Page.manual:
+        icon = Icon(Icons.open_with);
+        break;
+
       default:
         icon = Icon(Icons.error_outline);
     }
@@ -64,7 +91,7 @@ abstract class PageFactory {
     Widget pageWidget;
     switch (page) {
       case Page.diary:
-        pageWidget = Container(color: Colors.redAccent,);
+        pageWidget = DiaryPage();
         break;
 
       case Page.track:
@@ -80,7 +107,19 @@ abstract class PageFactory {
         break;
 
       case Page.settings:
-        pageWidget = Container(color: Colors.greenAccent,);
+        pageWidget = SettingsPage();
+        break;
+
+      case Page.adherence:
+        pageWidget = Container(color: Colors.amberAccent);
+        break;
+
+      case Page.statistics:
+        pageWidget = Container(color: Colors.indigoAccent);
+        break;
+
+      case Page.manual:
+        pageWidget = Container(color: Colors.deepPurpleAccent);
         break;
 
       default:

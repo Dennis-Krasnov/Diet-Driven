@@ -15,6 +15,9 @@ class Page extends EnumClass {
   static const Page diet = _$diet;
   static const Page cycle = _$cycle;
   static const Page settings = _$settings;
+  static const Page adherence = _$adherence;
+  static const Page statistics = _$statistics;
+  static const Page manual = _$manual;
 
 //  static const AppTab adherence/recipes = _$adherence;
 

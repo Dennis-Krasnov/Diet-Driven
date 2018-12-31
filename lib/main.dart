@@ -1,5 +1,7 @@
 library main;
 
+import 'package:diet_driven/containers/page_factory.dart';
+import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/presentation/home_screen.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:diet_driven/actions/actions.dart';
@@ -9,8 +11,6 @@ import 'package:diet_driven/models/app_state.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 
-//part 'main.g.dart';
-
 void main() {
   final store = new Store(
     reducerBuilder.build(),
@@ -18,56 +18,41 @@ void main() {
     new Actions(),
   );
 
-  runApp(new ConnectorExample(store));
+  runApp(new DDApp(store));
 }
 
-class ConnectorExample extends StatelessWidget {
+class DDApp extends StatelessWidget {
   final Store<AppState, AppStateBuilder, Actions> store;
+  final GlobalKey storeKey = GlobalKey();
 
-  ConnectorExample(this.store);
+
+  DDApp(this.store);
 
   @override
   Widget build(BuildContext context) {
+    Map<String, WidgetBuilder> routes = Map<String, WidgetBuilder>.fromIterable(
+      Page.values,
+      key: (page) => page.toString(),
+      value: (page) => (context) => PageFactory.toPage(page)
+    );
+
+    routes.addAll({
+      "/": (context) => HomeScreen()
+    });
+
+
+//    store.actionStream(ActionsNames.reorderBottomNavigation).
+
+//    (storeKey.currentWidget as ReduxProvider).store.
+
     return new ReduxProvider(
+        key: storeKey,
         store: store,
         child: new MaterialApp(
           title: "Diet Driven",
 //          theme:,
-          routes: {
-            "/": (context) => HomeScreen(),
-//            "/log":
-//            "/track":
-          },
+            routes: routes,
         ),
     );
-//    return new MaterialApp(
-//      title: 'flutter_built_redux_test',
-//      home: new ReduxProvider(
-//        store: store,
-//        child: new CounterWidget(),
-//      ),
-//    );
   }
-}
-
-/// [CounterWidget] impelments [StoreConnector] manually
-class CounterWidget extends StoreConnector<AppState, Actions, int> {
-  CounterWidget();
-
-  @override
-  int connect(AppState state) => state.count;
-
-  @override
-  Widget build(BuildContext context, int count, Actions actions) =>
-      new Scaffold(
-        body: new Row(
-          children: <Widget>[
-            new RaisedButton(
-              onPressed: null, //actions.increment,
-              child: new Text('Increment!'),
-            ),
-            new Text('Count: $count'),
-          ],
-        ),
-      );
 }

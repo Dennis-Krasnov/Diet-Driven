@@ -1,5 +1,6 @@
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/containers/active_page.dart';
+import 'package:diet_driven/containers/bottom_nav.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/models/app_state.dart';
@@ -31,11 +32,9 @@ class HomeScreen extends StatelessWidget {
 //        ],
 //      ),
 //      body: activeTab == AppTab.todos ? FilteredTodos() : Stats(),
-        body: ActivePage(
-          builder: (BuildContext context, Page activePage) {
-            return PageFactory.toPage(activePage);
-          }
-        ),
+      body: ActivePage(builder: (BuildContext context, Page activePage) {
+        return PageFactory.toPage(activePage);
+      }),
 //      floatingActionButton: FloatingActionButton(
 ////        key: ArchSampleKeys.addTodoFab,
 //        onPressed: () {
@@ -45,7 +44,7 @@ class HomeScreen extends StatelessWidget {
 ////        tooltip: ArchSampleLocalizations.of(context).addTodo,
 //      ),
 //      bottomNavigationBar: TabSelector(),
-      bottomNavigationBar: BottomNavigation(),
+      bottomNavigationBar: BottomNav(),
     );
 //      },
 //    );
@@ -53,28 +52,4 @@ class HomeScreen extends StatelessWidget {
 }
 
 
-class BottomNavigation
-    extends StoreConnector<AppState, Actions, List<Page>> {
 
-  @override
-  List<Page> connect(AppState state) => state.bottomNavigation;
-
-  @override
-  Widget build(BuildContext context, List<Page> pages, Actions actions) =>
-      ActivePage(
-          builder: (BuildContext context, Page activePage) {
-            return BottomNavigationBar(
-                onTap: (index) => actions.updateTab(pages[index]),
-                type: BottomNavigationBarType.fixed,
-                currentIndex: pages.indexOf(activePage),
-                items: pages.map((page) =>
-                    BottomNavigationBarItem(
-                        title: Text(PageFactory.toText(page)),
-                        icon: PageFactory.toIcon(page),
-//                        activeIcon:
-                    )
-                ).toList()
-            );
-          }
-      );
-}
