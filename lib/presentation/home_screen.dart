@@ -46,7 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
       print("");
     });
 
-    // TODO: attempt to get context of app instead, put this into DDApp
     DDApp.ddAppKey.currentState.store..actionStream(ActionsNames.reorderBottomNavigation).listen((change) {
       // Open same page in nested page
       if (change.prev.bottomNavigation.contains(change.prev.activePage) && !change.next.bottomNavigation.contains(change.prev.activePage)) {
