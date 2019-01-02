@@ -8,34 +8,34 @@ part of app_state;
 
 class _$AppState extends AppState {
   @override
-  final int count;
-  @override
   final Page activePage;
+  @override
+  final Page defaultPage;
   @override
   final List<Page> bottomNavigation;
   @override
-  final bool showBottomNavigation;
+  final Page bottomNavigationPage;
 
   factory _$AppState([void updates(AppStateBuilder b)]) =>
       (new AppStateBuilder()..update(updates)).build();
 
   _$AppState._(
-      {this.count,
-      this.activePage,
+      {this.activePage,
+      this.defaultPage,
       this.bottomNavigation,
-      this.showBottomNavigation})
+      this.bottomNavigationPage})
       : super._() {
-    if (count == null) {
-      throw new BuiltValueNullFieldError('AppState', 'count');
-    }
     if (activePage == null) {
       throw new BuiltValueNullFieldError('AppState', 'activePage');
+    }
+    if (defaultPage == null) {
+      throw new BuiltValueNullFieldError('AppState', 'defaultPage');
     }
     if (bottomNavigation == null) {
       throw new BuiltValueNullFieldError('AppState', 'bottomNavigation');
     }
-    if (showBottomNavigation == null) {
-      throw new BuiltValueNullFieldError('AppState', 'showBottomNavigation');
+    if (bottomNavigationPage == null) {
+      throw new BuiltValueNullFieldError('AppState', 'bottomNavigationPage');
     }
   }
 
@@ -50,27 +50,27 @@ class _$AppState extends AppState {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is AppState &&
-        count == other.count &&
         activePage == other.activePage &&
+        defaultPage == other.defaultPage &&
         bottomNavigation == other.bottomNavigation &&
-        showBottomNavigation == other.showBottomNavigation;
+        bottomNavigationPage == other.bottomNavigationPage;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, count.hashCode), activePage.hashCode),
+        $jc($jc($jc(0, activePage.hashCode), defaultPage.hashCode),
             bottomNavigation.hashCode),
-        showBottomNavigation.hashCode));
+        bottomNavigationPage.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('AppState')
-          ..add('count', count)
           ..add('activePage', activePage)
+          ..add('defaultPage', defaultPage)
           ..add('bottomNavigation', bottomNavigation)
-          ..add('showBottomNavigation', showBottomNavigation))
+          ..add('bottomNavigationPage', bottomNavigationPage))
         .toString();
   }
 }
@@ -78,32 +78,32 @@ class _$AppState extends AppState {
 class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState _$v;
 
-  int _count;
-  int get count => _$this._count;
-  set count(int count) => _$this._count = count;
-
   Page _activePage;
   Page get activePage => _$this._activePage;
   set activePage(Page activePage) => _$this._activePage = activePage;
+
+  Page _defaultPage;
+  Page get defaultPage => _$this._defaultPage;
+  set defaultPage(Page defaultPage) => _$this._defaultPage = defaultPage;
 
   List<Page> _bottomNavigation;
   List<Page> get bottomNavigation => _$this._bottomNavigation;
   set bottomNavigation(List<Page> bottomNavigation) =>
       _$this._bottomNavigation = bottomNavigation;
 
-  bool _showBottomNavigation;
-  bool get showBottomNavigation => _$this._showBottomNavigation;
-  set showBottomNavigation(bool showBottomNavigation) =>
-      _$this._showBottomNavigation = showBottomNavigation;
+  Page _bottomNavigationPage;
+  Page get bottomNavigationPage => _$this._bottomNavigationPage;
+  set bottomNavigationPage(Page bottomNavigationPage) =>
+      _$this._bottomNavigationPage = bottomNavigationPage;
 
   AppStateBuilder();
 
   AppStateBuilder get _$this {
     if (_$v != null) {
-      _count = _$v.count;
       _activePage = _$v.activePage;
+      _defaultPage = _$v.defaultPage;
       _bottomNavigation = _$v.bottomNavigation;
-      _showBottomNavigation = _$v.showBottomNavigation;
+      _bottomNavigationPage = _$v.bottomNavigationPage;
       _$v = null;
     }
     return this;
@@ -126,10 +126,10 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState build() {
     final _$result = _$v ??
         new _$AppState._(
-            count: count,
             activePage: activePage,
+            defaultPage: defaultPage,
             bottomNavigation: bottomNavigation,
-            showBottomNavigation: showBottomNavigation);
+            bottomNavigationPage: bottomNavigationPage);
     replace(_$result);
     return _$result;
   }

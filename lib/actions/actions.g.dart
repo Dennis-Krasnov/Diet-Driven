@@ -13,31 +13,25 @@ class _$Actions extends Actions {
   factory _$Actions() => new _$Actions._();
   _$Actions._() : super._();
 
-  final ActionDispatcher<Page> updateTab =
-      new ActionDispatcher<Page>('Actions-updateTab');
-  final ActionDispatcher<bool> setShowBottomNavigation =
-      new ActionDispatcher<bool>('Actions-setShowBottomNavigation');
+  final ActionDispatcher<Page> goTo =
+      new ActionDispatcher<Page>('Actions-goTo');
   final ActionDispatcher<List<Page>> reorderBottomNavigation =
       new ActionDispatcher<List<Page>>('Actions-reorderBottomNavigation');
-  final ActionDispatcher<dynamic> resetBottomNavigation =
-      new ActionDispatcher<dynamic>('Actions-resetBottomNavigation');
+  final ActionDispatcher<Page> setDefaultPage =
+      new ActionDispatcher<Page>('Actions-setDefaultPage');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
-    updateTab.setDispatcher(dispatcher);
-    setShowBottomNavigation.setDispatcher(dispatcher);
+    goTo.setDispatcher(dispatcher);
     reorderBottomNavigation.setDispatcher(dispatcher);
-    resetBottomNavigation.setDispatcher(dispatcher);
+    setDefaultPage.setDispatcher(dispatcher);
   }
 }
 
 class ActionsNames {
-  static final ActionName<Page> updateTab =
-      new ActionName<Page>('Actions-updateTab');
-  static final ActionName<bool> setShowBottomNavigation =
-      new ActionName<bool>('Actions-setShowBottomNavigation');
+  static final ActionName<Page> goTo = new ActionName<Page>('Actions-goTo');
   static final ActionName<List<Page>> reorderBottomNavigation =
       new ActionName<List<Page>>('Actions-reorderBottomNavigation');
-  static final ActionName<dynamic> resetBottomNavigation =
-      new ActionName<dynamic>('Actions-resetBottomNavigation');
+  static final ActionName<Page> setDefaultPage =
+      new ActionName<Page>('Actions-setDefaultPage');
 }

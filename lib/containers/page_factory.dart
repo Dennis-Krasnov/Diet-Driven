@@ -1,6 +1,12 @@
 import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/presentation/adherence_page.dart';
+import 'package:diet_driven/presentation/cycle_page.dart';
 import 'package:diet_driven/presentation/diary_page.dart';
+import 'package:diet_driven/presentation/diet_page.dart';
+import 'package:diet_driven/presentation/manual_page.dart';
 import 'package:diet_driven/presentation/settings_page.dart';
+import 'package:diet_driven/presentation/statistics_page.dart';
+import 'package:diet_driven/presentation/track_page.dart';
 import 'package:flutter/material.dart';
 
 abstract class PageFactory {
@@ -33,7 +39,7 @@ abstract class PageFactory {
         break;
 
       case Page.statistics:
-        name = "Statistics";
+        name = "Stats";
         break;
 
       case Page.manual:
@@ -95,15 +101,15 @@ abstract class PageFactory {
         break;
 
       case Page.track:
-        pageWidget = Container(color: Colors.blueAccent,);
+        pageWidget = TrackPage();
         break;
 
       case Page.diet:
-        pageWidget = Container(color: Colors.pinkAccent,);
+        pageWidget = DietPage();
         break;
 
       case Page.cycle:
-        pageWidget = Container(color: Colors.orangeAccent,);
+        pageWidget = CyclePage();
         break;
 
       case Page.settings:
@@ -111,15 +117,15 @@ abstract class PageFactory {
         break;
 
       case Page.adherence:
-        pageWidget = Container(color: Colors.amberAccent);
+        pageWidget = AdherencePage();
         break;
 
       case Page.statistics:
-        pageWidget = Container(color: Colors.indigoAccent);
+        pageWidget = StatisticsPage();
         break;
 
       case Page.manual:
-        pageWidget = Container(color: Colors.deepPurpleAccent);
+        pageWidget = ManualPage();
         break;
 
       default:

@@ -7,19 +7,18 @@ part 'app_state.g.dart';
 
 abstract class AppState implements Built<AppState, AppStateBuilder> {
   factory AppState() => new _$AppState._(
-      count: 0,
       activePage: Page.diary,
-//      bottomNavigation: ["diary", "track", "diet"],
+      defaultPage: Page.diary, // TODO: read from settings object
       bottomNavigation: [Page.diary, Page.track, Page.diet, Page.cycle, Page.settings],
-    // TODO: settings object!!! - has sub settings
-      showBottomNavigation: true,
+      bottomNavigationPage: Page.diary,
   );
 
   AppState._();
 
-  int get count;
   Page get activePage;
+  Page get defaultPage;
 
+  // Bottom navigation
   List<Page> get bottomNavigation;
-  bool get showBottomNavigation;
+  Page get bottomNavigationPage;
 }

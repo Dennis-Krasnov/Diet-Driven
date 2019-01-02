@@ -3,16 +3,16 @@ import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:flutter/material.dart';
 
-class DiaryPage extends StatelessWidget {
+class StatisticsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         leading: DrawerNavButton(),
-        title: Text(PageFactory.toText(Page.diary)),
+        title: Text(PageFactory.toText(Page.statistics)),
       ),
       body: Container(
-        color: Colors.limeAccent,
+        color: Colors.indigoAccent,
       ),
     );
   }
