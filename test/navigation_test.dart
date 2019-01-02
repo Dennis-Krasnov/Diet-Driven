@@ -2,7 +2,6 @@ import 'package:built_redux/built_redux.dart';
 import 'package:collection/collection.dart';
 import 'package:diet_driven/containers/bottom_nav.dart';
 import 'package:diet_driven/containers/page_factory.dart';
-import 'package:diet_driven/presentation/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -108,26 +107,7 @@ void main() {
 
       expect(find.byType(BottomNavigationBar), findsOneWidget);
       expect(find.byType(Icon), findsNWidgets(store.state.bottomNavigation.length));
-
-      expect(find.byWidgetPredicate(
-            (Widget widget) => widget is Visibility && widget.visible,
-      ), findsOneWidget);
     });
-
-//    testWidgets("bottom navigation isn't shown", (WidgetTester tester) async {
-//      await tester.pumpWidget(nav);
-////      store.actions.setShowBottomNavigation(false);
-//      await tester.pump();
-//
-////      Widget vis = find.byWidgetPredicate(
-////            (Widget widget) => widget is Visibility && widget.visible,
-////      ).evaluate().toList()[0].widget;
-////      print((vis as Visibility).visible);
-//
-////      expect(find.byWidgetPredicate(
-////            (Widget widget) => widget is Visibility && widget.visible, // FIXME: Adding !widget.visible breaks it!
-////      ), findsNothing);
-//    });
 
     // TODO: test selected icon is correct order
     testWidgets("buttons are in correct order", (WidgetTester tester) async {
