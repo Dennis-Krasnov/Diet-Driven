@@ -47,7 +47,7 @@ class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
                 onDetailsPressed: () => print("details clicked"),
               ),
               Column(
-                children: Page.values.map((page) =>
+                children: Page.inApp.map((page) =>
                     ListTile(
                       leading: PageFactory.toIcon(page),
                       title: Text(PageFactory.toText(page)),

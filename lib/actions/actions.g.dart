@@ -13,6 +13,14 @@ class _$Actions extends Actions {
   factory _$Actions() => new _$Actions._();
   _$Actions._() : super._();
 
+  final ActionDispatcher<dynamic> initApp =
+      new ActionDispatcher<dynamic>('Actions-initApp');
+  final ActionDispatcher<FirebaseUser> setUser =
+      new ActionDispatcher<FirebaseUser>('Actions-setUser');
+  final ActionDispatcher<bool> setLoading =
+      new ActionDispatcher<bool>('Actions-setLoading');
+  final ActionDispatcher<dynamic> logout =
+      new ActionDispatcher<dynamic>('Actions-logout');
   final ActionDispatcher<Page> goTo =
       new ActionDispatcher<Page>('Actions-goTo');
   final ActionDispatcher<List<Page>> reorderBottomNavigation =
@@ -22,6 +30,10 @@ class _$Actions extends Actions {
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
+    initApp.setDispatcher(dispatcher);
+    setUser.setDispatcher(dispatcher);
+    setLoading.setDispatcher(dispatcher);
+    logout.setDispatcher(dispatcher);
     goTo.setDispatcher(dispatcher);
     reorderBottomNavigation.setDispatcher(dispatcher);
     setDefaultPage.setDispatcher(dispatcher);
@@ -29,6 +41,14 @@ class _$Actions extends Actions {
 }
 
 class ActionsNames {
+  static final ActionName<dynamic> initApp =
+      new ActionName<dynamic>('Actions-initApp');
+  static final ActionName<FirebaseUser> setUser =
+      new ActionName<FirebaseUser>('Actions-setUser');
+  static final ActionName<bool> setLoading =
+      new ActionName<bool>('Actions-setLoading');
+  static final ActionName<dynamic> logout =
+      new ActionName<dynamic>('Actions-logout');
   static final ActionName<Page> goTo = new ActionName<Page>('Actions-goTo');
   static final ActionName<List<Page>> reorderBottomNavigation =
       new ActionName<List<Page>>('Actions-reorderBottomNavigation');

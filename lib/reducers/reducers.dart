@@ -2,13 +2,27 @@ import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
     new ReducerBuilder<AppState, AppStateBuilder>()
 //      ..add(CounterActionsNames.increment, (s, a, b) => b.count++);
+      ..add(ActionsNames.setUser, setUser)
+      ..add(ActionsNames.setLoading, setLoading)
       ..add(ActionsNames.goTo, goTo)
       ..add(ActionsNames.reorderBottomNavigation, reorderBottomNav)
       ..add(ActionsNames.setDefaultPage, setDefaultPage);
+
+
+void setUser(AppState state, Action<FirebaseUser> action, AppStateBuilder builder) {
+  builder.user = action.payload;
+  print("Logging in (reducer)");
+}
+
+void setLoading(AppState state, Action<bool> action, AppStateBuilder builder) {
+  builder.loading = action.payload;
+  print("LOADING IS NOW ${action.payload}");
+}
 
 
 void goTo(AppState state, Action<Page> action, AppStateBuilder builder) {

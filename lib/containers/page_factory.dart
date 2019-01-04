@@ -46,6 +46,10 @@ abstract class PageFactory {
         name = "Manual";
         break;
 
+      case Page.loginScreen:
+        name = "Login";
+        break;
+
       default:
         name = "ERROR";
     }
@@ -87,6 +91,10 @@ abstract class PageFactory {
         icon = Icon(Icons.open_with);
         break;
 
+      case Page.loginScreen:
+        icon = Icon(Icons.add);
+        break;
+
       default:
         icon = Icon(Icons.error_outline);
     }
@@ -126,6 +134,10 @@ abstract class PageFactory {
 
       case Page.manual:
         pageWidget = ManualPage();
+        break;
+
+      case Page.loginScreen:
+        pageWidget = Container(child: Text("LOGIN!!!!"),);
         break;
 
       default:

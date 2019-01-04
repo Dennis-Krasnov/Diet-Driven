@@ -25,6 +25,7 @@ dependencies:
   ## Firebase
   cloud_firestore: ^0.8.2+3
   cloud_functions: ^0.0.5
+  firebase_auth: ^0.6.6
 
 
 

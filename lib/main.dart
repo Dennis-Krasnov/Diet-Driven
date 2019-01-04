@@ -1,8 +1,10 @@
 library main;
 
 import 'package:diet_driven/containers/page_factory.dart';
+import 'package:diet_driven/middleware/middleware.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/presentation/home_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/reducers/reducers.dart';
@@ -25,19 +27,23 @@ class DDApp extends StatefulWidget {
 }
 
 class _DDAppState extends State<DDApp> {
+//  static final FirebaseAuth auth = FirebaseAuth.instance;
 
   final store = new Store(
     reducerBuilder.build(),
     new AppState(),
     new Actions(),
+    middleware: [
+      createMiddleware(FirebaseAuth.instance),
+    ],
   );
 
   @override
   void initState() {
     super.initState();
     // TODO: load in default page
+    store.actions.initApp();
     store.actions.goTo(store.state.defaultPage);
-
   }
 
   @override

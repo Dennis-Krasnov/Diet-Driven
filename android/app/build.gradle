@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId "com.krasnovtech.dietdriven"
-        minSdkVersion 16
+        minSdkVersion 21 //16
         targetSdkVersion 27
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

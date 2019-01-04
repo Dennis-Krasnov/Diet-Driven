@@ -18,7 +18,7 @@ class CyclePage extends StatelessWidget {
         child: FlatButton(
           onPressed: () async {
 //            Map<String, dynamic>
-            dynamic resp = await CloudFunctions.instance.call(functionName: 'function-1', parameters: {"message": "Ola!"});
+            dynamic resp = await CloudFunctions.instance.call(functionName: 'function-1', parameters: {"message": "boop boop!"});
             print(resp);
           },
           child: Text("Click here for cloud functions!"),

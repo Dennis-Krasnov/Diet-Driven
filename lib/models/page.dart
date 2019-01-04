@@ -18,10 +18,14 @@ class Page extends EnumClass {
   static const Page adherence = _$adherence;
   static const Page statistics = _$statistics;
   static const Page manual = _$manual;
-
 //  static const AppTab recipes = _$recipes;
 
-  // TODO: Only show enabled pages: Page.values.where((p) => loadedSettings.contains(p))
+
+  static const Page loginScreen = _$loginScreen;
+
+  // All pages except login screen, nested navigator inside of login screen?
+  static List<Page> inApp = Page.values.where((p) => p != loginScreen).toList();
+
 
   const Page._(String name) : super(name);
 

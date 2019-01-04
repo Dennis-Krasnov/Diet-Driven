@@ -55,7 +55,7 @@ void main() {
       List<Page> changed = [Page.cycle, Page.settings, Page.track];
       List<Page> illegal = [Page.cycle];
       List<Page> illegalDuplicate = [Page.diary, Page.diary];
-      List<Page> illegalMax = Page.values.toList();
+      List<Page> illegalMax = Page.inApp.toList();
 
       store.actions.reorderBottomNavigation(changed);
       expect(store.state.bottomNavigation, changed);
@@ -79,14 +79,14 @@ void main() {
     });
 
     test("pages content is valid and unique", () {
-      expect(Page.values.map((p) => PageFactory.toText(p)).length == Page.values.map((p) => PageFactory.toText(p)).toSet().length, true);
-      expect(Page.values.map((p) => PageFactory.toText(p)).contains("ERROR"), false);
+      expect(Page.inApp.map((p) => PageFactory.toText(p)).length == Page.inApp.map((p) => PageFactory.toText(p)).toSet().length, true);
+      expect(Page.inApp.map((p) => PageFactory.toText(p)).contains("ERROR"), false);
 
-      expect(Page.values.map((p) => PageFactory.toIcon(p)).length == Page.values.map((p) => PageFactory.toIcon(p)).toSet().length, true);
-      expect(Page.values.map((p) => PageFactory.toIcon(p).icon).contains(Icons.error_outline), false);
+      expect(Page.inApp.map((p) => PageFactory.toIcon(p)).length == Page.inApp.map((p) => PageFactory.toIcon(p)).toSet().length, true);
+      expect(Page.inApp.map((p) => PageFactory.toIcon(p).icon).contains(Icons.error_outline), false);
 
-      expect(Page.values.map((p) => PageFactory.toPage(p).toStringDeep()).length == Page.values.map((p) => PageFactory.toPage(p).toStringDeep()).toSet().length, true);
-      expect(Page.values.map((p) => PageFactory.toPage(p) is Icon).contains(true), false);
+      expect(Page.inApp.map((p) => PageFactory.toPage(p).toStringDeep()).length == Page.inApp.map((p) => PageFactory.toPage(p).toStringDeep()).toSet().length, true);
+      expect(Page.inApp.map((p) => PageFactory.toPage(p) is Icon).contains(true), false);
     });
   });
 
@@ -120,7 +120,7 @@ void main() {
       for (int i = 0; i < 1; i++) {
         int size = rng.nextInt(6) + 2;
 
-        List<Page> pages = Page.values.toList();
+        List<Page> pages = Page.inApp.toList();
         shuffle(pages);
         pages = pages.sublist(0, size);
 

@@ -37,7 +37,7 @@ class SettingsPage extends StatelessWidget {
                     leading: Icon(Icons.repeat),
                     title: Text("Randomize bottom menu"),
                     onTap: () {
-                      List<Page> randomized = Page.values.toList();
+                      List<Page> randomized = Page.inApp.toList();
                       shuffle(randomized);
                       randomized = randomized.sublist(0, new Random().nextInt(6) + 2);
                       actions.reorderBottomNavigation(randomized);
@@ -61,7 +61,7 @@ class SettingsPage extends StatelessWidget {
                     leading: Icon(Icons.beach_access),
                     title: Text("Default page"),
                     trailing: DropdownButton<Page>(
-                      items: Page.values.where((page) => vm.pages.contains(page)).map((page) {
+                      items: Page.inApp.where((page) => vm.pages.contains(page)).map((page) {
                         return new DropdownMenuItem<Page>(
                           value: page,
                           child: new Text(PageFactory.toText(page)),
