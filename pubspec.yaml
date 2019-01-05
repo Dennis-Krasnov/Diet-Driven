@@ -21,6 +21,8 @@ dependencies:
   built_collection: ^4.1.0
   built_redux: ^7.5.2
   flutter_built_redux: ^0.6.0
+#  built_redux_rx: ^0.1.2
+  rxdart: ^0.20.0
 
   ## Firebase
   cloud_firestore: ^0.8.2+3

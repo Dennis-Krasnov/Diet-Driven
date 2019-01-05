@@ -21,9 +21,8 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
 
   @override
   TrackPageVM connect(AppState state) => TrackPageVM((b) => b
-    ..loading = state.loading
-    ..user = state.user
-  );
+//    ..loading = state.loading
+    ..user = state.user);
 
   // OLD FORMAT:
 //  @override
@@ -36,36 +35,33 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
 
   @override
   Widget build(BuildContext context, TrackPageVM vm, Actions actions) =>
-      // TODO: do this on each page (that needs it) or possibly higher up
-      vm.loading
-          ? CircularProgressIndicator()
-          : Scaffold(
-              appBar: AppBar(
-                leading: DrawerNavButton(),
-                title: Text(PageFactory.toText(Page.track)),
+      Scaffold(
+        appBar: AppBar(
+          leading: DrawerNavButton(),
+          title: Text(PageFactory.toText(Page.track)),
+        ),
+        body: Center(
+          child: Column(
+            children: <Widget>[
+              RaisedButton(
+                onPressed: null, // TODO: anonymous by default
+                child: Text("Log in as Dennis Krasnov"),
               ),
-              body: Center(
-                child: Column(
-                  children: <Widget>[
-                    RaisedButton(
-                      onPressed: null, // TODO: anonymous by default
-                      child: Text("Log in as Dennis Krasnov"),
-                    ),
-                    Text("uid: ${vm.user.uid}"),
-                    Text("email: ${vm.user.email}"),
-                    Text("display name: ${vm.user.displayName}"),
-                    FlatButton(
-                      onPressed: () => actions.logout(),
-                      child: Text("Log out"),
-                    )
-                  ],
-                ),
-              ),
-            );
+              Text("uid: ${vm.user.uid}"),
+              Text("email: ${vm.user.email}"),
+              Text("display name: ${vm.user.displayName}"),
+              FlatButton(
+                onPressed: () => actions.logout(),
+                child: Text("Log out"),
+              )
+            ],
+          ),
+        ),
+      );
 }
 
 abstract class TrackPageVM implements Built<TrackPageVM, TrackPageVMBuilder> {
-  bool get loading;
+//  bool get loading;
 
   @nullable
   FirebaseUser get user;

@@ -7,16 +7,23 @@ import 'package:firebase_auth/firebase_auth.dart';
 ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
     new ReducerBuilder<AppState, AppStateBuilder>()
 //      ..add(CounterActionsNames.increment, (s, a, b) => b.count++);
-      ..add(ActionsNames.setUser, setUser)
+      ..add(ActionsNames.anonymousUserLoaded, anonymousUserLoaded)
+      ..add(ActionsNames.anonymousUserFail, anonymousUserFail)
       ..add(ActionsNames.setLoading, setLoading)
       ..add(ActionsNames.goTo, goTo)
       ..add(ActionsNames.reorderBottomNavigation, reorderBottomNav)
       ..add(ActionsNames.setDefaultPage, setDefaultPage);
 
 
-void setUser(AppState state, Action<FirebaseUser> action, AppStateBuilder builder) {
+void anonymousUserLoaded(AppState state, Action<FirebaseUser> action, AppStateBuilder builder) {
   builder.user = action.payload;
-  print("Logging in (reducer)");
+  print("${action.payload.email ?? action.payload.uid} user was loaded");
+  print("(from reducer)");
+}
+
+void anonymousUserFail(AppState state, Action<dynamic> action, AppStateBuilder builder) {
+  print("Anonymous user loading FAILED");
+  print(action.payload);
 }
 
 void setLoading(AppState state, Action<bool> action, AppStateBuilder builder) {
@@ -26,6 +33,7 @@ void setLoading(AppState state, Action<bool> action, AppStateBuilder builder) {
 
 
 void goTo(AppState state, Action<Page> action, AppStateBuilder builder) {
+  print("REDUCER GO TO");
   builder.activePage = action.payload;
 
   if (state.bottomNavigation.contains(action.payload)) {
@@ -35,6 +43,7 @@ void goTo(AppState state, Action<Page> action, AppStateBuilder builder) {
 
 
 void reorderBottomNav(AppState state, Action<List<Page>> action, AppStateBuilder builder) {
+  print("REORDER REDUCER!");
   bool properSize = 2 <= action.payload.length && action.payload.length <= 7;
   bool unique = action.payload.length == action.payload.toSet().length;
 

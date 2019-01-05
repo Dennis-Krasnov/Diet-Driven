@@ -1,5 +1,7 @@
 library main;
 
+//import 'package:built_redux_rx/built_redux_rx.dart';
+import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/middleware/middleware.dart';
 import 'package:diet_driven/models/page.dart';
@@ -17,34 +19,36 @@ void main() => runApp(new DDApp());
 
 class DDApp extends StatefulWidget {
 
-  static final GlobalKey<_DDAppState> ddAppKey = GlobalKey<_DDAppState>();
-
-  @override
-  Key get key => ddAppKey;
+  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
   State<StatefulWidget> createState() => _DDAppState();
 }
 
 class _DDAppState extends State<DDApp> {
-//  static final FirebaseAuth auth = FirebaseAuth.instance;
 
   final store = new Store(
     reducerBuilder.build(),
     new AppState(),
     new Actions(),
     middleware: [
+//      createEpicMiddleware([goToEpic]),
       createMiddleware(FirebaseAuth.instance),
+      createEpicMiddleware(createEpicBuilder()),
+//      createEpicMiddleware([goToEpic])
     ],
   );
+
 
   @override
   void initState() {
     super.initState();
-    // TODO: load in default page
+    print("before");
     store.actions.initApp();
-    store.actions.goTo(store.state.defaultPage);
+    print("after");
   }
+
+  // TODO: close store on dispose?!
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +65,7 @@ class _DDAppState extends State<DDApp> {
     return new ReduxProvider(
         store: store,
         child: new MaterialApp(
+          navigatorKey: DDApp.navigatorKey,
           title: "Diet Driven",
 //          theme:,
             routes: routes,

@@ -15,8 +15,10 @@ class _$Actions extends Actions {
 
   final ActionDispatcher<dynamic> initApp =
       new ActionDispatcher<dynamic>('Actions-initApp');
-  final ActionDispatcher<FirebaseUser> setUser =
-      new ActionDispatcher<FirebaseUser>('Actions-setUser');
+  final ActionDispatcher<FirebaseUser> anonymousUserLoaded =
+      new ActionDispatcher<FirebaseUser>('Actions-anonymousUserLoaded');
+  final ActionDispatcher<dynamic> anonymousUserFail =
+      new ActionDispatcher<dynamic>('Actions-anonymousUserFail');
   final ActionDispatcher<bool> setLoading =
       new ActionDispatcher<bool>('Actions-setLoading');
   final ActionDispatcher<dynamic> logout =
@@ -31,7 +33,8 @@ class _$Actions extends Actions {
   @override
   void setDispatcher(Dispatcher dispatcher) {
     initApp.setDispatcher(dispatcher);
-    setUser.setDispatcher(dispatcher);
+    anonymousUserLoaded.setDispatcher(dispatcher);
+    anonymousUserFail.setDispatcher(dispatcher);
     setLoading.setDispatcher(dispatcher);
     logout.setDispatcher(dispatcher);
     goTo.setDispatcher(dispatcher);
@@ -43,8 +46,10 @@ class _$Actions extends Actions {
 class ActionsNames {
   static final ActionName<dynamic> initApp =
       new ActionName<dynamic>('Actions-initApp');
-  static final ActionName<FirebaseUser> setUser =
-      new ActionName<FirebaseUser>('Actions-setUser');
+  static final ActionName<FirebaseUser> anonymousUserLoaded =
+      new ActionName<FirebaseUser>('Actions-anonymousUserLoaded');
+  static final ActionName<dynamic> anonymousUserFail =
+      new ActionName<dynamic>('Actions-anonymousUserFail');
   static final ActionName<bool> setLoading =
       new ActionName<bool>('Actions-setLoading');
   static final ActionName<dynamic> logout =

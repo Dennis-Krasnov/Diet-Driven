@@ -10,7 +10,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   factory AppState() => new _$AppState._(
       user: null, // TODO: make sure it's persisted
       loading: false,
-      activePage: Page.diary,
+      activePage: Page.track,
       defaultPage: Page.track, // TODO: read from settings object
       bottomNavigation: [Page.diary, Page.track, Page.diet, Page.cycle, Page.settings],
       bottomNavigationPage: Page.diary,

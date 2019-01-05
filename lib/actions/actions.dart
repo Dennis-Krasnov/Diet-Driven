@@ -13,7 +13,8 @@ abstract class Actions extends ReduxActions {
 
   // Firebase Auth
   ActionDispatcher initApp;
-  ActionDispatcher<FirebaseUser> setUser;
+  ActionDispatcher<FirebaseUser> anonymousUserLoaded;
+  ActionDispatcher<dynamic> anonymousUserFail;
   ActionDispatcher<bool> setLoading;
   ActionDispatcher logout;
 
