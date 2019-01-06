@@ -1,4 +1,5 @@
 import 'package:built_redux/built_redux.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/main.dart';
@@ -20,6 +21,13 @@ Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth aut
 //      ..add(ActionsNames.logout, logout(auth))
   ).build();
 }
+
+// TODO: shorten like this
+//void increment(MiddlewareApi<Counter, CounterBuilder, CounterActions> api, ActionHandler next, Action<int> action) {
+//  HttpRequest.postFormData(url, {'incrementAmount': action.payload})
+//      .then(capi.actions.increment(action.payload))
+//      .catchError(window.alert);
+//}
 
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth auth) {
@@ -56,19 +64,19 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
 
 
 
-MiddlewareHandler<AppState, AppStateBuilder, Actions, void> goTo() {
-  return (MiddlewareApi<AppState, AppStateBuilder, Actions> api,
-      ActionHandler next, Action action) async {
-    print("GOTO!!");
-    if (api.state.bottomNavigation.contains(action.payload)) {
-      DDApp.navigatorKey.currentState.popUntil(ModalRoute.withName("/"));
-    }
-    else {
-      DDApp.navigatorKey.currentState.popAndPushNamed(action.payload.toString());
-    }
-    next(action);
-  };
-}
+//MiddlewareHandler<AppState, AppStateBuilder, Actions, void> goTo() {
+//  return (MiddlewareApi<AppState, AppStateBuilder, Actions> api,
+//      ActionHandler next, Action action) async {
+//    print("GOTO!!");
+//    if (api.state.bottomNavigation.contains(action.payload)) {
+//      DDApp.navigatorKey.currentState.popUntil(ModalRoute.withName("/"));
+//    }
+//    else {
+//      DDApp.navigatorKey.currentState.popAndPushNamed(action.payload.toString());
+//    }
+//    next(action);
+//  };
+//}
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigationBuilder() {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
@@ -99,12 +107,14 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigat
 // RUNS AFTER REDUCER
 Iterable<Epic<AppState, AppStateBuilder, Actions>> createEpicBuilder() =>
     (new EpicBuilder<AppState, AppStateBuilder, Actions>()
-        ..add(ActionsNames.goTo, goToNavigationBuilder)
-//        ..add(ActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder)
+        ..add(ActionsNames.goTo, goToEpic)
+        ..add(ActionsNames.fbStartDocListen, fsDocumentListener)
+        ..add(ActionsNames.fbStopDocListen, fsDocumentListener)
+        ..add(ActionsNames.settingsListen, fsRouter)
     ).build();
 
 
-Observable<void> goToNavigationBuilder(Observable<Action<Page>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
+Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
   print("GOING TO ${action.payload}");
   if (api.state.bottomNavigation.contains(action.payload)) {
     DDApp.navigatorKey.currentState.popUntil(ModalRoute.withName("/"));
@@ -115,8 +125,30 @@ Observable<void> goToNavigationBuilder(Observable<Action<Page>> stream, Middlewa
 });
 
 
+// TODO: create router non-typed...
+Observable<void> fsRouter(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+  print("ROUTING!!!");
+  print(action.payload);
+  await new Future<void>.delayed(new Duration(milliseconds: 1));
+//  mwApi.actions.decrement(action.payload);
+//  return stream.asyncMap((action) {
+  print("before action called");
+  api.actions.fbStartDocListen("users/${action.payload}/settings/general");
+  print("after action called");
+//  });
+
+});
 
 
+Observable<void> fsDocumentListener(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.flatMap((action) {
+//Observable<void> fbDocumentListener(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.flatMap((action) {
+//  return new Observable.fromFuture(Firestore.instance.document(action.payload).snapshots).map((DocumentSnapshot doc) => doc["sex"] as String);
+//  return new Observable.fromFuture(Firestore.instance.document(action.payload).snapshots)
+  return Firestore.instance.document(action.payload).snapshots()
+    .map((DocumentSnapshot doc) => doc["sex"] as String)
+    .map((sex) => api.actions.settingsReceived(sex))
+    .takeWhile((_) => action.name != ActionsNames.fbStopDocListen.name);
+});
 
 
 

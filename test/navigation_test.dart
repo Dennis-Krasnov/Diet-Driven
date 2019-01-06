@@ -51,7 +51,7 @@ void main() {
 //    });
 
     test("can change bottom navigation order", () {
-      List<Page> original = List<Page>.from(store.state.bottomNavigation);
+//      List<Page> original = List<Page>.from(store.state.bottomNavigation);
       List<Page> changed = [Page.cycle, Page.settings, Page.track];
       List<Page> illegal = [Page.cycle];
       List<Page> illegalDuplicate = [Page.diary, Page.diary];

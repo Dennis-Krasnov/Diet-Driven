@@ -69,6 +69,8 @@ class _DDAppState extends State<DDApp> {
           title: "Diet Driven",
 //          theme:,
             routes: routes,
+          initialRoute: "/",
+//          onUnknownRoute: (settings) => settings.name,
         ),
     );
   }

@@ -9,31 +9,25 @@ ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
 //      ..add(CounterActionsNames.increment, (s, a, b) => b.count++);
       ..add(ActionsNames.anonymousUserLoaded, anonymousUserLoaded)
       ..add(ActionsNames.anonymousUserFail, anonymousUserFail)
-      ..add(ActionsNames.setLoading, setLoading)
       ..add(ActionsNames.goTo, goTo)
       ..add(ActionsNames.reorderBottomNavigation, reorderBottomNav)
-      ..add(ActionsNames.setDefaultPage, setDefaultPage);
+      ..add(ActionsNames.setDefaultPage, setDefaultPage)
+
+      ..add(ActionsNames.settingsReceived, settingsReceived)
+
+;
 
 
 void anonymousUserLoaded(AppState state, Action<FirebaseUser> action, AppStateBuilder builder) {
   builder.user = action.payload;
-  print("${action.payload.email ?? action.payload.uid} user was loaded");
-  print("(from reducer)");
+  print("anonymous ${action.payload.email ?? action.payload.uid} user was loaded");
 }
 
 void anonymousUserFail(AppState state, Action<dynamic> action, AppStateBuilder builder) {
-  print("Anonymous user loading FAILED");
   print(action.payload);
 }
 
-void setLoading(AppState state, Action<bool> action, AppStateBuilder builder) {
-  builder.loading = action.payload;
-  print("LOADING IS NOW ${action.payload}");
-}
-
-
 void goTo(AppState state, Action<Page> action, AppStateBuilder builder) {
-  print("REDUCER GO TO");
   builder.activePage = action.payload;
 
   if (state.bottomNavigation.contains(action.payload)) {
@@ -43,7 +37,6 @@ void goTo(AppState state, Action<Page> action, AppStateBuilder builder) {
 
 
 void reorderBottomNav(AppState state, Action<List<Page>> action, AppStateBuilder builder) {
-  print("REORDER REDUCER!");
   bool properSize = 2 <= action.payload.length && action.payload.length <= 7;
   bool unique = action.payload.length == action.payload.toSet().length;
 
@@ -71,4 +64,9 @@ void setDefaultPage(AppState state, Action<Page> action, AppStateBuilder builder
   }
 }
 
+
+void settingsReceived(AppState state, Action<dynamic> action, AppStateBuilder builder) {
+  print("SETTINGS RECERIVED!!!");
+  print(action.payload);
+}
 

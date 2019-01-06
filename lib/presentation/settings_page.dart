@@ -5,7 +5,6 @@ import 'package:collection/collection.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/containers/drawer_nav_button.dart';
 import 'package:diet_driven/containers/page_factory.dart';
-import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:flutter/material.dart' hide Builder;
@@ -55,7 +54,11 @@ class SettingsPage extends StatelessWidget {
                     }
                   ),
                   ListTile(
-                    title: Text(vm.pages.toString()),
+                    title: Text("LISTEN TO DATA!!!!!"),
+                    trailing: RaisedButton(
+                      onPressed: () => actions.settingsListen("0WjbQ1XzVCe1zvwHgE4aluu4FiC3"),
+                      child: Text("Connect Firebase"),
+                    ),
                   ),
                   ListTile(
                     leading: Icon(Icons.beach_access),

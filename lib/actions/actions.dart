@@ -1,4 +1,5 @@
 library actions;
+// TODO: rename as action
 
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/models/page.dart';
@@ -15,13 +16,22 @@ abstract class Actions extends ReduxActions {
   ActionDispatcher initApp;
   ActionDispatcher<FirebaseUser> anonymousUserLoaded;
   ActionDispatcher<dynamic> anonymousUserFail;
-  ActionDispatcher<bool> setLoading;
   ActionDispatcher logout;
 
   // Navigation
   ActionDispatcher<Page> goTo;
-
-  // Bottom navigation
   ActionDispatcher<List<Page>> reorderBottomNavigation;
   ActionDispatcher<Page> setDefaultPage;
+
+  // Firebase
+  ActionDispatcher<String> fbStartDocListen; // TODO: single action, different payloads!?
+  ActionDispatcher<String> fbStopDocListen;
+  ActionDispatcher<dynamic> fbDocListenError;
+//  ActionDispatcher<dynamic> updateError;
+//  ActionDispatcher<dynamic> addError; etc.
+
+
+  // String userID
+  ActionDispatcher<String> settingsListen;
+  ActionDispatcher<dynamic> settingsReceived;
 }

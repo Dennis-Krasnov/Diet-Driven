@@ -19,8 +19,6 @@ class _$Actions extends Actions {
       new ActionDispatcher<FirebaseUser>('Actions-anonymousUserLoaded');
   final ActionDispatcher<dynamic> anonymousUserFail =
       new ActionDispatcher<dynamic>('Actions-anonymousUserFail');
-  final ActionDispatcher<bool> setLoading =
-      new ActionDispatcher<bool>('Actions-setLoading');
   final ActionDispatcher<dynamic> logout =
       new ActionDispatcher<dynamic>('Actions-logout');
   final ActionDispatcher<Page> goTo =
@@ -29,17 +27,31 @@ class _$Actions extends Actions {
       new ActionDispatcher<List<Page>>('Actions-reorderBottomNavigation');
   final ActionDispatcher<Page> setDefaultPage =
       new ActionDispatcher<Page>('Actions-setDefaultPage');
+  final ActionDispatcher<String> fbStartDocListen =
+      new ActionDispatcher<String>('Actions-fbStartDocListen');
+  final ActionDispatcher<String> fbStopDocListen =
+      new ActionDispatcher<String>('Actions-fbStopDocListen');
+  final ActionDispatcher<dynamic> fbDocListenError =
+      new ActionDispatcher<dynamic>('Actions-fbDocListenError');
+  final ActionDispatcher<String> settingsListen =
+      new ActionDispatcher<String>('Actions-settingsListen');
+  final ActionDispatcher<dynamic> settingsReceived =
+      new ActionDispatcher<dynamic>('Actions-settingsReceived');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
     initApp.setDispatcher(dispatcher);
     anonymousUserLoaded.setDispatcher(dispatcher);
     anonymousUserFail.setDispatcher(dispatcher);
-    setLoading.setDispatcher(dispatcher);
     logout.setDispatcher(dispatcher);
     goTo.setDispatcher(dispatcher);
     reorderBottomNavigation.setDispatcher(dispatcher);
     setDefaultPage.setDispatcher(dispatcher);
+    fbStartDocListen.setDispatcher(dispatcher);
+    fbStopDocListen.setDispatcher(dispatcher);
+    fbDocListenError.setDispatcher(dispatcher);
+    settingsListen.setDispatcher(dispatcher);
+    settingsReceived.setDispatcher(dispatcher);
   }
 }
 
@@ -50,8 +62,6 @@ class ActionsNames {
       new ActionName<FirebaseUser>('Actions-anonymousUserLoaded');
   static final ActionName<dynamic> anonymousUserFail =
       new ActionName<dynamic>('Actions-anonymousUserFail');
-  static final ActionName<bool> setLoading =
-      new ActionName<bool>('Actions-setLoading');
   static final ActionName<dynamic> logout =
       new ActionName<dynamic>('Actions-logout');
   static final ActionName<Page> goTo = new ActionName<Page>('Actions-goTo');
@@ -59,4 +69,14 @@ class ActionsNames {
       new ActionName<List<Page>>('Actions-reorderBottomNavigation');
   static final ActionName<Page> setDefaultPage =
       new ActionName<Page>('Actions-setDefaultPage');
+  static final ActionName<String> fbStartDocListen =
+      new ActionName<String>('Actions-fbStartDocListen');
+  static final ActionName<String> fbStopDocListen =
+      new ActionName<String>('Actions-fbStopDocListen');
+  static final ActionName<dynamic> fbDocListenError =
+      new ActionName<dynamic>('Actions-fbDocListenError');
+  static final ActionName<String> settingsListen =
+      new ActionName<String>('Actions-settingsListen');
+  static final ActionName<dynamic> settingsReceived =
+      new ActionName<dynamic>('Actions-settingsReceived');
 }
