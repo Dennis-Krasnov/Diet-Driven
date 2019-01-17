@@ -61,6 +61,13 @@ class SettingsPage extends StatelessWidget {
                     ),
                   ),
                   ListTile(
+                    title: Text("STOP LISTENING!!!!"),
+                    trailing: RaisedButton(
+                      onPressed: () => actions.settingsStopListen("0WjbQ1XzVCe1zvwHgE4aluu4FiC3"),
+                      child: Text("Disconnect Firebase"),
+                    ),
+                  ),
+                  ListTile(
                     leading: Icon(Icons.beach_access),
                     title: Text("Default page"),
                     trailing: DropdownButton<Page>(

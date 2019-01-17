@@ -33,10 +33,20 @@ class _$Actions extends Actions {
       new ActionDispatcher<String>('Actions-fbStopDocListen');
   final ActionDispatcher<dynamic> fbDocListenError =
       new ActionDispatcher<dynamic>('Actions-fbDocListenError');
+  final ActionDispatcher<int> startSettingsListen =
+      new ActionDispatcher<int>('Actions-startSettingsListen');
+  final ActionDispatcher<int> stopSettingsListen =
+      new ActionDispatcher<int>('Actions-stopSettingsListen');
+  final ActionDispatcher<int> startDiaryListen =
+      new ActionDispatcher<int>('Actions-startDiaryListen');
+  final ActionDispatcher<int> stopDiaryListen =
+      new ActionDispatcher<int>('Actions-stopDiaryListen');
   final ActionDispatcher<String> settingsListen =
       new ActionDispatcher<String>('Actions-settingsListen');
   final ActionDispatcher<dynamic> settingsReceived =
       new ActionDispatcher<dynamic>('Actions-settingsReceived');
+  final ActionDispatcher<String> settingsStopListen =
+      new ActionDispatcher<String>('Actions-settingsStopListen');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -50,8 +60,13 @@ class _$Actions extends Actions {
     fbStartDocListen.setDispatcher(dispatcher);
     fbStopDocListen.setDispatcher(dispatcher);
     fbDocListenError.setDispatcher(dispatcher);
+    startSettingsListen.setDispatcher(dispatcher);
+    stopSettingsListen.setDispatcher(dispatcher);
+    startDiaryListen.setDispatcher(dispatcher);
+    stopDiaryListen.setDispatcher(dispatcher);
     settingsListen.setDispatcher(dispatcher);
     settingsReceived.setDispatcher(dispatcher);
+    settingsStopListen.setDispatcher(dispatcher);
   }
 }
 
@@ -75,8 +90,18 @@ class ActionsNames {
       new ActionName<String>('Actions-fbStopDocListen');
   static final ActionName<dynamic> fbDocListenError =
       new ActionName<dynamic>('Actions-fbDocListenError');
+  static final ActionName<int> startSettingsListen =
+      new ActionName<int>('Actions-startSettingsListen');
+  static final ActionName<int> stopSettingsListen =
+      new ActionName<int>('Actions-stopSettingsListen');
+  static final ActionName<int> startDiaryListen =
+      new ActionName<int>('Actions-startDiaryListen');
+  static final ActionName<int> stopDiaryListen =
+      new ActionName<int>('Actions-stopDiaryListen');
   static final ActionName<String> settingsListen =
       new ActionName<String>('Actions-settingsListen');
   static final ActionName<dynamic> settingsReceived =
       new ActionName<dynamic>('Actions-settingsReceived');
+  static final ActionName<String> settingsStopListen =
+      new ActionName<String>('Actions-settingsStopListen');
 }

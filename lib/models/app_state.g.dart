@@ -12,6 +12,10 @@ class _$AppState extends AppState {
   @override
   final bool loading;
   @override
+  final BuiltMap<Connection, List<int>> subscriptions;
+  @override
+  final BuiltList<int> widgets;
+  @override
   final Page activePage;
   @override
   final Page defaultPage;
@@ -26,6 +30,8 @@ class _$AppState extends AppState {
   _$AppState._(
       {this.user,
       this.loading,
+      this.subscriptions,
+      this.widgets,
       this.activePage,
       this.defaultPage,
       this.bottomNavigation,
@@ -33,6 +39,12 @@ class _$AppState extends AppState {
       : super._() {
     if (loading == null) {
       throw new BuiltValueNullFieldError('AppState', 'loading');
+    }
+    if (subscriptions == null) {
+      throw new BuiltValueNullFieldError('AppState', 'subscriptions');
+    }
+    if (widgets == null) {
+      throw new BuiltValueNullFieldError('AppState', 'widgets');
     }
     if (activePage == null) {
       throw new BuiltValueNullFieldError('AppState', 'activePage');
@@ -61,6 +73,8 @@ class _$AppState extends AppState {
     return other is AppState &&
         user == other.user &&
         loading == other.loading &&
+        subscriptions == other.subscriptions &&
+        widgets == other.widgets &&
         activePage == other.activePage &&
         defaultPage == other.defaultPage &&
         bottomNavigation == other.bottomNavigation &&
@@ -72,7 +86,11 @@ class _$AppState extends AppState {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, user.hashCode), loading.hashCode),
+                $jc(
+                    $jc(
+                        $jc($jc($jc(0, user.hashCode), loading.hashCode),
+                            subscriptions.hashCode),
+                        widgets.hashCode),
                     activePage.hashCode),
                 defaultPage.hashCode),
             bottomNavigation.hashCode),
@@ -84,6 +102,8 @@ class _$AppState extends AppState {
     return (newBuiltValueToStringHelper('AppState')
           ..add('user', user)
           ..add('loading', loading)
+          ..add('subscriptions', subscriptions)
+          ..add('widgets', widgets)
           ..add('activePage', activePage)
           ..add('defaultPage', defaultPage)
           ..add('bottomNavigation', bottomNavigation)
@@ -102,6 +122,16 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   bool _loading;
   bool get loading => _$this._loading;
   set loading(bool loading) => _$this._loading = loading;
+
+  MapBuilder<Connection, List<int>> _subscriptions;
+  MapBuilder<Connection, List<int>> get subscriptions =>
+      _$this._subscriptions ??= new MapBuilder<Connection, List<int>>();
+  set subscriptions(MapBuilder<Connection, List<int>> subscriptions) =>
+      _$this._subscriptions = subscriptions;
+
+  ListBuilder<int> _widgets;
+  ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
+  set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
 
   Page _activePage;
   Page get activePage => _$this._activePage;
@@ -127,6 +157,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
     if (_$v != null) {
       _user = _$v.user;
       _loading = _$v.loading;
+      _subscriptions = _$v.subscriptions?.toBuilder();
+      _widgets = _$v.widgets?.toBuilder();
       _activePage = _$v.activePage;
       _defaultPage = _$v.defaultPage;
       _bottomNavigation = _$v.bottomNavigation;
@@ -151,14 +183,31 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
 
   @override
   _$AppState build() {
-    final _$result = _$v ??
-        new _$AppState._(
-            user: user,
-            loading: loading,
-            activePage: activePage,
-            defaultPage: defaultPage,
-            bottomNavigation: bottomNavigation,
-            bottomNavigationPage: bottomNavigationPage);
+    _$AppState _$result;
+    try {
+      _$result = _$v ??
+          new _$AppState._(
+              user: user,
+              loading: loading,
+              subscriptions: subscriptions.build(),
+              widgets: widgets.build(),
+              activePage: activePage,
+              defaultPage: defaultPage,
+              bottomNavigation: bottomNavigation,
+              bottomNavigationPage: bottomNavigationPage);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'subscriptions';
+        subscriptions.build();
+        _$failedField = 'widgets';
+        widgets.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'AppState', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

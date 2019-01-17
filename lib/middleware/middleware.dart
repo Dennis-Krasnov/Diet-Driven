@@ -108,9 +108,10 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigat
 Iterable<Epic<AppState, AppStateBuilder, Actions>> createEpicBuilder() =>
     (new EpicBuilder<AppState, AppStateBuilder, Actions>()
         ..add(ActionsNames.goTo, goToEpic)
-        ..add(ActionsNames.fbStartDocListen, fsDocumentListener)
-        ..add(ActionsNames.fbStopDocListen, fsDocumentListener)
-        ..add(ActionsNames.settingsListen, fsRouter)
+//        ..add(ActionsNames.fbStartDocListen, fsDocumentListener)
+//        ..add(ActionsNames.fbStopDocListen, fsDocumentListener)
+//        ..add(ActionsNames.settingsListen, fsRouter)
+//        ..add(ActionsNames.settingsStopListen, fsRouter)
     ).build();
 
 
@@ -132,10 +133,18 @@ Observable<void> fsRouter(Observable<Action<String>> stream, MiddlewareApi<AppSt
   await new Future<void>.delayed(new Duration(milliseconds: 1));
 //  mwApi.actions.decrement(action.payload);
 //  return stream.asyncMap((action) {
-  print("before action called");
-  api.actions.fbStartDocListen("users/${action.payload}/settings/general");
-  print("after action called");
-//  });
+  if (action.name == ActionsNames.settingsListen.name) {
+    api.actions.fbStartDocListen("users/${action.payload}/settings/general");
+  }
+  else if (action.name == ActionsNames.settingsStopListen.name) {
+    api.actions.fbStopDocListen("users/${action.payload}/settings/general");
+  }
+
+//  } else if (action.name == ActionsNames.fbStartDocListen.name) {
+//    api.actions.fbStopDocListen("users/${action.payload}/settings/general");
+  else {
+    print("CAN'T CALL ROUTER WITH ${action.name} -> ${action.payload}");
+  }
 
 });
 
@@ -144,10 +153,18 @@ Observable<void> fsDocumentListener(Observable<Action<String>> stream, Middlewar
 //Observable<void> fbDocumentListener(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.flatMap((action) {
 //  return new Observable.fromFuture(Firestore.instance.document(action.payload).snapshots).map((DocumentSnapshot doc) => doc["sex"] as String);
 //  return new Observable.fromFuture(Firestore.instance.document(action.payload).snapshots)
-  return Firestore.instance.document(action.payload).snapshots()
-    .map((DocumentSnapshot doc) => doc["sex"] as String)
-    .map((sex) => api.actions.settingsReceived(sex))
-    .takeWhile((_) => action.name != ActionsNames.fbStopDocListen.name);
+  if (action.name == ActionsNames.fbStopDocListen.name) {
+    print("IM EMPTY");
+    return Observable.empty();
+  }
+
+//  Map<String, subscription>: widget_uid -> StreamSubsciption (in static class!!!)
+  // like Firestore.instance // always somewhere.. always living
+
+//  return Firestore.instance.document(action.payload).snapshots().listen((DocumentSnapshot ds) => null, onDone: () => null, onError: () => null).//() => null)//.distinct()
+//    .map((DocumentSnapshot doc) => doc["sex"] as String)
+//    .map((sex) => api.actions.settingsReceived(sex));
+////    .takeWhile((_) => action.name != ActionsNames.fbStopDocListen.name); //TODO: && action.payload == );
 });
 
 
