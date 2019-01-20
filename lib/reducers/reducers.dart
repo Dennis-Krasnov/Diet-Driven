@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/models/app_state.dart';
+import 'package:diet_driven/models/connections.dart';
 import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/models/serializers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
@@ -21,18 +25,23 @@ ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
 //      ..add(ActionsNames.stopSettingsListen, stopListen)
       
 //      ..combineMap(new MapReducerBuilder((AppState state) => state.subscriptions, (AppStateBuilder stateBuilder) => stateBuilder.subscriptions)) // FIXME
-      ..combineMap(new MapReducerBuilder<AppState, AppStateBuilder, Connection, List<int>>((s) => s.subscriptions, (b) => b.subscriptions)
+///      ..combineMap(new MapReducerBuilder<AppState, AppStateBuilder, Connection, List<int>>((s) => s.subscriptions, (b) => b.subscriptions)
 //      ..combineMap(new MapReducerBuilder((AppState state) => state.subscriptions, (AppStateBuilder stateBuilder) => stateBuilder.subscriptions)
 //        ..add(ActionsNames.startSettingsListen, (BuiltMap<Connection, List<int>> a, Action<int> b, MapBuilder<Connection, List<int>> c) => stopListen)
         ///..add(ActionsNames.startSettingsListen, startListen)
-        ..add(ActionsNames.startSettingsListen, testListen)
-        ..add(ActionsNames.stopSettingsListen, stopListen)
+//        ..add(ActionsNames.startSettingsListen, testListen)
+//        ..add(ActionsNames.stopSettingsListen, stopListen)
+///      )
+
+      ..combineSetMultimap(new SetMultimapReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
+          ..add(ActionsNames.startDiaryListen, startDiaryListen)
+          ..add(ActionsNames.stopDiaryListen, stopDiaryListen)
       )
 
-      ..combineList(new ListReducerBuilder((s) => s.widgets, (b) => b.widgets)
-          ..add(ActionsNames.startDiaryListen, diaryListen)
-          ..add(ActionsNames.stopDiaryListen, diaryStop)
-      )
+//      ..combineList(new ListReducerBuilder((s) => s.widgets, (b) => b.widgets)
+//          ..add(ActionsNames.startDiaryListen, diaryListen)
+//          ..add(ActionsNames.stopDiaryListen, diaryStop)
+//      )
 //      ..combineMap(new MapReducerBuilder<AppState, AppStateBuilder>())
 ;
 
@@ -86,43 +95,59 @@ void setDefaultPage(AppState state, Action<Page> action, AppStateBuilder builder
 }
 
 
-void diaryListen(BuiltList<int> listState, Action<int> action, ListBuilder<int> listBuilder) {
+void startDiaryListen(BuiltSetMultimap<Connections, int> setMultimapState, Action<int> action, SetMultimapBuilder<Connections, int> setMultimapBuilder) {
   print("LISTENING TO DIARY");
-  listBuilder.add(action.payload);
+  setMultimapBuilder.add(Connections.diary, action.payload);
+//  listBuilder.add(action.payload);
 }
 
-void diaryStop(BuiltList<int> listState, Action<int> action, ListBuilder<int> listBuilder) {
+void stopDiaryListen(BuiltSetMultimap<Connections, int> setMultimapState, Action<int> action, SetMultimapBuilder<Connections, int> setMultimapBuilder) {
   print("STOP TO DIARY");
-  if (listState.contains(action.payload)) {
-    listBuilder.remove(action.payload);
-  }
+  setMultimapBuilder.remove(Connections.diary, action.payload);
+//  if (listState.contains(action.payload)) {
+//    listBuilder.remove(action.payload);
+//  }
 }
+
+//void diaryListen(BuiltList<int> listState, Action<int> action, ListBuilder<int> listBuilder) {
+//  print("LISTENING TO DIARY");
+//  listBuilder.add(action.payload);
+//}
+//
+//void diaryStop(BuiltList<int> listState, Action<int> action, ListBuilder<int> listBuilder) {
+//  print("STOP TO DIARY");
+//  if (listState.contains(action.payload)) {
+//    listBuilder.remove(action.payload);
+//  }
+//}
+
+/////////////////////////////////
 
 //void testListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) => b[new UserInfoListener.fromId("billy")] = [2];
 // (BuiltMap<Connection, List<int>> mapState, Action<int> action, MapBuilder<Connection, List<int>> mapBuilder) =>
 //void testListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) => b[new UserInfoListener.fromId("billy")] = s[new UserInfoListener.fromId("billy")].shuffle();
-void testListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) {
-  var u = new UserInfoListener.fromId("billy"); // TODO: can't access state...
-  if (s.containsKey(u)) {
-    print("CONTAINS: ${s[u]}");
-    b[u] = s[u]..add(2);
-  } else {
-    print("NOW [1]");
-    b[u] = [1];
-  }
-//  b[new UserInfoListener.fromId("billy")] = s[new UserInfoListener.fromId("billy")] == null ? [1] : b[new UserInfoListener.fromId("billy")]..addAll([1]);
-}
-//void stopListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) => b = new BuiltMap<Connection<dynamic>, List<int>>().toBuilder();
-void stopListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) => b.clear();
-
-void startListen(BuiltMap<Connection, List<int>> mapState, Action<int> action, MapBuilder<Connection, List<int>> mapBuilder) =>
-  (AppState state, Action<int> action, AppStateBuilder builder) {
-//    print("BUILT MAP: $mapState");
-    print("ACTION: $action");
-//    print("MAPBUILDER: $mapBuilder");
-    print("APPSTATE: $state");
-//    mapBuilder
-};
+//void testListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) {
+//  var u = new UserInfoListener.fromId("billy"); // TODO: can't access state...
+//  if (s.containsKey(u)) {
+//    print("CONTAINS: ${s[u]}");
+//    b[u] = s[u]..add(2);
+//  } else {
+//    print("NOW [1]");
+//    b[u] = [1];
+//  }
+////  b[new UserInfoListener.fromId("billy")] = s[new UserInfoListener.fromId("billy")] == null ? [1] : b[new UserInfoListener.fromId("billy")]..addAll([1]);
+//}
+////void stopListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) => b = new BuiltMap<Connection<dynamic>, List<int>>().toBuilder();
+//void stopListen(BuiltMap<Connection<dynamic>, List<int>> s, Action<int> a, MapBuilder<Connection<dynamic>, List<int>> b) => b.clear();
+//
+//void startListen(BuiltMap<Connection, List<int>> mapState, Action<int> action, MapBuilder<Connection, List<int>> mapBuilder) =>
+//  (AppState state, Action<int> action, AppStateBuilder builder) {
+////    print("BUILT MAP: $mapState");
+//    print("ACTION: $action");
+////    print("MAPBUILDER: $mapBuilder");
+//    print("APPSTATE: $state");
+////    mapBuilder
+//};
 
 
 //(BuiltMap<Connection<dynamic>, List<int>>, Action<int>, MapBuilder<Connection<dynamic>, List<int>>) → void) → void
@@ -160,5 +185,6 @@ void startListen(BuiltMap<Connection, List<int>> mapState, Action<int> action, M
 void settingsReceived(AppState state, Action<dynamic> action, AppStateBuilder builder) {
   print("SETTINGS RECERIVED!!!");
   print(action.payload);
+  serializers.deserialize(json.decode("{\"test\": 234}"));
 }
 

@@ -10,8 +10,8 @@ import 'package:built_value/built_value.dart';
 part 'page.g.dart';
 
 class Page extends EnumClass {
-  static const Page diary = _$todos;
-  static const Page track = _$stats;
+  static const Page diary = _$diary;
+  static const Page track = _$track;
   static const Page diet = _$diet;
   static const Page cycle = _$cycle;
   static const Page settings = _$settings;

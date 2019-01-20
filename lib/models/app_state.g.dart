@@ -10,11 +10,11 @@ class _$AppState extends AppState {
   @override
   final FirebaseUser user;
   @override
-  final bool loading;
-  @override
-  final BuiltMap<Connection, List<int>> subscriptions;
+  final BuiltSetMultimap<Connections, int> subscriptions;
   @override
   final BuiltList<int> widgets;
+  @override
+  final BuiltList<FoodRecord> diaryRecords;
   @override
   final Page activePage;
   @override
@@ -29,22 +29,22 @@ class _$AppState extends AppState {
 
   _$AppState._(
       {this.user,
-      this.loading,
       this.subscriptions,
       this.widgets,
+      this.diaryRecords,
       this.activePage,
       this.defaultPage,
       this.bottomNavigation,
       this.bottomNavigationPage})
       : super._() {
-    if (loading == null) {
-      throw new BuiltValueNullFieldError('AppState', 'loading');
-    }
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('AppState', 'subscriptions');
     }
     if (widgets == null) {
       throw new BuiltValueNullFieldError('AppState', 'widgets');
+    }
+    if (diaryRecords == null) {
+      throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
     }
     if (activePage == null) {
       throw new BuiltValueNullFieldError('AppState', 'activePage');
@@ -72,9 +72,9 @@ class _$AppState extends AppState {
     if (identical(other, this)) return true;
     return other is AppState &&
         user == other.user &&
-        loading == other.loading &&
         subscriptions == other.subscriptions &&
         widgets == other.widgets &&
+        diaryRecords == other.diaryRecords &&
         activePage == other.activePage &&
         defaultPage == other.defaultPage &&
         bottomNavigation == other.bottomNavigation &&
@@ -88,9 +88,9 @@ class _$AppState extends AppState {
             $jc(
                 $jc(
                     $jc(
-                        $jc($jc($jc(0, user.hashCode), loading.hashCode),
-                            subscriptions.hashCode),
-                        widgets.hashCode),
+                        $jc($jc($jc(0, user.hashCode), subscriptions.hashCode),
+                            widgets.hashCode),
+                        diaryRecords.hashCode),
                     activePage.hashCode),
                 defaultPage.hashCode),
             bottomNavigation.hashCode),
@@ -101,9 +101,9 @@ class _$AppState extends AppState {
   String toString() {
     return (newBuiltValueToStringHelper('AppState')
           ..add('user', user)
-          ..add('loading', loading)
           ..add('subscriptions', subscriptions)
           ..add('widgets', widgets)
+          ..add('diaryRecords', diaryRecords)
           ..add('activePage', activePage)
           ..add('defaultPage', defaultPage)
           ..add('bottomNavigation', bottomNavigation)
@@ -119,19 +119,21 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   FirebaseUser get user => _$this._user;
   set user(FirebaseUser user) => _$this._user = user;
 
-  bool _loading;
-  bool get loading => _$this._loading;
-  set loading(bool loading) => _$this._loading = loading;
-
-  MapBuilder<Connection, List<int>> _subscriptions;
-  MapBuilder<Connection, List<int>> get subscriptions =>
-      _$this._subscriptions ??= new MapBuilder<Connection, List<int>>();
-  set subscriptions(MapBuilder<Connection, List<int>> subscriptions) =>
+  SetMultimapBuilder<Connections, int> _subscriptions;
+  SetMultimapBuilder<Connections, int> get subscriptions =>
+      _$this._subscriptions ??= new SetMultimapBuilder<Connections, int>();
+  set subscriptions(SetMultimapBuilder<Connections, int> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
   ListBuilder<int> _widgets;
   ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
   set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
+
+  ListBuilder<FoodRecord> _diaryRecords;
+  ListBuilder<FoodRecord> get diaryRecords =>
+      _$this._diaryRecords ??= new ListBuilder<FoodRecord>();
+  set diaryRecords(ListBuilder<FoodRecord> diaryRecords) =>
+      _$this._diaryRecords = diaryRecords;
 
   Page _activePage;
   Page get activePage => _$this._activePage;
@@ -156,9 +158,9 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   AppStateBuilder get _$this {
     if (_$v != null) {
       _user = _$v.user;
-      _loading = _$v.loading;
       _subscriptions = _$v.subscriptions?.toBuilder();
       _widgets = _$v.widgets?.toBuilder();
+      _diaryRecords = _$v.diaryRecords?.toBuilder();
       _activePage = _$v.activePage;
       _defaultPage = _$v.defaultPage;
       _bottomNavigation = _$v.bottomNavigation;
@@ -188,9 +190,9 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _$result = _$v ??
           new _$AppState._(
               user: user,
-              loading: loading,
               subscriptions: subscriptions.build(),
               widgets: widgets.build(),
+              diaryRecords: diaryRecords.build(),
               activePage: activePage,
               defaultPage: defaultPage,
               bottomNavigation: bottomNavigation,
@@ -202,6 +204,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
         subscriptions.build();
         _$failedField = 'widgets';
         widgets.build();
+        _$failedField = 'diaryRecords';
+        diaryRecords.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'AppState', _$failedField, e.toString());

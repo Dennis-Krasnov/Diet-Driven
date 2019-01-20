@@ -29,6 +29,7 @@ Widget _buildBody(BuildContext context) {
 
 //      return _buildList(context, snapshot.data.documents);
 
+
       List<Widget> children = snapshot.data.documents
           .map((record) =>
 //          assert(map['name'] != null)

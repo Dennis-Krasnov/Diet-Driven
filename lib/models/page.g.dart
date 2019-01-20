@@ -6,8 +6,8 @@ part of app_tab;
 // BuiltValueGenerator
 // **************************************************************************
 
-const Page _$todos = const Page._('diary');
-const Page _$stats = const Page._('track');
+const Page _$diary = const Page._('diary');
+const Page _$track = const Page._('track');
 const Page _$diet = const Page._('diet');
 const Page _$cycle = const Page._('cycle');
 const Page _$settings = const Page._('settings');
@@ -19,9 +19,9 @@ const Page _$loginScreen = const Page._('loginScreen');
 Page _$appTabValueOf(String name) {
   switch (name) {
     case 'diary':
-      return _$todos;
+      return _$diary;
     case 'track':
-      return _$stats;
+      return _$track;
     case 'diet':
       return _$diet;
     case 'cycle':
@@ -42,8 +42,8 @@ Page _$appTabValueOf(String name) {
 }
 
 final BuiltSet<Page> _$appTabValues = new BuiltSet<Page>(const <Page>[
-  _$todos,
-  _$stats,
+  _$diary,
+  _$track,
   _$diet,
   _$cycle,
   _$settings,

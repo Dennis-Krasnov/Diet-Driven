@@ -41,12 +41,6 @@ class _$Actions extends Actions {
       new ActionDispatcher<int>('Actions-startDiaryListen');
   final ActionDispatcher<int> stopDiaryListen =
       new ActionDispatcher<int>('Actions-stopDiaryListen');
-  final ActionDispatcher<String> settingsListen =
-      new ActionDispatcher<String>('Actions-settingsListen');
-  final ActionDispatcher<dynamic> settingsReceived =
-      new ActionDispatcher<dynamic>('Actions-settingsReceived');
-  final ActionDispatcher<String> settingsStopListen =
-      new ActionDispatcher<String>('Actions-settingsStopListen');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -64,9 +58,6 @@ class _$Actions extends Actions {
     stopSettingsListen.setDispatcher(dispatcher);
     startDiaryListen.setDispatcher(dispatcher);
     stopDiaryListen.setDispatcher(dispatcher);
-    settingsListen.setDispatcher(dispatcher);
-    settingsReceived.setDispatcher(dispatcher);
-    settingsStopListen.setDispatcher(dispatcher);
   }
 }
 
@@ -98,10 +89,4 @@ class ActionsNames {
       new ActionName<int>('Actions-startDiaryListen');
   static final ActionName<int> stopDiaryListen =
       new ActionName<int>('Actions-stopDiaryListen');
-  static final ActionName<String> settingsListen =
-      new ActionName<String>('Actions-settingsListen');
-  static final ActionName<dynamic> settingsReceived =
-      new ActionName<dynamic>('Actions-settingsReceived');
-  static final ActionName<String> settingsStopListen =
-      new ActionName<String>('Actions-settingsStopListen');
 }

@@ -7,6 +7,7 @@ import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/containers/drawer_nav_button.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
+import 'package:diet_driven/models/connections.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:flutter/material.dart' hide Builder;
 
@@ -18,48 +19,65 @@ part 'cycle_page.g.dart';
 class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
   @override
   CyclePageVM connect(AppState state) {
-//    return CyclePageVM((b) => b..subscriptions = state.subscriptions.toBuilder());
     return CyclePageVM((b) => b
-      ..subscriptions = state.subscriptions.toMap()
+      ..subscriptions = state.subscriptions.toBuilder()
+//      ..subscriptions = state.subscriptions.toMap()
+//      ..subscriptions = state.subscriptions.toBuilder()
+
       ..widgets = state.widgets.toBuilder()
     );
   }
 
   @override
   Widget build(BuildContext context, CyclePageVM vm, Actions actions) {
-    var keys = vm.subscriptions.keys.toList();
+//    var keys = vm.subscriptions.keys.toList();
 
     return Scaffold(
         body: Container(
             child: Center(
           child: Column(children: [
             RaisedButton(
-//              onPressed: () => actions.startSettingsListen(this.hashCode),
               onPressed: () => actions.startDiaryListen(this.hashCode),
-              child: Text("ADD SETTINGS SUBSCRIPTION (${vm.subscriptions.length})"),
+              child: Text("ADD DIARY SUBSCRIPTION"),
             ),
             RaisedButton(
-//              onPressed: () => actions.stopSettingsListen(this.hashCode),
+              onPressed: () => actions.stopDiaryListen(this.hashCode),
+              child: Text("STOP DIARY SUBSCRIPTION"),
+            ),
+            Text(vm.subscriptions.toString()),
+
+            RaisedButton(
+              child: Text("TEST"),
               onPressed: () {
-//                print(vm.widgets);
-//                actions.stopSettingsListen(this.hashCode);
-                actions.stopDiaryListen(this.hashCode);
-//                print(vm.widgets); // this doesn't work, must rebuild to update state!
+                var fs = new DiaryFSDocument((b) => b..userId = "412" ..diaryRecordId = "424222");
+                // TODO: call this from middleware!!! (add line to setmultimap if it didn't exist, else remove it!) - key does the syncing!
+                // TODO: it calls reducer that saves it in the SetMultimap<FSDOC, int>
+                print(fs);
+                fs.test();
               },
-              child: Text("STOP SETTINGS SUBSCRIPTION"),
-            ),
+            )
+
+//            Divider(height: 10,),
+
+//            RaisedButton(
+//            onPressed: () => actions.startSettingsListen(this.hashCode),
+////            child: Text("ADD SETTINGS SUBSCRIPTION (${vm.subscriptions.length})"),
+//            ),
+//            RaisedButton(
+//            onPressed: () => actions.stopSettingsListen(this.hashCode),
+//            child: Text("STOP SETTINGS SUBSCRIPTION"),
+//            ),
 //            Text(vm.subscriptions.toString()),
-            Text(vm.widgets.toString()),
-//            Column(children: vm.subscriptions.map((conn, lst) => ListTile()).)
-            ListView.builder(
-                shrinkWrap: true,
-                itemCount: vm.subscriptions.length,
-                itemBuilder: (context, index) =>
-                    ListTile(
-                      title: Text(keys[index].toString()),
-                      subtitle: Text(vm.subscriptions[keys[index]].toString()),
-                    )
-            ),
+
+//            ListView.builder(
+//                shrinkWrap: true,
+//                itemCount: vm.subscriptions.length,
+//                itemBuilder: (context, index) =>
+//                    ListTile(
+//                      title: Text(keys[index].toString()),
+//                      subtitle: Text(vm.subscriptions[keys[index]].toString()),
+//                    )
+//            ),
           ]),
         )),
       );
@@ -91,8 +109,8 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
 
 abstract class CyclePageVM implements Built<CyclePageVM, CyclePageVMBuilder> {
 //  BuiltMap<Connection, List<int>> get subscriptions;
-  Map<Connection, List<int>> get subscriptions;
   BuiltList<int> get widgets;
+  BuiltSetMultimap<Connections, int> get subscriptions;
 
   CyclePageVM._();
 

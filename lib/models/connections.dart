@@ -11,9 +11,7 @@ part 'connections.g.dart';
 
 class Connections extends EnumClass {
   static const Connections diary = _$diary;
-
-
-  static const Connections loginScreen = _$loginScreen;
+//  static const Connections loginScreen = _$loginScreen;
 
 
   const Connections._(String name) : super(name);

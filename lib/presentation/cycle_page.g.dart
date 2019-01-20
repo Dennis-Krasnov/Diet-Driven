@@ -8,19 +8,19 @@ part of cycle_page;
 
 class _$CyclePageVM extends CyclePageVM {
   @override
-  final Map<Connection, List<int>> subscriptions;
-  @override
   final BuiltList<int> widgets;
+  @override
+  final BuiltSetMultimap<Connections, int> subscriptions;
 
   factory _$CyclePageVM([void updates(CyclePageVMBuilder b)]) =>
       (new CyclePageVMBuilder()..update(updates)).build();
 
-  _$CyclePageVM._({this.subscriptions, this.widgets}) : super._() {
-    if (subscriptions == null) {
-      throw new BuiltValueNullFieldError('CyclePageVM', 'subscriptions');
-    }
+  _$CyclePageVM._({this.widgets, this.subscriptions}) : super._() {
     if (widgets == null) {
       throw new BuiltValueNullFieldError('CyclePageVM', 'widgets');
+    }
+    if (subscriptions == null) {
+      throw new BuiltValueNullFieldError('CyclePageVM', 'subscriptions');
     }
   }
 
@@ -35,20 +35,20 @@ class _$CyclePageVM extends CyclePageVM {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is CyclePageVM &&
-        subscriptions == other.subscriptions &&
-        widgets == other.widgets;
+        widgets == other.widgets &&
+        subscriptions == other.subscriptions;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, subscriptions.hashCode), widgets.hashCode));
+    return $jf($jc($jc(0, widgets.hashCode), subscriptions.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('CyclePageVM')
-          ..add('subscriptions', subscriptions)
-          ..add('widgets', widgets))
+          ..add('widgets', widgets)
+          ..add('subscriptions', subscriptions))
         .toString();
   }
 }
@@ -56,21 +56,22 @@ class _$CyclePageVM extends CyclePageVM {
 class CyclePageVMBuilder implements Builder<CyclePageVM, CyclePageVMBuilder> {
   _$CyclePageVM _$v;
 
-  Map<Connection, List<int>> _subscriptions;
-  Map<Connection, List<int>> get subscriptions => _$this._subscriptions;
-  set subscriptions(Map<Connection, List<int>> subscriptions) =>
-      _$this._subscriptions = subscriptions;
-
   ListBuilder<int> _widgets;
   ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
   set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
+
+  SetMultimapBuilder<Connections, int> _subscriptions;
+  SetMultimapBuilder<Connections, int> get subscriptions =>
+      _$this._subscriptions ??= new SetMultimapBuilder<Connections, int>();
+  set subscriptions(SetMultimapBuilder<Connections, int> subscriptions) =>
+      _$this._subscriptions = subscriptions;
 
   CyclePageVMBuilder();
 
   CyclePageVMBuilder get _$this {
     if (_$v != null) {
-      _subscriptions = _$v.subscriptions;
       _widgets = _$v.widgets?.toBuilder();
+      _subscriptions = _$v.subscriptions?.toBuilder();
       _$v = null;
     }
     return this;
@@ -95,12 +96,14 @@ class CyclePageVMBuilder implements Builder<CyclePageVM, CyclePageVMBuilder> {
     try {
       _$result = _$v ??
           new _$CyclePageVM._(
-              subscriptions: subscriptions, widgets: widgets.build());
+              widgets: widgets.build(), subscriptions: subscriptions.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'widgets';
         widgets.build();
+        _$failedField = 'subscriptions';
+        subscriptions.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'CyclePageVM', _$failedField, e.toString());

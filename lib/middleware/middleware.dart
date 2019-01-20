@@ -4,6 +4,7 @@ import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
+import 'package:diet_driven/models/connections.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -17,6 +18,8 @@ Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth aut
       ..add(ActionsNames.initApp, initApp(auth))
 //      ..add(ActionsNames.goTo, goTo())
       ..add(ActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder())
+      ..add(ActionsNames.startDiaryListen, startDiaryListen())
+      ..add(ActionsNames.stopDiaryListen, startDiaryListen())
 
 //      ..add(ActionsNames.logout, logout(auth))
   ).build();
@@ -53,6 +56,19 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
     }
     api.actions.goTo(destination);
 
+    next(action);
+  };
+}
+
+MiddlewareHandler<AppState, AppStateBuilder, Actions, void> startDiaryListen() {
+  return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
+    String n = action.name;
+    if (n == ActionsNames.startDiaryListen.name && !api.state.subscriptions.containsKey(Connections.diary)) {
+      print("starting");
+    }
+    if (n == ActionsNames.stopDiaryListen.name && api.state.subscriptions.containsKey(Connections.diary)) {
+      print("stopping");
+    }
     next(action);
   };
 }
@@ -108,6 +124,7 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigat
 Iterable<Epic<AppState, AppStateBuilder, Actions>> createEpicBuilder() =>
     (new EpicBuilder<AppState, AppStateBuilder, Actions>()
         ..add(ActionsNames.goTo, goToEpic)
+//        ..add(ActionsNames.startDiaryListen, fsRouter)
 //        ..add(ActionsNames.fbStartDocListen, fsDocumentListener)
 //        ..add(ActionsNames.fbStopDocListen, fsDocumentListener)
 //        ..add(ActionsNames.settingsListen, fsRouter)
@@ -127,24 +144,29 @@ Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppStat
 
 
 // TODO: create router non-typed...
-Observable<void> fsRouter(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+//Observable<void> fsRouter(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+Observable<void> fsRouter(Observable<Action<int>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
   print("ROUTING!!!");
   print(action.payload);
-  await new Future<void>.delayed(new Duration(milliseconds: 1));
+
+  if (action.name == ActionsNames.startDiaryListen.name) {
+
+  }
+//  await new Future<void>.delayed(new Duration(milliseconds: 1));
 //  mwApi.actions.decrement(action.payload);
 //  return stream.asyncMap((action) {
-  if (action.name == ActionsNames.settingsListen.name) {
-    api.actions.fbStartDocListen("users/${action.payload}/settings/general");
-  }
-  else if (action.name == ActionsNames.settingsStopListen.name) {
-    api.actions.fbStopDocListen("users/${action.payload}/settings/general");
-  }
+//  if (action.name == ActionsNames.settingsListen.name) {
+//    api.actions.fbStartDocListen("users/${action.payload}/settings/general");
+//  }
+//  else if (action.name == ActionsNames.settingsStopListen.name) {
+//    api.actions.fbStopDocListen("users/${action.payload}/settings/general");
+//  }
 
 //  } else if (action.name == ActionsNames.fbStartDocListen.name) {
 //    api.actions.fbStopDocListen("users/${action.payload}/settings/general");
-  else {
-    print("CAN'T CALL ROUTER WITH ${action.name} -> ${action.payload}");
-  }
+//  else {
+//    print("CAN'T CALL ROUTER WITH ${action.name} -> ${action.payload}");
+//  }
 
 });
 

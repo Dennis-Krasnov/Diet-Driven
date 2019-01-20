@@ -25,7 +25,7 @@ abstract class Actions extends ReduxActions {
   ActionDispatcher<Page> setDefaultPage;
 
   // Firebase
-  ActionDispatcher<String> fbStartDocListen; // TODO: single action, different payloads!?
+  ActionDispatcher<String> fbStartDocListen;
   ActionDispatcher<String> fbStopDocListen;
   ActionDispatcher<dynamic> fbDocListenError;
 
@@ -41,9 +41,9 @@ abstract class Actions extends ReduxActions {
 
 
   // String userID
-  ActionDispatcher<String> settingsListen;
-  ActionDispatcher<dynamic> settingsReceived;
-  ActionDispatcher<String> settingsStopListen;
+//  ActionDispatcher<String> settingsListen;
+//  ActionDispatcher<dynamic> settingsReceived;
+//  ActionDispatcher<String> settingsStopListen;
 }
 
 

@@ -56,14 +56,14 @@ class SettingsPage extends StatelessWidget {
                   ListTile(
                     title: Text("LISTEN TO DATA!!!!!"),
                     trailing: RaisedButton(
-                      onPressed: () => actions.settingsListen("0WjbQ1XzVCe1zvwHgE4aluu4FiC3"),
+//                      onPressed: () => actions.settingsListen("0WjbQ1XzVCe1zvwHgE4aluu4FiC3"),
                       child: Text("Connect Firebase"),
                     ),
                   ),
                   ListTile(
                     title: Text("STOP LISTENING!!!!"),
                     trailing: RaisedButton(
-                      onPressed: () => actions.settingsStopListen("0WjbQ1XzVCe1zvwHgE4aluu4FiC3"),
+//                      onPressed: () => actions.settingsStopListen("0WjbQ1XzVCe1zvwHgE4aluu4FiC3"),
                       child: Text("Disconnect Firebase"),
                     ),
                   ),
