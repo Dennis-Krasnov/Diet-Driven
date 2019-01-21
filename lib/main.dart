@@ -3,6 +3,7 @@ library main;
 //import 'package:built_redux_rx/built_redux_rx.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/containers/page_factory.dart';
+import 'package:diet_driven/middleware/epics.dart';
 import 'package:diet_driven/middleware/middleware.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/presentation/home_screen.dart';

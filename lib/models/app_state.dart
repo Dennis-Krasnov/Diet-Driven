@@ -5,7 +5,6 @@ library app_state;
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/built_realtime/built_firestore.dart';
-import 'package:diet_driven/models/connections.dart';
 import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -29,9 +28,8 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   @nullable
   FirebaseUser get user;
 
-//  BuiltMap<Connection, List<int>> get subscriptions;
-  BuiltSetMultimap<Connections, int> get subscriptions;
-  BuiltList<int> get widgets;
+//  BuiltSetMultimap<FSDocument, int> get subscriptions;
+  BuiltList<FS> get subscriptions;
   BuiltList<FoodRecord> get diaryRecords;
 
 //  @memoized

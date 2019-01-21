@@ -1,5 +1,7 @@
 library cycle_page;
 
+import 'dart:math';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
@@ -7,8 +9,9 @@ import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/containers/drawer_nav_button.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/models/connections.dart';
+import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/models/uncertainty.dart';
 import 'package:flutter/material.dart' hide Builder;
 
 import 'package:cloud_functions/cloud_functions.dart';
@@ -20,11 +23,12 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
   @override
   CyclePageVM connect(AppState state) {
     return CyclePageVM((b) => b
-      ..subscriptions = state.subscriptions.toBuilder()
-//      ..subscriptions = state.subscriptions.toMap()
 //      ..subscriptions = state.subscriptions.toBuilder()
+//      ..subscriptions = state.subscriptions.toMap()
+      ..subscriptions = state.subscriptions.toBuilder()
+      ..diaryRecords = state.diaryRecords.toBuilder()
 
-      ..widgets = state.widgets.toBuilder()
+//      ..widgets = state.widgets.toBuilder()
     );
   }
 
@@ -32,29 +36,74 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
   Widget build(BuildContext context, CyclePageVM vm, Actions actions) {
 //    var keys = vm.subscriptions.keys.toList();
 
+    var fsDiary = new FSDiary((b) => b
+      ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
+      ..diaryRecordId = new Random().nextInt(1).toString()
+      ..listeners = ListBuilder([1, 2])
+    );
+
     return Scaffold(
         body: Container(
             child: Center(
           child: Column(children: [
             RaisedButton(
-              onPressed: () => actions.startDiaryListen(this.hashCode),
+              // TODO: give the FSDIARY the list of who's listening!!! just keep track of a list of connections instead!!!
+                onPressed: () => actions.subscribe(fsDiary),
+//                onPressed: () => actions.startDiaryListen(Tuple2(new FSDiary((b) => b..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3" ..diaryRecordId = new Random().nextInt(5000).toString()), [4224])),
+//              onPressed: () => actions.startDiaryListen(this.hashCode),
               child: Text("ADD DIARY SUBSCRIPTION"),
-            ),
-            RaisedButton(
-              onPressed: () => actions.stopDiaryListen(this.hashCode),
-              child: Text("STOP DIARY SUBSCRIPTION"),
             ),
             Text(vm.subscriptions.toString()),
 
+
+            // TODO: call this from middleware!!! (add line to setmultimap if it didn't exist, else remove it!) - key does the syncing!
+            // TODO: it calls reducer that saves it in the SetMultimap<FSDOC, int>
+
             RaisedButton(
-              child: Text("TEST"),
+              child: Text("UPDATE"),
               onPressed: () {
-                var fs = new DiaryFSDocument((b) => b..userId = "412" ..diaryRecordId = "424222");
+                var fs = new FSDiary((b) => b..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3" ..diaryRecordId = "424222");
                 // TODO: call this from middleware!!! (add line to setmultimap if it didn't exist, else remove it!) - key does the syncing!
                 // TODO: it calls reducer that saves it in the SetMultimap<FSDOC, int>
-                print(fs);
-                fs.test();
+//                print(fs);
+
+                var food = ["Apple", "Orange", "Pear"];
+                food.shuffle();
+                var temp = FoodRecord((b) => b
+                  ..foodName = food[0]
+                  ..grams = new Random().nextDouble() * 100
+                  ..uncertainty = Uncertainty.accurate
+                  ..sodium = new Random().nextDouble() * 20
+                );
+
+                fs.update(temp);
               },
+            ),
+
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: vm.subscriptions.length,
+              itemBuilder: (BuildContext context, int index) {
+                var r = vm.subscriptions[index];
+                return ListTile(
+                  title: Text((r as FSDiary).docRef.path),
+                  subtitle: Text((r as FSDiary).diaryRecordId),//r.listeners.toString()),
+                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.stopDiaryListen(r)),
+                  onTap: () => print(r),
+                );
+              }
+            ),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: vm.diaryRecords.length,
+              itemBuilder: (BuildContext context, int index) {
+                var r = vm.diaryRecords[index];
+                return ListTile(
+                  title: Text(r.foodName),
+                  subtitle: Text(r.grams.toString()),
+                  onTap: () => print("pressed"),
+                );
+              }
             )
 
 //            Divider(height: 10,),
@@ -110,7 +159,9 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
 abstract class CyclePageVM implements Built<CyclePageVM, CyclePageVMBuilder> {
 //  BuiltMap<Connection, List<int>> get subscriptions;
   BuiltList<int> get widgets;
-  BuiltSetMultimap<Connections, int> get subscriptions;
+//  BuiltSetMultimap<FSDocument, int> get subscriptions;
+  BuiltList<FS> get subscriptions;
+  BuiltList<FoodRecord> get diaryRecords;
 
   CyclePageVM._();
 

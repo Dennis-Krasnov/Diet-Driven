@@ -3,6 +3,7 @@ library actions;
 
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/built_realtime/built_firestore.dart';
+import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -36,8 +37,14 @@ abstract class Actions extends ReduxActions {
 //  ActionDispatcher<dynamic> updateError;
 //  ActionDispatcher<dynamic> addError; etc.
 
-  ActionDispatcher<int> startDiaryListen;
-  ActionDispatcher<int> stopDiaryListen;
+  ActionDispatcher<FS> subscribe;
+  ActionDispatcher<FS> additionalSubscription;
+
+
+  ActionDispatcher<FSDiary> startDiaryListen;
+  ActionDispatcher<FSDiary> stopDiaryListen;
+  ActionDispatcher<FoodRecord> diaryReceived;
+
 
 
   // String userID

@@ -10,9 +10,7 @@ class _$AppState extends AppState {
   @override
   final FirebaseUser user;
   @override
-  final BuiltSetMultimap<Connections, int> subscriptions;
-  @override
-  final BuiltList<int> widgets;
+  final BuiltList<FS> subscriptions;
   @override
   final BuiltList<FoodRecord> diaryRecords;
   @override
@@ -30,7 +28,6 @@ class _$AppState extends AppState {
   _$AppState._(
       {this.user,
       this.subscriptions,
-      this.widgets,
       this.diaryRecords,
       this.activePage,
       this.defaultPage,
@@ -39,9 +36,6 @@ class _$AppState extends AppState {
       : super._() {
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('AppState', 'subscriptions');
-    }
-    if (widgets == null) {
-      throw new BuiltValueNullFieldError('AppState', 'widgets');
     }
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
@@ -73,7 +67,6 @@ class _$AppState extends AppState {
     return other is AppState &&
         user == other.user &&
         subscriptions == other.subscriptions &&
-        widgets == other.widgets &&
         diaryRecords == other.diaryRecords &&
         activePage == other.activePage &&
         defaultPage == other.defaultPage &&
@@ -87,9 +80,7 @@ class _$AppState extends AppState {
         $jc(
             $jc(
                 $jc(
-                    $jc(
-                        $jc($jc($jc(0, user.hashCode), subscriptions.hashCode),
-                            widgets.hashCode),
+                    $jc($jc($jc(0, user.hashCode), subscriptions.hashCode),
                         diaryRecords.hashCode),
                     activePage.hashCode),
                 defaultPage.hashCode),
@@ -102,7 +93,6 @@ class _$AppState extends AppState {
     return (newBuiltValueToStringHelper('AppState')
           ..add('user', user)
           ..add('subscriptions', subscriptions)
-          ..add('widgets', widgets)
           ..add('diaryRecords', diaryRecords)
           ..add('activePage', activePage)
           ..add('defaultPage', defaultPage)
@@ -119,15 +109,11 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   FirebaseUser get user => _$this._user;
   set user(FirebaseUser user) => _$this._user = user;
 
-  SetMultimapBuilder<Connections, int> _subscriptions;
-  SetMultimapBuilder<Connections, int> get subscriptions =>
-      _$this._subscriptions ??= new SetMultimapBuilder<Connections, int>();
-  set subscriptions(SetMultimapBuilder<Connections, int> subscriptions) =>
+  ListBuilder<FS> _subscriptions;
+  ListBuilder<FS> get subscriptions =>
+      _$this._subscriptions ??= new ListBuilder<FS>();
+  set subscriptions(ListBuilder<FS> subscriptions) =>
       _$this._subscriptions = subscriptions;
-
-  ListBuilder<int> _widgets;
-  ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
-  set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
 
   ListBuilder<FoodRecord> _diaryRecords;
   ListBuilder<FoodRecord> get diaryRecords =>
@@ -159,7 +145,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
     if (_$v != null) {
       _user = _$v.user;
       _subscriptions = _$v.subscriptions?.toBuilder();
-      _widgets = _$v.widgets?.toBuilder();
       _diaryRecords = _$v.diaryRecords?.toBuilder();
       _activePage = _$v.activePage;
       _defaultPage = _$v.defaultPage;
@@ -191,7 +176,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
           new _$AppState._(
               user: user,
               subscriptions: subscriptions.build(),
-              widgets: widgets.build(),
               diaryRecords: diaryRecords.build(),
               activePage: activePage,
               defaultPage: defaultPage,
@@ -202,8 +186,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       try {
         _$failedField = 'subscriptions';
         subscriptions.build();
-        _$failedField = 'widgets';
-        widgets.build();
         _$failedField = 'diaryRecords';
         diaryRecords.build();
       } catch (e) {

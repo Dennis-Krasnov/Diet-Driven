@@ -37,10 +37,16 @@ class _$Actions extends Actions {
       new ActionDispatcher<int>('Actions-startSettingsListen');
   final ActionDispatcher<int> stopSettingsListen =
       new ActionDispatcher<int>('Actions-stopSettingsListen');
-  final ActionDispatcher<int> startDiaryListen =
-      new ActionDispatcher<int>('Actions-startDiaryListen');
-  final ActionDispatcher<int> stopDiaryListen =
-      new ActionDispatcher<int>('Actions-stopDiaryListen');
+  final ActionDispatcher<FS<dynamic>> subscribe =
+      new ActionDispatcher<FS<dynamic>>('Actions-subscribe');
+  final ActionDispatcher<FS<dynamic>> additionalSubscription =
+      new ActionDispatcher<FS<dynamic>>('Actions-additionalSubscription');
+  final ActionDispatcher<FSDiary> startDiaryListen =
+      new ActionDispatcher<FSDiary>('Actions-startDiaryListen');
+  final ActionDispatcher<FSDiary> stopDiaryListen =
+      new ActionDispatcher<FSDiary>('Actions-stopDiaryListen');
+  final ActionDispatcher<FoodRecord> diaryReceived =
+      new ActionDispatcher<FoodRecord>('Actions-diaryReceived');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -56,8 +62,11 @@ class _$Actions extends Actions {
     fbDocListenError.setDispatcher(dispatcher);
     startSettingsListen.setDispatcher(dispatcher);
     stopSettingsListen.setDispatcher(dispatcher);
+    subscribe.setDispatcher(dispatcher);
+    additionalSubscription.setDispatcher(dispatcher);
     startDiaryListen.setDispatcher(dispatcher);
     stopDiaryListen.setDispatcher(dispatcher);
+    diaryReceived.setDispatcher(dispatcher);
   }
 }
 
@@ -85,8 +94,14 @@ class ActionsNames {
       new ActionName<int>('Actions-startSettingsListen');
   static final ActionName<int> stopSettingsListen =
       new ActionName<int>('Actions-stopSettingsListen');
-  static final ActionName<int> startDiaryListen =
-      new ActionName<int>('Actions-startDiaryListen');
-  static final ActionName<int> stopDiaryListen =
-      new ActionName<int>('Actions-stopDiaryListen');
+  static final ActionName<FS<dynamic>> subscribe =
+      new ActionName<FS<dynamic>>('Actions-subscribe');
+  static final ActionName<FS<dynamic>> additionalSubscription =
+      new ActionName<FS<dynamic>>('Actions-additionalSubscription');
+  static final ActionName<FSDiary> startDiaryListen =
+      new ActionName<FSDiary>('Actions-startDiaryListen');
+  static final ActionName<FSDiary> stopDiaryListen =
+      new ActionName<FSDiary>('Actions-stopDiaryListen');
+  static final ActionName<FoodRecord> diaryReceived =
+      new ActionName<FoodRecord>('Actions-diaryReceived');
 }
