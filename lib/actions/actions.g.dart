@@ -41,12 +41,11 @@ class _$Actions extends Actions {
       new ActionDispatcher<FS<dynamic>>('Actions-subscribe');
   final ActionDispatcher<FS<dynamic>> additionalSubscription =
       new ActionDispatcher<FS<dynamic>>('Actions-additionalSubscription');
-  final ActionDispatcher<FSDiary> startDiaryListen =
-      new ActionDispatcher<FSDiary>('Actions-startDiaryListen');
-  final ActionDispatcher<FSDiary> stopDiaryListen =
-      new ActionDispatcher<FSDiary>('Actions-stopDiaryListen');
+  final ActionDispatcher<FS<dynamic>> unsubscribe =
+      new ActionDispatcher<FS<dynamic>>('Actions-unsubscribe');
   final ActionDispatcher<FoodRecord> diaryReceived =
       new ActionDispatcher<FoodRecord>('Actions-diaryReceived');
+  final ChildActions child = new ChildActions();
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -64,9 +63,9 @@ class _$Actions extends Actions {
     stopSettingsListen.setDispatcher(dispatcher);
     subscribe.setDispatcher(dispatcher);
     additionalSubscription.setDispatcher(dispatcher);
-    startDiaryListen.setDispatcher(dispatcher);
-    stopDiaryListen.setDispatcher(dispatcher);
+    unsubscribe.setDispatcher(dispatcher);
     diaryReceived.setDispatcher(dispatcher);
+    child.setDispatcher(dispatcher);
   }
 }
 
@@ -98,10 +97,26 @@ class ActionsNames {
       new ActionName<FS<dynamic>>('Actions-subscribe');
   static final ActionName<FS<dynamic>> additionalSubscription =
       new ActionName<FS<dynamic>>('Actions-additionalSubscription');
-  static final ActionName<FSDiary> startDiaryListen =
-      new ActionName<FSDiary>('Actions-startDiaryListen');
-  static final ActionName<FSDiary> stopDiaryListen =
-      new ActionName<FSDiary>('Actions-stopDiaryListen');
+  static final ActionName<FS<dynamic>> unsubscribe =
+      new ActionName<FS<dynamic>>('Actions-unsubscribe');
   static final ActionName<FoodRecord> diaryReceived =
       new ActionName<FoodRecord>('Actions-diaryReceived');
+}
+
+class _$ChildActions extends ChildActions {
+  factory _$ChildActions() => new _$ChildActions._();
+  _$ChildActions._() : super._();
+
+  final ActionDispatcher<dynamic> childAction =
+      new ActionDispatcher<dynamic>('ChildActions-childAction');
+
+  @override
+  void setDispatcher(Dispatcher dispatcher) {
+    childAction.setDispatcher(dispatcher);
+  }
+}
+
+class ChildActionsNames {
+  static final ActionName<dynamic> childAction =
+      new ActionName<dynamic>('ChildActions-childAction');
 }

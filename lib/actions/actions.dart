@@ -2,6 +2,7 @@ library actions;
 // TODO: rename as action
 
 import 'package:built_redux/built_redux.dart';
+import 'package:built_value/built_value.dart';
 import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/models/page.dart';
@@ -11,7 +12,6 @@ part 'actions.g.dart';
 
 abstract class Actions extends ReduxActions {
   factory Actions() => new _$Actions();
-
   Actions._();
 
   // Firebase Auth
@@ -37,12 +37,15 @@ abstract class Actions extends ReduxActions {
 //  ActionDispatcher<dynamic> updateError;
 //  ActionDispatcher<dynamic> addError; etc.
 
+  /// <PATH> ??? instead ???? - how do I pass listeners?
+  /// // these replace all other ones!
   ActionDispatcher<FS> subscribe;
   ActionDispatcher<FS> additionalSubscription;
+  ActionDispatcher<FS> unsubscribe;
 
 
-  ActionDispatcher<FSDiary> startDiaryListen;
-  ActionDispatcher<FSDiary> stopDiaryListen;
+//  ActionDispatcher<FSDiary> startDiaryListen;
+//  ActionDispatcher<FSDiary> stopDiaryListen;
   ActionDispatcher<FoodRecord> diaryReceived;
 
 
@@ -51,6 +54,15 @@ abstract class Actions extends ReduxActions {
 //  ActionDispatcher<String> settingsListen;
 //  ActionDispatcher<dynamic> settingsReceived;
 //  ActionDispatcher<String> settingsStopListen;
+
+  ChildActions get child;
 }
 
+// TODO: make more of these!
+abstract class ChildActions extends ReduxActions {
+  factory ChildActions() => new _$ChildActions();
+  ChildActions._();
 
+  ActionDispatcher childAction;
+  // store.actions.child.childAction();
+}

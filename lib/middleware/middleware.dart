@@ -17,7 +17,7 @@ Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth aut
       ..add(ActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder())
 
       ..add(ActionsNames.subscribe, firestoreSubscribe())
-      ..add(ActionsNames.stopDiaryListen, firestoreUnsubscribe())
+      ..add(ActionsNames.unsubscribe, firestoreUnsubscribe())
       ..add(ActionsNames.diaryReceived, diaryReceived())
   ).build();
 }
@@ -78,14 +78,46 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
     print("SUBSCRIPTION: ${action.payload.streamSubscription}");
 //    print("SUBSCRIPTION: ${(action.payload as FS).streamSubscription}");
 
-    // TODO: this logic is flawed (since i introduced subscribe, secondSubscription)
-    if (action.payload.streamSubscription == null && !api.state.subscriptions.contains(action.payload)) {
-      api.actions.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen((t) => api.actions.diaryReceived(t), onError: print)));
-//      api.actions.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(print, onError: print)));
+    // Already listening to Firestore snapshots
+    if (api.state.subscriptions.contains(action.payload)) {
+      api.actions.additionalSubscription(action.payload);
+    } // Called without a subscription
+    else if (action.payload.streamSubscription == null) {
+      Function onData = (t) => api.actions.diaryReceived(t); // FIXME
+      Function onError = print;
 
-    } else {
+//      print(builder.subscriptions[i] is FSDocument<FoodRecord>); // TODO: i was missing <generics!>
+
+//      (action.payload as FS).getOnDataAction(store.actions) -> returns function!, no need for switch!
+
+      // TODO: different actions based on switch(action.payload.runType) case: FSDiary, etc.
+//      print(action.payload.runtimeType);
+//      print(action.payload.runtimeType is FSDiary); // FIXME
+//      switch (action.payload.runtimeType) {
+//        case FSDiary: // it's actually _$FSDiary
+//          print("ello");
+//          onData = (t) => api.actions.diaryReceived(t);
+//          break;
+//
+//        default:
+//          print("UNRECOGNIZED LISTENER");
+//          onData = (t) => api.actions.diaryReceived(t);
+//          break;
+//      }
+      api.actions.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(onData, onError: onError)));
+    } // Subscribe to Firestore (recursion base case)
+    else {
       next(action);
     }
+
+    // TODO: this logic is flawed (since i introduced subscribe, secondSubscription - it's never called!!!!)
+//    if (action.payload.streamSubscription == null && !api.state.subscriptions.contains(action.payload)) {
+//      api.actions.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen((t) => api.actions.diaryReceived(t), onError: print)));
+////      api.actions.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(print, onError: print)));
+//
+//    } else {
+//      next(action);
+//    }
 //    var payload = action.payload as FS;
 //    if (payload.streamSubscription == null && !api.state.subscriptions.contains(action.payload)) {
 ////      api.actions.startDiaryListen(payload.rebuild((b) => b..streamSubscription = payload.snapshotObservable.listen(api.actions.diaryReceived, onError: print)));
@@ -151,14 +183,15 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreUnsubscribe() {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
-    print("SUBSCRIPTION: ${(action.payload as FSDiary).streamSubscription}");
+    print("SUBSCRIPTION: ${action.payload.streamSubscription}");
 
 //    var payload = action.payload as FSDiary;
 
     print(api.state.subscriptions.contains(action.payload));
     print(api.state.subscriptions.indexOf(action.payload));
-    if (api.state.subscriptions.contains(action.payload) && api.state.subscriptions[api.state.subscriptions.indexOf(action.payload)] != null) {
-      api.state.subscriptions[api.state.subscriptions.indexOf(action.payload)].streamSubscription.cancel();
+    var fs = api.state.subscriptions[api.state.subscriptions.indexOf(action.payload)];
+    if (api.state.subscriptions.contains(action.payload) && fs.streamSubscription != null) {
+      fs.streamSubscription.cancel();
       print("CANCELLED");
     }
 //

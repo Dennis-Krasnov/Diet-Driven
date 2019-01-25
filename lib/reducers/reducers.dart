@@ -8,7 +8,7 @@ import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/models/page.dart';
-import 'package:diet_driven/models/serializers.dart';
+import 'package:diet_driven/built_realtime/serializers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
@@ -42,14 +42,15 @@ ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
 
 //      ..combineNested(new NestedReducerBuilder((s) => s.subscriptions.))
 
+      ..add(ActionsNames.additionalSubscription, additionalSubscription)
       ..combineList(new ListReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
           ..add(ActionsNames.subscribe, firstSubscription)
-          ..add(ActionsNames.additionalSubscription, additionalSubscription) // TODO: in seperate reducer!
+//          ..add(ActionsNames.additionalSubscription, additionalSubscription) // TODO: in seperate reducer!
       )
 
       ..combineList(new ListReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
 //          ..add(ActionsNames.startDiaryListen, startDiaryListen)
-          ..add(ActionsNames.stopDiaryListen, stopDiaryListen)
+          ..add(ActionsNames.unsubscribe, stopDiaryListen)
       )
 
       ..combineList(new ListReducerBuilder((s) => s.diaryRecords, (b) => b.diaryRecords)
@@ -168,8 +169,31 @@ void firstSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<F
   print("first");
 }
 
-void additionalSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
-  listBuilder.add(action.payload);
+//void additionalSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
+void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder builder) {
+  // TODO: logic with duplicates!! - make this a normal reducer!
+//  listBuilder.add(action.payload);
+  var fs = action.payload;
+  print("APPENDING LISTENERS: ${fs.listeners}");
+  int i = state.subscriptions.indexOf(action.payload);
+//  builder.subscriptions[i].listeners.rebuild((b) => b..add(24));
+
+//  builder.subscriptions[i].listeners = builder.subscriptions[i].listeners.rebuild((b) => b);
+  builder.subscriptions[i].listeners.rebuild((b) => b.add(24421)); /// problem: list is FS!!!! need it to be FSDocument!
+
+  print(builder.subscriptions[i].runtimeType);
+  print(builder.subscriptions[i] is FSDocument<FoodRecord>);
+
+  // FIXME: why can't i get this to work...?
+//  builder.subscriptions[state.subscriptions.indexOf(action.payload)].listeners.rebuild((b) => b..addAll(action.payload.listeners));
+//  builder.subscriptions[state.subscriptions.indexOf(action.payload)].listeners = BuiltList<int>([1, 2, 3, 4]);
+//  builder.subscriptions[state.subscriptions.indexOf(action.payload)].listeners.rebuild((b) => b.clear());
+//  builder.subscriptions.clear(); // this works
+//  builder.subscriptions.update((b) => b[state.subscriptions.indexOf(action.payload)].listeners.rebuild((b) => b.clear()));
+//  builder.subscriptions.update((b) => b[state.subscriptions.indexOf(action.payload)]..listeners.rebuild((b) => b.clear()));
+//  builder.subscriptions.update((b) => b[state.subscriptions.indexOf(action.payload)] = new FSDiary((b) => b..userId = "a" ..diaryRecordId = "b")); // THIS WORKS
+//  builder.subscriptions.update((b) => b[i] = state.subscriptions[i]); // THIS WORKS
+//  builder.subscriptions.update((b) => b[i] = builder.subscriptions[i].listeners.rebuild((b) => b.add(2)));
   print("additional");
 }
 

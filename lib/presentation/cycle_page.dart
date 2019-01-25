@@ -36,13 +36,21 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
   Widget build(BuildContext context, CyclePageVM vm, Actions actions) {
 //    var keys = vm.subscriptions.keys.toList();
 
-    var fsDiary = new FSDiary((b) => b
-      ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
-      ..diaryRecordId = new Random().nextInt(1).toString()
-      ..listeners = ListBuilder([1, 2])
+//    new FSDocument with Diary();
+
+    var fsDiary = new FSDocument<FoodRecord>((b) => b
+      ..path = new DiaryRecordPath((b) => b
+        ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
+        ..diaryRecordId = new Random().nextInt(1).toString()
+      )
+      ..listeners = ListBuilder([new Random().nextInt(10)])
     );
 
     return Scaffold(
+        appBar: AppBar(
+          leading: DrawerNavButton(),
+          title: Text(PageFactory.toText(Page.cycle)),
+        ),
         body: Container(
             child: Center(
           child: Column(children: [
@@ -62,7 +70,13 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
             RaisedButton(
               child: Text("UPDATE"),
               onPressed: () {
-                var fs = new FSDiary((b) => b..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3" ..diaryRecordId = "424222");
+//                var fs = new FSDiary((b) => b..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3" ..diaryRecordId = "424222");
+                var fsDiaryRecord = new FSDocument<FoodRecord>((b) => b
+                  ..path = new DiaryRecordPath((b) => b
+                    ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
+                    ..diaryRecordId = "424222"
+                  )
+                );
                 // TODO: call this from middleware!!! (add line to setmultimap if it didn't exist, else remove it!) - key does the syncing!
                 // TODO: it calls reducer that saves it in the SetMultimap<FSDOC, int>
 //                print(fs);
@@ -76,7 +90,7 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
                   ..sodium = new Random().nextDouble() * 20
                 );
 
-                fs.update(temp);
+                fsDiaryRecord.update(temp);
               },
             ),
 
@@ -86,13 +100,16 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
               itemBuilder: (BuildContext context, int index) {
                 var r = vm.subscriptions[index];
                 return ListTile(
-                  title: Text((r as FSDiary).docRef.path),
-                  subtitle: Text((r as FSDiary).diaryRecordId),//r.listeners.toString()),
-                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.stopDiaryListen(r)),
+//                  title: Text((r as FSDiary).docRef.path),
+//                  subtitle: Text((r as FSDiary).diaryRecordId),//r.listeners.toString()),
+//                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.stopDiaryListen(r)),
+                  title: Text(r.path.generate()),
+                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.unsubscribe(r)),
                   onTap: () => print(r),
                 );
               }
             ),
+            vm.diaryRecords.isEmpty ? CircularProgressIndicator() :
             ListView.builder(
               shrinkWrap: true,
               itemCount: vm.diaryRecords.length,
@@ -160,6 +177,8 @@ abstract class CyclePageVM implements Built<CyclePageVM, CyclePageVMBuilder> {
 //  BuiltMap<Connection, List<int>> get subscriptions;
   BuiltList<int> get widgets;
 //  BuiltSetMultimap<FSDocument, int> get subscriptions;
+//  BuiltList<FS> get subscriptions;
+//  BuiltList<Built> get subscriptions;
   BuiltList<FS> get subscriptions;
   BuiltList<FoodRecord> get diaryRecords;
 

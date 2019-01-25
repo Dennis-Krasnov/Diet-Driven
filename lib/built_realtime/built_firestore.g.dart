@@ -6,94 +6,36 @@ part of built_firestore;
 // BuiltValueGenerator
 // **************************************************************************
 
-abstract class FSBuilder<T> {
-  void replace(FS<T> other);
-  void update(void updates(FSBuilder<T> b));
-  StreamSubscription get streamSubscription;
-  set streamSubscription(StreamSubscription streamSubscription);
-
-  Observable<T> get snapshotObservable;
-  set snapshotObservable(Observable<T> snapshotObservable);
-
-  ListBuilder<int> get listeners;
-  set listeners(ListBuilder<int> listeners);
-}
-
-abstract class FSDocumentBuilder<T> {
-  void replace(FSDocument<T> other);
-  void update(void updates(FSDocumentBuilder<T> b));
-  DocumentReference get docRef;
-  set docRef(DocumentReference docRef);
-
-  StreamSubscription get streamSubscription;
-  set streamSubscription(StreamSubscription streamSubscription);
-
-  ListBuilder<int> get listeners;
-  set listeners(ListBuilder<int> listeners);
-}
-
-abstract class FSMonoCollectionBuilder<T> {
-  void replace(FSMonoCollection<T> other);
-  void update(void updates(FSMonoCollectionBuilder<T> b));
-  CollectionReference get collectionRef;
-  set collectionRef(CollectionReference collectionRef);
-}
-
-abstract class FSMultiCollectionBuilder<T> {
-  void replace(FSMultiCollection<T> other);
-  void update(void updates(FSMultiCollectionBuilder<T> b));
-  CollectionReference get collectionRef;
-  set collectionRef(CollectionReference collectionRef);
-}
-
-abstract class FSCollectionBuilder<T> {
-  void replace(FSCollection<T> other);
-  void update(void updates(FSCollectionBuilder<T> b));
-  CollectionReference get collectionRef;
-  set collectionRef(CollectionReference collectionRef);
-}
-
-class _$FSDiary extends FSDiary {
+class _$DiaryRecordPath extends DiaryRecordPath {
   @override
   final String userId;
   @override
   final String diaryRecordId;
-  @override
-  final StreamSubscription streamSubscription;
-  @override
-  final BuiltList<int> listeners;
 
-  factory _$FSDiary([void updates(FSDiaryBuilder b)]) =>
-      (new FSDiaryBuilder()..update(updates)).build();
+  factory _$DiaryRecordPath([void updates(DiaryRecordPathBuilder b)]) =>
+      (new DiaryRecordPathBuilder()..update(updates)).build();
 
-  _$FSDiary._(
-      {this.userId,
-      this.diaryRecordId,
-      this.streamSubscription,
-      this.listeners})
-      : super._() {
+  _$DiaryRecordPath._({this.userId, this.diaryRecordId}) : super._() {
     if (userId == null) {
-      throw new BuiltValueNullFieldError('FSDiary', 'userId');
+      throw new BuiltValueNullFieldError('DiaryRecordPath', 'userId');
     }
     if (diaryRecordId == null) {
-      throw new BuiltValueNullFieldError('FSDiary', 'diaryRecordId');
-    }
-    if (listeners == null) {
-      throw new BuiltValueNullFieldError('FSDiary', 'listeners');
+      throw new BuiltValueNullFieldError('DiaryRecordPath', 'diaryRecordId');
     }
   }
 
   @override
-  FSDiary rebuild(void updates(FSDiaryBuilder b)) =>
+  DiaryRecordPath rebuild(void updates(DiaryRecordPathBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  FSDiaryBuilder toBuilder() => new FSDiaryBuilder()..replace(this);
+  DiaryRecordPathBuilder toBuilder() =>
+      new DiaryRecordPathBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FSDiary &&
+    return other is DiaryRecordPath &&
         userId == other.userId &&
         diaryRecordId == other.diaryRecordId;
   }
@@ -105,17 +47,16 @@ class _$FSDiary extends FSDiary {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('FSDiary')
+    return (newBuiltValueToStringHelper('DiaryRecordPath')
           ..add('userId', userId)
-          ..add('diaryRecordId', diaryRecordId)
-          ..add('streamSubscription', streamSubscription)
-          ..add('listeners', listeners))
+          ..add('diaryRecordId', diaryRecordId))
         .toString();
   }
 }
 
-class FSDiaryBuilder implements Builder<FSDiary, FSDiaryBuilder> {
-  _$FSDiary _$v;
+class DiaryRecordPathBuilder
+    implements Builder<DiaryRecordPath, DiaryRecordPathBuilder> {
+  _$DiaryRecordPath _$v;
 
   String _userId;
   String get userId => _$this._userId;
@@ -126,52 +67,159 @@ class FSDiaryBuilder implements Builder<FSDiary, FSDiaryBuilder> {
   set diaryRecordId(String diaryRecordId) =>
       _$this._diaryRecordId = diaryRecordId;
 
-  StreamSubscription _streamSubscription;
-  StreamSubscription get streamSubscription => _$this._streamSubscription;
-  set streamSubscription(StreamSubscription streamSubscription) =>
-      _$this._streamSubscription = streamSubscription;
+  DiaryRecordPathBuilder();
 
-  ListBuilder<int> _listeners;
-  ListBuilder<int> get listeners =>
-      _$this._listeners ??= new ListBuilder<int>();
-  set listeners(ListBuilder<int> listeners) => _$this._listeners = listeners;
-
-  FSDiaryBuilder();
-
-  FSDiaryBuilder get _$this {
+  DiaryRecordPathBuilder get _$this {
     if (_$v != null) {
       _userId = _$v.userId;
       _diaryRecordId = _$v.diaryRecordId;
-      _streamSubscription = _$v.streamSubscription;
-      _listeners = _$v.listeners?.toBuilder();
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(FSDiary other) {
+  void replace(DiaryRecordPath other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$FSDiary;
+    _$v = other as _$DiaryRecordPath;
   }
 
   @override
-  void update(void updates(FSDiaryBuilder b)) {
+  void update(void updates(DiaryRecordPathBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$FSDiary build() {
-    _$FSDiary _$result;
+  _$DiaryRecordPath build() {
+    final _$result = _$v ??
+        new _$DiaryRecordPath._(userId: userId, diaryRecordId: diaryRecordId);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+abstract class FSBuilder<T> {
+  void replace(FS<T> other);
+  void update(void updates(FSBuilder<T> b));
+  Path get path;
+  set path(Path path);
+
+  ListBuilder<int> get listeners;
+  set listeners(ListBuilder<int> listeners);
+
+  StreamSubscription get streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription);
+
+  Observable<T> get snapshotObservable;
+  set snapshotObservable(Observable<T> snapshotObservable);
+}
+
+class _$FSDocument<T> extends FSDocument<T> {
+  @override
+  final Path path;
+  @override
+  final BuiltList<int> listeners;
+  @override
+  final StreamSubscription streamSubscription;
+
+  factory _$FSDocument([void updates(FSDocumentBuilder<T> b)]) =>
+      (new FSDocumentBuilder<T>()..update(updates)).build();
+
+  _$FSDocument._({this.path, this.listeners, this.streamSubscription})
+      : super._() {
+    if (path == null) {
+      throw new BuiltValueNullFieldError('FSDocument', 'path');
+    }
+    if (listeners == null) {
+      throw new BuiltValueNullFieldError('FSDocument', 'listeners');
+    }
+    if (T == dynamic) {
+      throw new BuiltValueMissingGenericsError('FSDocument', 'T');
+    }
+  }
+
+  @override
+  FSDocument<T> rebuild(void updates(FSDocumentBuilder<T> b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  FSDocumentBuilder<T> toBuilder() => new FSDocumentBuilder<T>()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is FSDocument && path == other.path;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, path.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('FSDocument')
+          ..add('path', path)
+          ..add('listeners', listeners)
+          ..add('streamSubscription', streamSubscription))
+        .toString();
+  }
+}
+
+class FSDocumentBuilder<T>
+    implements Builder<FSDocument<T>, FSDocumentBuilder<T>>, FSBuilder<T> {
+  _$FSDocument<T> _$v;
+
+  Path _path;
+  Path get path => _$this._path;
+  set path(Path path) => _$this._path = path;
+
+  ListBuilder<int> _listeners;
+  ListBuilder<int> get listeners =>
+      _$this._listeners ??= new ListBuilder<int>();
+  set listeners(ListBuilder<int> listeners) => _$this._listeners = listeners;
+
+  StreamSubscription _streamSubscription;
+  StreamSubscription get streamSubscription => _$this._streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription) =>
+      _$this._streamSubscription = streamSubscription;
+
+  FSDocumentBuilder();
+
+  FSDocumentBuilder<T> get _$this {
+    if (_$v != null) {
+      _path = _$v.path;
+      _listeners = _$v.listeners?.toBuilder();
+      _streamSubscription = _$v.streamSubscription;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant FSDocument<T> other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$FSDocument<T>;
+  }
+
+  @override
+  void update(void updates(FSDocumentBuilder<T> b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$FSDocument<T> build() {
+    _$FSDocument<T> _$result;
     try {
       _$result = _$v ??
-          new _$FSDiary._(
-              userId: userId,
-              diaryRecordId: diaryRecordId,
-              streamSubscription: streamSubscription,
-              listeners: listeners.build());
+          new _$FSDocument<T>._(
+              path: path,
+              listeners: listeners.build(),
+              streamSubscription: streamSubscription);
     } catch (_) {
       String _$failedField;
       try {
@@ -179,7 +227,130 @@ class FSDiaryBuilder implements Builder<FSDiary, FSDiaryBuilder> {
         listeners.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'FSDiary', _$failedField, e.toString());
+            'FSDocument', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$FSCollection<T> extends FSCollection<T> {
+  @override
+  final Path path;
+  @override
+  final BuiltList<int> listeners;
+  @override
+  final StreamSubscription streamSubscription;
+
+  factory _$FSCollection([void updates(FSCollectionBuilder<T> b)]) =>
+      (new FSCollectionBuilder<T>()..update(updates)).build();
+
+  _$FSCollection._({this.path, this.listeners, this.streamSubscription})
+      : super._() {
+    if (path == null) {
+      throw new BuiltValueNullFieldError('FSCollection', 'path');
+    }
+    if (listeners == null) {
+      throw new BuiltValueNullFieldError('FSCollection', 'listeners');
+    }
+    if (T == dynamic) {
+      throw new BuiltValueMissingGenericsError('FSCollection', 'T');
+    }
+  }
+
+  @override
+  FSCollection<T> rebuild(void updates(FSCollectionBuilder<T> b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  FSCollectionBuilder<T> toBuilder() =>
+      new FSCollectionBuilder<T>()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is FSCollection && path == other.path;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, path.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('FSCollection')
+          ..add('path', path)
+          ..add('listeners', listeners)
+          ..add('streamSubscription', streamSubscription))
+        .toString();
+  }
+}
+
+class FSCollectionBuilder<T>
+    implements
+        Builder<FSCollection<T>, FSCollectionBuilder<T>>,
+        FSBuilder<BuiltList<T>> {
+  _$FSCollection<T> _$v;
+
+  Path _path;
+  Path get path => _$this._path;
+  set path(Path path) => _$this._path = path;
+
+  ListBuilder<int> _listeners;
+  ListBuilder<int> get listeners =>
+      _$this._listeners ??= new ListBuilder<int>();
+  set listeners(ListBuilder<int> listeners) => _$this._listeners = listeners;
+
+  StreamSubscription _streamSubscription;
+  StreamSubscription get streamSubscription => _$this._streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription) =>
+      _$this._streamSubscription = streamSubscription;
+
+  FSCollectionBuilder();
+
+  FSCollectionBuilder<T> get _$this {
+    if (_$v != null) {
+      _path = _$v.path;
+      _listeners = _$v.listeners?.toBuilder();
+      _streamSubscription = _$v.streamSubscription;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant FSCollection<T> other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$FSCollection<T>;
+  }
+
+  @override
+  void update(void updates(FSCollectionBuilder<T> b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$FSCollection<T> build() {
+    _$FSCollection<T> _$result;
+    try {
+      _$result = _$v ??
+          new _$FSCollection<T>._(
+              path: path,
+              listeners: listeners.build(),
+              streamSubscription: streamSubscription);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'listeners';
+        listeners.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'FSCollection', _$failedField, e.toString());
       }
       rethrow;
     }

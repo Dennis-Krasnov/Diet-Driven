@@ -38,9 +38,9 @@ Observable<void> fsRouter(Observable<Action<int>> stream, MiddlewareApi<AppState
   print("ROUTING!!!");
   print(action.payload);
 
-  if (action.name == ActionsNames.startDiaryListen.name) {
-
-  }
+//  if (action.name == ActionsNames.startDiaryListen.name) {
+//
+//  }
 //  await new Future<void>.delayed(new Duration(milliseconds: 1));
 //  mwApi.actions.decrement(action.payload);
 //  return stream.asyncMap((action) {

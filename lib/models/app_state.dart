@@ -29,6 +29,9 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   FirebaseUser get user;
 
 //  BuiltSetMultimap<FSDocument, int> get subscriptions;
+//  BuiltList<FS> get subscriptions;
+//  BuiltList<Built> get subscriptions;
+//  BuiltList<FSDocument> get subscriptions;
   BuiltList<FS> get subscriptions;
   BuiltList<FoodRecord> get diaryRecords;
 
