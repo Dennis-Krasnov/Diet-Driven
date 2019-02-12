@@ -20,7 +20,8 @@ void main() {
   setUp(() {
     actions = new Actions();
     store = new Store<AppState, AppStateBuilder, Actions>(
-      reducerBuilder.build(),
+//      reducerBuilder.build(),
+      getBaseReducer(),
       new AppState(),
       actions,
     );
@@ -32,11 +33,11 @@ void main() {
 
   group('Unit Tests', () {
     test('handles tab changing', () {
-      store.actions.goTo(Page.cycle);
-      expect(store.state.activePage, Page.cycle);
+      store.actions.navigation.goTo(Page.goals);
+      expect(store.state.navigation.activePage, Page.goals);
 
-      store.actions.goTo(Page.diary);
-      expect(store.state.activePage, Page.diary);
+      store.actions.navigation.goTo(Page.diary);
+      expect(store.state.navigation.activePage, Page.diary);
 
       // TODO: customization for starting page!
     });
@@ -52,26 +53,26 @@ void main() {
 
     test("can change bottom navigation order", () {
 //      List<Page> original = List<Page>.from(store.state.bottomNavigation);
-      List<Page> changed = [Page.cycle, Page.settings, Page.track];
-      List<Page> illegal = [Page.cycle];
+      List<Page> changed = [Page.goals, Page.settings, Page.track];
+      List<Page> illegal = [Page.goals];
       List<Page> illegalDuplicate = [Page.diary, Page.diary];
       List<Page> illegalMax = Page.inApp.toList();
 
-      store.actions.reorderBottomNavigation(changed);
-      expect(store.state.bottomNavigation, changed);
+      store.actions.navigation.reorderBottomNavigation(changed);
+      expect(store.state.navigation.bottomNavigation, changed);
 
       // Don't allow bottom navigation with less than 2 elements (requirement of BottomNavigation)
-      store.actions.reorderBottomNavigation(illegal);
-      expect(store.state.bottomNavigation, changed);
+      store.actions.navigation.reorderBottomNavigation(illegal);
+      expect(store.state.navigation.bottomNavigation, changed);
       
       // Don't allow more than 7 pages
       expect(illegalMax.length > 7, true);
-      store.actions.reorderBottomNavigation(illegalMax);
-      expect(store.state.bottomNavigation, changed);
+      store.actions.navigation.reorderBottomNavigation(illegalMax);
+      expect(store.state.navigation.bottomNavigation, changed);
 
       // Don't allow duplicates
-      store.actions.reorderBottomNavigation(illegalDuplicate);
-      expect(store.state.bottomNavigation, changed);
+      store.actions.navigation.reorderBottomNavigation(illegalDuplicate);
+      expect(store.state.navigation.bottomNavigation, changed);
 
       // Reset to default
 //      store.actions.resetBottomNavigation();
@@ -106,7 +107,7 @@ void main() {
       await tester.pumpWidget(nav);
 
       expect(find.byType(BottomNavigationBar), findsOneWidget);
-      expect(find.byType(Icon), findsNWidgets(store.state.bottomNavigation.length));
+      expect(find.byType(Icon), findsNWidgets(store.state.navigation.bottomNavigation.length));
     });
 
     // TODO: test selected icon is correct order
@@ -125,11 +126,11 @@ void main() {
         pages = pages.sublist(0, size);
 
         print(pages);
-        store.actions.reorderBottomNavigation(pages);
+        store.actions.navigation.reorderBottomNavigation(pages);
         tester.element(find.byType(BottomNav)).markNeedsBuild();
         await tester.pump();
         print("---");
-        print(store.state.bottomNavigation);
+        print(store.state.navigation.bottomNavigation);
 //        print(find.byType(Text));
 //        print(tester.elementList(find.byType(Text)).map((el) => el.widget).toList());
 
@@ -169,14 +170,14 @@ void main() {
       await tester.pumpWidget(nav);
 
       // First
-      expectDispatched(actions.goTo, verfier: (action) {
-        expect(action.payload, store.state.bottomNavigation.first);
+      expectDispatched(actions.navigation.goTo, verfier: (action) {
+        expect(action.payload, store.state.navigation.bottomNavigation.first);
       });
       await tester.tap(find.byType(Icon).first);
 
       // Last
-      expectDispatched(actions.goTo, verfier: (action) {
-        expect(action.payload, store.state.bottomNavigation.last);
+      expectDispatched(actions.navigation.goTo, verfier: (action) {
+        expect(action.payload, store.state.navigation.bottomNavigation.last);
       });
       await tester.tap(find.byType(Icon).last);
     });

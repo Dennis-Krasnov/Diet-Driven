@@ -1,4 +1,4 @@
-library cycle_page;
+library goals_page;
 
 import 'dart:math';
 
@@ -14,15 +14,16 @@ import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/models/uncertainty.dart';
 import 'package:flutter/material.dart' hide Builder;
 
-import 'package:cloud_functions/cloud_functions.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 
-part 'cycle_page.g.dart';
+part 'goals_page.g.dart';
 
-class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
+class GoalsPage extends StoreConnector<AppState, Actions, GoalsPageVM> {
   @override
-  CyclePageVM connect(AppState state) {
-    return CyclePageVM((b) => b
+  GoalsPageVM connect(AppState state) {
+    print("CYCLE!!!");
+    print(state.subscriptions);
+    return GoalsPageVM((b) => b
 //      ..subscriptions = state.subscriptions.toBuilder()
 //      ..subscriptions = state.subscriptions.toMap()
       ..subscriptions = state.subscriptions.toBuilder()
@@ -33,7 +34,7 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
   }
 
   @override
-  Widget build(BuildContext context, CyclePageVM vm, Actions actions) {
+  Widget build(BuildContext context, GoalsPageVM vm, Actions actions) {
 //    var keys = vm.subscriptions.keys.toList();
 
 //    new FSDocument with Diary();
@@ -49,14 +50,14 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
     return Scaffold(
         appBar: AppBar(
           leading: DrawerNavButton(),
-          title: Text(PageFactory.toText(Page.cycle)),
+          title: Text(PageFactory.toText(Page.goals)),
         ),
         body: Container(
             child: Center(
           child: Column(children: [
             RaisedButton(
               // TODO: give the FSDIARY the list of who's listening!!! just keep track of a list of connections instead!!!
-                onPressed: () => actions.subscribe(fsDiary),
+                onPressed: () => actions.firestore.subscribe(fsDiary),
 //                onPressed: () => actions.startDiaryListen(Tuple2(new FSDiary((b) => b..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3" ..diaryRecordId = new Random().nextInt(5000).toString()), [4224])),
 //              onPressed: () => actions.startDiaryListen(this.hashCode),
               child: Text("ADD DIARY SUBSCRIPTION"),
@@ -104,7 +105,7 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
 //                  subtitle: Text((r as FSDiary).diaryRecordId),//r.listeners.toString()),
 //                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.stopDiaryListen(r)),
                   title: Text(r.path.generate()),
-                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.unsubscribe(r)),
+                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.firestore.unsubscribe(r)),
                   onTap: () => print(r),
                 );
               }
@@ -173,16 +174,16 @@ class CyclePage extends StoreConnector<AppState, Actions, CyclePageVM> {
 //  }
 //}
 
-abstract class CyclePageVM implements Built<CyclePageVM, CyclePageVMBuilder> {
+abstract class GoalsPageVM implements Built<GoalsPageVM, GoalsPageVMBuilder> {
 //  BuiltMap<Connection, List<int>> get subscriptions;
   BuiltList<int> get widgets;
 //  BuiltSetMultimap<FSDocument, int> get subscriptions;
 //  BuiltList<FS> get subscriptions;
 //  BuiltList<Built> get subscriptions;
-  BuiltList<FS> get subscriptions;
+  BuiltList<FSDocument> get subscriptions;
   BuiltList<FoodRecord> get diaryRecords;
 
-  CyclePageVM._();
+  GoalsPageVM._();
 
-  factory CyclePageVM([updates(CyclePageVMBuilder b)]) = _$CyclePageVM;
+  factory GoalsPageVM([updates(GoalsPageVMBuilder b)]) = _$GoalsPageVM;
 }

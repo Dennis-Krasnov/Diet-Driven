@@ -8,12 +8,12 @@ part of track_page;
 
 class _$TrackPageVM extends TrackPageVM {
   @override
-  final FirebaseUser user;
+  final FirebaseUser auth;
 
   factory _$TrackPageVM([void updates(TrackPageVMBuilder b)]) =>
       (new TrackPageVMBuilder()..update(updates)).build();
 
-  _$TrackPageVM._({this.user}) : super._();
+  _$TrackPageVM._({this.auth}) : super._();
 
   @override
   TrackPageVM rebuild(void updates(TrackPageVMBuilder b)) =>
@@ -25,17 +25,17 @@ class _$TrackPageVM extends TrackPageVM {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TrackPageVM && user == other.user;
+    return other is TrackPageVM && auth == other.auth;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, user.hashCode));
+    return $jf($jc(0, auth.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TrackPageVM')..add('user', user))
+    return (newBuiltValueToStringHelper('TrackPageVM')..add('auth', auth))
         .toString();
   }
 }
@@ -43,15 +43,15 @@ class _$TrackPageVM extends TrackPageVM {
 class TrackPageVMBuilder implements Builder<TrackPageVM, TrackPageVMBuilder> {
   _$TrackPageVM _$v;
 
-  FirebaseUser _user;
-  FirebaseUser get user => _$this._user;
-  set user(FirebaseUser user) => _$this._user = user;
+  FirebaseUser _auth;
+  FirebaseUser get auth => _$this._auth;
+  set auth(FirebaseUser auth) => _$this._auth = auth;
 
   TrackPageVMBuilder();
 
   TrackPageVMBuilder get _$this {
     if (_$v != null) {
-      _user = _$v.user;
+      _auth = _$v.auth;
       _$v = null;
     }
     return this;
@@ -72,7 +72,7 @@ class TrackPageVMBuilder implements Builder<TrackPageVM, TrackPageVMBuilder> {
 
   @override
   _$TrackPageVM build() {
-    final _$result = _$v ?? new _$TrackPageVM._(user: user);
+    final _$result = _$v ?? new _$TrackPageVM._(auth: auth);
     replace(_$result);
     return _$result;
   }

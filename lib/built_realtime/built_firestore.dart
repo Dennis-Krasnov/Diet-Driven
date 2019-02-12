@@ -3,15 +3,16 @@ library built_firestore;
 import 'dart:async';
 
 import 'package:built_collection/built_collection.dart';
-import 'package:built_redux/built_redux.dart';
 import 'package:built_value/built_value.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/built_realtime/serializers.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'built_firestore.g.dart';
+
+final Logger log = new Logger("FIRESTORE");
 
 //@BuiltValue(instantiable: false)
 //abstract class FS<T> {
@@ -85,7 +86,12 @@ abstract class Path {
 abstract class DiaryRecordPath implements Path, Built<DiaryRecordPath, DiaryRecordPathBuilder> {
   String get userId;
   String get diaryRecordId;
-  
+
+  @BuiltValueField(serialize: false, compare: false)
+//  Path subCollection1;
+  @nullable
+  FSCollection<int> get subCollection2; // TODO: initialize using same arguments as document
+
   @override
   String generate() {
     return "/users/$userId";
@@ -94,6 +100,11 @@ abstract class DiaryRecordPath implements Path, Built<DiaryRecordPath, DiaryReco
   DiaryRecordPath._();
   factory DiaryRecordPath([updates(DiaryRecordPathBuilder b)]) = _$DiaryRecordPath;
 }
+
+// operator overloading
+//operator ==(MyClass o) => id == o.id;
+// TODO: Proposed syntax for updating:
+// FoodRecord -> FSDocument<FoodRecord> // with generics
 
 //
 @BuiltValue(instantiable: false)

@@ -1,48 +1,32 @@
 library app_state;
 
-//import 'dart:collection';
-
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/models/food_record.dart';
-import 'package:diet_driven/models/page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:diet_driven/models/navigation_state.dart';
+import 'package:diet_driven/models/user_state.dart';
+
+export 'package:diet_driven/models/user_state.dart';
+export 'package:diet_driven/models/navigation_state.dart';
 
 part 'app_state.g.dart';
 
+/// Top-level app state for Diet Driven
 abstract class AppState implements Built<AppState, AppStateBuilder> {
-//  factory AppState([updates(AppStateBuilder b)]) = _$AppState; // without default values!
-  factory AppState([updates(AppStateBuilder b)]) => _$AppState((b) => b /// this syntax is better!
-///    ..widgets = ListBuilder<int>([]) /// COMPLETELY OPTIONAL!!!
-//    ..diaryRecords = ListBuilder<FoodRecord>([]) /// ListBuilder instead of new BuiltMap
-    ..activePage = Page.track
-    ..defaultPage = Page.track
-    ..bottomNavigation = [Page.diary, Page.track, Page.diet, Page.cycle, Page.settings]
-    ..bottomNavigationPage = Page.diary
-  );
+  UserState get user;
+  NavigationState get navigation;
 
-  AppState._();
+  //
+  BuiltList<FSDocument> get subscriptions;
 
-  // Firebase
-  @nullable
-  FirebaseUser get user;
-
-//  BuiltSetMultimap<FSDocument, int> get subscriptions;
-//  BuiltList<FS> get subscriptions;
-//  BuiltList<Built> get subscriptions;
-//  BuiltList<FSDocument> get subscriptions;
-  BuiltList<FS> get subscriptions;
+  //
   BuiltList<FoodRecord> get diaryRecords;
 
+  // TODO: memoized functions
 //  @memoized
 //  int get calculation;
 
-  // Navigation
-  Page get activePage;
-  Page get defaultPage;
-
-  // Bottom navigation
-  List<Page> get bottomNavigation;
-  Page get bottomNavigationPage;
+  AppState._();
+  factory AppState([updates(AppStateBuilder b)]) = _$AppState;
 }

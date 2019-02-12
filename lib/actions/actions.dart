@@ -1,68 +1,39 @@
-library actions;
-// TODO: rename as action
+library actions; // TODO: rename as action
 
 import 'package:built_redux/built_redux.dart';
-import 'package:built_value/built_value.dart';
-import 'package:diet_driven/built_realtime/built_firestore.dart';
+import 'package:diet_driven/actions/firestore_actions.dart';
+import 'package:diet_driven/actions/navigation_actions.dart';
+import 'package:diet_driven/actions/user_actions.dart';
 import 'package:diet_driven/models/food_record.dart';
-import 'package:diet_driven/models/page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+export 'package:diet_driven/actions/user_actions.dart';
+export 'package:diet_driven/actions/navigation_actions.dart';
+export 'package:diet_driven/actions/firestore_actions.dart';
 
 part 'actions.g.dart';
 
+/*
+store.actions.ACTION();
+ActionsNames.ACTION
+
+store.actions.child.ACTION();
+ChildActionsNames.ACTION
+ */
+
+/// Top-level actions for Diet Driven
 abstract class Actions extends ReduxActions {
+  UserActions get user;
+  NavigationActions get navigation;
+  FirestoreActions get firestore;
+
+  //
+  ActionDispatcher initApp;
+
+  // TODO: close store
+  ActionDispatcher disposeApp;
+
+  ActionDispatcher<FoodRecord> diaryReceived; // TODO: move
+
   factory Actions() => new _$Actions();
   Actions._();
-
-  // Firebase Auth
-  ActionDispatcher initApp;
-  ActionDispatcher<FirebaseUser> anonymousUserLoaded;
-  ActionDispatcher<dynamic> anonymousUserFail;
-  ActionDispatcher logout;
-
-  // Navigation
-  ActionDispatcher<Page> goTo;
-  ActionDispatcher<List<Page>> reorderBottomNavigation;
-  ActionDispatcher<Page> setDefaultPage;
-
-  // Firebase
-  ActionDispatcher<String> fbStartDocListen;
-  ActionDispatcher<String> fbStopDocListen;
-  ActionDispatcher<dynamic> fbDocListenError;
-
-//  ActionDispatcher<Connection> beginRealTimeDatabaseListen;
-//  ActionDispatcher<int> beginRealTimeDatabaseListen; /// rename to begin settingsListen
-  ActionDispatcher<int> startSettingsListen;
-  ActionDispatcher<int> stopSettingsListen;
-//  ActionDispatcher<dynamic> updateError;
-//  ActionDispatcher<dynamic> addError; etc.
-
-  /// <PATH> ??? instead ???? - how do I pass listeners?
-  /// // these replace all other ones!
-  ActionDispatcher<FS> subscribe;
-  ActionDispatcher<FS> additionalSubscription;
-  ActionDispatcher<FS> unsubscribe;
-
-
-//  ActionDispatcher<FSDiary> startDiaryListen;
-//  ActionDispatcher<FSDiary> stopDiaryListen;
-  ActionDispatcher<FoodRecord> diaryReceived;
-
-
-
-  // String userID
-//  ActionDispatcher<String> settingsListen;
-//  ActionDispatcher<dynamic> settingsReceived;
-//  ActionDispatcher<String> settingsStopListen;
-
-  ChildActions get child;
-}
-
-// TODO: make more of these!
-abstract class ChildActions extends ReduxActions {
-  factory ChildActions() => new _$ChildActions();
-  ChildActions._();
-
-  ActionDispatcher childAction;
-  // store.actions.child.childAction();
 }

@@ -11,11 +11,14 @@ class _$DiaryRecordPath extends DiaryRecordPath {
   final String userId;
   @override
   final String diaryRecordId;
+  @override
+  final FSCollection<int> subCollection2;
 
   factory _$DiaryRecordPath([void updates(DiaryRecordPathBuilder b)]) =>
       (new DiaryRecordPathBuilder()..update(updates)).build();
 
-  _$DiaryRecordPath._({this.userId, this.diaryRecordId}) : super._() {
+  _$DiaryRecordPath._({this.userId, this.diaryRecordId, this.subCollection2})
+      : super._() {
     if (userId == null) {
       throw new BuiltValueNullFieldError('DiaryRecordPath', 'userId');
     }
@@ -49,7 +52,8 @@ class _$DiaryRecordPath extends DiaryRecordPath {
   String toString() {
     return (newBuiltValueToStringHelper('DiaryRecordPath')
           ..add('userId', userId)
-          ..add('diaryRecordId', diaryRecordId))
+          ..add('diaryRecordId', diaryRecordId)
+          ..add('subCollection2', subCollection2))
         .toString();
   }
 }
@@ -67,12 +71,19 @@ class DiaryRecordPathBuilder
   set diaryRecordId(String diaryRecordId) =>
       _$this._diaryRecordId = diaryRecordId;
 
+  FSCollectionBuilder<int> _subCollection2;
+  FSCollectionBuilder<int> get subCollection2 =>
+      _$this._subCollection2 ??= new FSCollectionBuilder<int>();
+  set subCollection2(FSCollectionBuilder<int> subCollection2) =>
+      _$this._subCollection2 = subCollection2;
+
   DiaryRecordPathBuilder();
 
   DiaryRecordPathBuilder get _$this {
     if (_$v != null) {
       _userId = _$v.userId;
       _diaryRecordId = _$v.diaryRecordId;
+      _subCollection2 = _$v.subCollection2?.toBuilder();
       _$v = null;
     }
     return this;
@@ -93,8 +104,24 @@ class DiaryRecordPathBuilder
 
   @override
   _$DiaryRecordPath build() {
-    final _$result = _$v ??
-        new _$DiaryRecordPath._(userId: userId, diaryRecordId: diaryRecordId);
+    _$DiaryRecordPath _$result;
+    try {
+      _$result = _$v ??
+          new _$DiaryRecordPath._(
+              userId: userId,
+              diaryRecordId: diaryRecordId,
+              subCollection2: _subCollection2?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'subCollection2';
+        _subCollection2?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'DiaryRecordPath', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

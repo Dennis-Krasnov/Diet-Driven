@@ -1,46 +1,46 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of cycle_page;
+part of goals_page;
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$CyclePageVM extends CyclePageVM {
+class _$GoalsPageVM extends GoalsPageVM {
   @override
   final BuiltList<int> widgets;
   @override
-  final BuiltList<FS> subscriptions;
+  final BuiltList<FSDocument> subscriptions;
   @override
   final BuiltList<FoodRecord> diaryRecords;
 
-  factory _$CyclePageVM([void updates(CyclePageVMBuilder b)]) =>
-      (new CyclePageVMBuilder()..update(updates)).build();
+  factory _$GoalsPageVM([void updates(GoalsPageVMBuilder b)]) =>
+      (new GoalsPageVMBuilder()..update(updates)).build();
 
-  _$CyclePageVM._({this.widgets, this.subscriptions, this.diaryRecords})
+  _$GoalsPageVM._({this.widgets, this.subscriptions, this.diaryRecords})
       : super._() {
     if (widgets == null) {
-      throw new BuiltValueNullFieldError('CyclePageVM', 'widgets');
+      throw new BuiltValueNullFieldError('GoalsPageVM', 'widgets');
     }
     if (subscriptions == null) {
-      throw new BuiltValueNullFieldError('CyclePageVM', 'subscriptions');
+      throw new BuiltValueNullFieldError('GoalsPageVM', 'subscriptions');
     }
     if (diaryRecords == null) {
-      throw new BuiltValueNullFieldError('CyclePageVM', 'diaryRecords');
+      throw new BuiltValueNullFieldError('GoalsPageVM', 'diaryRecords');
     }
   }
 
   @override
-  CyclePageVM rebuild(void updates(CyclePageVMBuilder b)) =>
+  GoalsPageVM rebuild(void updates(GoalsPageVMBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  CyclePageVMBuilder toBuilder() => new CyclePageVMBuilder()..replace(this);
+  GoalsPageVMBuilder toBuilder() => new GoalsPageVMBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is CyclePageVM &&
+    return other is GoalsPageVM &&
         widgets == other.widgets &&
         subscriptions == other.subscriptions &&
         diaryRecords == other.diaryRecords;
@@ -54,7 +54,7 @@ class _$CyclePageVM extends CyclePageVM {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('CyclePageVM')
+    return (newBuiltValueToStringHelper('GoalsPageVM')
           ..add('widgets', widgets)
           ..add('subscriptions', subscriptions)
           ..add('diaryRecords', diaryRecords))
@@ -62,17 +62,17 @@ class _$CyclePageVM extends CyclePageVM {
   }
 }
 
-class CyclePageVMBuilder implements Builder<CyclePageVM, CyclePageVMBuilder> {
-  _$CyclePageVM _$v;
+class GoalsPageVMBuilder implements Builder<GoalsPageVM, GoalsPageVMBuilder> {
+  _$GoalsPageVM _$v;
 
   ListBuilder<int> _widgets;
   ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
   set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
 
-  ListBuilder<FS> _subscriptions;
-  ListBuilder<FS> get subscriptions =>
-      _$this._subscriptions ??= new ListBuilder<FS>();
-  set subscriptions(ListBuilder<FS> subscriptions) =>
+  ListBuilder<FSDocument> _subscriptions;
+  ListBuilder<FSDocument> get subscriptions =>
+      _$this._subscriptions ??= new ListBuilder<FSDocument>();
+  set subscriptions(ListBuilder<FSDocument> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
   ListBuilder<FoodRecord> _diaryRecords;
@@ -81,9 +81,9 @@ class CyclePageVMBuilder implements Builder<CyclePageVM, CyclePageVMBuilder> {
   set diaryRecords(ListBuilder<FoodRecord> diaryRecords) =>
       _$this._diaryRecords = diaryRecords;
 
-  CyclePageVMBuilder();
+  GoalsPageVMBuilder();
 
-  CyclePageVMBuilder get _$this {
+  GoalsPageVMBuilder get _$this {
     if (_$v != null) {
       _widgets = _$v.widgets?.toBuilder();
       _subscriptions = _$v.subscriptions?.toBuilder();
@@ -94,24 +94,24 @@ class CyclePageVMBuilder implements Builder<CyclePageVM, CyclePageVMBuilder> {
   }
 
   @override
-  void replace(CyclePageVM other) {
+  void replace(GoalsPageVM other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$CyclePageVM;
+    _$v = other as _$GoalsPageVM;
   }
 
   @override
-  void update(void updates(CyclePageVMBuilder b)) {
+  void update(void updates(GoalsPageVMBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$CyclePageVM build() {
-    _$CyclePageVM _$result;
+  _$GoalsPageVM build() {
+    _$GoalsPageVM _$result;
     try {
       _$result = _$v ??
-          new _$CyclePageVM._(
+          new _$GoalsPageVM._(
               widgets: widgets.build(),
               subscriptions: subscriptions.build(),
               diaryRecords: diaryRecords.build());
@@ -126,7 +126,7 @@ class CyclePageVMBuilder implements Builder<CyclePageVM, CyclePageVMBuilder> {
         diaryRecords.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'CyclePageVM', _$failedField, e.toString());
+            'GoalsPageVM', _$failedField, e.toString());
       }
       rethrow;
     }

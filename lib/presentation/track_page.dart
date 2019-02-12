@@ -22,7 +22,8 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
   @override
   TrackPageVM connect(AppState state) => TrackPageVM((b) => b
 //    ..loading = state.loading
-    ..user = state.user);
+    ..auth = state.user.authUser
+  );
 
   // OLD FORMAT:
 //  @override
@@ -47,11 +48,11 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
                 onPressed: null, // TODO: anonymous by default
                 child: Text("Log in as Dennis Krasnov"),
               ),
-              Text("uid: ${vm.user.uid}"),
-              Text("email: ${vm.user.email}"),
-              Text("display name: ${vm.user.displayName}"),
+              Text("uid: ${vm.auth.uid}"),
+              Text("email: ${vm.auth.email}"),
+              Text("display name: ${vm.auth.displayName}"),
               FlatButton(
-                onPressed: () => actions.logout(),
+                onPressed: () => actions.user.logout(),
                 child: Text("Log out"),
               )
             ],
@@ -64,7 +65,7 @@ abstract class TrackPageVM implements Built<TrackPageVM, TrackPageVMBuilder> {
 //  bool get loading;
 
   @nullable
-  FirebaseUser get user;
+  FirebaseUser get auth;
 
   TrackPageVM._();
 

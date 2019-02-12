@@ -1,23 +1,23 @@
 import 'package:built_redux/built_redux.dart';
-import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart' hide Builder;
-import 'package:rxdart/rxdart.dart';
+import 'package:logging/logging.dart';
 
-// RUNS BEFORE REDUCER
+final Logger log = new Logger("MIDDLEWARE");
+
+/// MIDDLEWARE RUN BEFORE REDUCERS
 Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth auth) {
   return (MiddlewareBuilder<AppState, AppStateBuilder, Actions>()
       ..add(ActionsNames.initApp, initApp(auth))
-      ..add(ActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder())
+      ..add(NavigationActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder())
 
-      ..add(ActionsNames.subscribe, firestoreSubscribe())
-      ..add(ActionsNames.unsubscribe, firestoreUnsubscribe())
+      ..add(FirestoreActionsNames.subscribe, firestoreSubscribe())
+      ..add(FirestoreActionsNames.unsubscribe, firestoreUnsubscribe())
       ..add(ActionsNames.diaryReceived, diaryReceived())
   ).build();
 }
@@ -31,27 +31,28 @@ Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth aut
 
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth auth) {
-  return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
-    Page destination = api.state.defaultPage;
 
-    // State doesn't contain user
-    if (api.state.user == null) {
-      FirebaseUser user = await auth.currentUser();
+  return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
+    Page destination = api.state.navigation.defaultPage;
+
+    // User isn't authenticated
+    if (api.state.user.authUser == null) {
+      FirebaseUser authUser = await auth.currentUser();
 
       // Firebase didn't persist user
-      if (user == null) {
+      if (authUser == null) {
         print("CREATING ANONYMOUS USER");
         // TODO: destination = Page.loginScreen;
-        user = await auth.signInAnonymously()
-            .catchError((e) => api.actions.anonymousUserFail(e));
+        authUser = await auth.signInAnonymously().catchError((e) => api.actions.user.anonymousUserFail(e));
       } else {
-        destination = api.state.activePage;
+        destination = api.state.navigation.activePage;
       }
 
-      print("IF NULL IN MIDDLEWARE");
-      api.actions.anonymousUserLoaded(user);
+      api.actions.user.anonymousUserLoaded(authUser);
     }
-    api.actions.goTo(destination);
+
+    print(api.state.user.authUser);
+    api.actions.navigation.goTo(destination);
 
     next(action);
   };
@@ -59,13 +60,13 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigationBuilder() {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
-    bool before = api.state.bottomNavigation.contains(api.state.activePage);
+    bool before = api.state.navigation.bottomNavigation.contains(api.state.navigation.activePage);
     next(action);
-    bool after = api.state.bottomNavigation.contains(api.state.activePage);
+    bool after = api.state.navigation.bottomNavigation.contains(api.state.navigation.activePage);
 
     // Open same page in nested page
     if (before && !after) {
-      DDApp.navigatorKey.currentState.pushNamed(api.state.activePage.toString());
+      DDApp.navigatorKey.currentState.pushNamed(api.state.navigation.activePage.toString());
     } // Open same page in bottom navigation
     else if (!before && after) {
       DDApp.navigatorKey.currentState.popUntil(ModalRoute.withName("/"));
@@ -80,7 +81,7 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 
     // Already listening to Firestore snapshots
     if (api.state.subscriptions.contains(action.payload)) {
-      api.actions.additionalSubscription(action.payload);
+      api.actions.firestore.additionalSubscription(action.payload);
     } // Called without a subscription
     else if (action.payload.streamSubscription == null) {
       Function onData = (t) => api.actions.diaryReceived(t); // FIXME
@@ -104,7 +105,7 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 //          onData = (t) => api.actions.diaryReceived(t);
 //          break;
 //      }
-      api.actions.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(onData, onError: onError)));
+      api.actions.firestore.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(onData, onError: onError)));
     } // Subscribe to Firestore (recursion base case)
     else {
       next(action);

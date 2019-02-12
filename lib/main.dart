@@ -1,6 +1,6 @@
 library main;
 
-//import 'package:built_redux_rx/built_redux_rx.dart';
+import 'package:logging/logging.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/middleware/epics.dart';
@@ -18,8 +18,9 @@ import 'package:flutter_built_redux/flutter_built_redux.dart';
 
 void main() => runApp(new DDApp());
 
+///
 class DDApp extends StatefulWidget {
-
+  // Used for navigation middleware
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -29,7 +30,8 @@ class DDApp extends StatefulWidget {
 class _DDAppState extends State<DDApp> {
 
   final store = new Store(
-    reducerBuilder.build(),
+//    reducerBuilder.build(),
+    getBaseReducer(),
     new AppState(),
     new Actions(),
     middleware: [
@@ -44,15 +46,27 @@ class _DDAppState extends State<DDApp> {
   @override
   void initState() {
     super.initState();
-    print("before");
+
+    // Configure logger
+    // TODO: upload to google cloud stack driver??
+    Logger.root.level = Level.ALL;
+    Logger.root.onRecord.listen((LogRecord rec) {
+      print("${rec.loggerName} ~ ${rec.level.name} ~ ${rec.time} ~ ${rec.message}");
+    });
+
     store.actions.initApp();
-    print("after");
   }
 
-  // TODO: close store on dispose?!
+
+  @override
+  void dispose() {
+    store.actions.disposeApp();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Map routes to pages
     Map<String, WidgetBuilder> routes = Map<String, WidgetBuilder>.fromIterable(
       Page.values,
       key: (page) => page.toString(),
@@ -68,10 +82,10 @@ class _DDAppState extends State<DDApp> {
         child: new MaterialApp(
           navigatorKey: DDApp.navigatorKey,
           title: "Diet Driven",
-//          theme:,
+//          theme:, // TODO
             routes: routes,
           initialRoute: "/",
-//          onUnknownRoute: (settings) => settings.name,
+//          onUnknownRoute: (settings) => settings.name, // TODO
         ),
     );
   }

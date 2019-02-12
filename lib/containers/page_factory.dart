@@ -1,6 +1,6 @@
 import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/presentation/adherence_page.dart';
-import 'package:diet_driven/presentation/cycle_page.dart';
+import 'package:diet_driven/presentation/goals_page.dart';
 import 'package:diet_driven/presentation/diary_page.dart';
 import 'package:diet_driven/presentation/diet_page.dart';
 import 'package:diet_driven/presentation/manual_page.dart';
@@ -9,8 +9,10 @@ import 'package:diet_driven/presentation/statistics_page.dart';
 import 'package:diet_driven/presentation/track_page.dart';
 import 'package:flutter/material.dart';
 
+/// PageFactory generates respective content for given page enum.
 abstract class PageFactory {
-  // TODO: internationalization library
+  // TODO: use internationalization library for text
+
   static String toText(Page page) {
     String name;
     switch (page) {
@@ -26,8 +28,8 @@ abstract class PageFactory {
         name = "Diets";
         break;
 
-      case Page.cycle:
-        name = "Cycles";
+      case Page.goals:
+        name = "Goals";
         break;
 
       case Page.settings:
@@ -71,7 +73,7 @@ abstract class PageFactory {
         icon = Icon(Icons.fastfood);
         break;
 
-      case Page.cycle:
+      case Page.goals:
         icon = Icon(Icons.repeat);
         break;
 
@@ -116,8 +118,8 @@ abstract class PageFactory {
         pageWidget = DietPage();
         break;
 
-      case Page.cycle:
-        pageWidget = CyclePage();
+      case Page.goals:
+        pageWidget = GoalsPage();
         break;
 
       case Page.settings:
@@ -137,6 +139,7 @@ abstract class PageFactory {
         break;
 
       case Page.loginScreen:
+        // FIXME
         pageWidget = Container(child: Text("LOGIN!!!!"),);
         break;
 

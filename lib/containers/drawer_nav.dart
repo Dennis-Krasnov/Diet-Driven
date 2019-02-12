@@ -6,17 +6,20 @@ import 'package:diet_driven/containers/active_page.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 
 part 'drawer_nav.g.dart';
 
+///
 class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
 
   @override
   DrawerNavigationVM connect(AppState state) {
     return DrawerNavigationVM((b) => b
-      ..pages = state.bottomNavigation
+        ..pages = state.navigation.bottomNavigation
+        ..auth = state.user.authUser
     );
   }
 
@@ -27,32 +30,27 @@ class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
           child: Column(
             children: <Widget>[
               UserAccountsDrawerHeader(
-                currentAccountPicture: Image.network("https://www.w3schools.com/w3images/avatar2.png"),
+                currentAccountPicture: Image.network("https://denniskrasnov.com/img/dk/logo-72.png"),
                 otherAccountsPictures: <Widget>[
-                  GestureDetector(
-                    onTap: () => print("Image 1"),
-                    child: Image.network("https://www.w3schools.com/howto/img_avatar.png"),
-                  ),
-                  GestureDetector(
-                    onTap: () => print("Image 2"),
-                    child: Image.network("https://www.w3schools.com/w3images/avatar6.png"),
-                  ),
-                  GestureDetector(
-                    onTap: () => print("Image 3"),
-                    child: Image.network("https://www.w3schools.com/w3images/avatar4.png",),
-                  ),
+//                  GestureDetector(
+//                    onTap: () => print("GO TO WORKOUT DRIVEN"),
+//                    child: Image.network("https://denniskrasnov.com/img/dk/logo-72.png"),
+//                  ),
                 ],
-                accountName: Text("Dennis Krasnov"),
-                accountEmail: Text("dennis.krasnov@gmail.com"),
-                onDetailsPressed: () => print("details clicked"),
+                accountName: Text(vm.auth.isAnonymous ? "Anonymous user": vm.auth.email),
+//                accountName: Text("Dennis Krasnov"),
+                accountEmail: Text(vm.auth.uid),
+//                accountEmail: Text("dennis.krasnov@gmail.com"),
+//                onDetailsPressed: () => print("details clicked"),
               ),
+              // TODO: SingleChildScrollView
               Column(
                 children: Page.inApp.map((page) =>
                     ListTile(
                       leading: PageFactory.toIcon(page),
                       title: Text(PageFactory.toText(page)),
                       selected: page == activePage,
-                      onTap: () => actions.goTo(page),
+                      onTap: () => actions.navigation.goTo(page),
                     )
                 ).toList(),
               ),
@@ -65,6 +63,7 @@ class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
 abstract class DrawerNavigationVM
     implements Built<DrawerNavigationVM, DrawerNavigationVMBuilder> {
   List<Page> get pages;
+  FirebaseUser get auth;
 
   DrawerNavigationVM._();
 

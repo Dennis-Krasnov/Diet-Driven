@@ -2,23 +2,25 @@ import 'dart:convert';
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
-import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/food_record.dart';
-import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/built_realtime/serializers.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:diet_driven/reducers/navigation_reducers.dart';
+import 'package:diet_driven/reducers/user_reducers.dart';
+import 'package:logging/logging.dart';
 
-ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
-    new ReducerBuilder<AppState, AppStateBuilder>()
-//      ..add(CounterActionsNames.increment, (s, a, b) => b.count++);
-      ..add(ActionsNames.anonymousUserLoaded, anonymousUserLoaded)
-      ..add(ActionsNames.anonymousUserFail, anonymousUserFail)
-      ..add(ActionsNames.goTo, goTo)
-      ..add(ActionsNames.reorderBottomNavigation, reorderBottomNav)
-      ..add(ActionsNames.setDefaultPage, setDefaultPage)
+final Logger log = new Logger("REDUCER");
+
+/// Top-level reducer
+Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
+  (new ReducerBuilder<AppState, AppStateBuilder>()
+    ..combineNested(getNavigationReducer())
+    ..combineNested(getUserReducer())
+//      ..add(ActionsNames.anonymousUserLoaded, anonymousUserLoaded)
+//      ..add(ActionsNames.anonymousUserFail, anonymousUserFail)
+
 
 
 //      ..add(ActionsNames.settingsReceived, settingsReceived)
@@ -42,15 +44,15 @@ ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
 
 //      ..combineNested(new NestedReducerBuilder((s) => s.subscriptions.))
 
-      ..add(ActionsNames.additionalSubscription, additionalSubscription)
+      ..add(FirestoreActionsNames.additionalSubscription, additionalSubscription)
       ..combineList(new ListReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
-          ..add(ActionsNames.subscribe, firstSubscription)
+          ..add(FirestoreActionsNames.subscribe, firstSubscription)
 //          ..add(ActionsNames.additionalSubscription, additionalSubscription) // TODO: in seperate reducer!
       )
 
       ..combineList(new ListReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
 //          ..add(ActionsNames.startDiaryListen, startDiaryListen)
-          ..add(ActionsNames.unsubscribe, stopDiaryListen)
+          ..add(FirestoreActionsNames.unsubscribe, stopDiaryListen)
       )
 
       ..combineList(new ListReducerBuilder((s) => s.diaryRecords, (b) => b.diaryRecords)
@@ -64,56 +66,15 @@ ReducerBuilder<AppState, AppStateBuilder> reducerBuilder =
 //          ..add(ActionsNames.stopDiaryListen, diaryStop)
 //      )
 //      ..combineMap(new MapReducerBuilder<AppState, AppStateBuilder>())
-;
+  ).build();
 
 //new ListReducerBuilder
 
 
-void anonymousUserLoaded(AppState state, Action<FirebaseUser> action, AppStateBuilder builder) {
-  builder.user = action.payload;
-  print("anonymous ${action.payload.email ?? action.payload.uid} user was loaded");
-}
-
-void anonymousUserFail(AppState state, Action<dynamic> action, AppStateBuilder builder) {
-  print(action.payload);
-}
-
-void goTo(AppState state, Action<Page> action, AppStateBuilder builder) {
-  builder.activePage = action.payload;
-
-  if (state.bottomNavigation.contains(action.payload)) {
-    builder.bottomNavigationPage = action.payload;
-  }
-}
 
 
-void reorderBottomNav(AppState state, Action<List<Page>> action, AppStateBuilder builder) {
-  bool properSize = 2 <= action.payload.length && action.payload.length <= 7;
-  bool unique = action.payload.length == action.payload.toSet().length;
 
-  if (properSize && unique) {
-    builder.bottomNavigation = action.payload;
 
-    // Active page now in bottom navigation
-    if (action.payload.contains(state.activePage)) {
-      builder.bottomNavigationPage = state.activePage;
-    } // Active page no longer in bottom navigation
-    else {
-      builder.bottomNavigationPage = action.payload[0];
-    }
-
-    // Default page no longer in bottom navigation
-    if (!action.payload.contains(state.defaultPage)) {
-      builder.defaultPage = action.payload[0];
-    }
-  }
-}
-
-void setDefaultPage(AppState state, Action<Page> action, AppStateBuilder builder) {
-  if (state.bottomNavigation.contains(action.payload)) {
-    builder.defaultPage = action.payload;
-  }
-}
 
 
 //void startDiaryListen(BuiltSetMultimap<FirestoreDocument, int> setMultimapState, Action<int> action, SetMultimapBuilder<FirestoreDocument, int> setMultimapBuilder) {
@@ -176,11 +137,63 @@ void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder b
   var fs = action.payload;
   print("APPENDING LISTENERS: ${fs.listeners}");
   int i = state.subscriptions.indexOf(action.payload);
+
 //  builder.subscriptions[i].listeners.rebuild((b) => b..add(24));
 
 //  builder.subscriptions[i].listeners = builder.subscriptions[i].listeners.rebuild((b) => b);
-  builder.subscriptions[i].listeners.rebuild((b) => b.add(24421)); /// problem: list is FS!!!! need it to be FSDocument!
+//  builder.subscriptions[i].listeners.rebuild((b) => b.add(24421));
+/// problem: list is FS!!!! need it to be FSDocument! ---- but does it solve it!?!?!
+  ///
+  print(builder.subscriptions);
+  print(builder.subscriptions[i].listeners);
+  builder.subscriptions[i] = builder.subscriptions[i].rebuild((b) => b
+//      ..listeners = ListBuilder([1, 2, 4])
+//      ..listeners.clear()
+//    ..listeners = b.listeners.add(42)
 
+
+
+//    b.listeners.build()
+  /// THESE ALL WORK!!! (IN COMBINATION WITH ADDING ANOTHER ELEMENT)
+//     .listeners.add(4252)
+//    ..listeners.update((b) => b..add(424)) // WHY DOESN'T THIS WORK
+//    ..listeners.add(43)
+//      b[i] =
+
+  // doesn't work
+//  ..listeners = builder.subscriptions[i].listeners.rebuild((b) => b
+//      ..add(42)
+//  ).toBuilder()
+
+  // ALSO DOESN'T WORK
+//  ..listeners = state.subscriptions[i].listeners.rebuild((b) => b..add(4)).toBuilder()
+
+  /// THIS WORKS !!!
+//    ..path = (b.path as DiaryRecordPath).rebuild((b) => b
+//        ..diaryRecordId = "124214"
+//    )
+  );
+
+  /// ADDING THIS FIXED IT!!!
+//  builder.subscriptions.add(FSDocument<FoodRecord>((b) => b..path = DiaryRecordPath((b) => b..userId = "a" ..diaryRecordId = "b") ));
+
+  // this doesn't fix it!
+//  builder.subscriptions.update((b) => b);
+//  builder.subscriptions.build();
+
+  /// THIS DOESN'T WORK!!!!
+//  builder.subscriptions[i].rebuild((b) => b
+//    ..path = (b.path as DiaryRecordPath).rebuild((b) => b
+//        ..diaryRecordId = "124214"
+//    )
+//  );
+
+  // DOESN'T WORK
+//  builder.subscriptions[i].listeners.rebuild((b) => b.add(42));
+//  builder.subscriptions[i].listeners = builder.subscriptions[i].listeners.rebuild((b) => b.add(42));
+
+  print(builder.subscriptions);
+  print(builder.subscriptions[i].listeners);
   print(builder.subscriptions[i].runtimeType);
   print(builder.subscriptions[i] is FSDocument<FoodRecord>);
 

@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of app_tab;
+part of page;
 
 // **************************************************************************
 // BuiltValueGenerator
@@ -9,7 +9,7 @@ part of app_tab;
 const Page _$diary = const Page._('diary');
 const Page _$track = const Page._('track');
 const Page _$diet = const Page._('diet');
-const Page _$cycle = const Page._('cycle');
+const Page _$goals = const Page._('goals');
 const Page _$settings = const Page._('settings');
 const Page _$adherence = const Page._('adherence');
 const Page _$statistics = const Page._('statistics');
@@ -24,8 +24,8 @@ Page _$appTabValueOf(String name) {
       return _$track;
     case 'diet':
       return _$diet;
-    case 'cycle':
-      return _$cycle;
+    case 'goals':
+      return _$goals;
     case 'settings':
       return _$settings;
     case 'adherence':
@@ -45,7 +45,7 @@ final BuiltSet<Page> _$appTabValues = new BuiltSet<Page>(const <Page>[
   _$diary,
   _$track,
   _$diet,
-  _$cycle,
+  _$goals,
   _$settings,
   _$adherence,
   _$statistics,

@@ -8,49 +8,31 @@ part of app_state;
 
 class _$AppState extends AppState {
   @override
-  final FirebaseUser user;
+  final UserState user;
   @override
-  final BuiltList<FS> subscriptions;
+  final NavigationState navigation;
+  @override
+  final BuiltList<FSDocument> subscriptions;
   @override
   final BuiltList<FoodRecord> diaryRecords;
-  @override
-  final Page activePage;
-  @override
-  final Page defaultPage;
-  @override
-  final List<Page> bottomNavigation;
-  @override
-  final Page bottomNavigationPage;
 
   factory _$AppState([void updates(AppStateBuilder b)]) =>
       (new AppStateBuilder()..update(updates)).build();
 
   _$AppState._(
-      {this.user,
-      this.subscriptions,
-      this.diaryRecords,
-      this.activePage,
-      this.defaultPage,
-      this.bottomNavigation,
-      this.bottomNavigationPage})
+      {this.user, this.navigation, this.subscriptions, this.diaryRecords})
       : super._() {
+    if (user == null) {
+      throw new BuiltValueNullFieldError('AppState', 'user');
+    }
+    if (navigation == null) {
+      throw new BuiltValueNullFieldError('AppState', 'navigation');
+    }
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('AppState', 'subscriptions');
     }
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
-    }
-    if (activePage == null) {
-      throw new BuiltValueNullFieldError('AppState', 'activePage');
-    }
-    if (defaultPage == null) {
-      throw new BuiltValueNullFieldError('AppState', 'defaultPage');
-    }
-    if (bottomNavigation == null) {
-      throw new BuiltValueNullFieldError('AppState', 'bottomNavigation');
-    }
-    if (bottomNavigationPage == null) {
-      throw new BuiltValueNullFieldError('AppState', 'bottomNavigationPage');
     }
   }
 
@@ -66,38 +48,26 @@ class _$AppState extends AppState {
     if (identical(other, this)) return true;
     return other is AppState &&
         user == other.user &&
+        navigation == other.navigation &&
         subscriptions == other.subscriptions &&
-        diaryRecords == other.diaryRecords &&
-        activePage == other.activePage &&
-        defaultPage == other.defaultPage &&
-        bottomNavigation == other.bottomNavigation &&
-        bottomNavigationPage == other.bottomNavigationPage;
+        diaryRecords == other.diaryRecords;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc(
-            $jc(
-                $jc(
-                    $jc($jc($jc(0, user.hashCode), subscriptions.hashCode),
-                        diaryRecords.hashCode),
-                    activePage.hashCode),
-                defaultPage.hashCode),
-            bottomNavigation.hashCode),
-        bottomNavigationPage.hashCode));
+        $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+            subscriptions.hashCode),
+        diaryRecords.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('AppState')
           ..add('user', user)
+          ..add('navigation', navigation)
           ..add('subscriptions', subscriptions)
-          ..add('diaryRecords', diaryRecords)
-          ..add('activePage', activePage)
-          ..add('defaultPage', defaultPage)
-          ..add('bottomNavigation', bottomNavigation)
-          ..add('bottomNavigationPage', bottomNavigationPage))
+          ..add('diaryRecords', diaryRecords))
         .toString();
   }
 }
@@ -105,14 +75,20 @@ class _$AppState extends AppState {
 class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   _$AppState _$v;
 
-  FirebaseUser _user;
-  FirebaseUser get user => _$this._user;
-  set user(FirebaseUser user) => _$this._user = user;
+  UserStateBuilder _user;
+  UserStateBuilder get user => _$this._user ??= new UserStateBuilder();
+  set user(UserStateBuilder user) => _$this._user = user;
 
-  ListBuilder<FS> _subscriptions;
-  ListBuilder<FS> get subscriptions =>
-      _$this._subscriptions ??= new ListBuilder<FS>();
-  set subscriptions(ListBuilder<FS> subscriptions) =>
+  NavigationStateBuilder _navigation;
+  NavigationStateBuilder get navigation =>
+      _$this._navigation ??= new NavigationStateBuilder();
+  set navigation(NavigationStateBuilder navigation) =>
+      _$this._navigation = navigation;
+
+  ListBuilder<FSDocument> _subscriptions;
+  ListBuilder<FSDocument> get subscriptions =>
+      _$this._subscriptions ??= new ListBuilder<FSDocument>();
+  set subscriptions(ListBuilder<FSDocument> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
   ListBuilder<FoodRecord> _diaryRecords;
@@ -121,35 +97,14 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   set diaryRecords(ListBuilder<FoodRecord> diaryRecords) =>
       _$this._diaryRecords = diaryRecords;
 
-  Page _activePage;
-  Page get activePage => _$this._activePage;
-  set activePage(Page activePage) => _$this._activePage = activePage;
-
-  Page _defaultPage;
-  Page get defaultPage => _$this._defaultPage;
-  set defaultPage(Page defaultPage) => _$this._defaultPage = defaultPage;
-
-  List<Page> _bottomNavigation;
-  List<Page> get bottomNavigation => _$this._bottomNavigation;
-  set bottomNavigation(List<Page> bottomNavigation) =>
-      _$this._bottomNavigation = bottomNavigation;
-
-  Page _bottomNavigationPage;
-  Page get bottomNavigationPage => _$this._bottomNavigationPage;
-  set bottomNavigationPage(Page bottomNavigationPage) =>
-      _$this._bottomNavigationPage = bottomNavigationPage;
-
   AppStateBuilder();
 
   AppStateBuilder get _$this {
     if (_$v != null) {
-      _user = _$v.user;
+      _user = _$v.user?.toBuilder();
+      _navigation = _$v.navigation?.toBuilder();
       _subscriptions = _$v.subscriptions?.toBuilder();
       _diaryRecords = _$v.diaryRecords?.toBuilder();
-      _activePage = _$v.activePage;
-      _defaultPage = _$v.defaultPage;
-      _bottomNavigation = _$v.bottomNavigation;
-      _bottomNavigationPage = _$v.bottomNavigationPage;
       _$v = null;
     }
     return this;
@@ -174,16 +129,17 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
     try {
       _$result = _$v ??
           new _$AppState._(
-              user: user,
+              user: user.build(),
+              navigation: navigation.build(),
               subscriptions: subscriptions.build(),
-              diaryRecords: diaryRecords.build(),
-              activePage: activePage,
-              defaultPage: defaultPage,
-              bottomNavigation: bottomNavigation,
-              bottomNavigationPage: bottomNavigationPage);
+              diaryRecords: diaryRecords.build());
     } catch (_) {
       String _$failedField;
       try {
+        _$failedField = 'user';
+        user.build();
+        _$failedField = 'navigation';
+        navigation.build();
         _$failedField = 'subscriptions';
         subscriptions.build();
         _$failedField = 'diaryRecords';

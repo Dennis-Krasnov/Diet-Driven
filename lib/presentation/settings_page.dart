@@ -25,8 +25,8 @@ class SettingsPage extends StatelessWidget {
         ),
         body: new StoreConnection<AppState, Actions, SettingsPageVM>(
             connect: (state) => SettingsPageVM((b) => b
-              ..pages = state.bottomNavigation
-              ..defaultPage = state.defaultPage
+              ..pages = state.navigation.bottomNavigation
+              ..defaultPage = state.navigation.defaultPage
             ),
             builder: (BuildContext context, SettingsPageVM vm, Actions actions) {
               return Column(
@@ -39,7 +39,7 @@ class SettingsPage extends StatelessWidget {
                       List<Page> randomized = Page.inApp.toList();
                       shuffle(randomized);
                       randomized = randomized.sublist(0, new Random().nextInt(6) + 2);
-                      actions.reorderBottomNavigation(randomized);
+                      actions.navigation.reorderBottomNavigation(randomized);
                       Scaffold.of(context).showSnackBar(SnackBar(content: Text('Randomized!'), duration: Duration(milliseconds: 500)));
                     },
                     onLongPress: () => Scaffold.of(context).showSnackBar(SnackBar(content: Text('You long pressed!'),)),
@@ -49,8 +49,8 @@ class SettingsPage extends StatelessWidget {
                     title: const Text('Reset bottom navigation settings'),
                     onTap: () {
                       AppState original = new AppState();
-                      actions.reorderBottomNavigation(original.bottomNavigation);
-                      actions.setDefaultPage(original.defaultPage);
+                      actions.navigation.reorderBottomNavigation(original.navigation.bottomNavigation);
+                      actions.navigation.setDefaultPage(original.navigation.defaultPage);
                     }
                   ),
                   ListTile(
@@ -63,7 +63,7 @@ class SettingsPage extends StatelessWidget {
                           child: new Text(PageFactory.toText(page)),
                         );
                       }).toList(),
-                      onChanged: (page) => actions.setDefaultPage(page),
+                      onChanged: (page) => actions.navigation.setDefaultPage(page),
                       value: vm.defaultPage,
                     ),
                   ),

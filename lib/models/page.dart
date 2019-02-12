@@ -1,23 +1,37 @@
-// Copyright 2018 The Flutter Architecture Sample Authors. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found
-// in the LICENSE file.
-
-library app_tab;
+library page;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
 part 'page.g.dart';
 
+///
 class Page extends EnumClass {
+  //
   static const Page diary = _$diary;
+
+  //
   static const Page track = _$track;
+
+  //
   static const Page diet = _$diet;
-  static const Page cycle = _$cycle;
+
+  //
+  static const Page goals = _$goals;
+
+  //
   static const Page settings = _$settings;
+
+  //
   static const Page adherence = _$adherence;
+
+  //
   static const Page statistics = _$statistics;
+
+  //
   static const Page manual = _$manual;
+
+  //
 //  static const AppTab recipes = _$recipes;
 
 
