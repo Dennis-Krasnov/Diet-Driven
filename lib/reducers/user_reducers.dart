@@ -8,10 +8,10 @@ import 'package:logging/logging.dart';
 final Logger log = new Logger("USER_REDUCER");
 
 NestedReducerBuilder<AppState, AppStateBuilder, UserState, UserStateBuilder> getUserReducer() =>
-    (new NestedReducerBuilder<AppState, AppStateBuilder, UserState, UserStateBuilder>((s) => s.user, (b) => b.user)
-      ..add(UserActionsNames.anonymousUserLoaded, anonymousUserLoaded)
-      ..add(UserActionsNames.anonymousUserFail, anonymousUserFail)
-    );
+  (new NestedReducerBuilder<AppState, AppStateBuilder, UserState, UserStateBuilder>((s) => s.user, (b) => b.user)
+    ..add(UserActionsNames.anonymousUserLoaded, anonymousUserLoaded)
+    ..add(UserActionsNames.anonymousUserFail, anonymousUserFail)
+  );
 
 void anonymousUserLoaded(UserState state, Action<FirebaseUser> action, UserStateBuilder builder) {
   builder.authUser = action.payload;

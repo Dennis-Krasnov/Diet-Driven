@@ -20,8 +20,8 @@ abstract class NavigationState implements Built<NavigationState, NavigationState
 }
 
 abstract class NavigationStateBuilder implements Builder<NavigationState, NavigationStateBuilder> {
-  Page activePage = Page.track;
-  Page defaultPage = Page.track;
+  Page activePage = Page.diary;
+  Page defaultPage = Page.diary;
 
   List<Page> bottomNavigation = [Page.diary, Page.track, Page.diet, Page.goals, Page.settings];
 

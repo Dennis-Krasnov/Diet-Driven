@@ -7,11 +7,11 @@ import 'package:logging/logging.dart';
 final Logger log = new Logger("NAV_REDUCER");
 
 NestedReducerBuilder<AppState, AppStateBuilder, NavigationState, NavigationStateBuilder> getNavigationReducer() =>
-    (new NestedReducerBuilder<AppState, AppStateBuilder, NavigationState, NavigationStateBuilder>((s) => s.navigation, (b) => b.navigation)
-      ..add(NavigationActionsNames.goTo, goTo)
-      ..add(NavigationActionsNames.reorderBottomNavigation, reorderBottomNav)
-      ..add(NavigationActionsNames.setDefaultPage, setDefaultPage)
-    );
+  (new NestedReducerBuilder<AppState, AppStateBuilder, NavigationState, NavigationStateBuilder>((s) => s.navigation, (b) => b.navigation)
+    ..add(NavigationActionsNames.goTo, goTo)
+    ..add(NavigationActionsNames.reorderBottomNavigation, reorderBottomNav)
+    ..add(NavigationActionsNames.setDefaultPage, setDefaultPage)
+  );
 
 void goTo(NavigationState state, Action<Page> action, NavigationStateBuilder builder) {
   builder.activePage = action.payload;

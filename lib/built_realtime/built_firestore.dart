@@ -87,10 +87,10 @@ abstract class DiaryRecordPath implements Path, Built<DiaryRecordPath, DiaryReco
   String get userId;
   String get diaryRecordId;
 
-  @BuiltValueField(serialize: false, compare: false)
+//  @BuiltValueField(serialize: false, compare: false)
 //  Path subCollection1;
-  @nullable
-  FSCollection<int> get subCollection2; // TODO: initialize using same arguments as document
+//  @nullable
+//  FSCollection<int> get subCollection2; // TODO: initialize using same arguments as document
 
   @override
   String generate() {
