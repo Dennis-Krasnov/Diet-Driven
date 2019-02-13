@@ -6,6 +6,88 @@ part of built_firestore;
 // BuiltValueGenerator
 // **************************************************************************
 
+class _$DiaryRecordCollectionPath extends DiaryRecordCollectionPath {
+  @override
+  final String userId;
+
+  factory _$DiaryRecordCollectionPath(
+          [void updates(DiaryRecordCollectionPathBuilder b)]) =>
+      (new DiaryRecordCollectionPathBuilder()..update(updates)).build();
+
+  _$DiaryRecordCollectionPath._({this.userId}) : super._() {
+    if (userId == null) {
+      throw new BuiltValueNullFieldError('DiaryRecordCollectionPath', 'userId');
+    }
+  }
+
+  @override
+  DiaryRecordCollectionPath rebuild(
+          void updates(DiaryRecordCollectionPathBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DiaryRecordCollectionPathBuilder toBuilder() =>
+      new DiaryRecordCollectionPathBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DiaryRecordCollectionPath && userId == other.userId;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, userId.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('DiaryRecordCollectionPath')
+          ..add('userId', userId))
+        .toString();
+  }
+}
+
+class DiaryRecordCollectionPathBuilder
+    implements
+        Builder<DiaryRecordCollectionPath, DiaryRecordCollectionPathBuilder> {
+  _$DiaryRecordCollectionPath _$v;
+
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
+
+  DiaryRecordCollectionPathBuilder();
+
+  DiaryRecordCollectionPathBuilder get _$this {
+    if (_$v != null) {
+      _userId = _$v.userId;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(DiaryRecordCollectionPath other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DiaryRecordCollectionPath;
+  }
+
+  @override
+  void update(void updates(DiaryRecordCollectionPathBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DiaryRecordCollectionPath build() {
+    final _$result = _$v ?? new _$DiaryRecordCollectionPath._(userId: userId);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$DiaryRecordPath extends DiaryRecordPath {
   @override
   final String userId;

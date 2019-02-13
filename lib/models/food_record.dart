@@ -10,12 +10,9 @@ part 'food_record.g.dart';
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
 
-//  factory FoodRecord() => new _$FoodRecord._(
-//    foodName: "",
-//    uncertainty: Uncertainty.accurate,
-//    grams: 0,
-//    sodium: 5
-//  );
+  @nullable
+  @BuiltValueField(serialize: false, compare: false)
+  String get id; //
 
   String get foodName;
   Uncertainty get uncertainty;
@@ -28,7 +25,7 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   // TODO: portion size, portion quantity
   // TODO: nutrition (/100grams) object
 
-  factory FoodRecord([updates(FoodRecordBuilder b)]) = _$FoodRecord; //  new FoodRecord((b) => b..foodName = command ..update(updates))
+  factory FoodRecord([updates(FoodRecordBuilder b)]) = _$FoodRecord;
 
   FoodRecord._();
 }

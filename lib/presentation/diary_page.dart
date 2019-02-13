@@ -11,6 +11,7 @@ import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/models/uncertainty.dart';
 import 'package:flutter/material.dart' hide Builder;
 
 import 'package:flutter_built_redux/flutter_built_redux.dart';
@@ -29,10 +30,9 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
   @override
   Widget build(BuildContext context, DiaryPageVM vm, Actions actions) {
 
-    var fsDiary = new FSDocument<FoodRecord>((b) => b
-      ..path = new DiaryRecordPath((b) => b
+    var fsDiary = new FSCollection<FoodRecord>((b) => b
+      ..path = new DiaryRecordCollectionPath((b) => b
         ..userId = vm.userId
-        ..diaryRecordId = "42"
       )
       ..listeners = ListBuilder([hashCode])
     );
@@ -53,10 +53,31 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
                   icon: Icon(Icons.delete),
                   onPressed: () => print("DELETE")
               ),
-
+              // TODO: CREATE FSCOLLECTION<FOODRECORD>, WITH DIARY_RECORD_PATH (LISTEN TO ALL DAYS FOR NOW)
             )
           ).toList()//<Widget>[],
-        )
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () {
+            // TODO: actions.navigation.goTo(editPage) with an empty food
+            var fsDiaryRecord = new FSDocument<FoodRecord>((b) => b
+              ..path = new DiaryRecordPath((b) => b
+                ..userId = vm.userId
+                ..diaryRecordId = (new Random().nextInt(1000)).toString() // TODO: allow nullable ID, to be generated!!!
+              )
+              ..listeners = ListBuilder([5235])
+            );
+
+            FoodRecord fr = new FoodRecord((b) => b
+                ..foodName = "Oola oola ${(new Random().nextInt(1000)).toString()}"
+                ..grams = new Random().nextInt(100).toDouble()
+                ..uncertainty = Uncertainty.accurate
+            );
+
+            fsDiaryRecord.save(fr);
+          }
+        ),
       );
     });
 

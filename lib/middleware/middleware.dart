@@ -76,22 +76,25 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigat
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe() {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
-    print("SUBSCRIPTION: ${action.payload.streamSubscription}");
+    log.fine("SUBSCRIPTION: ${action.payload.streamSubscription}");
 //    print("SUBSCRIPTION: ${(action.payload as FS).streamSubscription}");
 
+
     // Already listening to Firestore snapshots
-    if (api.state.subscriptions.contains(action.payload)) {
-      api.actions.firestore.additionalSubscription(action.payload);
-    } // Called without a subscription
-    else if (action.payload.streamSubscription == null) {
-      Function onData = (t) => api.actions.diaryReceived(t); // FIXME
-      Function onError = print;
+//    if (api.state.subscriptions.contains(action.payload)) { // FIXME: 2 separate methods!!! (action is either FSDOC or FSCOLLECTION)
+      if (api.state.collectionSubscriptions.contains(action.payload)) {
+        api.actions.firestore.additionalSubscription(action.payload);
+      } // Called without a subscription
+      else if (action.payload.streamSubscription == null) {
+        Function onData = (t) => api.actions.diaryReceived(t); // FIXME
+//        Function onData = (t) => log.shout(t); // FIXME
+        Function onError = print;
 
 //      print(builder.subscriptions[i] is FSDocument<FoodRecord>); // TODO: i was missing <generics!>
 
 //      (action.payload as FS).getOnDataAction(store.actions) -> returns function!, no need for switch!
 
-      // TODO: different actions based on switch(action.payload.runType) case: FSDiary, etc.
+        // TODO: different actions based on switch(action.payload.runType) case: FSDiary, etc.
 //      print(action.payload.runtimeType);
 //      print(action.payload.runtimeType is FSDiary); // FIXME
 //      switch (action.payload.runtimeType) {
@@ -105,11 +108,12 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 //          onData = (t) => api.actions.diaryReceived(t);
 //          break;
 //      }
-      api.actions.firestore.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(onData, onError: onError)));
-    } // Subscribe to Firestore (recursion base case)
-    else {
-      next(action);
-    }
+        api.actions.firestore.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(onData, onError: onError)));
+      } // Subscribe to Firestore (recursion base case)
+      else {
+        next(action);
+      }
+    };
 
     // TODO: this logic is flawed (since i introduced subscribe, secondSubscription - it's never called!!!!)
 //    if (action.payload.streamSubscription == null && !api.state.subscriptions.contains(action.payload)) {
@@ -179,7 +183,6 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 //      print("stopping");
 //    }
 //    next(action);
-  };
 }
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreUnsubscribe() {

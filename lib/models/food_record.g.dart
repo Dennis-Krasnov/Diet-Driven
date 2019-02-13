@@ -74,6 +74,8 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
 
 class _$FoodRecord extends FoodRecord {
   @override
+  final String id;
+  @override
   final String foodName;
   @override
   final Uncertainty uncertainty;
@@ -85,7 +87,8 @@ class _$FoodRecord extends FoodRecord {
   factory _$FoodRecord([void updates(FoodRecordBuilder b)]) =>
       (new FoodRecordBuilder()..update(updates)).build();
 
-  _$FoodRecord._({this.foodName, this.uncertainty, this.grams, this.sodium})
+  _$FoodRecord._(
+      {this.id, this.foodName, this.uncertainty, this.grams, this.sodium})
       : super._() {
     if (foodName == null) {
       throw new BuiltValueNullFieldError('FoodRecord', 'foodName');
@@ -126,6 +129,7 @@ class _$FoodRecord extends FoodRecord {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodRecord')
+          ..add('id', id)
           ..add('foodName', foodName)
           ..add('uncertainty', uncertainty)
           ..add('grams', grams)
@@ -136,6 +140,10 @@ class _$FoodRecord extends FoodRecord {
 
 class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   _$FoodRecord _$v;
+
+  String _id;
+  String get id => _$this._id;
+  set id(String id) => _$this._id = id;
 
   String _foodName;
   String get foodName => _$this._foodName;
@@ -157,6 +165,7 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
 
   FoodRecordBuilder get _$this {
     if (_$v != null) {
+      _id = _$v.id;
       _foodName = _$v.foodName;
       _uncertainty = _$v.uncertainty;
       _grams = _$v.grams;
@@ -183,6 +192,7 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   _$FoodRecord build() {
     final _$result = _$v ??
         new _$FoodRecord._(
+            id: id,
             foodName: foodName,
             uncertainty: uncertainty,
             grams: grams,

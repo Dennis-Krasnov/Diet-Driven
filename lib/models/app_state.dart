@@ -19,6 +19,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
 
   //
   BuiltList<FSDocument> get subscriptions;
+  BuiltList<FSCollection> get collectionSubscriptions;
 
   //
   BuiltList<FoodRecord> get diaryRecords;

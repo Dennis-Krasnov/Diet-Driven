@@ -1,5 +1,6 @@
 library actions; // TODO: rename as action
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/firestore_actions.dart';
 import 'package:diet_driven/actions/navigation_actions.dart';
@@ -32,7 +33,8 @@ abstract class Actions extends ReduxActions {
   // TODO: close store
   ActionDispatcher disposeApp;
 
-  ActionDispatcher<FoodRecord> diaryReceived; // TODO: move
+  ActionDispatcher<FoodRecord> diaryRecordReceived; // TODO: move
+  ActionDispatcher<BuiltList<FoodRecord>> diaryReceived;
 
   factory Actions() => new _$Actions();
   Actions._();

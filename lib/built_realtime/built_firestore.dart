@@ -7,6 +7,8 @@ import 'package:built_value/built_value.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diet_driven/built_realtime/serializers.dart';
+import 'package:diet_driven/models/food_record.dart';
+import 'package:diet_driven/models/uncertainty.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -14,79 +16,30 @@ part 'built_firestore.g.dart';
 
 final Logger log = new Logger("FIRESTORE");
 
-//@BuiltValue(instantiable: false)
-//abstract class FS<T> {
-//  @BuiltValueField(serialize: false, compare: false)
-//  @nullable
-//  StreamSubscription get streamSubscription;
-//
-//  @BuiltValueField(serialize: false, compare: false)
-//  Observable<T> get snapshotObservable;
-//
-//  @BuiltValueField(serialize: false, compare: false)
-//  BuiltList<int> get listeners;
-//}
-
-//@BuiltValue(instantiable: false)
-//abstract class FSDocument<T> implements FS<T>{
-//
-//  @BuiltValueField(serialize: false, compare: false)
-//  DocumentReference get docRef;
-//
-//  void update(T updated) => docRef.updateData(standardSerializers.serialize(updated)).catchError(print);
-//
-////  @override
-//  Observable<T> get snapshotObservable => Observable<T>(Firestore.instance.document(docRef.path).snapshots().asyncMap((ds) => standardSerializers.deserialize(ds.data))).distinct();
-//}
-
-//@BuiltValue(instantiable: false)
-//abstract class FSMonoCollection<T> {
-//  @BuiltValueField(serialize: false, compare: false)
-//  CollectionReference get collectionRef;
-////  void update(T updated) => collectionRef.updateData(standardSerializers.serialize(updated)).catchError(print); // FIXME
-////  Observable<T> get snapshotObservable => Observable(Firestore.instance.document(docRef.path).snapshots().asyncMap((ds) => standardSerializers.deserialize(ds.data)));
-//}
-//
-//@BuiltValue(instantiable: false)
-//abstract class FSMultiCollection<T> {
-//  @BuiltValueField(serialize: false, compare: false)
-//  CollectionReference get collectionRef;
-////  void update(T updated) => collectionRef.updateData(standardSerializers.serialize(updated)).catchError(print); // FIXME
-////  Observable<T> get snapshotObservable => Observable(Firestore.instance.document(docRef.path).snapshots().asyncMap((ds) => standardSerializers.deserialize(ds.data)));
-//}
-//
-//@BuiltValue(instantiable: false)
-//abstract class FSCollection<T> {
-//  @BuiltValueField(serialize: false, compare: false)
-//  CollectionReference get collectionRef;
-////  void update(T updated) => collectionRef.updateData(standardSerializers.serialize(updated)).catchError(print); // FIXME
-////  Observable<T> get snapshotObservable => Observable(Firestore.instance.document(docRef.path).snapshots().asyncMap((ds) => standardSerializers.deserialize(ds.data)));
-//}
-
-//abstract class GenericFSDocument with FSDocument<dynamic> implements Built<GenericFSDocument, GenericFSDocumentBuilder> {
-//  GenericFSDocument._();
-//  factory GenericFSDocument([updates(GenericFSDocumentBuilder b)]) = _$GenericFSDocument;
-//}
-
-//@BuiltValue(instantiable/*: false)
-//abstract class FSDocument<T> {
-//  @BuiltValueField(serialize: false, compare: false)
-//  DocumentReference get docRef;
-
-//  @BuiltValueField(serialize: false, compare: false)
-//  Observable<T> get snapshotObservable => Observable<T>(Firestore.instance.document(docRef.path).snapshots().asyncMap((ds) => standardSerializers.deserialize(ds.data))).distinct();
-
-//  void update(T updated) => docRef.updateData(standardSerializers.serialize(updated)).catchError(print);
-//}*/
-
+///
 abstract class Path {
   String generate();
 }
 
+///
+abstract class DiaryRecordCollectionPath implements Path, Built<DiaryRecordCollectionPath, DiaryRecordCollectionPathBuilder> {
+  String get userId;
+
+  @override
+  String generate() {
+    return "/users/$userId/food_diary/";
+  }
+
+  DiaryRecordCollectionPath._();
+  factory DiaryRecordCollectionPath([updates(DiaryRecordCollectionPathBuilder b)]) = _$DiaryRecordCollectionPath;
+}
+
+///
 abstract class DiaryRecordPath implements Path, Built<DiaryRecordPath, DiaryRecordPathBuilder> {
   String get userId;
   String get diaryRecordId;
 
+  // can always call docRef.collection(...)
 //  @BuiltValueField(serialize: false, compare: false)
 //  Path subCollection1;
 //  @nullable
@@ -94,7 +47,7 @@ abstract class DiaryRecordPath implements Path, Built<DiaryRecordPath, DiaryReco
 
   @override
   String generate() {
-    return "/users/$userId";
+    return "/users/$userId/food_diary/$diaryRecordId";
   }
   
   DiaryRecordPath._();
@@ -106,7 +59,7 @@ abstract class DiaryRecordPath implements Path, Built<DiaryRecordPath, DiaryReco
 // TODO: Proposed syntax for updating:
 // FoodRecord -> FSDocument<FoodRecord> // with generics
 
-//
+///
 @BuiltValue(instantiable: false)
 abstract class FS<T> {
   // Document class is instantiated and compared with path
@@ -127,8 +80,15 @@ abstract class FS<T> {
 
   //
   void update(T updated);
+
+  //
+  void save(T obj);
+
+  //
+  void delete();
 }
 
+///
 abstract class FSDocument<T> implements FS<T>, Built<FSDocument<T>, FSDocumentBuilder<T>> {
   // Firestore document reference
   @BuiltValueField(serialize: false, compare: false)
@@ -140,52 +100,50 @@ abstract class FSDocument<T> implements FS<T>, Built<FSDocument<T>, FSDocumentBu
   @override
   void update(T updated) => docRef.updateData(standardSerializers.serialize(updated)).catchError(print);
 
+  @override
+  void save(T obj) => docRef.setData(standardSerializers.serialize(obj)).catchError(print);
+
+  @override
+  void delete() => docRef.delete();
 
   FSDocument._();
   factory FSDocument([updates(FSDocumentBuilder<T> b)]) = _$FSDocument<T>;
 }
 
+///
 abstract class FSCollection<T> implements FS<BuiltList<T>>, Built<FSCollection<T>, FSCollectionBuilder<T>> {
-  // Firestore document reference
+  // Firestore collection reference
   @BuiltValueField(serialize: false, compare: false)
   CollectionReference get collectionRef => Firestore.instance.collection(path.generate());
 
   @override
-//  Observable<T> get snapshotObservable => Observable<T>(Firestore.instance.document(collectionRef.path).snapshots().asyncMap((ds) => standardSerializers.deserialize(ds.data))).distinct();
   Observable<BuiltList<T>> get snapshotObservable => Observable<BuiltList<T>>(Firestore.instance.collection(collectionRef.path).snapshots().asyncMap((ds) =>
-      BuiltList.from(ds.documents.map((doc) => standardSerializers.deserialize(doc)))
+    BuiltList<T>.from(ds.documents.map((doc) => standardSerializers.deserialize(doc.data)))
+    // TODO: add doc.documentID somehow to every object? (T extends ??, set ??'s property?)
   )).distinct();
 
   @override
 //  void update(BuiltList<T> updated) => collectionRef.updateData(standardSerializers.serialize(updated)).catchError(print);
   void update(BuiltList<T> updated) {
-    print("UPDATE:");
-    print(updated);
+    // delete all!
+
+    // foreach
+//    collectionRef.add();
+
+    // or try to update only changed?
+
+
+    log.info("UPDATE: $updated");
 //    updated.forEach((doc) => doc);
 //    collectionRef.updateData(standardSerializers.serialize(updated)).catchError(print);
   }
 
+  @override
+  void save(BuiltList<T> obj) => null;
+
+  @override
+  void delete() => null;
 
   FSCollection._();
   factory FSCollection([updates(FSCollectionBuilder<T> b)]) = _$FSCollection<T>;
 }
-
-
-//@BuiltValue() // don't know what this does... // https://github.com/google/built_value.dart/issues/386
-//abstract class FSDiary with FSDocument<FoodRecord> implements Built<FSDiary, FSDiaryBuilder> {
-//  String get userId;
-//  String get diaryRecordId;
-//
-//  @override
-//  DocumentReference get docRef => Firestore.instance.document('users/$userId');
-//
-//  FSDiary._();
-//  factory FSDiary([updates(FSDiaryBuilder b)]) = _$FSDiary;
-//}
-
-//  factory FSDiary([updates(FSDiaryBuilder b)]) => _$FSDiary((b) => b
-//      ..sub = snapshotObservable.listen((fr) => print(fr))
-//  );
-
-//typedef F = List<T> Function<T>(T);
-//typedef F =  Function(int);

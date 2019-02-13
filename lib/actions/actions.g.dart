@@ -17,8 +17,10 @@ class _$Actions extends Actions {
       new ActionDispatcher<dynamic>('Actions-initApp');
   final ActionDispatcher<dynamic> disposeApp =
       new ActionDispatcher<dynamic>('Actions-disposeApp');
-  final ActionDispatcher<FoodRecord> diaryReceived =
-      new ActionDispatcher<FoodRecord>('Actions-diaryReceived');
+  final ActionDispatcher<FoodRecord> diaryRecordReceived =
+      new ActionDispatcher<FoodRecord>('Actions-diaryRecordReceived');
+  final ActionDispatcher<BuiltList<FoodRecord>> diaryReceived =
+      new ActionDispatcher<BuiltList<FoodRecord>>('Actions-diaryReceived');
   final UserActions user = new UserActions();
   final NavigationActions navigation = new NavigationActions();
   final FirestoreActions firestore = new FirestoreActions();
@@ -27,6 +29,7 @@ class _$Actions extends Actions {
   void setDispatcher(Dispatcher dispatcher) {
     initApp.setDispatcher(dispatcher);
     disposeApp.setDispatcher(dispatcher);
+    diaryRecordReceived.setDispatcher(dispatcher);
     diaryReceived.setDispatcher(dispatcher);
     user.setDispatcher(dispatcher);
     navigation.setDispatcher(dispatcher);
@@ -39,6 +42,8 @@ class ActionsNames {
       new ActionName<dynamic>('Actions-initApp');
   static final ActionName<dynamic> disposeApp =
       new ActionName<dynamic>('Actions-disposeApp');
-  static final ActionName<FoodRecord> diaryReceived =
-      new ActionName<FoodRecord>('Actions-diaryReceived');
+  static final ActionName<FoodRecord> diaryRecordReceived =
+      new ActionName<FoodRecord>('Actions-diaryRecordReceived');
+  static final ActionName<BuiltList<FoodRecord>> diaryReceived =
+      new ActionName<BuiltList<FoodRecord>>('Actions-diaryReceived');
 }
