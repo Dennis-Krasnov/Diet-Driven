@@ -6,33 +6,170 @@ part of built_firestore;
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$DiaryRecordCollectionPath extends DiaryRecordCollectionPath {
+abstract class FSBuilder<T> {
+  void replace(FS<T> other);
+  void update(void updates(FSBuilder<T> b));
+  StreamSubscription get streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription);
+
+  Observable<T> get snapshotObservable;
+  set snapshotObservable(Observable<T> snapshotObservable);
+}
+
+abstract class FSDocumentBuilder<T> {
+  void replace(FSDocument<T> other);
+  void update(void updates(FSDocumentBuilder<T> b));
+  DocumentReference get docRef;
+  set docRef(DocumentReference docRef);
+
+  StreamSubscription get streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription);
+}
+
+abstract class FSCollectionBuilder<T> {
+  void replace(FSCollection<T> other);
+  void update(void updates(FSCollectionBuilder<T> b));
+  CollectionReference get colRef;
+  set colRef(CollectionReference colRef);
+
+  StreamSubscription get streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription);
+}
+
+class _$FoodRecordDocument extends FoodRecordDocument {
   @override
   final String userId;
+  @override
+  final String foodRecordId;
+  @override
+  final StreamSubscription streamSubscription;
 
-  factory _$DiaryRecordCollectionPath(
-          [void updates(DiaryRecordCollectionPathBuilder b)]) =>
-      (new DiaryRecordCollectionPathBuilder()..update(updates)).build();
+  factory _$FoodRecordDocument([void updates(FoodRecordDocumentBuilder b)]) =>
+      (new FoodRecordDocumentBuilder()..update(updates)).build();
 
-  _$DiaryRecordCollectionPath._({this.userId}) : super._() {
+  _$FoodRecordDocument._(
+      {this.userId, this.foodRecordId, this.streamSubscription})
+      : super._() {
     if (userId == null) {
-      throw new BuiltValueNullFieldError('DiaryRecordCollectionPath', 'userId');
+      throw new BuiltValueNullFieldError('FoodRecordDocument', 'userId');
+    }
+    if (foodRecordId == null) {
+      throw new BuiltValueNullFieldError('FoodRecordDocument', 'foodRecordId');
     }
   }
 
   @override
-  DiaryRecordCollectionPath rebuild(
-          void updates(DiaryRecordCollectionPathBuilder b)) =>
+  FoodRecordDocument rebuild(void updates(FoodRecordDocumentBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  DiaryRecordCollectionPathBuilder toBuilder() =>
-      new DiaryRecordCollectionPathBuilder()..replace(this);
+  FoodRecordDocumentBuilder toBuilder() =>
+      new FoodRecordDocumentBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is DiaryRecordCollectionPath && userId == other.userId;
+    return other is FoodRecordDocument &&
+        userId == other.userId &&
+        foodRecordId == other.foodRecordId;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, userId.hashCode), foodRecordId.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('FoodRecordDocument')
+          ..add('userId', userId)
+          ..add('foodRecordId', foodRecordId)
+          ..add('streamSubscription', streamSubscription))
+        .toString();
+  }
+}
+
+class FoodRecordDocumentBuilder
+    implements Builder<FoodRecordDocument, FoodRecordDocumentBuilder> {
+  _$FoodRecordDocument _$v;
+
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
+
+  String _foodRecordId;
+  String get foodRecordId => _$this._foodRecordId;
+  set foodRecordId(String foodRecordId) => _$this._foodRecordId = foodRecordId;
+
+  StreamSubscription _streamSubscription;
+  StreamSubscription get streamSubscription => _$this._streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription) =>
+      _$this._streamSubscription = streamSubscription;
+
+  FoodRecordDocumentBuilder();
+
+  FoodRecordDocumentBuilder get _$this {
+    if (_$v != null) {
+      _userId = _$v.userId;
+      _foodRecordId = _$v.foodRecordId;
+      _streamSubscription = _$v.streamSubscription;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(FoodRecordDocument other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$FoodRecordDocument;
+  }
+
+  @override
+  void update(void updates(FoodRecordDocumentBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$FoodRecordDocument build() {
+    final _$result = _$v ??
+        new _$FoodRecordDocument._(
+            userId: userId,
+            foodRecordId: foodRecordId,
+            streamSubscription: streamSubscription);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$FoodDiaryCollection extends FoodDiaryCollection {
+  @override
+  final String userId;
+  @override
+  final StreamSubscription streamSubscription;
+
+  factory _$FoodDiaryCollection([void updates(FoodDiaryCollectionBuilder b)]) =>
+      (new FoodDiaryCollectionBuilder()..update(updates)).build();
+
+  _$FoodDiaryCollection._({this.userId, this.streamSubscription}) : super._() {
+    if (userId == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryCollection', 'userId');
+    }
+  }
+
+  @override
+  FoodDiaryCollection rebuild(void updates(FoodDiaryCollectionBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  FoodDiaryCollectionBuilder toBuilder() =>
+      new FoodDiaryCollectionBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is FoodDiaryCollection && userId == other.userId;
   }
 
   @override
@@ -42,400 +179,55 @@ class _$DiaryRecordCollectionPath extends DiaryRecordCollectionPath {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('DiaryRecordCollectionPath')
-          ..add('userId', userId))
-        .toString();
-  }
-}
-
-class DiaryRecordCollectionPathBuilder
-    implements
-        Builder<DiaryRecordCollectionPath, DiaryRecordCollectionPathBuilder> {
-  _$DiaryRecordCollectionPath _$v;
-
-  String _userId;
-  String get userId => _$this._userId;
-  set userId(String userId) => _$this._userId = userId;
-
-  DiaryRecordCollectionPathBuilder();
-
-  DiaryRecordCollectionPathBuilder get _$this {
-    if (_$v != null) {
-      _userId = _$v.userId;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(DiaryRecordCollectionPath other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$DiaryRecordCollectionPath;
-  }
-
-  @override
-  void update(void updates(DiaryRecordCollectionPathBuilder b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$DiaryRecordCollectionPath build() {
-    final _$result = _$v ?? new _$DiaryRecordCollectionPath._(userId: userId);
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$DiaryRecordPath extends DiaryRecordPath {
-  @override
-  final String userId;
-  @override
-  final String diaryRecordId;
-
-  factory _$DiaryRecordPath([void updates(DiaryRecordPathBuilder b)]) =>
-      (new DiaryRecordPathBuilder()..update(updates)).build();
-
-  _$DiaryRecordPath._({this.userId, this.diaryRecordId}) : super._() {
-    if (userId == null) {
-      throw new BuiltValueNullFieldError('DiaryRecordPath', 'userId');
-    }
-    if (diaryRecordId == null) {
-      throw new BuiltValueNullFieldError('DiaryRecordPath', 'diaryRecordId');
-    }
-  }
-
-  @override
-  DiaryRecordPath rebuild(void updates(DiaryRecordPathBuilder b)) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  DiaryRecordPathBuilder toBuilder() =>
-      new DiaryRecordPathBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is DiaryRecordPath &&
-        userId == other.userId &&
-        diaryRecordId == other.diaryRecordId;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc($jc(0, userId.hashCode), diaryRecordId.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('DiaryRecordPath')
+    return (newBuiltValueToStringHelper('FoodDiaryCollection')
           ..add('userId', userId)
-          ..add('diaryRecordId', diaryRecordId))
+          ..add('streamSubscription', streamSubscription))
         .toString();
   }
 }
 
-class DiaryRecordPathBuilder
-    implements Builder<DiaryRecordPath, DiaryRecordPathBuilder> {
-  _$DiaryRecordPath _$v;
+class FoodDiaryCollectionBuilder
+    implements Builder<FoodDiaryCollection, FoodDiaryCollectionBuilder> {
+  _$FoodDiaryCollection _$v;
 
   String _userId;
   String get userId => _$this._userId;
   set userId(String userId) => _$this._userId = userId;
 
-  String _diaryRecordId;
-  String get diaryRecordId => _$this._diaryRecordId;
-  set diaryRecordId(String diaryRecordId) =>
-      _$this._diaryRecordId = diaryRecordId;
+  StreamSubscription _streamSubscription;
+  StreamSubscription get streamSubscription => _$this._streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription) =>
+      _$this._streamSubscription = streamSubscription;
 
-  DiaryRecordPathBuilder();
+  FoodDiaryCollectionBuilder();
 
-  DiaryRecordPathBuilder get _$this {
+  FoodDiaryCollectionBuilder get _$this {
     if (_$v != null) {
       _userId = _$v.userId;
-      _diaryRecordId = _$v.diaryRecordId;
+      _streamSubscription = _$v.streamSubscription;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(DiaryRecordPath other) {
+  void replace(FoodDiaryCollection other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$DiaryRecordPath;
+    _$v = other as _$FoodDiaryCollection;
   }
 
   @override
-  void update(void updates(DiaryRecordPathBuilder b)) {
+  void update(void updates(FoodDiaryCollectionBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$DiaryRecordPath build() {
+  _$FoodDiaryCollection build() {
     final _$result = _$v ??
-        new _$DiaryRecordPath._(userId: userId, diaryRecordId: diaryRecordId);
-    replace(_$result);
-    return _$result;
-  }
-}
-
-abstract class FSBuilder<T> {
-  void replace(FS<T> other);
-  void update(void updates(FSBuilder<T> b));
-  Path get path;
-  set path(Path path);
-
-  ListBuilder<int> get listeners;
-  set listeners(ListBuilder<int> listeners);
-
-  StreamSubscription get streamSubscription;
-  set streamSubscription(StreamSubscription streamSubscription);
-
-  Observable<T> get snapshotObservable;
-  set snapshotObservable(Observable<T> snapshotObservable);
-}
-
-class _$FSDocument<T> extends FSDocument<T> {
-  @override
-  final Path path;
-  @override
-  final BuiltList<int> listeners;
-  @override
-  final StreamSubscription streamSubscription;
-
-  factory _$FSDocument([void updates(FSDocumentBuilder<T> b)]) =>
-      (new FSDocumentBuilder<T>()..update(updates)).build();
-
-  _$FSDocument._({this.path, this.listeners, this.streamSubscription})
-      : super._() {
-    if (path == null) {
-      throw new BuiltValueNullFieldError('FSDocument', 'path');
-    }
-    if (listeners == null) {
-      throw new BuiltValueNullFieldError('FSDocument', 'listeners');
-    }
-    if (T == dynamic) {
-      throw new BuiltValueMissingGenericsError('FSDocument', 'T');
-    }
-  }
-
-  @override
-  FSDocument<T> rebuild(void updates(FSDocumentBuilder<T> b)) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  FSDocumentBuilder<T> toBuilder() => new FSDocumentBuilder<T>()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is FSDocument && path == other.path;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, path.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('FSDocument')
-          ..add('path', path)
-          ..add('listeners', listeners)
-          ..add('streamSubscription', streamSubscription))
-        .toString();
-  }
-}
-
-class FSDocumentBuilder<T>
-    implements Builder<FSDocument<T>, FSDocumentBuilder<T>>, FSBuilder<T> {
-  _$FSDocument<T> _$v;
-
-  Path _path;
-  Path get path => _$this._path;
-  set path(Path path) => _$this._path = path;
-
-  ListBuilder<int> _listeners;
-  ListBuilder<int> get listeners =>
-      _$this._listeners ??= new ListBuilder<int>();
-  set listeners(ListBuilder<int> listeners) => _$this._listeners = listeners;
-
-  StreamSubscription _streamSubscription;
-  StreamSubscription get streamSubscription => _$this._streamSubscription;
-  set streamSubscription(StreamSubscription streamSubscription) =>
-      _$this._streamSubscription = streamSubscription;
-
-  FSDocumentBuilder();
-
-  FSDocumentBuilder<T> get _$this {
-    if (_$v != null) {
-      _path = _$v.path;
-      _listeners = _$v.listeners?.toBuilder();
-      _streamSubscription = _$v.streamSubscription;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant FSDocument<T> other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$FSDocument<T>;
-  }
-
-  @override
-  void update(void updates(FSDocumentBuilder<T> b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$FSDocument<T> build() {
-    _$FSDocument<T> _$result;
-    try {
-      _$result = _$v ??
-          new _$FSDocument<T>._(
-              path: path,
-              listeners: listeners.build(),
-              streamSubscription: streamSubscription);
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'listeners';
-        listeners.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'FSDocument', _$failedField, e.toString());
-      }
-      rethrow;
-    }
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$FSCollection<T> extends FSCollection<T> {
-  @override
-  final Path path;
-  @override
-  final BuiltList<int> listeners;
-  @override
-  final StreamSubscription streamSubscription;
-
-  factory _$FSCollection([void updates(FSCollectionBuilder<T> b)]) =>
-      (new FSCollectionBuilder<T>()..update(updates)).build();
-
-  _$FSCollection._({this.path, this.listeners, this.streamSubscription})
-      : super._() {
-    if (path == null) {
-      throw new BuiltValueNullFieldError('FSCollection', 'path');
-    }
-    if (listeners == null) {
-      throw new BuiltValueNullFieldError('FSCollection', 'listeners');
-    }
-    if (T == dynamic) {
-      throw new BuiltValueMissingGenericsError('FSCollection', 'T');
-    }
-  }
-
-  @override
-  FSCollection<T> rebuild(void updates(FSCollectionBuilder<T> b)) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  FSCollectionBuilder<T> toBuilder() =>
-      new FSCollectionBuilder<T>()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is FSCollection && path == other.path;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, path.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('FSCollection')
-          ..add('path', path)
-          ..add('listeners', listeners)
-          ..add('streamSubscription', streamSubscription))
-        .toString();
-  }
-}
-
-class FSCollectionBuilder<T>
-    implements
-        Builder<FSCollection<T>, FSCollectionBuilder<T>>,
-        FSBuilder<BuiltList<T>> {
-  _$FSCollection<T> _$v;
-
-  Path _path;
-  Path get path => _$this._path;
-  set path(Path path) => _$this._path = path;
-
-  ListBuilder<int> _listeners;
-  ListBuilder<int> get listeners =>
-      _$this._listeners ??= new ListBuilder<int>();
-  set listeners(ListBuilder<int> listeners) => _$this._listeners = listeners;
-
-  StreamSubscription _streamSubscription;
-  StreamSubscription get streamSubscription => _$this._streamSubscription;
-  set streamSubscription(StreamSubscription streamSubscription) =>
-      _$this._streamSubscription = streamSubscription;
-
-  FSCollectionBuilder();
-
-  FSCollectionBuilder<T> get _$this {
-    if (_$v != null) {
-      _path = _$v.path;
-      _listeners = _$v.listeners?.toBuilder();
-      _streamSubscription = _$v.streamSubscription;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant FSCollection<T> other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$FSCollection<T>;
-  }
-
-  @override
-  void update(void updates(FSCollectionBuilder<T> b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$FSCollection<T> build() {
-    _$FSCollection<T> _$result;
-    try {
-      _$result = _$v ??
-          new _$FSCollection<T>._(
-              path: path,
-              listeners: listeners.build(),
-              streamSubscription: streamSubscription);
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'listeners';
-        listeners.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'FSCollection', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+        new _$FoodDiaryCollection._(
+            userId: userId, streamSubscription: streamSubscription);
     replace(_$result);
     return _$result;
   }

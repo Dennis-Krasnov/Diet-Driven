@@ -39,13 +39,13 @@ class GoalsPage extends StoreConnector<AppState, Actions, GoalsPageVM> {
 
 //    new FSDocument with Diary();
 
-    var fsDiary = new FSDocument<FoodRecord>((b) => b
-      ..path = new DiaryRecordPath((b) => b
-        ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
-        ..diaryRecordId = new Random().nextInt(1).toString()
-      )
-      ..listeners = ListBuilder([new Random().nextInt(10)])
-    );
+//    var fsDiary = new FSDocument<FoodRecord>((b) => b
+//      ..path = new DiaryRecordPath((b) => b
+//        ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
+//        ..diaryRecordId = new Random().nextInt(1).toString()
+//      )
+//      ..listeners = ListBuilder([new Random().nextInt(10)])
+//    );
 
     return Scaffold(
         appBar: AppBar(
@@ -57,7 +57,7 @@ class GoalsPage extends StoreConnector<AppState, Actions, GoalsPageVM> {
           child: Column(children: [
             RaisedButton(
               // TODO: give the FSDIARY the list of who's listening!!! just keep track of a list of connections instead!!!
-                onPressed: () => actions.firestore.subscribe(fsDiary),
+//                onPressed: () => actions.firestore.subscribe(fsDiary),
 //                onPressed: () => actions.startDiaryListen(Tuple2(new FSDiary((b) => b..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3" ..diaryRecordId = new Random().nextInt(5000).toString()), [4224])),
 //              onPressed: () => actions.startDiaryListen(this.hashCode),
               child: Text("ADD DIARY SUBSCRIPTION"),
@@ -72,12 +72,12 @@ class GoalsPage extends StoreConnector<AppState, Actions, GoalsPageVM> {
               child: Text("UPDATE"),
               onPressed: () {
 //                var fs = new FSDiary((b) => b..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3" ..diaryRecordId = "424222");
-                var fsDiaryRecord = new FSDocument<FoodRecord>((b) => b
-                  ..path = new DiaryRecordPath((b) => b
-                    ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
-                    ..diaryRecordId = "424222"
-                  )
-                );
+//                var fsDiaryRecord = new FSDocument<FoodRecord>((b) => b
+//                  ..path = new DiaryRecordPath((b) => b
+//                    ..userId = "0WjbQ1XzVCe1zvwHgE4aluu4FiC3"
+//                    ..diaryRecordId = "424222"
+//                  )
+//                );
                 // TODO: call this from middleware!!! (add line to setmultimap if it didn't exist, else remove it!) - key does the syncing!
                 // TODO: it calls reducer that saves it in the SetMultimap<FSDOC, int>
 //                print(fs);
@@ -91,7 +91,7 @@ class GoalsPage extends StoreConnector<AppState, Actions, GoalsPageVM> {
                   ..sodium = new Random().nextDouble() * 20
                 );
 
-                fsDiaryRecord.update(temp);
+//                fsDiaryRecord.update(temp);
               },
             ),
 
@@ -99,12 +99,12 @@ class GoalsPage extends StoreConnector<AppState, Actions, GoalsPageVM> {
               shrinkWrap: true,
               itemCount: vm.subscriptions.length,
               itemBuilder: (BuildContext context, int index) {
-                var r = vm.subscriptions[index];
+                var r = vm.subscriptions.toList()[index];
                 return ListTile(
 //                  title: Text((r as FSDiary).docRef.path),
 //                  subtitle: Text((r as FSDiary).diaryRecordId),//r.listeners.toString()),
 //                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.stopDiaryListen(r)),
-                  title: Text(r.path.generate()),
+//                  title: Text(r.path.generate()),
                   trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.firestore.unsubscribe(r)),
                   onTap: () => print(r),
                 );
@@ -180,7 +180,8 @@ abstract class GoalsPageVM implements Built<GoalsPageVM, GoalsPageVMBuilder> {
 //  BuiltSetMultimap<FSDocument, int> get subscriptions;
 //  BuiltList<FS> get subscriptions;
 //  BuiltList<Built> get subscriptions;
-  BuiltList<FSDocument> get subscriptions;
+//  BuiltList<FSDocument> get subscriptions;
+  BuiltSet<FS> get subscriptions;
   BuiltList<FoodRecord> get diaryRecords;
 
   GoalsPageVM._();

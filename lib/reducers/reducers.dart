@@ -44,6 +44,15 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
 
 //      ..combineNested(new NestedReducerBuilder((s) => s.subscriptions.))
 
+
+    ..add(FirestoreActionsNames.additionalSubscription, additionalSubscription)
+
+    ..combineSet(new SetReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
+        ..add(FirestoreActionsNames.subscribe, firstSubscription)
+        // TODO: unsubscribe
+    )
+
+  /*
       ..add(FirestoreActionsNames.additionalSubscription, additionalSubscription)
 //      ..combineList(new ListReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
       ..combineList(new ListReducerBuilder((s) => s.collectionSubscriptions, (b) => b.collectionSubscriptions)
@@ -56,11 +65,12 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
 //          ..add(ActionsNames.startDiaryListen, startDiaryListen)
           ..add(FirestoreActionsNames.unsubscribe, stopDiaryListen)
       )
-
+*/
       ..combineList(new ListReducerBuilder((s) => s.diaryRecords, (b) => b.diaryRecords)
 //        ..add(ActionsNames.startDiaryListen, startDiaryListen)
 //        ..add(ActionsNames.stopDiaryListen, stopDiaryListen)
           ..add(ActionsNames.diaryReceived, diaryReceived)
+          ..add(ActionsNames.diaryRecordReceived, diaryRecordReceived)
       )
 
 //      ..combineList(new ListReducerBuilder((s) => s.widgets, (b) => b.widgets)
@@ -127,7 +137,8 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
 //
 //}
 
-void firstSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
+//void firstSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
+void firstSubscription(BuiltSet<FS> listState, Action<FS> action, SetBuilder<FS> listBuilder) {
   log.fine("first subscription: ${action.payload}");
   listBuilder.add(action.payload);
   log.finer(listBuilder.build());
@@ -140,7 +151,7 @@ void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder b
 //  listBuilder.add(action.payload);
   var fs = action.payload;
 //  log.finer("APPENDING LISTENERS: ${fs.listeners}");
-  int i = state.subscriptions.indexOf(action.payload);
+//  int i = state.subscriptions.indexOf(action.payload);
 
 //  builder.subscriptions[i].listeners.rebuild((b) => b..add(24));
 
@@ -149,8 +160,9 @@ void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder b
 /// problem: list is FS!!!! need it to be FSDocument! ---- but does it solve it!?!?!
   ///
   print(builder.subscriptions);
-  print(builder.subscriptions[i].listeners);
-  builder.subscriptions[i] = builder.subscriptions[i].rebuild((b) => b
+  ///print(builder.subscriptions[i].listeners);
+  ///builder.subscriptions[i] = builder.subscriptions[i].rebuild((b) => b
+
 //      ..listeners = ListBuilder([1, 2, 4])
 //      ..listeners.clear()
 //    ..listeners = b.listeners.add(42)
@@ -176,7 +188,7 @@ void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder b
 //    ..path = (b.path as DiaryRecordPath).rebuild((b) => b
 //        ..diaryRecordId = "124214"
 //    )
-  );
+ /// );
 
   /// ADDING THIS FIXED IT!!!
 //  builder.subscriptions.add(FSDocument<FoodRecord>((b) => b..path = DiaryRecordPath((b) => b..userId = "a" ..diaryRecordId = "b") ));
@@ -196,10 +208,10 @@ void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder b
 //  builder.subscriptions[i].listeners.rebuild((b) => b.add(42));
 //  builder.subscriptions[i].listeners = builder.subscriptions[i].listeners.rebuild((b) => b.add(42));
 
-  print(builder.subscriptions);
-  print(builder.subscriptions[i].listeners);
-  print(builder.subscriptions[i].runtimeType);
-  print(builder.subscriptions[i] is FSDocument<FoodRecord>);
+//  print(builder.subscriptions);
+//  print(builder.subscriptions[i].listeners);
+//  print(builder.subscriptions[i].runtimeType);
+//  print(builder.subscriptions[i] is FSDocument<FoodRecord>);
 
   // FIXME: why can't i get this to work...?
 //  builder.subscriptions[state.subscriptions.indexOf(action.payload)].listeners.rebuild((b) => b..addAll(action.payload.listeners));
@@ -214,6 +226,7 @@ void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder b
   print("additional");
 }
 
+/*
 void startDiaryListen(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
   if (listState.contains(action.payload)) {
     print(action.payload.runtimeType);
@@ -268,6 +281,7 @@ void stopDiaryListen(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS>
 //  }
 }
 
+*/
 
 void diaryReceived(BuiltList<FoodRecord> listState, Action<BuiltList<FoodRecord>> action, ListBuilder<FoodRecord> listBuilder) {
   log.fine("diary received: ${action.payload}");

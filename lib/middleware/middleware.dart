@@ -1,5 +1,6 @@
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
+import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/page.dart';
@@ -82,11 +83,24 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 
     // Already listening to Firestore snapshots
 //    if (api.state.subscriptions.contains(action.payload)) { // FIXME: 2 separate methods!!! (action is either FSDOC or FSCOLLECTION)
-      if (api.state.collectionSubscriptions.contains(action.payload)) {
+      if (api.state.subscriptions.contains(action.payload)) {
         api.actions.firestore.additionalSubscription(action.payload);
       } // Called without a subscription
       else if (action.payload.streamSubscription == null) {
-        Function onData = (t) => api.actions.diaryReceived(t); // FIXME
+        Function onData;
+
+        if (action.payload is FoodRecordDocument) {
+          log.fine("FOOD RECORD DOCUMENT");
+          onData = (t) => api.actions.diaryRecordReceived(t);
+        }
+        else if (action.payload is FoodDiaryCollection) {
+          log.fine("FOOD DIARY COLLECTION");
+          onData = (t) => api.actions.diaryReceived(t);
+        } else {
+          log.shout("DEFAULT ACTION TYPE: ${action.payload.runtimeType}");
+        }
+
+
 //        Function onData = (t) => log.shout(t); // FIXME
         Function onError = print;
 
@@ -192,11 +206,13 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreUnsubscribe
 //    var payload = action.payload as FSDiary;
 
     print(api.state.subscriptions.contains(action.payload));
-    print(api.state.subscriptions.indexOf(action.payload));
-    var fs = api.state.subscriptions[api.state.subscriptions.indexOf(action.payload)];
+//    print(api.state.subscriptions.indexOf(action.payload));
+
+    var fs = api.state.subscriptions.toList()[api.state.subscriptions.toList().indexOf(action.payload)];
+//    var fs = api.state.subscriptions[api.state.subscriptions.indexOf(action.payload)];
     if (api.state.subscriptions.contains(action.payload) && fs.streamSubscription != null) {
       fs.streamSubscription.cancel();
-      print("CANCELLED");
+      log.shout("CANCELLED ${action.payload}");
     }
 //
 //    if (payload.streamSubscription == null) {

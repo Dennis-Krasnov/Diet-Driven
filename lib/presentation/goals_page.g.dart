@@ -10,7 +10,7 @@ class _$GoalsPageVM extends GoalsPageVM {
   @override
   final BuiltList<int> widgets;
   @override
-  final BuiltList<FSDocument> subscriptions;
+  final BuiltSet<FS> subscriptions;
   @override
   final BuiltList<FoodRecord> diaryRecords;
 
@@ -69,10 +69,10 @@ class GoalsPageVMBuilder implements Builder<GoalsPageVM, GoalsPageVMBuilder> {
   ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
   set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
 
-  ListBuilder<FSDocument> _subscriptions;
-  ListBuilder<FSDocument> get subscriptions =>
-      _$this._subscriptions ??= new ListBuilder<FSDocument>();
-  set subscriptions(ListBuilder<FSDocument> subscriptions) =>
+  SetBuilder<FS> _subscriptions;
+  SetBuilder<FS> get subscriptions =>
+      _$this._subscriptions ??= new SetBuilder<FS>();
+  set subscriptions(SetBuilder<FS> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
   ListBuilder<FoodRecord> _diaryRecords;

@@ -12,9 +12,7 @@ class _$AppState extends AppState {
   @override
   final NavigationState navigation;
   @override
-  final BuiltList<FSDocument> subscriptions;
-  @override
-  final BuiltList<FSCollection> collectionSubscriptions;
+  final BuiltSet<FS> subscriptions;
   @override
   final BuiltList<FoodRecord> diaryRecords;
 
@@ -22,11 +20,7 @@ class _$AppState extends AppState {
       (new AppStateBuilder()..update(updates)).build();
 
   _$AppState._(
-      {this.user,
-      this.navigation,
-      this.subscriptions,
-      this.collectionSubscriptions,
-      this.diaryRecords})
+      {this.user, this.navigation, this.subscriptions, this.diaryRecords})
       : super._() {
     if (user == null) {
       throw new BuiltValueNullFieldError('AppState', 'user');
@@ -36,9 +30,6 @@ class _$AppState extends AppState {
     }
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('AppState', 'subscriptions');
-    }
-    if (collectionSubscriptions == null) {
-      throw new BuiltValueNullFieldError('AppState', 'collectionSubscriptions');
     }
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
@@ -59,17 +50,14 @@ class _$AppState extends AppState {
         user == other.user &&
         navigation == other.navigation &&
         subscriptions == other.subscriptions &&
-        collectionSubscriptions == other.collectionSubscriptions &&
         diaryRecords == other.diaryRecords;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc(
-            $jc($jc($jc(0, user.hashCode), navigation.hashCode),
-                subscriptions.hashCode),
-            collectionSubscriptions.hashCode),
+        $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+            subscriptions.hashCode),
         diaryRecords.hashCode));
   }
 
@@ -79,7 +67,6 @@ class _$AppState extends AppState {
           ..add('user', user)
           ..add('navigation', navigation)
           ..add('subscriptions', subscriptions)
-          ..add('collectionSubscriptions', collectionSubscriptions)
           ..add('diaryRecords', diaryRecords))
         .toString();
   }
@@ -98,18 +85,11 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   set navigation(NavigationStateBuilder navigation) =>
       _$this._navigation = navigation;
 
-  ListBuilder<FSDocument> _subscriptions;
-  ListBuilder<FSDocument> get subscriptions =>
-      _$this._subscriptions ??= new ListBuilder<FSDocument>();
-  set subscriptions(ListBuilder<FSDocument> subscriptions) =>
+  SetBuilder<FS> _subscriptions;
+  SetBuilder<FS> get subscriptions =>
+      _$this._subscriptions ??= new SetBuilder<FS>();
+  set subscriptions(SetBuilder<FS> subscriptions) =>
       _$this._subscriptions = subscriptions;
-
-  ListBuilder<FSCollection> _collectionSubscriptions;
-  ListBuilder<FSCollection> get collectionSubscriptions =>
-      _$this._collectionSubscriptions ??= new ListBuilder<FSCollection>();
-  set collectionSubscriptions(
-          ListBuilder<FSCollection> collectionSubscriptions) =>
-      _$this._collectionSubscriptions = collectionSubscriptions;
 
   ListBuilder<FoodRecord> _diaryRecords;
   ListBuilder<FoodRecord> get diaryRecords =>
@@ -124,7 +104,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
       _user = _$v.user?.toBuilder();
       _navigation = _$v.navigation?.toBuilder();
       _subscriptions = _$v.subscriptions?.toBuilder();
-      _collectionSubscriptions = _$v.collectionSubscriptions?.toBuilder();
       _diaryRecords = _$v.diaryRecords?.toBuilder();
       _$v = null;
     }
@@ -153,7 +132,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
               user: user.build(),
               navigation: navigation.build(),
               subscriptions: subscriptions.build(),
-              collectionSubscriptions: collectionSubscriptions.build(),
               diaryRecords: diaryRecords.build());
     } catch (_) {
       String _$failedField;
@@ -164,8 +142,6 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
         navigation.build();
         _$failedField = 'subscriptions';
         subscriptions.build();
-        _$failedField = 'collectionSubscriptions';
-        collectionSubscriptions.build();
         _$failedField = 'diaryRecords';
         diaryRecords.build();
       } catch (e) {
