@@ -13,25 +13,47 @@ class _$Actions extends Actions {
   factory _$Actions() => new _$Actions._();
   _$Actions._() : super._();
 
-  final ActionDispatcher<Page> goTo =
-      new ActionDispatcher<Page>('Actions-goTo');
-  final ActionDispatcher<List<Page>> reorderBottomNavigation =
-      new ActionDispatcher<List<Page>>('Actions-reorderBottomNavigation');
-  final ActionDispatcher<Page> setDefaultPage =
-      new ActionDispatcher<Page>('Actions-setDefaultPage');
+  final ActionDispatcher<dynamic> initApp =
+      new ActionDispatcher<dynamic>('Actions-initApp');
+  final ActionDispatcher<dynamic> disposeApp =
+      new ActionDispatcher<dynamic>('Actions-disposeApp');
+  final ActionDispatcher<Duration> changeDate =
+      new ActionDispatcher<Duration>('Actions-changeDate');
+  final ActionDispatcher<DateTime> goToDate =
+      new ActionDispatcher<DateTime>('Actions-goToDate');
+  final ActionDispatcher<FoodRecord> diaryRecordReceived =
+      new ActionDispatcher<FoodRecord>('Actions-diaryRecordReceived');
+  final ActionDispatcher<BuiltList<FoodRecord>> diaryReceived =
+      new ActionDispatcher<BuiltList<FoodRecord>>('Actions-diaryReceived');
+  final UserActions user = new UserActions();
+  final NavigationActions navigation = new NavigationActions();
+  final FirestoreActions firestore = new FirestoreActions();
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
-    goTo.setDispatcher(dispatcher);
-    reorderBottomNavigation.setDispatcher(dispatcher);
-    setDefaultPage.setDispatcher(dispatcher);
+    initApp.setDispatcher(dispatcher);
+    disposeApp.setDispatcher(dispatcher);
+    changeDate.setDispatcher(dispatcher);
+    goToDate.setDispatcher(dispatcher);
+    diaryRecordReceived.setDispatcher(dispatcher);
+    diaryReceived.setDispatcher(dispatcher);
+    user.setDispatcher(dispatcher);
+    navigation.setDispatcher(dispatcher);
+    firestore.setDispatcher(dispatcher);
   }
 }
 
 class ActionsNames {
-  static final ActionName<Page> goTo = new ActionName<Page>('Actions-goTo');
-  static final ActionName<List<Page>> reorderBottomNavigation =
-      new ActionName<List<Page>>('Actions-reorderBottomNavigation');
-  static final ActionName<Page> setDefaultPage =
-      new ActionName<Page>('Actions-setDefaultPage');
+  static final ActionName<dynamic> initApp =
+      new ActionName<dynamic>('Actions-initApp');
+  static final ActionName<dynamic> disposeApp =
+      new ActionName<dynamic>('Actions-disposeApp');
+  static final ActionName<Duration> changeDate =
+      new ActionName<Duration>('Actions-changeDate');
+  static final ActionName<DateTime> goToDate =
+      new ActionName<DateTime>('Actions-goToDate');
+  static final ActionName<FoodRecord> diaryRecordReceived =
+      new ActionName<FoodRecord>('Actions-diaryRecordReceived');
+  static final ActionName<BuiltList<FoodRecord>> diaryReceived =
+      new ActionName<BuiltList<FoodRecord>>('Actions-diaryReceived');
 }

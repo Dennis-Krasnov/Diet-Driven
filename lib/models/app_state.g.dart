@@ -8,34 +8,40 @@ part of app_state;
 
 class _$AppState extends AppState {
   @override
-  final Page activePage;
+  final UserState user;
   @override
-  final Page defaultPage;
+  final NavigationState navigation;
   @override
-  final List<Page> bottomNavigation;
+  final BuiltSetMultimap<FS, int> subscriptions;
   @override
-  final Page bottomNavigationPage;
+  final BuiltList<FoodRecord> diaryRecords;
+  @override
+  final DateTime currentDate;
 
   factory _$AppState([void updates(AppStateBuilder b)]) =>
-      (new AppStateBuilder()..update(updates)).build();
+      (new AppStateBuilder()..update(updates)).build() as _$AppState;
 
   _$AppState._(
-      {this.activePage,
-      this.defaultPage,
-      this.bottomNavigation,
-      this.bottomNavigationPage})
+      {this.user,
+      this.navigation,
+      this.subscriptions,
+      this.diaryRecords,
+      this.currentDate})
       : super._() {
-    if (activePage == null) {
-      throw new BuiltValueNullFieldError('AppState', 'activePage');
+    if (user == null) {
+      throw new BuiltValueNullFieldError('AppState', 'user');
     }
-    if (defaultPage == null) {
-      throw new BuiltValueNullFieldError('AppState', 'defaultPage');
+    if (navigation == null) {
+      throw new BuiltValueNullFieldError('AppState', 'navigation');
     }
-    if (bottomNavigation == null) {
-      throw new BuiltValueNullFieldError('AppState', 'bottomNavigation');
+    if (subscriptions == null) {
+      throw new BuiltValueNullFieldError('AppState', 'subscriptions');
     }
-    if (bottomNavigationPage == null) {
-      throw new BuiltValueNullFieldError('AppState', 'bottomNavigationPage');
+    if (diaryRecords == null) {
+      throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
+    }
+    if (currentDate == null) {
+      throw new BuiltValueNullFieldError('AppState', 'currentDate');
     }
   }
 
@@ -44,66 +50,113 @@ class _$AppState extends AppState {
       (toBuilder()..update(updates)).build();
 
   @override
-  AppStateBuilder toBuilder() => new AppStateBuilder()..replace(this);
+  _$AppStateBuilder toBuilder() => new _$AppStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is AppState &&
-        activePage == other.activePage &&
-        defaultPage == other.defaultPage &&
-        bottomNavigation == other.bottomNavigation &&
-        bottomNavigationPage == other.bottomNavigationPage;
+        user == other.user &&
+        navigation == other.navigation &&
+        subscriptions == other.subscriptions &&
+        diaryRecords == other.diaryRecords &&
+        currentDate == other.currentDate;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, activePage.hashCode), defaultPage.hashCode),
-            bottomNavigation.hashCode),
-        bottomNavigationPage.hashCode));
+        $jc(
+            $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+                subscriptions.hashCode),
+            diaryRecords.hashCode),
+        currentDate.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('AppState')
-          ..add('activePage', activePage)
-          ..add('defaultPage', defaultPage)
-          ..add('bottomNavigation', bottomNavigation)
-          ..add('bottomNavigationPage', bottomNavigationPage))
+          ..add('user', user)
+          ..add('navigation', navigation)
+          ..add('subscriptions', subscriptions)
+          ..add('diaryRecords', diaryRecords)
+          ..add('currentDate', currentDate))
         .toString();
   }
 }
 
-class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
+class _$AppStateBuilder extends AppStateBuilder {
   _$AppState _$v;
 
-  Page _activePage;
-  Page get activePage => _$this._activePage;
-  set activePage(Page activePage) => _$this._activePage = activePage;
+  @override
+  UserStateBuilder get user {
+    _$this;
+    return super.user ??= new UserStateBuilder();
+  }
 
-  Page _defaultPage;
-  Page get defaultPage => _$this._defaultPage;
-  set defaultPage(Page defaultPage) => _$this._defaultPage = defaultPage;
+  @override
+  set user(UserStateBuilder user) {
+    _$this;
+    super.user = user;
+  }
 
-  List<Page> _bottomNavigation;
-  List<Page> get bottomNavigation => _$this._bottomNavigation;
-  set bottomNavigation(List<Page> bottomNavigation) =>
-      _$this._bottomNavigation = bottomNavigation;
+  @override
+  NavigationStateBuilder get navigation {
+    _$this;
+    return super.navigation ??= new NavigationStateBuilder();
+  }
 
-  Page _bottomNavigationPage;
-  Page get bottomNavigationPage => _$this._bottomNavigationPage;
-  set bottomNavigationPage(Page bottomNavigationPage) =>
-      _$this._bottomNavigationPage = bottomNavigationPage;
+  @override
+  set navigation(NavigationStateBuilder navigation) {
+    _$this;
+    super.navigation = navigation;
+  }
 
-  AppStateBuilder();
+  @override
+  SetMultimapBuilder<FS, int> get subscriptions {
+    _$this;
+    return super.subscriptions ??= new SetMultimapBuilder<FS, int>();
+  }
+
+  @override
+  set subscriptions(SetMultimapBuilder<FS, int> subscriptions) {
+    _$this;
+    super.subscriptions = subscriptions;
+  }
+
+  @override
+  ListBuilder<FoodRecord> get diaryRecords {
+    _$this;
+    return super.diaryRecords ??= new ListBuilder<FoodRecord>();
+  }
+
+  @override
+  set diaryRecords(ListBuilder<FoodRecord> diaryRecords) {
+    _$this;
+    super.diaryRecords = diaryRecords;
+  }
+
+  @override
+  DateTime get currentDate {
+    _$this;
+    return super.currentDate;
+  }
+
+  @override
+  set currentDate(DateTime currentDate) {
+    _$this;
+    super.currentDate = currentDate;
+  }
+
+  _$AppStateBuilder() : super._();
 
   AppStateBuilder get _$this {
     if (_$v != null) {
-      _activePage = _$v.activePage;
-      _defaultPage = _$v.defaultPage;
-      _bottomNavigation = _$v.bottomNavigation;
-      _bottomNavigationPage = _$v.bottomNavigationPage;
+      super.user = _$v.user?.toBuilder();
+      super.navigation = _$v.navigation?.toBuilder();
+      super.subscriptions = _$v.subscriptions?.toBuilder();
+      super.diaryRecords = _$v.diaryRecords?.toBuilder();
+      super.currentDate = _$v.currentDate;
       _$v = null;
     }
     return this;
@@ -124,12 +177,32 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
 
   @override
   _$AppState build() {
-    final _$result = _$v ??
-        new _$AppState._(
-            activePage: activePage,
-            defaultPage: defaultPage,
-            bottomNavigation: bottomNavigation,
-            bottomNavigationPage: bottomNavigationPage);
+    _$AppState _$result;
+    try {
+      _$result = _$v ??
+          new _$AppState._(
+              user: user.build(),
+              navigation: navigation.build(),
+              subscriptions: subscriptions.build(),
+              diaryRecords: diaryRecords.build(),
+              currentDate: currentDate);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'user';
+        user.build();
+        _$failedField = 'navigation';
+        navigation.build();
+        _$failedField = 'subscriptions';
+        subscriptions.build();
+        _$failedField = 'diaryRecords';
+        diaryRecords.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'AppState', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

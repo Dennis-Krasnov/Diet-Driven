@@ -9,13 +9,18 @@ part of drawer_nav;
 class _$DrawerNavigationVM extends DrawerNavigationVM {
   @override
   final List<Page> pages;
+  @override
+  final FirebaseUser auth;
 
   factory _$DrawerNavigationVM([void updates(DrawerNavigationVMBuilder b)]) =>
       (new DrawerNavigationVMBuilder()..update(updates)).build();
 
-  _$DrawerNavigationVM._({this.pages}) : super._() {
+  _$DrawerNavigationVM._({this.pages, this.auth}) : super._() {
     if (pages == null) {
       throw new BuiltValueNullFieldError('DrawerNavigationVM', 'pages');
+    }
+    if (auth == null) {
+      throw new BuiltValueNullFieldError('DrawerNavigationVM', 'auth');
     }
   }
 
@@ -30,18 +35,21 @@ class _$DrawerNavigationVM extends DrawerNavigationVM {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is DrawerNavigationVM && pages == other.pages;
+    return other is DrawerNavigationVM &&
+        pages == other.pages &&
+        auth == other.auth;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, pages.hashCode));
+    return $jf($jc($jc(0, pages.hashCode), auth.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('DrawerNavigationVM')
-          ..add('pages', pages))
+          ..add('pages', pages)
+          ..add('auth', auth))
         .toString();
   }
 }
@@ -54,11 +62,16 @@ class DrawerNavigationVMBuilder
   List<Page> get pages => _$this._pages;
   set pages(List<Page> pages) => _$this._pages = pages;
 
+  FirebaseUser _auth;
+  FirebaseUser get auth => _$this._auth;
+  set auth(FirebaseUser auth) => _$this._auth = auth;
+
   DrawerNavigationVMBuilder();
 
   DrawerNavigationVMBuilder get _$this {
     if (_$v != null) {
       _pages = _$v.pages;
+      _auth = _$v.auth;
       _$v = null;
     }
     return this;
@@ -79,7 +92,8 @@ class DrawerNavigationVMBuilder
 
   @override
   _$DrawerNavigationVM build() {
-    final _$result = _$v ?? new _$DrawerNavigationVM._(pages: pages);
+    final _$result =
+        _$v ?? new _$DrawerNavigationVM._(pages: pages, auth: auth);
     replace(_$result);
     return _$result;
   }

@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         applicationId "com.krasnovtech.dietdriven"
-        minSdkVersion 16
+        minSdkVersion 21 //16
         targetSdkVersion 27
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -75,3 +75,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
+
+// Firebase
+apply plugin: 'com.google.gms.google-services'
