@@ -30,14 +30,19 @@ abstract class Actions extends ReduxActions {
   //
   ActionDispatcher initApp;
 
-  // TODO: close store
+  //
   ActionDispatcher disposeApp;
 
-  //
-  ActionDispatcher<Duration> changeDate; // with delta
-  ActionDispatcher<DateTime> goToDate; // absolutely
+  // Relatively changes date
+  ActionDispatcher<Duration> changeDate;
 
+  // Absolutely changes date
+  ActionDispatcher<DateTime> goToDate;
+
+  //
   ActionDispatcher<FoodRecord> diaryRecordReceived; // TODO: move
+
+  //
   ActionDispatcher<BuiltList<FoodRecord>> diaryReceived;
 
   factory Actions() => new _$Actions();

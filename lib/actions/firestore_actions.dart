@@ -6,28 +6,34 @@ part 'firestore_actions.g.dart';
 
 ///
 abstract class FirestoreActions extends ReduxActions {
+  //
   ActionDispatcher<String> fbStartDocListen;
+
+  //
   ActionDispatcher<String> fbStopDocListen;
+
+  //
   ActionDispatcher<dynamic> fbDocListenError;
 
-//  ActionDispatcher<Connection> beginRealTimeDatabaseListen;
-//  ActionDispatcher<int> beginRealTimeDatabaseListen; /// rename to begin settingsListen
+  //
   ActionDispatcher<int> startSettingsListen;
+
+  //
   ActionDispatcher<int> stopSettingsListen;
 //  ActionDispatcher<dynamic> updateError;
 //  ActionDispatcher<dynamic> addError; etc.
 
-  /// <PATH> ??? instead ???? - how do I pass listeners?
-  /// // these replace all other ones!
+  //
   ActionDispatcher<FSPath> subscribe;
-  ActionDispatcher<FSPath> additionalSubscription;
-  ActionDispatcher<FSPath> unsubscribe;
-  ActionDispatcher<FS> unsubscribeAll;
 
-  // String userID
-//  ActionDispatcher<String> settingsListen;
-//  ActionDispatcher<dynamic> settingsReceived;
-//  ActionDispatcher<String> settingsStopListen;
+  //
+  ActionDispatcher<FSPath> additionalSubscription;
+
+  //
+  ActionDispatcher<FSPath> unsubscribe;
+
+  //
+  ActionDispatcher<FS> unsubscribeAll;
 
   factory FirestoreActions() => new _$FirestoreActions();
   FirestoreActions._();

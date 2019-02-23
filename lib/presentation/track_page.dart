@@ -21,7 +21,6 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
 
   @override
   TrackPageVM connect(AppState state) => TrackPageVM((b) => b
-//    ..loading = state.loading
     ..auth = state.user.authUser
   );
 
@@ -70,8 +69,6 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
 }
 
 abstract class TrackPageVM implements Built<TrackPageVM, TrackPageVMBuilder> {
-//  bool get loading;
-
   @nullable
   FirebaseUser get auth;
 
@@ -79,55 +76,3 @@ abstract class TrackPageVM implements Built<TrackPageVM, TrackPageVMBuilder> {
 
   factory TrackPageVM([updates(TrackPageVMBuilder b)]) = _$TrackPageVM;
 }
-//class TrackPage extends StatelessWidget {
-//
-////  Future<FirebaseUser> _handleSignIn() async {
-////    FirebaseUser user = await _auth.signInWithEmailAndPassword(email: "dennis.krasnov@gmail.com", password: "bobobo");
-////    GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-////    GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-////    FirebaseUser user = await _auth.signInWithGoogle(
-////      accessToken: googleAuth.accessToken,
-////      idToken: googleAuth.idToken,
-////    );
-////    print("signed in " + user.displayName);
-////    return user;
-////  }
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        leading: DrawerNavButton(),
-//        title: Text(PageFactory.toText(Page.track)),
-//      ),
-//      body: Center(
-//        child: Column(
-//          children: <Widget>[
-//            RaisedButton(
-//              onPressed: () async {
-////                FirebaseUser user = await _auth.signInWithEmailAndPassword(email: "dennis.krasnov@gmail.com", password: "bobobo")
-////                    .catchError((e) => print(e));
-////                print("signed in as ${user.displayName}");
-////                print("${user.uid}");
-////                print("${user.email}");
-////                _auth.currentUser().then((u) => u.)
-////                .then((FirebaseUser user) => print(user))
-////                .catchError((e) => print(e));
-//              },
-//              child: Text("Log in as Dennis Krasnov"),
-//            ),
-//            Text("uid: ..."),
-//            Text("email: ..."),
-//            Text("display name: ..."),
-//            FlatButton(
-//              onPressed: () async {
-////                await _auth.signOut();
-//              },
-//              child: Text("Log out"),
-//            )
-//          ],
-//        ),
-//      ),
-//    );
-//  }
-//}

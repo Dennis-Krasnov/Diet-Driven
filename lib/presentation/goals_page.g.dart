@@ -8,25 +8,14 @@ part of goals_page;
 
 class _$GoalsPageVM extends GoalsPageVM {
   @override
-  final BuiltList<int> widgets;
-  @override
   final BuiltSetMultimap<FS, int> subscriptions;
-  @override
-  final BuiltList<FoodRecord> diaryRecords;
 
   factory _$GoalsPageVM([void updates(GoalsPageVMBuilder b)]) =>
       (new GoalsPageVMBuilder()..update(updates)).build();
 
-  _$GoalsPageVM._({this.widgets, this.subscriptions, this.diaryRecords})
-      : super._() {
-    if (widgets == null) {
-      throw new BuiltValueNullFieldError('GoalsPageVM', 'widgets');
-    }
+  _$GoalsPageVM._({this.subscriptions}) : super._() {
     if (subscriptions == null) {
       throw new BuiltValueNullFieldError('GoalsPageVM', 'subscriptions');
-    }
-    if (diaryRecords == null) {
-      throw new BuiltValueNullFieldError('GoalsPageVM', 'diaryRecords');
     }
   }
 
@@ -40,24 +29,18 @@ class _$GoalsPageVM extends GoalsPageVM {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is GoalsPageVM &&
-        widgets == other.widgets &&
-        subscriptions == other.subscriptions &&
-        diaryRecords == other.diaryRecords;
+    return other is GoalsPageVM && subscriptions == other.subscriptions;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, widgets.hashCode), subscriptions.hashCode),
-        diaryRecords.hashCode));
+    return $jf($jc(0, subscriptions.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('GoalsPageVM')
-          ..add('widgets', widgets)
-          ..add('subscriptions', subscriptions)
-          ..add('diaryRecords', diaryRecords))
+          ..add('subscriptions', subscriptions))
         .toString();
   }
 }
@@ -65,29 +48,17 @@ class _$GoalsPageVM extends GoalsPageVM {
 class GoalsPageVMBuilder implements Builder<GoalsPageVM, GoalsPageVMBuilder> {
   _$GoalsPageVM _$v;
 
-  ListBuilder<int> _widgets;
-  ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
-  set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
-
   SetMultimapBuilder<FS, int> _subscriptions;
   SetMultimapBuilder<FS, int> get subscriptions =>
       _$this._subscriptions ??= new SetMultimapBuilder<FS, int>();
   set subscriptions(SetMultimapBuilder<FS, int> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
-  ListBuilder<FoodRecord> _diaryRecords;
-  ListBuilder<FoodRecord> get diaryRecords =>
-      _$this._diaryRecords ??= new ListBuilder<FoodRecord>();
-  set diaryRecords(ListBuilder<FoodRecord> diaryRecords) =>
-      _$this._diaryRecords = diaryRecords;
-
   GoalsPageVMBuilder();
 
   GoalsPageVMBuilder get _$this {
     if (_$v != null) {
-      _widgets = _$v.widgets?.toBuilder();
       _subscriptions = _$v.subscriptions?.toBuilder();
-      _diaryRecords = _$v.diaryRecords?.toBuilder();
       _$v = null;
     }
     return this;
@@ -110,20 +81,13 @@ class GoalsPageVMBuilder implements Builder<GoalsPageVM, GoalsPageVMBuilder> {
   _$GoalsPageVM build() {
     _$GoalsPageVM _$result;
     try {
-      _$result = _$v ??
-          new _$GoalsPageVM._(
-              widgets: widgets.build(),
-              subscriptions: subscriptions.build(),
-              diaryRecords: diaryRecords.build());
+      _$result =
+          _$v ?? new _$GoalsPageVM._(subscriptions: subscriptions.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'widgets';
-        widgets.build();
         _$failedField = 'subscriptions';
         subscriptions.build();
-        _$failedField = 'diaryRecords';
-        diaryRecords.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'GoalsPageVM', _$failedField, e.toString());

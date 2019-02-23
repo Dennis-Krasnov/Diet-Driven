@@ -15,62 +15,61 @@ import 'dart:math';
 part 'settings_page.g.dart';
 
 class SettingsPage extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: DrawerNavButton(),
-          title: Text(PageFactory.toText(Page.settings)),
+      appBar: AppBar(
+        leading: DrawerNavButton(),
+        title: Text(PageFactory.toText(Page.settings)),
+      ),
+      body: new StoreConnection<AppState, Actions, SettingsPageVM>(
+        connect: (state) => SettingsPageVM((b) => b
+          ..pages = state.navigation.bottomNavigation
+          ..defaultPage = state.navigation.defaultPage
         ),
-        body: new StoreConnection<AppState, Actions, SettingsPageVM>(
-            connect: (state) => SettingsPageVM((b) => b
-              ..pages = state.navigation.bottomNavigation
-              ..defaultPage = state.navigation.defaultPage
-            ),
-            builder: (BuildContext context, SettingsPageVM vm, Actions actions) {
-              return Column(
-//                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  ListTile(
-                    leading: Icon(Icons.repeat),
-                    title: Text("Randomize bottom menu"),
-                    onTap: () {
-                      List<Page> randomized = Page.inApp.toList();
-                      shuffle(randomized);
-                      randomized = randomized.sublist(0, new Random().nextInt(6) + 2);
-                      actions.navigation.reorderBottomNavigation(randomized);
-                      Scaffold.of(context).showSnackBar(SnackBar(content: Text('Randomized!'), duration: Duration(milliseconds: 500)));
-                    },
-                    onLongPress: () => Scaffold.of(context).showSnackBar(SnackBar(content: Text('You long pressed!'),)),
-                  ),
-                  ListTile(
-                    leading: const Icon(Icons.undo),
-                    title: const Text('Reset bottom navigation settings'),
-                    onTap: () {
-                      AppState original = new AppState();
-                      actions.navigation.reorderBottomNavigation(original.navigation.bottomNavigation);
-                      actions.navigation.setDefaultPage(original.navigation.defaultPage);
-                    }
-                  ),
-                  ListTile(
-                    leading: Icon(Icons.beach_access),
-                    title: Text("Default page"),
-                    trailing: DropdownButton<Page>(
-                      items: Page.inApp.where((page) => vm.pages.contains(page)).map((page) {
-                        return new DropdownMenuItem<Page>(
-                          value: page,
-                          child: new Text(PageFactory.toText(page)),
-                        );
-                      }).toList(),
-                      onChanged: (page) => actions.navigation.setDefaultPage(page),
-                      value: vm.defaultPage,
-                    ),
-                  ),
-                ],
-              );
-            })
-        );
+        builder: (BuildContext context, SettingsPageVM vm, Actions actions) {
+          return Column(
+            children: <Widget>[
+              ListTile(
+                leading: Icon(Icons.repeat),
+                title: Text("Randomize bottom menu"),
+                onTap: () {
+                  List<Page> randomized = Page.inApp.toList();
+                  shuffle(randomized);
+                  randomized = randomized.sublist(0, new Random().nextInt(6) + 2);
+                  actions.navigation.reorderBottomNavigation(randomized);
+                  Scaffold.of(context).showSnackBar(SnackBar(content: Text('Randomized!'), duration: Duration(milliseconds: 500)));
+                },
+                onLongPress: () => Scaffold.of(context).showSnackBar(SnackBar(content: Text('You long pressed!'),)),
+              ),
+              ListTile(
+                leading: const Icon(Icons.undo),
+                title: const Text('Reset bottom navigation settings'),
+                onTap: () {
+                  AppState original = new AppState();
+                  actions.navigation.reorderBottomNavigation(original.navigation.bottomNavigation);
+                  actions.navigation.setDefaultPage(original.navigation.defaultPage);
+                }
+              ),
+              ListTile(
+                leading: Icon(Icons.beach_access),
+                title: Text("Default page"),
+                trailing: DropdownButton<Page>(
+                  items: Page.inApp.where((page) => vm.pages.contains(page)).map((page) {
+                    return new DropdownMenuItem<Page>(
+                      value: page,
+                      child: new Text(PageFactory.toText(page)),
+                    );
+                  }).toList(),
+                  onChanged: (page) => actions.navigation.setDefaultPage(page),
+                  value: vm.defaultPage,
+                ),
+              ),
+            ],
+          );
+        }
+      )
+    );
   }
 }
 
