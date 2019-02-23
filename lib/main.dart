@@ -16,12 +16,18 @@ import 'package:diet_driven/models/app_state.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
+//import 'package:firebase_analytics/observer.dart';
+
+
 void main() => runApp(new DDApp());
 
 ///
 class DDApp extends StatefulWidget {
   // Used for navigation middleware
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static FirebaseAnalytics analytics = FirebaseAnalytics();
+//  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
   State<StatefulWidget> createState() => _DDAppState();
@@ -61,6 +67,7 @@ class _DDAppState extends State<DDApp> {
   @override
   void dispose() {
     store.actions.disposeApp();
+    store.dispose();
     super.dispose();
   }
 

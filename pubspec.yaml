@@ -30,6 +30,10 @@ dependencies:
   firebase_auth: ^0.6.6
 
   logging: ^0.11.3+2
+  intl: ^0.15.7
+#  infinity_page_view: ^1.0.0
+  firebase_analytics: ^2.0.2+1
+
   ## TODO: move logging to dev_dependencies??
 
 

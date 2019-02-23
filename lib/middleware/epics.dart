@@ -1,6 +1,7 @@
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
+import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/page.dart';
@@ -26,6 +27,10 @@ Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppStat
   else {
     DDApp.navigatorKey.currentState.popAndPushNamed(action.payload.toString());
   }
+
+  // Firebase Analytics page update
+  DDApp.analytics.setCurrentScreen(screenName: action.payload.name, screenClassOverride: PageFactory.toPage(action.payload).runtimeType.toString());
+  // TODO: screenClassOverride: 'AnalyticsDemo',
 
   // TODO: Adjust allowed phone orientation on certain screens
 });

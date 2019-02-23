@@ -11,16 +11,21 @@ class _$DiaryPageVM extends DiaryPageVM {
   final BuiltList<FoodRecord> diaryRecords;
   @override
   final String userId;
+  @override
+  final DateTime date;
 
   factory _$DiaryPageVM([void updates(DiaryPageVMBuilder b)]) =>
       (new DiaryPageVMBuilder()..update(updates)).build();
 
-  _$DiaryPageVM._({this.diaryRecords, this.userId}) : super._() {
+  _$DiaryPageVM._({this.diaryRecords, this.userId, this.date}) : super._() {
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('DiaryPageVM', 'diaryRecords');
     }
     if (userId == null) {
       throw new BuiltValueNullFieldError('DiaryPageVM', 'userId');
+    }
+    if (date == null) {
+      throw new BuiltValueNullFieldError('DiaryPageVM', 'date');
     }
   }
 
@@ -36,19 +41,22 @@ class _$DiaryPageVM extends DiaryPageVM {
     if (identical(other, this)) return true;
     return other is DiaryPageVM &&
         diaryRecords == other.diaryRecords &&
-        userId == other.userId;
+        userId == other.userId &&
+        date == other.date;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, diaryRecords.hashCode), userId.hashCode));
+    return $jf($jc(
+        $jc($jc(0, diaryRecords.hashCode), userId.hashCode), date.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('DiaryPageVM')
           ..add('diaryRecords', diaryRecords)
-          ..add('userId', userId))
+          ..add('userId', userId)
+          ..add('date', date))
         .toString();
   }
 }
@@ -66,12 +74,17 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
   String get userId => _$this._userId;
   set userId(String userId) => _$this._userId = userId;
 
+  DateTime _date;
+  DateTime get date => _$this._date;
+  set date(DateTime date) => _$this._date = date;
+
   DiaryPageVMBuilder();
 
   DiaryPageVMBuilder get _$this {
     if (_$v != null) {
       _diaryRecords = _$v.diaryRecords?.toBuilder();
       _userId = _$v.userId;
+      _date = _$v.date;
       _$v = null;
     }
     return this;
@@ -96,7 +109,7 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
     try {
       _$result = _$v ??
           new _$DiaryPageVM._(
-              diaryRecords: diaryRecords.build(), userId: userId);
+              diaryRecords: diaryRecords.build(), userId: userId, date: date);
     } catch (_) {
       String _$failedField;
       try {

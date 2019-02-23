@@ -18,6 +18,10 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
   (new ReducerBuilder<AppState, AppStateBuilder>()
     ..combineNested(getNavigationReducer())
     ..combineNested(getUserReducer())
+
+    ..add(ActionsNames.changeDate, (s, a, b) => b.currentDate = s.currentDate.add(a.payload))
+    ..add(ActionsNames.goToDate, (s, a, b) => b.currentDate = a.payload)
+
 //      ..add(ActionsNames.anonymousUserLoaded, anonymousUserLoaded)
 //      ..add(ActionsNames.anonymousUserFail, anonymousUserFail)
 
@@ -47,9 +51,14 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
 
     ..add(FirestoreActionsNames.additionalSubscription, additionalSubscription)
 
-    ..combineSet(new SetReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
+//    ..combineSet(new SetReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
+//        ..add(FirestoreActionsNames.subscribe, firstSubscription)
+//        // TODO: unsubscribe
+//    )
+    ..combineSetMultimap(new SetMultimapReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
         ..add(FirestoreActionsNames.subscribe, firstSubscription)
-        // TODO: unsubscribe
+      ..add(FirestoreActionsNames.unsubscribe, unsubscribe)
+      ..add(FirestoreActionsNames.unsubscribeAll, unsubscribeAll)
     )
 
   /*
@@ -137,15 +146,26 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
 //
 //}
 
+void unsubscribeAll(BuiltSetMultimap<FS, int> setMultimapState, Action<FS> action, SetMultimapBuilder<FS, int> setMultimapBuilder) {
+  setMultimapBuilder.removeAll(action.payload);
+}
+
+void unsubscribe(BuiltSetMultimap<FS, int> setMultimapState, Action<FSPath> action, SetMultimapBuilder<FS, int> setMultimapBuilder) {
+  setMultimapBuilder.removeAll(action.payload.firestore); // FIXME
+//  for (var val in action.payload.subscriptions) {
+//    setMultimapBuilder.remove(action.payload.firestore, val);
+//  }
+}
+
 //void firstSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
-void firstSubscription(BuiltSet<FS> listState, Action<FS> action, SetBuilder<FS> listBuilder) {
+void firstSubscription(BuiltSetMultimap<FS, int> setMultimapState, Action<FSPath> action, SetMultimapBuilder<FS, int> setMultimapBuilder) {
   log.fine("first subscription: ${action.payload}");
-  listBuilder.add(action.payload);
-  log.finer(listBuilder.build());
+  setMultimapBuilder.addValues(action.payload.firestore, action.payload.subscriptions);
+  log.finer(setMultimapBuilder.build());
 }
 
 //void additionalSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
-void additionalSubscription(AppState state, Action<FS> action, AppStateBuilder builder) {
+void additionalSubscription(AppState state, Action<FSPath> action, AppStateBuilder builder) {
   log.fine("additional subscription");
   // TODO: logic with duplicates!! - make this a normal reducer!
 //  listBuilder.add(action.payload);

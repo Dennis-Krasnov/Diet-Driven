@@ -12,15 +12,21 @@ class _$AppState extends AppState {
   @override
   final NavigationState navigation;
   @override
-  final BuiltSet<FS> subscriptions;
+  final BuiltSetMultimap<FS, int> subscriptions;
   @override
   final BuiltList<FoodRecord> diaryRecords;
+  @override
+  final DateTime currentDate;
 
   factory _$AppState([void updates(AppStateBuilder b)]) =>
-      (new AppStateBuilder()..update(updates)).build();
+      (new AppStateBuilder()..update(updates)).build() as _$AppState;
 
   _$AppState._(
-      {this.user, this.navigation, this.subscriptions, this.diaryRecords})
+      {this.user,
+      this.navigation,
+      this.subscriptions,
+      this.diaryRecords,
+      this.currentDate})
       : super._() {
     if (user == null) {
       throw new BuiltValueNullFieldError('AppState', 'user');
@@ -34,6 +40,9 @@ class _$AppState extends AppState {
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
     }
+    if (currentDate == null) {
+      throw new BuiltValueNullFieldError('AppState', 'currentDate');
+    }
   }
 
   @override
@@ -41,7 +50,7 @@ class _$AppState extends AppState {
       (toBuilder()..update(updates)).build();
 
   @override
-  AppStateBuilder toBuilder() => new AppStateBuilder()..replace(this);
+  _$AppStateBuilder toBuilder() => new _$AppStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -50,15 +59,18 @@ class _$AppState extends AppState {
         user == other.user &&
         navigation == other.navigation &&
         subscriptions == other.subscriptions &&
-        diaryRecords == other.diaryRecords;
+        diaryRecords == other.diaryRecords &&
+        currentDate == other.currentDate;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, user.hashCode), navigation.hashCode),
-            subscriptions.hashCode),
-        diaryRecords.hashCode));
+        $jc(
+            $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+                subscriptions.hashCode),
+            diaryRecords.hashCode),
+        currentDate.hashCode));
   }
 
   @override
@@ -67,44 +79,84 @@ class _$AppState extends AppState {
           ..add('user', user)
           ..add('navigation', navigation)
           ..add('subscriptions', subscriptions)
-          ..add('diaryRecords', diaryRecords))
+          ..add('diaryRecords', diaryRecords)
+          ..add('currentDate', currentDate))
         .toString();
   }
 }
 
-class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
+class _$AppStateBuilder extends AppStateBuilder {
   _$AppState _$v;
 
-  UserStateBuilder _user;
-  UserStateBuilder get user => _$this._user ??= new UserStateBuilder();
-  set user(UserStateBuilder user) => _$this._user = user;
+  @override
+  UserStateBuilder get user {
+    _$this;
+    return super.user ??= new UserStateBuilder();
+  }
 
-  NavigationStateBuilder _navigation;
-  NavigationStateBuilder get navigation =>
-      _$this._navigation ??= new NavigationStateBuilder();
-  set navigation(NavigationStateBuilder navigation) =>
-      _$this._navigation = navigation;
+  @override
+  set user(UserStateBuilder user) {
+    _$this;
+    super.user = user;
+  }
 
-  SetBuilder<FS> _subscriptions;
-  SetBuilder<FS> get subscriptions =>
-      _$this._subscriptions ??= new SetBuilder<FS>();
-  set subscriptions(SetBuilder<FS> subscriptions) =>
-      _$this._subscriptions = subscriptions;
+  @override
+  NavigationStateBuilder get navigation {
+    _$this;
+    return super.navigation ??= new NavigationStateBuilder();
+  }
 
-  ListBuilder<FoodRecord> _diaryRecords;
-  ListBuilder<FoodRecord> get diaryRecords =>
-      _$this._diaryRecords ??= new ListBuilder<FoodRecord>();
-  set diaryRecords(ListBuilder<FoodRecord> diaryRecords) =>
-      _$this._diaryRecords = diaryRecords;
+  @override
+  set navigation(NavigationStateBuilder navigation) {
+    _$this;
+    super.navigation = navigation;
+  }
 
-  AppStateBuilder();
+  @override
+  SetMultimapBuilder<FS, int> get subscriptions {
+    _$this;
+    return super.subscriptions ??= new SetMultimapBuilder<FS, int>();
+  }
+
+  @override
+  set subscriptions(SetMultimapBuilder<FS, int> subscriptions) {
+    _$this;
+    super.subscriptions = subscriptions;
+  }
+
+  @override
+  ListBuilder<FoodRecord> get diaryRecords {
+    _$this;
+    return super.diaryRecords ??= new ListBuilder<FoodRecord>();
+  }
+
+  @override
+  set diaryRecords(ListBuilder<FoodRecord> diaryRecords) {
+    _$this;
+    super.diaryRecords = diaryRecords;
+  }
+
+  @override
+  DateTime get currentDate {
+    _$this;
+    return super.currentDate;
+  }
+
+  @override
+  set currentDate(DateTime currentDate) {
+    _$this;
+    super.currentDate = currentDate;
+  }
+
+  _$AppStateBuilder() : super._();
 
   AppStateBuilder get _$this {
     if (_$v != null) {
-      _user = _$v.user?.toBuilder();
-      _navigation = _$v.navigation?.toBuilder();
-      _subscriptions = _$v.subscriptions?.toBuilder();
-      _diaryRecords = _$v.diaryRecords?.toBuilder();
+      super.user = _$v.user?.toBuilder();
+      super.navigation = _$v.navigation?.toBuilder();
+      super.subscriptions = _$v.subscriptions?.toBuilder();
+      super.diaryRecords = _$v.diaryRecords?.toBuilder();
+      super.currentDate = _$v.currentDate;
       _$v = null;
     }
     return this;
@@ -132,7 +184,8 @@ class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
               user: user.build(),
               navigation: navigation.build(),
               subscriptions: subscriptions.build(),
-              diaryRecords: diaryRecords.build());
+              diaryRecords: diaryRecords.build(),
+              currentDate: currentDate);
     } catch (_) {
       String _$failedField;
       try {

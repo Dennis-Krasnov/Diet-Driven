@@ -18,11 +18,12 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   NavigationState get navigation;
 
   //
-  BuiltSet<FS> get subscriptions;
+  BuiltSetMultimap<FS, int> get subscriptions;
 //  BuiltList<FSCollection> get collectionSubscriptions;
 
   //
   BuiltList<FoodRecord> get diaryRecords;
+  DateTime get currentDate;
 
   // TODO: memoized functions
 //  @memoized
@@ -30,4 +31,17 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
 
   AppState._();
   factory AppState([updates(AppStateBuilder b)]) = _$AppState;
+}
+
+abstract class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
+  UserStateBuilder user;
+  NavigationStateBuilder navigation;
+
+  SetMultimapBuilder<FS, int> subscriptions;
+
+  ListBuilder<FoodRecord> diaryRecords;
+  DateTime currentDate = DateTime.now();
+
+  factory AppStateBuilder() = _$AppStateBuilder;
+  AppStateBuilder._();
 }

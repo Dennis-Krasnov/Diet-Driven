@@ -10,6 +10,12 @@ part 'food_record.g.dart';
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
 
+  @BuiltValueField(serialize: true, compare: false, wireName: "_id")
+  @nullable
+  String get id;
+
+  DateTime get timestamp;
+
   String get foodName;
   Uncertainty get uncertainty;
   double get grams;

@@ -58,6 +58,14 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
             ],
           ),
         ),
+        floatingActionButton: FloatingActionButton.extended(
+//            child: Icon(Icons.edit),
+            icon: Icon(Icons.edit),
+            label: Text("HELLO"),
+//            heroTag: "ANIMATE_FAB",
+            onPressed: () {
+            }
+        ),
       );
 }
 

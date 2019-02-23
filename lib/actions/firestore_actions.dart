@@ -19,9 +19,10 @@ abstract class FirestoreActions extends ReduxActions {
 
   /// <PATH> ??? instead ???? - how do I pass listeners?
   /// // these replace all other ones!
-  ActionDispatcher<FS> subscribe;
-  ActionDispatcher<FS> additionalSubscription;
-  ActionDispatcher<FS> unsubscribe;
+  ActionDispatcher<FSPath> subscribe;
+  ActionDispatcher<FSPath> additionalSubscription;
+  ActionDispatcher<FSPath> unsubscribe;
+  ActionDispatcher<FS> unsubscribeAll;
 
   // String userID
 //  ActionDispatcher<String> settingsListen;

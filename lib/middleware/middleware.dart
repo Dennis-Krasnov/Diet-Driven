@@ -52,7 +52,13 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
       api.actions.user.anonymousUserLoaded(authUser);
     }
 
-    print(api.state.user.authUser);
+//    DDApp.analytics.logLogin().then(() => print("SUCCESS"));
+    // Firebase analytics user (anonymous)
+    await DDApp.analytics.setUserId(api.state.user.authUser.uid);
+    await DDApp.analytics.setUserProperty(name: "auth_type", value: "anonymous");
+    // TODO: load user preferences, call DDApp.analytics.setAnalyticsCollectionEnabled(enabled) before all else
+
+    // Go to default page
     api.actions.navigation.goTo(destination);
 
     next(action);
@@ -77,32 +83,37 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigat
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe() {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
-    log.fine("SUBSCRIPTION: ${action.payload.streamSubscription}");
 //    print("SUBSCRIPTION: ${(action.payload as FS).streamSubscription}");
 
+    var fsPath = action.payload as FSPath;
+    var fs = fsPath.firestore;
+    log.fine("SUBSCRIPTION: ${fs.streamSubscription}");
 
     // Already listening to Firestore snapshots
 //    if (api.state.subscriptions.contains(action.payload)) { // FIXME: 2 separate methods!!! (action is either FSDOC or FSCOLLECTION)
-      if (api.state.subscriptions.contains(action.payload)) {
+      if (api.state.subscriptions.keys.contains(fs)) {
         api.actions.firestore.additionalSubscription(action.payload);
       } // Called without a subscription
-      else if (action.payload.streamSubscription == null) {
+      else if (fs.streamSubscription == null) {
         Function onData;
+        Function onError = print;
 
-        if (action.payload is FoodRecordDocument) {
+        if (fs is FoodRecordDocument) {
           log.fine("FOOD RECORD DOCUMENT");
           onData = (t) => api.actions.diaryRecordReceived(t);
+          fs = (fs as FoodRecordDocument).rebuild((b) => b ..streamSubscription = fs.snapshotObservable.listen(onData, onError: onError));
         }
-        else if (action.payload is FoodDiaryCollection) {
+        else if (fsPath.firestore is FoodDiaryCollection) {
           log.fine("FOOD DIARY COLLECTION");
           onData = (t) => api.actions.diaryReceived(t);
+          fs = (fs as FoodDiaryCollection).rebuild((b) => b ..streamSubscription = fs.snapshotObservable.listen(onData, onError: onError));
         } else {
-          log.shout("DEFAULT ACTION TYPE: ${action.payload.runtimeType}");
+          log.shout("DEFAULT ACTION TYPE: ${fsPath.firestore.runtimeType}");
         }
 
 
 //        Function onData = (t) => log.shout(t); // FIXME
-        Function onError = print;
+
 
 //      print(builder.subscriptions[i] is FSDocument<FoodRecord>); // TODO: i was missing <generics!>
 
@@ -122,7 +133,13 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 //          onData = (t) => api.actions.diaryReceived(t);
 //          break;
 //      }
-        api.actions.firestore.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(onData, onError: onError)));
+//        fsPath.firestore.streamSubscription = fsPath.firestore.snapshotObservable.listen(onData, onError: onError);
+        api.actions.firestore.subscribe(new FSPath(
+            fs,
+//            fsPath.firestore.rebuild((b) => b..streamSubscription = fsPath.firestore.snapshotObservable.listen(onData, onError: onError)),
+            fsPath.subscriptions
+        ));
+///        api.actions.firestore.subscribe(action.payload.rebuild((b) => b..streamSubscription = action.payload.snapshotObservable.listen(onData, onError: onError)));
       } // Subscribe to Firestore (recursion base case)
       else {
         next(action);
@@ -201,18 +218,21 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreSubscribe()
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreUnsubscribe() {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
-    print("SUBSCRIPTION: ${action.payload.streamSubscription}");
 
 //    var payload = action.payload as FSDiary;
 
-    print(api.state.subscriptions.contains(action.payload));
+    print(api.state.subscriptions.keys.contains(action.payload));
 //    print(api.state.subscriptions.indexOf(action.payload));
 
-    var fs = api.state.subscriptions.toList()[api.state.subscriptions.toList().indexOf(action.payload)];
+    var fsPath = (action.payload as FSPath);
+    print("SUBSCRIPTION: ${fsPath.firestore.streamSubscription}");
+    var fs = api.state.subscriptions.keys.toList()[api.state.subscriptions.keys.toList().indexOf(fsPath.firestore)];
+
 //    var fs = api.state.subscriptions[api.state.subscriptions.indexOf(action.payload)];
-    if (api.state.subscriptions.contains(action.payload) && fs.streamSubscription != null) {
+    if (api.state.subscriptions.containsKey(fsPath.firestore) && fs.streamSubscription != null) {
       fs.streamSubscription.cancel();
       log.shout("CANCELLED ${action.payload}");
+      next(action);
     }
 //
 //    if (payload.streamSubscription == null) {
@@ -232,7 +252,6 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> firestoreUnsubscribe
 ////      temp.sub.cancel();
 //      print("stopping");
 //    }
-    next(action);
   };
 }
 

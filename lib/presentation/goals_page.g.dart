@@ -10,7 +10,7 @@ class _$GoalsPageVM extends GoalsPageVM {
   @override
   final BuiltList<int> widgets;
   @override
-  final BuiltSet<FS> subscriptions;
+  final BuiltSetMultimap<FS, int> subscriptions;
   @override
   final BuiltList<FoodRecord> diaryRecords;
 
@@ -69,10 +69,10 @@ class GoalsPageVMBuilder implements Builder<GoalsPageVM, GoalsPageVMBuilder> {
   ListBuilder<int> get widgets => _$this._widgets ??= new ListBuilder<int>();
   set widgets(ListBuilder<int> widgets) => _$this._widgets = widgets;
 
-  SetBuilder<FS> _subscriptions;
-  SetBuilder<FS> get subscriptions =>
-      _$this._subscriptions ??= new SetBuilder<FS>();
-  set subscriptions(SetBuilder<FS> subscriptions) =>
+  SetMultimapBuilder<FS, int> _subscriptions;
+  SetMultimapBuilder<FS, int> get subscriptions =>
+      _$this._subscriptions ??= new SetMultimapBuilder<FS, int>();
+  set subscriptions(SetMultimapBuilder<FS, int> subscriptions) =>
       _$this._subscriptions = subscriptions;
 
   ListBuilder<FoodRecord> _diaryRecords;

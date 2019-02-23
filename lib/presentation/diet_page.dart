@@ -71,7 +71,12 @@ import 'package:flutter/material.dart' hide Builder;
 //  factory DietPageVM([updates(DietPageVMBuilder b)]) = _$DietPageVM;
 //}
 
+//import 'package:infinity_page_view/infinity_page_view.dart';
+
+
 class DietPage extends StatelessWidget {
+//  final InfinityPageController infinityPageController = new InfinityPageController(initialPage: 0);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,9 +84,47 @@ class DietPage extends StatelessWidget {
         leading: DrawerNavButton(),
         title: Text(PageFactory.toText(Page.diet)),
       ),
-      body: Container(
-        color: Colors.pinkAccent,
-      ),
+      body: Container()
+//      new InfinityPageView(
+//        itemBuilder: (BuildContext context, int index) {
+//          switch (index) {
+//            case 0:
+//              return Container(
+//                  color: Colors.redAccent
+//              );
+//            case 1:
+//              return Container(
+//                color: Colors.blueAccent
+//              );
+//            case 2:
+//              return Container(
+//                  color: Colors.orangeAccent
+//              );
+//          }
+//          return Container(
+//              color: Colors.black
+//          );
+//        },
+//        itemCount: 3,
+//        onPageChanged: (int index) {
+//          print("INDEX: $index");
+////          setState(() {
+////            label = "${index+1}/${itemCount}";
+////          });
+//        },
+//        controller: infinityPageController,
+//      ),
+//      PageView.builder(
+////        itemCount: 2,
+//        scrollDirection: Axis.horizontal,
+//        itemBuilder: (context, position) {
+//          return Container(
+//            height: 200,
+//            width: 200,
+//            color: position % 2 == 0 ? Colors.pink : Colors.cyan,
+//          );
+//        },
+//      ),
     );
   }
 }

@@ -33,6 +33,10 @@ abstract class Actions extends ReduxActions {
   // TODO: close store
   ActionDispatcher disposeApp;
 
+  //
+  ActionDispatcher<Duration> changeDate; // with delta
+  ActionDispatcher<DateTime> goToDate; // absolutely
+
   ActionDispatcher<FoodRecord> diaryRecordReceived; // TODO: move
   ActionDispatcher<BuiltList<FoodRecord>> diaryReceived;
 

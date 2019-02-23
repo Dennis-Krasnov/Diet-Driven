@@ -99,13 +99,13 @@ class GoalsPage extends StoreConnector<AppState, Actions, GoalsPageVM> {
               shrinkWrap: true,
               itemCount: vm.subscriptions.length,
               itemBuilder: (BuildContext context, int index) {
-                var r = vm.subscriptions.toList()[index];
+                var r = vm.subscriptions.keys.toList()[index];
                 return ListTile(
 //                  title: Text((r as FSDiary).docRef.path),
 //                  subtitle: Text((r as FSDiary).diaryRecordId),//r.listeners.toString()),
 //                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.stopDiaryListen(r)),
 //                  title: Text(r.path.generate()),
-                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.firestore.unsubscribe(r)),
+                  trailing: IconButton(icon: Icon(Icons.delete), onPressed: () => actions.firestore.unsubscribe(FSPath(r, vm.subscriptions[r].toList()))),
                   onTap: () => print(r),
                 );
               }
@@ -181,7 +181,7 @@ abstract class GoalsPageVM implements Built<GoalsPageVM, GoalsPageVMBuilder> {
 //  BuiltList<FS> get subscriptions;
 //  BuiltList<Built> get subscriptions;
 //  BuiltList<FSDocument> get subscriptions;
-  BuiltSet<FS> get subscriptions;
+  BuiltSetMultimap<FS, int> get subscriptions;
   BuiltList<FoodRecord> get diaryRecords;
 
   GoalsPageVM._();

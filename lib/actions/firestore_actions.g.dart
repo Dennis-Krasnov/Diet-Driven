@@ -23,13 +23,14 @@ class _$FirestoreActions extends FirestoreActions {
       new ActionDispatcher<int>('FirestoreActions-startSettingsListen');
   final ActionDispatcher<int> stopSettingsListen =
       new ActionDispatcher<int>('FirestoreActions-stopSettingsListen');
-  final ActionDispatcher<FS<dynamic>> subscribe =
-      new ActionDispatcher<FS<dynamic>>('FirestoreActions-subscribe');
-  final ActionDispatcher<FS<dynamic>> additionalSubscription =
-      new ActionDispatcher<FS<dynamic>>(
-          'FirestoreActions-additionalSubscription');
-  final ActionDispatcher<FS<dynamic>> unsubscribe =
-      new ActionDispatcher<FS<dynamic>>('FirestoreActions-unsubscribe');
+  final ActionDispatcher<FSPath> subscribe =
+      new ActionDispatcher<FSPath>('FirestoreActions-subscribe');
+  final ActionDispatcher<FSPath> additionalSubscription =
+      new ActionDispatcher<FSPath>('FirestoreActions-additionalSubscription');
+  final ActionDispatcher<FSPath> unsubscribe =
+      new ActionDispatcher<FSPath>('FirestoreActions-unsubscribe');
+  final ActionDispatcher<FS<dynamic>> unsubscribeAll =
+      new ActionDispatcher<FS<dynamic>>('FirestoreActions-unsubscribeAll');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -41,6 +42,7 @@ class _$FirestoreActions extends FirestoreActions {
     subscribe.setDispatcher(dispatcher);
     additionalSubscription.setDispatcher(dispatcher);
     unsubscribe.setDispatcher(dispatcher);
+    unsubscribeAll.setDispatcher(dispatcher);
   }
 }
 
@@ -55,10 +57,12 @@ class FirestoreActionsNames {
       new ActionName<int>('FirestoreActions-startSettingsListen');
   static final ActionName<int> stopSettingsListen =
       new ActionName<int>('FirestoreActions-stopSettingsListen');
-  static final ActionName<FS<dynamic>> subscribe =
-      new ActionName<FS<dynamic>>('FirestoreActions-subscribe');
-  static final ActionName<FS<dynamic>> additionalSubscription =
-      new ActionName<FS<dynamic>>('FirestoreActions-additionalSubscription');
-  static final ActionName<FS<dynamic>> unsubscribe =
-      new ActionName<FS<dynamic>>('FirestoreActions-unsubscribe');
+  static final ActionName<FSPath> subscribe =
+      new ActionName<FSPath>('FirestoreActions-subscribe');
+  static final ActionName<FSPath> additionalSubscription =
+      new ActionName<FSPath>('FirestoreActions-additionalSubscription');
+  static final ActionName<FSPath> unsubscribe =
+      new ActionName<FSPath>('FirestoreActions-unsubscribe');
+  static final ActionName<FS<dynamic>> unsubscribeAll =
+      new ActionName<FS<dynamic>>('FirestoreActions-unsubscribeAll');
 }
