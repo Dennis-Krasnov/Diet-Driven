@@ -89,7 +89,7 @@ class _DDAppState extends State<DDApp> {
         child: new MaterialApp(
           navigatorKey: DDApp.navigatorKey,
           title: "Diet Driven",
-//          theme:, // TODO
+          theme: ThemeData(fontFamily: 'FiraSans'),
             routes: routes,
           initialRoute: "/",
 //          onUnknownRoute: (settings) => settings.name, // TODO

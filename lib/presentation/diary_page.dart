@@ -69,10 +69,20 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
       return Scaffold(
         appBar: AppBar(
           leading: DrawerNavButton(),
-          title: Text(PageFactory.toText(Page.diary)),
+          title: Text(
+            PageFactory.toText(Page.diary),
+            style: TextStyle(fontFamily: "SourceSansPro"),
+          ),
           actions: <Widget>[
             FlatButton(
-              child: Text(dateText, style: TextStyle(color: Colors.white),),
+              child: Text(
+                dateText,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontFamily: "SourceSansPro",
+                  letterSpacing: 1.2
+                ),
+              ),
               onPressed: () {
 //                actions.goToDate(DateTime.now());
                 if (pc.page.round() != daysSinceEpoch) {

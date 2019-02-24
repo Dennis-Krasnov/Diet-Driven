@@ -37,9 +37,19 @@ class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
 //                    child: Image.network("https://denniskrasnov.com/img/dk/logo-72.png"),
 //                  ),
                 ],
-                accountName: Text(vm.auth.isAnonymous ? "Anonymous user": vm.auth.email),
+                accountName: Text(
+                  vm.auth.isAnonymous ? "Anonymous user": vm.auth.email,
+                  style: TextStyle(
+                    fontFamily: "SourceSansPro",
+                  ),
+                ),
 //                accountName: Text("Dennis Krasnov"),
-                accountEmail: Text(vm.auth.uid),
+                accountEmail: Text(
+                  vm.auth.uid,
+                  style: TextStyle(
+                    fontFamily: "SourceSansPro",
+                  ),
+                ),
 //                accountEmail: Text("dennis.krasnov@gmail.com"),
 //                onDetailsPressed: () => print("details clicked"),
               ),
@@ -48,7 +58,13 @@ class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
                 children: Page.inApp.map((page) =>
                     ListTile(
                       leading: PageFactory.toIcon(page),
-                      title: Text(PageFactory.toText(page)),
+                      title: Text(
+                        PageFactory.toText(page),
+                        style: TextStyle(
+                          fontFamily: "SourceSansPro",
+                          fontSize: 16
+                        ),
+                      ),
                       selected: page == activePage,
                       onTap: () => actions.navigation.goTo(page),
                     )
