@@ -30,7 +30,14 @@ class BottomNav extends StoreConnector<AppState, Actions, BottomNavigationVM> {
         // Current page no longer in bottom navigation, reset to first page
         currentIndex: vm.pages.contains(activePage) ? vm.pages.indexOf(activePage) : 0,
         items: vm.pages.map((page) => BottomNavigationBarItem(
-          title: Text(PageFactory.toText(page)),
+          title: Text(
+            PageFactory.toText(page),
+            style: TextStyle(
+              fontFamily: "SourceSansPro",
+//              fontWeight: FontWeight.w700
+              fontSize: 16
+            ),
+          ),
           icon: PageFactory.toIcon(page),
         )).toList()
       );
