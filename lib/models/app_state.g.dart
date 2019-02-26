@@ -16,7 +16,9 @@ class _$AppState extends AppState {
   @override
   final BuiltList<FoodRecord> diaryRecords;
   @override
-  final DateTime currentDate;
+  final BuiltList<MealsSnapshot> mealsSnapshots;
+  @override
+  final int currentDaysSinceEpoch;
 
   factory _$AppState([void updates(AppStateBuilder b)]) =>
       (new AppStateBuilder()..update(updates)).build() as _$AppState;
@@ -26,7 +28,8 @@ class _$AppState extends AppState {
       this.navigation,
       this.subscriptions,
       this.diaryRecords,
-      this.currentDate})
+      this.mealsSnapshots,
+      this.currentDaysSinceEpoch})
       : super._() {
     if (user == null) {
       throw new BuiltValueNullFieldError('AppState', 'user');
@@ -40,8 +43,11 @@ class _$AppState extends AppState {
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
     }
-    if (currentDate == null) {
-      throw new BuiltValueNullFieldError('AppState', 'currentDate');
+    if (mealsSnapshots == null) {
+      throw new BuiltValueNullFieldError('AppState', 'mealsSnapshots');
+    }
+    if (currentDaysSinceEpoch == null) {
+      throw new BuiltValueNullFieldError('AppState', 'currentDaysSinceEpoch');
     }
   }
 
@@ -60,17 +66,20 @@ class _$AppState extends AppState {
         navigation == other.navigation &&
         subscriptions == other.subscriptions &&
         diaryRecords == other.diaryRecords &&
-        currentDate == other.currentDate;
+        mealsSnapshots == other.mealsSnapshots &&
+        currentDaysSinceEpoch == other.currentDaysSinceEpoch;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, user.hashCode), navigation.hashCode),
-                subscriptions.hashCode),
-            diaryRecords.hashCode),
-        currentDate.hashCode));
+            $jc(
+                $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+                    subscriptions.hashCode),
+                diaryRecords.hashCode),
+            mealsSnapshots.hashCode),
+        currentDaysSinceEpoch.hashCode));
   }
 
   @override
@@ -80,7 +89,8 @@ class _$AppState extends AppState {
           ..add('navigation', navigation)
           ..add('subscriptions', subscriptions)
           ..add('diaryRecords', diaryRecords)
-          ..add('currentDate', currentDate))
+          ..add('mealsSnapshots', mealsSnapshots)
+          ..add('currentDaysSinceEpoch', currentDaysSinceEpoch))
         .toString();
   }
 }
@@ -137,15 +147,27 @@ class _$AppStateBuilder extends AppStateBuilder {
   }
 
   @override
-  DateTime get currentDate {
+  ListBuilder<MealsSnapshot> get mealsSnapshots {
     _$this;
-    return super.currentDate;
+    return super.mealsSnapshots ??= new ListBuilder<MealsSnapshot>();
   }
 
   @override
-  set currentDate(DateTime currentDate) {
+  set mealsSnapshots(ListBuilder<MealsSnapshot> mealsSnapshots) {
     _$this;
-    super.currentDate = currentDate;
+    super.mealsSnapshots = mealsSnapshots;
+  }
+
+  @override
+  int get currentDaysSinceEpoch {
+    _$this;
+    return super.currentDaysSinceEpoch;
+  }
+
+  @override
+  set currentDaysSinceEpoch(int currentDaysSinceEpoch) {
+    _$this;
+    super.currentDaysSinceEpoch = currentDaysSinceEpoch;
   }
 
   _$AppStateBuilder() : super._();
@@ -156,7 +178,8 @@ class _$AppStateBuilder extends AppStateBuilder {
       super.navigation = _$v.navigation?.toBuilder();
       super.subscriptions = _$v.subscriptions?.toBuilder();
       super.diaryRecords = _$v.diaryRecords?.toBuilder();
-      super.currentDate = _$v.currentDate;
+      super.mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
+      super.currentDaysSinceEpoch = _$v.currentDaysSinceEpoch;
       _$v = null;
     }
     return this;
@@ -185,7 +208,8 @@ class _$AppStateBuilder extends AppStateBuilder {
               navigation: navigation.build(),
               subscriptions: subscriptions.build(),
               diaryRecords: diaryRecords.build(),
-              currentDate: currentDate);
+              mealsSnapshots: mealsSnapshots.build(),
+              currentDaysSinceEpoch: currentDaysSinceEpoch);
     } catch (_) {
       String _$failedField;
       try {
@@ -197,6 +221,8 @@ class _$AppStateBuilder extends AppStateBuilder {
         subscriptions.build();
         _$failedField = 'diaryRecords';
         diaryRecords.build();
+        _$failedField = 'mealsSnapshots';
+        mealsSnapshots.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'AppState', _$failedField, e.toString());

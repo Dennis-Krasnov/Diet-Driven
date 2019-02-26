@@ -19,8 +19,8 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
     ..combineNested(getNavigationReducer())
     ..combineNested(getUserReducer())
 
-    ..add(ActionsNames.changeDate, (s, a, b) => b.currentDate = s.currentDate.add(a.payload))
-    ..add(ActionsNames.goToDate, (s, a, b) => b.currentDate = a.payload)
+    ..add(ActionsNames.changeDate, (s, a, b) => b.currentDaysSinceEpoch = s.currentDaysSinceEpoch + a.payload)
+    ..add(ActionsNames.goToDate, (s, a, b) => b.currentDaysSinceEpoch = a.payload)
 
     ..add(FirestoreActionsNames.additionalSubscription, additionalSubscription)
 

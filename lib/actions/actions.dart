@@ -34,10 +34,10 @@ abstract class Actions extends ReduxActions {
   ActionDispatcher disposeApp;
 
   // Relatively changes date
-  ActionDispatcher<Duration> changeDate;
+  ActionDispatcher<int> changeDate;
 
   // Absolutely changes date
-  ActionDispatcher<DateTime> goToDate;
+  ActionDispatcher<int> goToDate;
 
   //
   ActionDispatcher<FoodRecord> diaryRecordReceived; // TODO: move

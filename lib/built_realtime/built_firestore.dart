@@ -146,3 +146,14 @@ abstract class FoodDiaryCollection with FSCollection<FoodRecord> implements Buil
   FoodDiaryCollection._();
   factory FoodDiaryCollection([updates(FoodDiaryCollectionBuilder b)]) = _$FoodDiaryCollection;
 }
+
+///
+abstract class MealSnapshotCollection with FSCollection<FoodRecord> implements Built<MealSnapshotCollection, MealSnapshotCollectionBuilder> {
+  String get userId;
+
+  @override
+  CollectionReference get colRef => Firestore.instance.collection("users/$userId/meal_snapshots");
+
+  MealSnapshotCollection._();
+  factory MealSnapshotCollection([updates(MealSnapshotCollectionBuilder b)]) = _$MealSnapshotCollection;
+}

@@ -30,6 +30,9 @@ class SettingsPage extends StatelessWidget {
         builder: (BuildContext context, SettingsPageVM vm, Actions actions) {
           return Column(
             children: <Widget>[
+              // TODO: reordering bottom navigation (single document, just modify single array), move to settings.
+              // TODO: just shove everything under user properties (global subscription) (arrays, subcollections), or create distinct settings array, harder to manage
+              // just hardcode subcollection logic! still do subcollections, it's more pretty
               ListTile(
                 leading: Icon(Icons.repeat),
                 title: Text("Randomize bottom menu"),
