@@ -18,9 +18,6 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
   Iterable serialize(Serializers serializers, FoodRecord object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'timestamp',
-      serializers.serialize(object.timestamp,
-          specifiedType: const FullType(DateTime)),
       'foodName',
       serializers.serialize(object.foodName,
           specifiedType: const FullType(String)),
@@ -35,6 +32,42 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       result
         ..add('_id')
         ..add(serializers.serialize(object.id,
+            specifiedType: const FullType(String)));
+    }
+    if (object.edamamId != null) {
+      result
+        ..add('edamamId')
+        ..add(serializers.serialize(object.edamamId,
+            specifiedType: const FullType(String)));
+    }
+    if (object.daysSinceEpoch != null) {
+      result
+        ..add('daysSinceEpoch')
+        ..add(serializers.serialize(object.daysSinceEpoch,
+            specifiedType: const FullType(int)));
+    }
+    if (object.mealSnapshotId != null) {
+      result
+        ..add('mealSnapshotId')
+        ..add(serializers.serialize(object.mealSnapshotId,
+            specifiedType: const FullType(String)));
+    }
+    if (object.mealIndex != null) {
+      result
+        ..add('mealIndex')
+        ..add(serializers.serialize(object.mealIndex,
+            specifiedType: const FullType(int)));
+    }
+    if (object.timestamp != null) {
+      result
+        ..add('timestamp')
+        ..add(serializers.serialize(object.timestamp,
+            specifiedType: const FullType(DateTime)));
+    }
+    if (object.manufacturer != null) {
+      result
+        ..add('manufacturer')
+        ..add(serializers.serialize(object.manufacturer,
             specifiedType: const FullType(String)));
     }
     if (object.sodium != null) {
@@ -62,12 +95,32 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
           result.id = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'edamamId':
+          result.edamamId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'daysSinceEpoch':
+          result.daysSinceEpoch = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
+        case 'mealSnapshotId':
+          result.mealSnapshotId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'mealIndex':
+          result.mealIndex = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
         case 'timestamp':
           result.timestamp = serializers.deserialize(value,
               specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'foodName':
           result.foodName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'manufacturer':
+          result.manufacturer = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'uncertainty':
@@ -93,9 +146,19 @@ class _$FoodRecord extends FoodRecord {
   @override
   final String id;
   @override
+  final String edamamId;
+  @override
+  final int daysSinceEpoch;
+  @override
+  final String mealSnapshotId;
+  @override
+  final int mealIndex;
+  @override
   final DateTime timestamp;
   @override
   final String foodName;
+  @override
+  final String manufacturer;
   @override
   final Uncertainty uncertainty;
   @override
@@ -108,15 +171,17 @@ class _$FoodRecord extends FoodRecord {
 
   _$FoodRecord._(
       {this.id,
+      this.edamamId,
+      this.daysSinceEpoch,
+      this.mealSnapshotId,
+      this.mealIndex,
       this.timestamp,
       this.foodName,
+      this.manufacturer,
       this.uncertainty,
       this.grams,
       this.sodium})
       : super._() {
-    if (timestamp == null) {
-      throw new BuiltValueNullFieldError('FoodRecord', 'timestamp');
-    }
     if (foodName == null) {
       throw new BuiltValueNullFieldError('FoodRecord', 'foodName');
     }
@@ -139,8 +204,13 @@ class _$FoodRecord extends FoodRecord {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is FoodRecord &&
+        edamamId == other.edamamId &&
+        daysSinceEpoch == other.daysSinceEpoch &&
+        mealSnapshotId == other.mealSnapshotId &&
+        mealIndex == other.mealIndex &&
         timestamp == other.timestamp &&
         foodName == other.foodName &&
+        manufacturer == other.manufacturer &&
         uncertainty == other.uncertainty &&
         grams == other.grams &&
         sodium == other.sodium;
@@ -150,7 +220,19 @@ class _$FoodRecord extends FoodRecord {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, timestamp.hashCode), foodName.hashCode),
+            $jc(
+                $jc(
+                    $jc(
+                        $jc(
+                            $jc(
+                                $jc(
+                                    $jc($jc(0, edamamId.hashCode),
+                                        daysSinceEpoch.hashCode),
+                                    mealSnapshotId.hashCode),
+                                mealIndex.hashCode),
+                            timestamp.hashCode),
+                        foodName.hashCode),
+                    manufacturer.hashCode),
                 uncertainty.hashCode),
             grams.hashCode),
         sodium.hashCode));
@@ -160,8 +242,13 @@ class _$FoodRecord extends FoodRecord {
   String toString() {
     return (newBuiltValueToStringHelper('FoodRecord')
           ..add('id', id)
+          ..add('edamamId', edamamId)
+          ..add('daysSinceEpoch', daysSinceEpoch)
+          ..add('mealSnapshotId', mealSnapshotId)
+          ..add('mealIndex', mealIndex)
           ..add('timestamp', timestamp)
           ..add('foodName', foodName)
+          ..add('manufacturer', manufacturer)
           ..add('uncertainty', uncertainty)
           ..add('grams', grams)
           ..add('sodium', sodium))
@@ -176,6 +263,24 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   String get id => _$this._id;
   set id(String id) => _$this._id = id;
 
+  String _edamamId;
+  String get edamamId => _$this._edamamId;
+  set edamamId(String edamamId) => _$this._edamamId = edamamId;
+
+  int _daysSinceEpoch;
+  int get daysSinceEpoch => _$this._daysSinceEpoch;
+  set daysSinceEpoch(int daysSinceEpoch) =>
+      _$this._daysSinceEpoch = daysSinceEpoch;
+
+  String _mealSnapshotId;
+  String get mealSnapshotId => _$this._mealSnapshotId;
+  set mealSnapshotId(String mealSnapshotId) =>
+      _$this._mealSnapshotId = mealSnapshotId;
+
+  int _mealIndex;
+  int get mealIndex => _$this._mealIndex;
+  set mealIndex(int mealIndex) => _$this._mealIndex = mealIndex;
+
   DateTime _timestamp;
   DateTime get timestamp => _$this._timestamp;
   set timestamp(DateTime timestamp) => _$this._timestamp = timestamp;
@@ -183,6 +288,10 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   String _foodName;
   String get foodName => _$this._foodName;
   set foodName(String foodName) => _$this._foodName = foodName;
+
+  String _manufacturer;
+  String get manufacturer => _$this._manufacturer;
+  set manufacturer(String manufacturer) => _$this._manufacturer = manufacturer;
 
   Uncertainty _uncertainty;
   Uncertainty get uncertainty => _$this._uncertainty;
@@ -201,8 +310,13 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   FoodRecordBuilder get _$this {
     if (_$v != null) {
       _id = _$v.id;
+      _edamamId = _$v.edamamId;
+      _daysSinceEpoch = _$v.daysSinceEpoch;
+      _mealSnapshotId = _$v.mealSnapshotId;
+      _mealIndex = _$v.mealIndex;
       _timestamp = _$v.timestamp;
       _foodName = _$v.foodName;
+      _manufacturer = _$v.manufacturer;
       _uncertainty = _$v.uncertainty;
       _grams = _$v.grams;
       _sodium = _$v.sodium;
@@ -229,8 +343,13 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
     final _$result = _$v ??
         new _$FoodRecord._(
             id: id,
+            edamamId: edamamId,
+            daysSinceEpoch: daysSinceEpoch,
+            mealSnapshotId: mealSnapshotId,
+            mealIndex: mealIndex,
             timestamp: timestamp,
             foodName: foodName,
+            manufacturer: manufacturer,
             uncertainty: uncertainty,
             grams: grams,
             sodium: sodium);

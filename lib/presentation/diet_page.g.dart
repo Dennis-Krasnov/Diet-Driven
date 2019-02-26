@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of diary_page;
+part of diet_page;
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$DiaryPageVM extends DiaryPageVM {
+class _$DietPageVM extends DietPageVM {
   @override
   final BuiltList<FoodRecord> diaryRecords;
   @override
@@ -18,10 +18,10 @@ class _$DiaryPageVM extends DiaryPageVM {
   @override
   final DateTime date;
 
-  factory _$DiaryPageVM([void updates(DiaryPageVMBuilder b)]) =>
-      (new DiaryPageVMBuilder()..update(updates)).build();
+  factory _$DietPageVM([void updates(DietPageVMBuilder b)]) =>
+      (new DietPageVMBuilder()..update(updates)).build();
 
-  _$DiaryPageVM._(
+  _$DietPageVM._(
       {this.diaryRecords,
       this.mealsSnapshots,
       this.userId,
@@ -29,33 +29,33 @@ class _$DiaryPageVM extends DiaryPageVM {
       this.date})
       : super._() {
     if (diaryRecords == null) {
-      throw new BuiltValueNullFieldError('DiaryPageVM', 'diaryRecords');
+      throw new BuiltValueNullFieldError('DietPageVM', 'diaryRecords');
     }
     if (mealsSnapshots == null) {
-      throw new BuiltValueNullFieldError('DiaryPageVM', 'mealsSnapshots');
+      throw new BuiltValueNullFieldError('DietPageVM', 'mealsSnapshots');
     }
     if (userId == null) {
-      throw new BuiltValueNullFieldError('DiaryPageVM', 'userId');
+      throw new BuiltValueNullFieldError('DietPageVM', 'userId');
     }
     if (daysSinceEpoch == null) {
-      throw new BuiltValueNullFieldError('DiaryPageVM', 'daysSinceEpoch');
+      throw new BuiltValueNullFieldError('DietPageVM', 'daysSinceEpoch');
     }
     if (date == null) {
-      throw new BuiltValueNullFieldError('DiaryPageVM', 'date');
+      throw new BuiltValueNullFieldError('DietPageVM', 'date');
     }
   }
 
   @override
-  DiaryPageVM rebuild(void updates(DiaryPageVMBuilder b)) =>
+  DietPageVM rebuild(void updates(DietPageVMBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  DiaryPageVMBuilder toBuilder() => new DiaryPageVMBuilder()..replace(this);
+  DietPageVMBuilder toBuilder() => new DietPageVMBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is DiaryPageVM &&
+    return other is DietPageVM &&
         diaryRecords == other.diaryRecords &&
         mealsSnapshots == other.mealsSnapshots &&
         userId == other.userId &&
@@ -75,7 +75,7 @@ class _$DiaryPageVM extends DiaryPageVM {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('DiaryPageVM')
+    return (newBuiltValueToStringHelper('DietPageVM')
           ..add('diaryRecords', diaryRecords)
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('userId', userId)
@@ -85,8 +85,8 @@ class _$DiaryPageVM extends DiaryPageVM {
   }
 }
 
-class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
-  _$DiaryPageVM _$v;
+class DietPageVMBuilder implements Builder<DietPageVM, DietPageVMBuilder> {
+  _$DietPageVM _$v;
 
   ListBuilder<FoodRecord> _diaryRecords;
   ListBuilder<FoodRecord> get diaryRecords =>
@@ -113,9 +113,9 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
   DateTime get date => _$this._date;
   set date(DateTime date) => _$this._date = date;
 
-  DiaryPageVMBuilder();
+  DietPageVMBuilder();
 
-  DiaryPageVMBuilder get _$this {
+  DietPageVMBuilder get _$this {
     if (_$v != null) {
       _diaryRecords = _$v.diaryRecords?.toBuilder();
       _mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
@@ -128,24 +128,24 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
   }
 
   @override
-  void replace(DiaryPageVM other) {
+  void replace(DietPageVM other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$DiaryPageVM;
+    _$v = other as _$DietPageVM;
   }
 
   @override
-  void update(void updates(DiaryPageVMBuilder b)) {
+  void update(void updates(DietPageVMBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$DiaryPageVM build() {
-    _$DiaryPageVM _$result;
+  _$DietPageVM build() {
+    _$DietPageVM _$result;
     try {
       _$result = _$v ??
-          new _$DiaryPageVM._(
+          new _$DietPageVM._(
               diaryRecords: diaryRecords.build(),
               mealsSnapshots: mealsSnapshots.build(),
               userId: userId,
@@ -160,7 +160,7 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
         mealsSnapshots.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'DiaryPageVM', _$failedField, e.toString());
+            'DietPageVM', _$failedField, e.toString());
       }
       rethrow;
     }

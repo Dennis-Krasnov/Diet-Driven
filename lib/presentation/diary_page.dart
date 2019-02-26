@@ -9,6 +9,7 @@ import 'package:diet_driven/containers/drawer_nav_button.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/food_record.dart';
+import 'package:diet_driven/models/meals.dart';
 import 'package:diet_driven/models/page.dart';
 import 'package:diet_driven/models/uncertainty.dart';
 import 'package:flutter/material.dart' hide Builder;
@@ -27,8 +28,14 @@ String randomFood() {
   return foods[0];
 }
 
+
+// TODO: move to helper library (duplicate)
 int daysSinceEpoch(DateTime dt) {
-  return dt.difference(DateTime.fromMicrosecondsSinceEpoch(0)).inDays + 1;
+  return dt.difference(DateTime.fromMicrosecondsSinceEpoch(0, isUtc: false)).inDays + 1;
+}
+
+DateTime dateSinceEpoch(int daysSinceEpoch) {
+  return DateTime.fromMillisecondsSinceEpoch(0, isUtc: false).add(Duration(days: daysSinceEpoch));
 }
 
 class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
@@ -37,24 +44,31 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
   DiaryPageVM connect(AppState state) {
     return DiaryPageVM((b) => b
       ..diaryRecords = state.diaryRecords.toBuilder()
+      ..mealsSnapshots = state.mealsSnapshots.toBuilder()
       ..userId = state.user.authUser.uid
-      ..date = state.currentDate
+      ..daysSinceEpoch = state.currentDaysSinceEpoch
+      ..date = state.currentDate()
     );
   }
 
   @override
   Widget build(BuildContext context, DiaryPageVM vm, Actions actions) {
-    // TODO: store in store?
-    PageController pc = new PageController(initialPage: daysSinceEpoch(DateTime.now()));
+    // TODO: store in vm
+    PageController pc = new PageController(initialPage: vm.daysSinceEpoch);
 
     var diary = new FoodDiaryCollection((b) => b
+      ..userId = vm.userId
+    );
+
+    // TODO: subscribe to list of FS instead!!!
+    var meals = new MealSnapshotCollection((b) => b
       ..userId = vm.userId
     );
 
     // TODO: subscribe (call recordDoc.subscribe(hash) from middleware!!)
 
     String dateText = DateFormat.yMMMd().format(vm.date);
-    int daysDelta = vm.date.day - DateTime.now().day;
+    int daysDelta = vm.daysSinceEpoch - daysSinceEpoch(DateTime.now());
     if (daysDelta == -1) {
       dateText = "YESTERDAY";
     }
@@ -85,9 +99,10 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
               ),
               onPressed: () {
 //                actions.goToDate(DateTime.now());
-                if (pc.page.round() != daysSinceEpoch) {
+                int currentDaySinceEpoch = daysSinceEpoch(DateTime.now());
+                if (pc.page.round() != currentDaySinceEpoch) {
                   print("animating");
-                  pc.animateToPage(daysSinceEpoch(DateTime.now()), duration: Duration(milliseconds: 200), curve: Curves.bounceIn); // TODO: as middleware - or do manually! (update state on onPageChanged)
+                  pc.animateToPage(currentDaySinceEpoch, duration: Duration(milliseconds: 200), curve: Curves.bounceIn); // TODO: as middleware - or do manually! (update state on onPageChanged)
                 }
                 // TODO: filter foods based on days since epoch instead of by datetime (allows past midnight snacks) - only allow when manually changing timestamp
               },
@@ -95,79 +110,60 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
 
             IconButton(
               icon: Icon(Icons.info),
-              onPressed: () => pc.animateToPage(1, duration: Duration(milliseconds: 200), curve: Curves.bounceIn),
+              onPressed: () => pc.animateToPage(0, duration: Duration(milliseconds: 200), curve: Curves.bounceIn),
 //              onPressed: () => pc.jumpToPage(1), // doesn't cause multiple index updates...
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () => diary.clear(),
             )
           ],
         ),
+        // TODO: OrientationBuilder(builder: (context, orientation) {
         body: PageView.builder(
           controller: pc,
           itemBuilder: (BuildContext context, int index) {
-            // Don't show anything more than 1 day off
-            if ((daysSinceEpoch(vm.date) - index).abs() > 1) {
-              return Container();
-            }
+            // Don't show anything more than 1 day off FIXME
+//            if ((daysSinceEpoch(vm.date) - index).abs() > 1) {
+//              return Container();
+//            }
 
-            return Container(
-              child: Column(
+//            MealSnapshot mealSnapshot = vm.mealSnapshots.where((ms) => index <= ms.effectiveAsOf).first;
+            MealsSnapshot mealSnapshot = vm.mealsSnapshots.last;
+            BuiltList<FoodRecord> todaysFoodRecords = BuiltList.from(vm.diaryRecords.where((fr) => fr.daysSinceEpoch == index));
+
+              return Container(
+              // TODO: scrollable!
+              child: ListView(
+//                shrinkWrap: ,
                 children: [
-                  Text("INDEX: $index"),
+                  Text(
+                    "INDEX: $index | meals: ${vm.mealsSnapshots.single.meals.length}",
+                    style: TextStyle(
+                      fontFamily: "SourceSansPro",
+                    ),
+                  ),
                   Text(
                     new DateFormat.yMMMd().format(vm.date),
                     style: TextStyle(
-                        fontSize: 22
+                      fontSize: 22,
+                      fontFamily: "SourceSansPro",
                     ),
                   ),
-                  Text("${vm.diaryRecords.length} entries"),
-
-                  ListView(
-                    shrinkWrap: true,
-//                  FIXME: (fr) => (daysSinceEpoch(fr.timestamp) - index).abs() <= 1
-                    children: vm.diaryRecords.where((fr) => daysSinceEpoch(fr.timestamp) == index).map((fr) => // FIXME: slightly broken
-                  // TODO: create component out of this, very customizable
-                      ListTile(
-                        title: Text(fr.foodName),
-                        subtitle: Text(DateFormat.yMMMd().format(fr.timestamp)),
-                        leading: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            IconButton(
-                              icon: Icon(Icons.chevron_left),
-                                onPressed: () {
-                                  FoodRecordDocument((b) => b
-                                    ..userId = vm.userId
-                                    ..foodRecordId = fr.id
-                                  ).update(fr.rebuild((b) => b..timestamp = b.timestamp.add(Duration(days: -1))));
-                                }
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.chevron_right),
-                              onPressed: () {
-                                FoodRecordDocument((b) => b
-                                  ..userId = vm.userId
-                                  ..foodRecordId = fr.id
-                                ).update(fr.rebuild((b) => b..timestamp = b.timestamp.add(Duration(days: 1))));
-                              }
-                            ),
-                          ],
-                        ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-          //                onPressed: () => diary.delete(fr)
-                          onPressed: () => FoodRecordDocument((b) => b..userId = vm.userId ..foodRecordId = fr.id).delete()
-                        ),
-                        onTap: () {
-                          FoodRecordDocument((b) => b // TODO: pass doc to edit page
-                            ..userId = vm.userId
-                            ..foodRecordId = fr.id
-                          ).update(fr.rebuild((b) => b..foodName = randomFood()));
-                        },
-                      )
-                    ).toList()
+                  Text(
+                    "${todaysFoodRecords.length} entries",
+                    style: TextStyle(
+                      fontFamily: "SourceSansPro",
+                    ),
                   ),
-                  RaisedButton(
-                    child: Text("DELETE ALL"),
-                    onPressed: () => diary.clear(),
+                  Column(
+                    children: mealSnapshot.meals.map((meal) {
+                      BuiltList<FoodRecord> mealDiaryRecords = BuiltList.from(todaysFoodRecords.where((fr) => fr.mealIndex == meal.mealIndex).toList());
+                      log.severe("ALL: ${vm.diaryRecords}");
+                      log.severe("MEAL ${meal.name}: $mealDiaryRecords");
+                      // DO LOGIC HERE!!, meal be stupid (same with foodrecords being stupid, meal doing document logic)
+                      return Meal(meal, mealDiaryRecords, vm.userId);
+                    }).toList()
                   ),
                 ]
               ),
@@ -175,7 +171,8 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
           },
           onPageChanged: (int index) {
             print("INDEX NOW: $index");
-            actions.goToDate(DateTime.fromMillisecondsSinceEpoch(Duration(days: index).inMilliseconds));
+//            actions.goToDate(DateTime.fromMillisecondsSinceEpoch(Duration(days: index).inMilliseconds));
+            actions.goToDate(index);
             // TODO: absolutely set current day in store (to avoid jumps during midnight)
           },
         ),
@@ -184,10 +181,12 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
 //          heroTag: "ANIMATE_FAB", // FIXME: only works for navigation events...
           onPressed: () {
             FoodRecord fr = new FoodRecord((b) => b
-                ..foodName = randomFood()
-                ..grams = new Random().nextInt(100).toDouble()
-                ..uncertainty = Uncertainty.accurate
-                ..timestamp = DateTime.now().toUtc()
+              ..daysSinceEpoch = vm.daysSinceEpoch
+              ..mealIndex = 0
+              ..foodName = randomFood()
+              ..grams = new Random().nextInt(100).toDouble()
+              ..uncertainty = Uncertainty.accurate
+              ..timestamp = DateTime.now().toUtc()
             );
 
             diary.add(fr);
@@ -199,9 +198,99 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
   }
 }
 
+class Meal extends StatelessWidget {
+  final MealInfo mealInfo;
+  final BuiltList<FoodRecord> foodRecords;
+  final String userId;
+  Meal(this.mealInfo, this.foodRecords, this.userId);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Text(
+          "#${mealInfo.mealIndex} - ${mealInfo.name}", //- starts at ${mealInfo.startsAt.inHours}:00
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        Column(
+          children: foodRecords.map((fr) =>
+            FoodRecordListTile(fr, FoodRecordDocument((b) => b..userId = userId ..foodRecordId = fr.id))
+          ).toList(),
+        )
+      ],
+    );
+//        ListView.builder(
+//          itemCount: foodRecords.length,
+//          itemBuilder: (BuildContext context, int index) {
+//            FoodRecord fr = foodRecords[index];
+//
+//          },
+//          shrinkWrap: true,
+//        )
+//        Divider()
+//      ],
+//    );
+//    return ListView(
+//        shrinkWrap: true,
+//        children: foodRecords.map((fr) {
+//          FoodRecordDocument frDoc = FoodRecordDocument((b) => b..userId = "temp" ..foodRecordId = fr.id);
+//          return FoodRecordListTile(fr, document: frDoc);
+//        }).toList(),
+//    );
+  }
+}
+
+class FoodRecordListTile extends StatelessWidget {
+  final FoodRecord foodRecord;
+  final FoodRecordDocument doc;
+
+  FoodRecordListTile(this.foodRecord, this.doc);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(foodRecord.foodName),
+      subtitle: Text(DateFormat.yMMMd().format(foodRecord.timestamp.toLocal())),
+      leading: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          IconButton(
+              icon: Icon(Icons.arrow_upward),
+              onPressed: () {
+                doc.update(foodRecord.rebuild((b) => b..mealIndex -= 1));
+              }
+          ),
+          IconButton(
+              icon: Icon(Icons.arrow_downward),
+              onPressed: () {
+                // FIXME
+                // modifications should ideally be going through reducer/middleware
+                // (right now) I need to check if I'm placing it into an illegal meal index (firebase security rule?)
+                doc.update(foodRecord.rebuild((b) => b..mealIndex += 1));
+              }
+          ),
+        ],
+      ),
+      trailing: IconButton(
+          icon: Icon(Icons.delete),
+          onPressed: () => doc.delete()
+      ),
+      onTap: () {
+        doc.update(foodRecord.rebuild((b) => b..foodName = randomFood()));
+      },
+    );
+  }
+
+}
+
 abstract class DiaryPageVM implements Built<DiaryPageVM, DiaryPageVMBuilder> {
   BuiltList<FoodRecord> get diaryRecords;
+  BuiltList<MealsSnapshot> get mealsSnapshots;
   String get userId;
+  int get daysSinceEpoch;
   DateTime get date;
 
   DiaryPageVM._();
