@@ -1,7 +1,9 @@
 library firestore_actions;
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
-import 'package:diet_driven/built_realtime/built_firestore.dart';
+import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/util/built_firestore.dart';
 part 'firestore_actions.g.dart';
 
 ///

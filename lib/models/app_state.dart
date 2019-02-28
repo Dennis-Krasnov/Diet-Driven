@@ -55,9 +55,11 @@ abstract class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
 
   ListBuilder<FoodRecord> diaryRecords;
 
+  // Fallback for firestore-persisted mealsSnapshots
   ListBuilder<MealsSnapshot> mealsSnapshots = new ListBuilder([
     MealsSnapshot((b) => b
       ..effectiveAsOf = 0
+      ..modifiedAt = DateTime.fromMillisecondsSinceEpoch(0).toUtc()
       ..meals = ListBuilder([
         MealInfo((b) => b
           ..mealIndex = 0

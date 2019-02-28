@@ -3,10 +3,12 @@ library diary_page;
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/built_realtime/built_firestore.dart';
-import 'package:diet_driven/built_realtime/connector.dart';
-import 'package:diet_driven/containers/drawer_nav_button.dart';
-import 'package:diet_driven/containers/page_factory.dart';
+import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/util/built_firestore.dart';
+import 'package:diet_driven/widgets/food_record_list_tile.dart';
+import 'package:diet_driven/widgets/meal.dart';
+import 'package:diet_driven/wrappers/drawer_nav_button.dart';
+import 'package:diet_driven/wrappers/subscriber.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/data/food_record.dart';
 import 'package:diet_driven/data/meals.dart';
@@ -14,7 +16,7 @@ import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/data/uncertainty.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:intl/intl.dart';
-
+import 'package:date_utils/date_utils.dart';
 
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 import 'dart:math';
@@ -48,8 +50,12 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
   @override
   Widget build(BuildContext context, DiaryPageVM vm, Actions actions) {
 
-    var diary = new FoodDiaryCollection((b) => b
-      ..userId = vm.userId
+    var diarySubscription = Subscription(
+      actions.firestore.diaryReceived,
+      log.shout,
+      FoodDiaryCollection((b) => b
+        ..userId = vm.userId
+      )
     );
 
     // TODO: subscribe to list of FS instead!!!
@@ -108,7 +114,12 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () => diary.clear(),
+              // TODO: do as transaction/batch!!! (by deleting all at once saves n factorial reads)
+              onPressed: () => vm.diaryRecords.forEach((fr) =>
+                actions.firestore.deleteFoodRecord(
+                  FoodRecordDocument((b) => b..foodRecordId = fr.id)
+                )
+              ),
             )
           ],
         ),

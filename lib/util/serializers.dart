@@ -15,7 +15,8 @@ part 'serializers.g.dart';
   FoodRecord,
   Uncertainty,
 //  MealInfo,
-//  MealsSnapshot
+//  MealsSnapshot,
+  SettingsState
 ])
 
 // Built value default serializer

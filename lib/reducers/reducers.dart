@@ -26,8 +26,8 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
 
     // Diary // TODO: nest
     ..combineList(new ListReducerBuilder((s) => s.diaryRecords, (b) => b.diaryRecords)
-        ..add(ActionsNames.diaryReceived, diaryReceived)
-        ..add(ActionsNames.diaryRecordReceived, diaryRecordReceived)
+      ..add(FirestoreActionsNames.diaryReceived, diaryReceived)
+      ..add(FirestoreActionsNames.diaryRecordReceived, diaryRecordReceived)
     )
 
     // Diets // TODO: nest
@@ -61,9 +61,9 @@ void diaryRecordReceived(BuiltList<FoodRecord> listState, Action<FoodRecord> act
   // TODO: store a 'current food record' in state, convert this to normal reducer
 }
 
-void settingsReceived(AppState state, Action<dynamic> action, AppStateBuilder builder) {
-  print("SETTINGS RECERIVED!!!");
-  print(action.payload);
-  serializers.deserialize(json.decode("{\"test\": 234}"));
-}
+//void settingsReceived(AppState state, Action<dynamic> action, AppStateBuilder builder) {
+//  print("SETTINGS RECERIVED!!!");
+//  print(action.payload);
+//  serializers.deserialize(json.decode("{\"test\": 234}"));
+//}
 

@@ -39,12 +39,6 @@ abstract class Actions extends ReduxActions {
   // Absolutely changes date
   ActionDispatcher<int> goToDaysSinceEpoch;
 
-  //
-  ActionDispatcher<FoodRecord> diaryRecordReceived; // TODO: move
-
-  //
-  ActionDispatcher<BuiltList<FoodRecord>> diaryReceived;
-
   factory Actions() => new _$Actions();
   Actions._();
 }
