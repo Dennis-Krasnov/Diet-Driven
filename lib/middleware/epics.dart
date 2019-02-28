@@ -1,10 +1,12 @@
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
-import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/util/built_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';

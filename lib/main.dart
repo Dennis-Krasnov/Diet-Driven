@@ -1,12 +1,12 @@
 library main;
 
+import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/widgets/home_screen.dart';
 import 'package:logging/logging.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
-import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/middleware/epics.dart';
 import 'package:diet_driven/middleware/middleware.dart';
-import 'package:diet_driven/models/page.dart';
-import 'package:diet_driven/presentation/home_screen.dart';
+import 'package:diet_driven/data/page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:diet_driven/actions/actions.dart';

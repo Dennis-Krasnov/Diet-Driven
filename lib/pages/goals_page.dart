@@ -1,8 +1,8 @@
 library goals_page;
 
-import 'package:diet_driven/containers/drawer_nav_button.dart';
-import 'package:diet_driven/containers/page_factory.dart';
-import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/wrappers/drawer_nav_button.dart';
 import 'package:flutter/material.dart' hide Builder;
 
 class GoalsPage extends StatelessWidget {

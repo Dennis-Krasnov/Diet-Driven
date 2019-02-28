@@ -1,16 +1,16 @@
+import 'dart:math';
+
 import 'package:built_redux/built_redux.dart';
 import 'package:collection/collection.dart';
-import 'package:diet_driven/containers/bottom_nav.dart';
-import 'package:diet_driven/containers/page_factory.dart';
+import 'package:diet_driven/widgets/bottom_nav.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:built_redux/built_redux_test_utils.dart';
-import 'dart:math';
-
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/reducers/reducers.dart';
 
 void main() {

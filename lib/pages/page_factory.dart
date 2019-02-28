@@ -1,12 +1,12 @@
-import 'package:diet_driven/models/page.dart';
-import 'package:diet_driven/presentation/adherence_page.dart';
-import 'package:diet_driven/presentation/goals_page.dart';
-import 'package:diet_driven/presentation/diary_page.dart';
-import 'package:diet_driven/presentation/diet_page.dart';
-import 'package:diet_driven/presentation/manual_page.dart';
-import 'package:diet_driven/presentation/settings_page.dart';
-import 'package:diet_driven/presentation/statistics_page.dart';
-import 'package:diet_driven/presentation/track_page.dart';
+import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/pages/adherence_page.dart';
+import 'package:diet_driven/pages/goals_page.dart';
+import 'package:diet_driven/pages/diary_page.dart';
+import 'package:diet_driven/pages/diet_page.dart';
+import 'package:diet_driven/pages/manual_page.dart';
+import 'package:diet_driven/pages/settings_page.dart';
+import 'package:diet_driven/pages/statistics_page.dart';
+import 'package:diet_driven/pages/track_page.dart';
 import 'package:flutter/material.dart';
 
 /// PageFactory generates respective content for given page enum.

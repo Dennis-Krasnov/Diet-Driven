@@ -2,10 +2,10 @@ library track_page;
 
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/containers/drawer_nav_button.dart';
-import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/wrappers/drawer_nav_button.dart';
 import 'package:flutter/material.dart' hide Builder;
 
 import 'package:firebase_auth/firebase_auth.dart';

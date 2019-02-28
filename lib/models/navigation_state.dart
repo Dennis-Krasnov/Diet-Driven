@@ -1,7 +1,7 @@
 library navigation_state;
 
 import 'package:built_value/built_value.dart';
-import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/data/page.dart';
 
 part 'navigation_state.g.dart';
 

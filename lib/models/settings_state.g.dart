@@ -1,21 +1,22 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of settings;
+part of settings_state;
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
-Serializer<Settings> _$settingsSerializer = new _$SettingsSerializer();
+Serializer<SettingsState> _$settingsStateSerializer =
+    new _$SettingsStateSerializer();
 
-class _$SettingsSerializer implements StructuredSerializer<Settings> {
+class _$SettingsStateSerializer implements StructuredSerializer<SettingsState> {
   @override
-  final Iterable<Type> types = const [Settings, _$Settings];
+  final Iterable<Type> types = const [SettingsState, _$SettingsState];
   @override
-  final String wireName = 'Settings';
+  final String wireName = 'SettingsState';
 
   @override
-  Iterable serialize(Serializers serializers, Settings object,
+  Iterable serialize(Serializers serializers, SettingsState object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'effectiveAsOf',
@@ -27,9 +28,9 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
   }
 
   @override
-  Settings deserialize(Serializers serializers, Iterable serialized,
+  SettingsState deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new SettingsBuilder();
+    final result = new SettingsStateBuilder();
 
     final iterator = serialized.iterator;
     while (iterator.moveNext()) {
@@ -48,30 +49,30 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
   }
 }
 
-class _$Settings extends Settings {
+class _$SettingsState extends SettingsState {
   @override
   final int effectiveAsOf;
 
-  factory _$Settings([void updates(SettingsBuilder b)]) =>
-      (new SettingsBuilder()..update(updates)).build();
+  factory _$SettingsState([void updates(SettingsStateBuilder b)]) =>
+      (new SettingsStateBuilder()..update(updates)).build();
 
-  _$Settings._({this.effectiveAsOf}) : super._() {
+  _$SettingsState._({this.effectiveAsOf}) : super._() {
     if (effectiveAsOf == null) {
-      throw new BuiltValueNullFieldError('Settings', 'effectiveAsOf');
+      throw new BuiltValueNullFieldError('SettingsState', 'effectiveAsOf');
     }
   }
 
   @override
-  Settings rebuild(void updates(SettingsBuilder b)) =>
+  SettingsState rebuild(void updates(SettingsStateBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  SettingsBuilder toBuilder() => new SettingsBuilder()..replace(this);
+  SettingsStateBuilder toBuilder() => new SettingsStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Settings && effectiveAsOf == other.effectiveAsOf;
+    return other is SettingsState && effectiveAsOf == other.effectiveAsOf;
   }
 
   @override
@@ -81,22 +82,23 @@ class _$Settings extends Settings {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Settings')
+    return (newBuiltValueToStringHelper('SettingsState')
           ..add('effectiveAsOf', effectiveAsOf))
         .toString();
   }
 }
 
-class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
-  _$Settings _$v;
+class SettingsStateBuilder
+    implements Builder<SettingsState, SettingsStateBuilder> {
+  _$SettingsState _$v;
 
   int _effectiveAsOf;
   int get effectiveAsOf => _$this._effectiveAsOf;
   set effectiveAsOf(int effectiveAsOf) => _$this._effectiveAsOf = effectiveAsOf;
 
-  SettingsBuilder();
+  SettingsStateBuilder();
 
-  SettingsBuilder get _$this {
+  SettingsStateBuilder get _$this {
     if (_$v != null) {
       _effectiveAsOf = _$v.effectiveAsOf;
       _$v = null;
@@ -105,21 +107,21 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
   }
 
   @override
-  void replace(Settings other) {
+  void replace(SettingsState other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$Settings;
+    _$v = other as _$SettingsState;
   }
 
   @override
-  void update(void updates(SettingsBuilder b)) {
+  void update(void updates(SettingsStateBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$Settings build() {
-    final _$result = _$v ?? new _$Settings._(effectiveAsOf: effectiveAsOf);
+  _$SettingsState build() {
+    final _$result = _$v ?? new _$SettingsState._(effectiveAsOf: effectiveAsOf);
     replace(_$result);
     return _$result;
   }

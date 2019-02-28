@@ -1,6 +1,5 @@
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/built_realtime/built_firestore.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/models/page.dart';

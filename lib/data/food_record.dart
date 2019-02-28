@@ -2,7 +2,9 @@ library food_record;
 
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:diet_driven/models/uncertainty.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diet_driven/data/uncertainty.dart';
+import 'package:diet_driven/util/built_firestore.dart';
 
 part 'food_record.g.dart';
 

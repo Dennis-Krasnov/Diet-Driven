@@ -8,10 +8,10 @@ import 'package:diet_driven/built_realtime/connector.dart';
 import 'package:diet_driven/containers/drawer_nav_button.dart';
 import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/models/food_record.dart';
-import 'package:diet_driven/models/meals.dart';
-import 'package:diet_driven/models/page.dart';
-import 'package:diet_driven/models/uncertainty.dart';
+import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/meals.dart';
+import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/data/uncertainty.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:intl/intl.dart';
 
@@ -185,7 +185,15 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
               ..timestamp = DateTime.now().toUtc()
             );
 
-            diary.add(fr);
+            // TODO: use this pattern!
+            actions.firestore.saveFoodRecord(FSTuple(
+                FoodRecordDocument((b) => b // TODO: collection instead?! - no still pass document, it'll figure it out
+                  ..foodRecordId = "TEMP!!!"
+                ),
+                fr
+            ));
+
+//            diary.add(fr);
 //            fsDiaryRecord.save(fr);
           }
         ),

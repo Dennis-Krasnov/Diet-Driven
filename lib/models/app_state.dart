@@ -2,9 +2,8 @@ library app_state;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
-import 'package:diet_driven/built_realtime/built_firestore.dart';
-import 'package:diet_driven/models/food_record.dart';
-import 'package:diet_driven/models/meals.dart';
+import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/models/navigation_state.dart';
 import 'package:diet_driven/models/user_state.dart';
 
@@ -53,8 +52,6 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
 abstract class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   UserStateBuilder user;
   NavigationStateBuilder navigation;
-
-  SetMultimapBuilder<FS, int> subscriptions;
 
   ListBuilder<FoodRecord> diaryRecords;
 

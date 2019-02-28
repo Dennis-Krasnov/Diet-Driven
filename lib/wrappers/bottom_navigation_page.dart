@@ -1,5 +1,5 @@
 import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 import 'package:flutter/material.dart';
