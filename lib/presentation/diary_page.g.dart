@@ -17,6 +17,8 @@ class _$DiaryPageVM extends DiaryPageVM {
   final int daysSinceEpoch;
   @override
   final DateTime date;
+  @override
+  final PageController pc;
 
   factory _$DiaryPageVM([void updates(DiaryPageVMBuilder b)]) =>
       (new DiaryPageVMBuilder()..update(updates)).build();
@@ -26,7 +28,8 @@ class _$DiaryPageVM extends DiaryPageVM {
       this.mealsSnapshots,
       this.userId,
       this.daysSinceEpoch,
-      this.date})
+      this.date,
+      this.pc})
       : super._() {
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('DiaryPageVM', 'diaryRecords');
@@ -42,6 +45,9 @@ class _$DiaryPageVM extends DiaryPageVM {
     }
     if (date == null) {
       throw new BuiltValueNullFieldError('DiaryPageVM', 'date');
+    }
+    if (pc == null) {
+      throw new BuiltValueNullFieldError('DiaryPageVM', 'pc');
     }
   }
 
@@ -60,17 +66,20 @@ class _$DiaryPageVM extends DiaryPageVM {
         mealsSnapshots == other.mealsSnapshots &&
         userId == other.userId &&
         daysSinceEpoch == other.daysSinceEpoch &&
-        date == other.date;
+        date == other.date &&
+        pc == other.pc;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, diaryRecords.hashCode), mealsSnapshots.hashCode),
-                userId.hashCode),
-            daysSinceEpoch.hashCode),
-        date.hashCode));
+            $jc(
+                $jc($jc($jc(0, diaryRecords.hashCode), mealsSnapshots.hashCode),
+                    userId.hashCode),
+                daysSinceEpoch.hashCode),
+            date.hashCode),
+        pc.hashCode));
   }
 
   @override
@@ -80,7 +89,8 @@ class _$DiaryPageVM extends DiaryPageVM {
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('userId', userId)
           ..add('daysSinceEpoch', daysSinceEpoch)
-          ..add('date', date))
+          ..add('date', date)
+          ..add('pc', pc))
         .toString();
   }
 }
@@ -113,6 +123,10 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
   DateTime get date => _$this._date;
   set date(DateTime date) => _$this._date = date;
 
+  PageController _pc;
+  PageController get pc => _$this._pc;
+  set pc(PageController pc) => _$this._pc = pc;
+
   DiaryPageVMBuilder();
 
   DiaryPageVMBuilder get _$this {
@@ -122,6 +136,7 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
       _userId = _$v.userId;
       _daysSinceEpoch = _$v.daysSinceEpoch;
       _date = _$v.date;
+      _pc = _$v.pc;
       _$v = null;
     }
     return this;
@@ -150,7 +165,8 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
               mealsSnapshots: mealsSnapshots.build(),
               userId: userId,
               daysSinceEpoch: daysSinceEpoch,
-              date: date);
+              date: date,
+              pc: pc);
     } catch (_) {
       String _$failedField;
       try {

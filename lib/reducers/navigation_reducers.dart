@@ -16,6 +16,7 @@ NestedReducerBuilder<AppState, AppStateBuilder, NavigationState, NavigationState
 void goTo(NavigationState state, Action<Page> action, NavigationStateBuilder builder) {
   builder.activePage = action.payload;
 
+  // Updating home page bottom navigation
   if (state.bottomNavigation.contains(action.payload)) {
     builder.bottomNavigationPage = action.payload;
   }

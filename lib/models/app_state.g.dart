@@ -12,8 +12,6 @@ class _$AppState extends AppState {
   @override
   final NavigationState navigation;
   @override
-  final BuiltSetMultimap<FS, int> subscriptions;
-  @override
   final BuiltList<FoodRecord> diaryRecords;
   @override
   final BuiltList<MealsSnapshot> mealsSnapshots;
@@ -26,7 +24,6 @@ class _$AppState extends AppState {
   _$AppState._(
       {this.user,
       this.navigation,
-      this.subscriptions,
       this.diaryRecords,
       this.mealsSnapshots,
       this.currentDaysSinceEpoch})
@@ -36,9 +33,6 @@ class _$AppState extends AppState {
     }
     if (navigation == null) {
       throw new BuiltValueNullFieldError('AppState', 'navigation');
-    }
-    if (subscriptions == null) {
-      throw new BuiltValueNullFieldError('AppState', 'subscriptions');
     }
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
@@ -64,7 +58,6 @@ class _$AppState extends AppState {
     return other is AppState &&
         user == other.user &&
         navigation == other.navigation &&
-        subscriptions == other.subscriptions &&
         diaryRecords == other.diaryRecords &&
         mealsSnapshots == other.mealsSnapshots &&
         currentDaysSinceEpoch == other.currentDaysSinceEpoch;
@@ -74,9 +67,7 @@ class _$AppState extends AppState {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc(
-                $jc($jc($jc(0, user.hashCode), navigation.hashCode),
-                    subscriptions.hashCode),
+            $jc($jc($jc(0, user.hashCode), navigation.hashCode),
                 diaryRecords.hashCode),
             mealsSnapshots.hashCode),
         currentDaysSinceEpoch.hashCode));
@@ -87,7 +78,6 @@ class _$AppState extends AppState {
     return (newBuiltValueToStringHelper('AppState')
           ..add('user', user)
           ..add('navigation', navigation)
-          ..add('subscriptions', subscriptions)
           ..add('diaryRecords', diaryRecords)
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('currentDaysSinceEpoch', currentDaysSinceEpoch))
@@ -120,18 +110,6 @@ class _$AppStateBuilder extends AppStateBuilder {
   set navigation(NavigationStateBuilder navigation) {
     _$this;
     super.navigation = navigation;
-  }
-
-  @override
-  SetMultimapBuilder<FS, int> get subscriptions {
-    _$this;
-    return super.subscriptions ??= new SetMultimapBuilder<FS, int>();
-  }
-
-  @override
-  set subscriptions(SetMultimapBuilder<FS, int> subscriptions) {
-    _$this;
-    super.subscriptions = subscriptions;
   }
 
   @override
@@ -176,7 +154,6 @@ class _$AppStateBuilder extends AppStateBuilder {
     if (_$v != null) {
       super.user = _$v.user?.toBuilder();
       super.navigation = _$v.navigation?.toBuilder();
-      super.subscriptions = _$v.subscriptions?.toBuilder();
       super.diaryRecords = _$v.diaryRecords?.toBuilder();
       super.mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
       super.currentDaysSinceEpoch = _$v.currentDaysSinceEpoch;
@@ -206,7 +183,6 @@ class _$AppStateBuilder extends AppStateBuilder {
           new _$AppState._(
               user: user.build(),
               navigation: navigation.build(),
-              subscriptions: subscriptions.build(),
               diaryRecords: diaryRecords.build(),
               mealsSnapshots: mealsSnapshots.build(),
               currentDaysSinceEpoch: currentDaysSinceEpoch);
@@ -217,8 +193,6 @@ class _$AppStateBuilder extends AppStateBuilder {
         user.build();
         _$failedField = 'navigation';
         navigation.build();
-        _$failedField = 'subscriptions';
-        subscriptions.build();
         _$failedField = 'diaryRecords';
         diaryRecords.build();
         _$failedField = 'mealsSnapshots';

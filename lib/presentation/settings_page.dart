@@ -14,12 +14,13 @@ import 'dart:math';
 
 part 'settings_page.g.dart';
 
+/// TODO: persist data, subscribe!
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: DrawerNavButton(),
+        leading: GlobalDrawerNavButton(),
         title: Text(PageFactory.toText(Page.settings)),
       ),
       body: new StoreConnection<AppState, Actions, SettingsPageVM>(

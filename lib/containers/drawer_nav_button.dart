@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 
 /// DrawerNavButton displays either hamburger menu or back arrow depending on navigator state.
+/// Note that it operates on global navigator only
 /*
   Scaffold(
     appBar: AppBar(
@@ -12,7 +13,7 @@ import 'package:flutter_built_redux/flutter_built_redux.dart';
     ),
   );
  */
-class DrawerNavButton extends StoreConnector<AppState, Actions, Page> {
+class GlobalDrawerNavButton extends StoreConnector<AppState, Actions, Page> {
   @override
   Page connect(AppState state) => state.navigation.bottomNavigationPage;
 
@@ -30,4 +31,3 @@ class DrawerNavButton extends StoreConnector<AppState, Actions, Page> {
         }
     });
 }
-// FIXME: back button after randomizing doesn't work! (need to reset bottomNavPage), put it back to settings if applicable

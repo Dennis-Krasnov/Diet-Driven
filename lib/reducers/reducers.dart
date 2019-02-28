@@ -13,66 +13,54 @@ import 'package:logging/logging.dart';
 
 final Logger log = new Logger("REDUCER");
 
+/*
+..add(ActionsNames.ACTION, (s, a, b) => b.FIELD = s.FIELD + a.payload)
+ */
+
 /// Top-level reducer
 Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
   (new ReducerBuilder<AppState, AppStateBuilder>()
     ..combineNested(getNavigationReducer())
     ..combineNested(getUserReducer())
 
-    ..add(ActionsNames.changeDate, (s, a, b) => b.currentDaysSinceEpoch = s.currentDaysSinceEpoch + a.payload)
-    ..add(ActionsNames.goToDate, (s, a, b) => b.currentDaysSinceEpoch = a.payload)
+    ..add(ActionsNames.changeDaysSinceEpoch, changeDaysSinceEpoch)
+    ..add(ActionsNames.goToDaysSinceEpoch, goToDaysSinceEpoch)
 
-    ..add(FirestoreActionsNames.additionalSubscription, additionalSubscription)
-
-    ..combineSetMultimap(new SetMultimapReducerBuilder((s) => s.subscriptions, (b) => b.subscriptions)
-        ..add(FirestoreActionsNames.subscribe, firstSubscription)
-      ..add(FirestoreActionsNames.unsubscribe, unsubscribe)
-      ..add(FirestoreActionsNames.unsubscribeAll, unsubscribeAll)
-    )
-
+    // Diary // TODO: nest
     ..combineList(new ListReducerBuilder((s) => s.diaryRecords, (b) => b.diaryRecords)
         ..add(ActionsNames.diaryReceived, diaryReceived)
         ..add(ActionsNames.diaryRecordReceived, diaryRecordReceived)
     )
+
+    // Diets // TODO: nest
+
+
   ).build();
 
-void unsubscribeAll(BuiltSetMultimap<FS, int> setMultimapState, Action<FS> action, SetMultimapBuilder<FS, int> setMultimapBuilder) {
-  setMultimapBuilder.removeAll(action.payload);
+
+void changeDaysSinceEpoch(AppState state, Action<int> action, AppStateBuilder builder) {
+  log.finer("changing daysSinceEpoch by ${action.payload}");
+
+  builder.currentDaysSinceEpoch = state.currentDaysSinceEpoch + action.payload;
+
+  log.fine("daysSinceEpoch is now ${builder.currentDaysSinceEpoch}");
 }
 
-void unsubscribe(BuiltSetMultimap<FS, int> setMultimapState, Action<FSPath> action, SetMultimapBuilder<FS, int> setMultimapBuilder) {
-  setMultimapBuilder.removeAll(action.payload.firestore); // FIXME
-//  for (var val in action.payload.subscriptions) {
-//    setMultimapBuilder.remove(action.payload.firestore, val);
-//  }
-}
+void goToDaysSinceEpoch(AppState state, Action<int> action, AppStateBuilder builder) {
+  builder.currentDaysSinceEpoch = action.payload;
 
-//void firstSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
-void firstSubscription(BuiltSetMultimap<FS, int> setMultimapState, Action<FSPath> action, SetMultimapBuilder<FS, int> setMultimapBuilder) {
-  log.fine("first subscription: ${action.payload}");
-  setMultimapBuilder.addValues(action.payload.firestore, action.payload.subscriptions);
-  log.finer(setMultimapBuilder.build());
-}
-
-//void additionalSubscription(BuiltList<FS> listState, Action<FS> action, ListBuilder<FS> listBuilder) {
-void additionalSubscription(AppState state, Action<FSPath> action, AppStateBuilder builder) {
-  log.fine("additional subscription");
-  var fs = action.payload;
-  print(builder.subscriptions);
+  log.fine("daysSinceEpoch is now ${action.payload}");
 }
 
 void diaryReceived(BuiltList<FoodRecord> listState, Action<BuiltList<FoodRecord>> action, ListBuilder<FoodRecord> listBuilder) {
-  log.fine("diary received: ${action.payload}");
+  log.fine("${action.payload.length} diary records received.");
   listBuilder.clear();
-//  listBuilder = action.payload.toBuilder();
   listBuilder.addAll(action.payload);
-//  listBuilder.add(action.payload);
 }
 
 void diaryRecordReceived(BuiltList<FoodRecord> listState, Action<FoodRecord> action, ListBuilder<FoodRecord> listBuilder) {
-  log.fine("diary record received: ${action.payload}");
-  listBuilder.clear();
-  listBuilder.add(action.payload);
+  log.fine("diary record received: ${action.payload} (does nothing atm)");
+  // TODO: store a 'current food record' in state, convert this to normal reducer
 }
 
 void settingsReceived(AppState state, Action<dynamic> action, AppStateBuilder builder) {

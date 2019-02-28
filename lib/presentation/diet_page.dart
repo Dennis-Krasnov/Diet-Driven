@@ -30,11 +30,11 @@ class DietPage extends StoreConnector<AppState, Actions, DietPageVM> {
   Widget build(BuildContext context, DietPageVM vm, Actions actions) {
     return Scaffold(
       appBar: AppBar(
-        leading: DrawerNavButton(),
+        leading: GlobalDrawerNavButton(),
         title: Text(PageFactory.toText(Page.diet)),
       ),
       body: Container()
-       //        meal logic (modifying last snapshot, do duplicates in day)
+       // TODO: meal logic (modifying last snapshot, do duplicates in day)
     );
   }
 }
@@ -49,16 +49,3 @@ abstract class DietPageVM implements Built<DietPageVM, DietPageVMBuilder> {
   DietPageVM._();
   factory DietPageVM([updates(DietPageVMBuilder b)]) = _$DietPageVM;
 }
-
-//class DietPage extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        leading: DrawerNavButton(),
-//        title: Text(PageFactory.toText(Page.diet)),
-//      ),
-//      body: Container()
-//    );
-//  }
-//}
