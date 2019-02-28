@@ -7,10 +7,13 @@ part 'firestore_actions.g.dart';
 ///
 abstract class FirestoreActions extends ReduxActions {
   // optional userId, doesn't require foodRecordId
-  ActionDispatcher<FSTuple<FoodRecord>> saveFoodRecord;
+  ActionDispatcher<FSDynamicTuple<FoodRecord>> saveFoodRecord;
 
   // optional userId
   ActionDispatcher<FSTuple<FoodRecord>> updateFoodRecord;
+
+  // optional userId
+  ActionDispatcher<FoodRecordDocument> deleteFoodRecord;
 
   //
   ActionDispatcher<FoodRecord> diaryRecordReceived;

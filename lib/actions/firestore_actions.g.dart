@@ -13,12 +13,15 @@ class _$FirestoreActions extends FirestoreActions {
   factory _$FirestoreActions() => new _$FirestoreActions._();
   _$FirestoreActions._() : super._();
 
-  final ActionDispatcher<FSTuple<FoodRecord>> saveFoodRecord =
-      new ActionDispatcher<FSTuple<FoodRecord>>(
+  final ActionDispatcher<FSDynamicTuple<FoodRecord>> saveFoodRecord =
+      new ActionDispatcher<FSDynamicTuple<FoodRecord>>(
           'FirestoreActions-saveFoodRecord');
   final ActionDispatcher<FSTuple<FoodRecord>> updateFoodRecord =
       new ActionDispatcher<FSTuple<FoodRecord>>(
           'FirestoreActions-updateFoodRecord');
+  final ActionDispatcher<FoodRecordDocument> deleteFoodRecord =
+      new ActionDispatcher<FoodRecordDocument>(
+          'FirestoreActions-deleteFoodRecord');
   final ActionDispatcher<FoodRecord> diaryRecordReceived =
       new ActionDispatcher<FoodRecord>('FirestoreActions-diaryRecordReceived');
   final ActionDispatcher<BuiltList<FoodRecord>> diaryReceived =
@@ -29,16 +32,20 @@ class _$FirestoreActions extends FirestoreActions {
   void setDispatcher(Dispatcher dispatcher) {
     saveFoodRecord.setDispatcher(dispatcher);
     updateFoodRecord.setDispatcher(dispatcher);
+    deleteFoodRecord.setDispatcher(dispatcher);
     diaryRecordReceived.setDispatcher(dispatcher);
     diaryReceived.setDispatcher(dispatcher);
   }
 }
 
 class FirestoreActionsNames {
-  static final ActionName<FSTuple<FoodRecord>> saveFoodRecord =
-      new ActionName<FSTuple<FoodRecord>>('FirestoreActions-saveFoodRecord');
+  static final ActionName<FSDynamicTuple<FoodRecord>> saveFoodRecord =
+      new ActionName<FSDynamicTuple<FoodRecord>>(
+          'FirestoreActions-saveFoodRecord');
   static final ActionName<FSTuple<FoodRecord>> updateFoodRecord =
       new ActionName<FSTuple<FoodRecord>>('FirestoreActions-updateFoodRecord');
+  static final ActionName<FoodRecordDocument> deleteFoodRecord =
+      new ActionName<FoodRecordDocument>('FirestoreActions-deleteFoodRecord');
   static final ActionName<FoodRecord> diaryRecordReceived =
       new ActionName<FoodRecord>('FirestoreActions-diaryRecordReceived');
   static final ActionName<BuiltList<FoodRecord>> diaryReceived =
