@@ -2,10 +2,10 @@ library bottom_nav;
 
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/containers/active_page.dart';
-import 'package:diet_driven/containers/page_factory.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/models/page.dart';
+import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/wrappers/active_page.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 

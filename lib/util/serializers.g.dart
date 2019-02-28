@@ -8,6 +8,7 @@ part of serializers;
 
 Serializers _$serializers = (new Serializers().toBuilder()
       ..add(FoodRecord.serializer)
+      ..add(SettingsState.serializer)
       ..add(Uncertainty.serializer))
     .build();
 
