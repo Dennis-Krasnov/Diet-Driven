@@ -23,6 +23,13 @@ class FSTuple<T> {
 }
 
 ///
+class FSDynamicTuple<T> {
+  final FS<dynamic> fs;
+  final T data;
+  FSDynamicTuple(this.fs, this.data);
+}
+
+///
 @BuiltValue(instantiable: false)
 abstract class FS<T> {
   //
