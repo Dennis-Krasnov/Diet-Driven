@@ -14,6 +14,8 @@ class Meal extends StatelessWidget {
 
   Meal(this.mealInfo, this.foodRecords, this.actions);
 
+  // Must define as functions otherwise they're called in-place
+
   void update(FoodRecord updated) {
     actions.firestore.updateFoodRecord(
       FSTuple(
