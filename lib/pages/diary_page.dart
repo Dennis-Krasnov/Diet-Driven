@@ -71,7 +71,8 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
       dateText = "TOMMOROW";
     }
 
-    return Connector(actions, diary, builder: (BuildContext context) {
+    // FIXME: somehow created multiple instances of diary_page/subscribers: USE KEYS TO AVOID DUPLICATES
+    return Subscriber(hashCode, [diarySubscription], builder: (BuildContext context) {
       return Scaffold(
         appBar: AppBar(
           leading: GlobalDrawerNavButton(),

@@ -63,8 +63,8 @@ class SubscriberState extends State<Subscriber> {
 
   @override
   void dispose() {
-    // Cancel every subscription
-    widget.subscriptions.forEach((sub) => sub.connection.streamSubscription.cancel());
+    // Cancel every non-null subscription
+    widget.subscriptions.forEach((sub) => sub.connection.streamSubscription?.cancel());
     super.dispose();
   }
 
