@@ -1,5 +1,7 @@
 library food_record;
 
+import 'dart:async';
+
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -59,4 +61,35 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   factory FoodRecord([updates(FoodRecordBuilder b)]) = _$FoodRecord;
 
   FoodRecord._();
+}
+
+///
+abstract class FoodRecordDocument with FSDocument<FoodRecord> implements Built<FoodRecordDocument, FoodRecordDocumentBuilder> {
+  @nullable
+  String get userId;
+
+  String get foodRecordId;
+
+  @override
+  DocumentReference get docRef => Firestore.instance.document("users/$userId/food_diary/$foodRecordId");
+
+  //
+  FoodDiaryCollection get toFoodDiaryCollection => FoodDiaryCollection((b) => b..userId = userId);
+
+  // TODO: custom serialization if needed (subcollections)
+
+  FoodRecordDocument._();
+  factory FoodRecordDocument([updates(FoodRecordDocumentBuilder b)]) = _$FoodRecordDocument;
+}
+
+///
+abstract class FoodDiaryCollection with FSCollection<FoodRecord> implements Built<FoodDiaryCollection, FoodDiaryCollectionBuilder> {
+  @nullable
+  String get userId;
+
+  @override
+  CollectionReference get colRef => Firestore.instance.collection("users/$userId/food_diary");
+
+  FoodDiaryCollection._();
+  factory FoodDiaryCollection([updates(FoodDiaryCollectionBuilder b)]) = _$FoodDiaryCollection;
 }

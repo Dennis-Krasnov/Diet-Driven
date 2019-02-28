@@ -1,8 +1,12 @@
 library meals;
 
+import 'dart:async';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diet_driven/util/built_firestore.dart';
 
 part 'meals.g.dart';
 
@@ -34,6 +38,9 @@ abstract class MealsSnapshot implements Built<MealsSnapshot, MealsSnapshotBuilde
 
   // Days since epoch, maximum one per day
   int get effectiveAsOf;
+
+  // Sort by this, in UTC
+  DateTime get modifiedAt;
 
   //
   BuiltList<MealInfo> get meals;

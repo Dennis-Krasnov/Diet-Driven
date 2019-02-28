@@ -6,8 +6,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:diet_driven/built_realtime/serializers.dart';
-import 'package:diet_driven/models/food_record.dart';
+import 'package:diet_driven/util/serializers.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -29,7 +28,7 @@ class FSDynamicTuple<T> {
   FSDynamicTuple(this.fs, this.data);
 }
 
-///
+/////
 @BuiltValue(instantiable: false)
 abstract class FS<T> {
   //
@@ -41,6 +40,9 @@ abstract class FS<T> {
   @BuiltValueField(serialize: false, compare: false)
   Observable<T> get snapshotObservable;
 
+  //
+  @BuiltValueField(serialize: false, compare: false)
+  CollectionReference get parentCollection;
 }
 
 ///
@@ -119,56 +121,4 @@ abstract class FSCollection<T> implements FS<BuiltList<T>> { // extends Built<T,
     var docs = await colRef.getDocuments();
 //    docs.documents.where((ds) => ds.documentID == "-LYgPw3PvhJ8YrN5p0_N").toList()[0].reference.delete(); // TODO: obj.id !!! // take string id instead!!!!!! - object don't have ID (maybe just id to make it easier?)
   }
-}
-
-///
-abstract class FoodRecordDocument with FSDocument<FoodRecord> implements Built<FoodRecordDocument, FoodRecordDocumentBuilder> {
-  String get userId;
-  String get foodRecordId;
-
-  @override
-  DocumentReference get docRef => Firestore.instance.document("users/$userId/food_diary/$foodRecordId");
-
-//  @override
-//  void addToCollection(FoodRecord obj) {
-//    CollectionReference parentCollection = Firestore.instance.collection("users/$userId/food_diary");
-//    parentCollection.add(standardSerializers.serialize(obj));
-//  }
-
-//  FoodRecordDocument.addToCollection(FoodRecord obj) {
-//    CollectionReference parentCollection = Firestore.instance.collection("users/$userId/food_diary");
-//    docRef = parentCollection.add(standardSerializers.serialize(obj));
-//
-////    this._color = another.getColor();
-////    this._name = another.getName();
-//  }
-
-  // TODO: SUBCOLLECTION LOGIC HERE
-  // TODO: subscribe method, also calls for all its subcollections... (also custom serialization)
-
-  FoodRecordDocument._();
-  factory FoodRecordDocument([updates(FoodRecordDocumentBuilder b)]) = _$FoodRecordDocument;
-
-}
-
-///
-abstract class FoodDiaryCollection with FSCollection<FoodRecord> implements Built<FoodDiaryCollection, FoodDiaryCollectionBuilder> {
-  String get userId;
-
-  @override
-  CollectionReference get colRef => Firestore.instance.collection("users/$userId/food_diary");
-
-  FoodDiaryCollection._();
-  factory FoodDiaryCollection([updates(FoodDiaryCollectionBuilder b)]) = _$FoodDiaryCollection;
-}
-
-///
-abstract class MealSnapshotCollection with FSCollection<FoodRecord> implements Built<MealSnapshotCollection, MealSnapshotCollectionBuilder> {
-  String get userId;
-
-  @override
-  CollectionReference get colRef => Firestore.instance.collection("users/$userId/meal_snapshots");
-
-  MealSnapshotCollection._();
-  factory MealSnapshotCollection([updates(MealSnapshotCollectionBuilder b)]) = _$MealSnapshotCollection;
 }

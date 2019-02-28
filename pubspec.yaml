@@ -31,6 +31,7 @@ dependencies:
 
   logging: ^0.11.3+2
   intl: ^0.15.7
+  date_utils: ^0.1.0+2
 #  infinity_page_view: ^1.0.0
   firebase_analytics: ^2.0.2+1
 

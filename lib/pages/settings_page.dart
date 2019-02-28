@@ -33,7 +33,7 @@ class SettingsPage extends StatelessWidget {
             children: <Widget>[
               // TODO: reordering bottom navigation (single document, just modify single array), move to settings.
               // TODO: just shove everything under user properties (global subscription) (arrays, subcollections), or create distinct settings array, harder to manage
-              // just hardcode subcollection logic! still do subcollections, it's more pretty
+              // just hardcode subcollection logic! still do subcollections, it's more pretty (no need to add settings subscription when it's global! - (user triggers all subcollections))
               ListTile(
                 leading: Icon(Icons.repeat),
                 title: Text("Randomize bottom menu"),
