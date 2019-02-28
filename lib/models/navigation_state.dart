@@ -12,7 +12,7 @@ abstract class NavigationState implements Built<NavigationState, NavigationState
 
   List<Page> get bottomNavigation;
 
-  @nullable // since goTo is called on app init??? - check
+  @nullable // due to goTo being called form initApp
   Page get bottomNavigationPage;
 
   NavigationState._();

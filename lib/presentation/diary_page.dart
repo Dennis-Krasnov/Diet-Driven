@@ -28,7 +28,6 @@ String randomFood() {
   return foods[0];
 }
 
-
 // TODO: move to helper library (duplicate)
 int daysSinceEpoch(DateTime dt) {
   return dt.difference(DateTime.fromMicrosecondsSinceEpoch(0, isUtc: false)).inDays + 1;
@@ -48,13 +47,12 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
       ..userId = state.user.authUser.uid
       ..daysSinceEpoch = state.currentDaysSinceEpoch
       ..date = state.currentDate()
+      ..pc = new PageController(initialPage: state.currentDaysSinceEpoch)
     );
   }
 
   @override
   Widget build(BuildContext context, DiaryPageVM vm, Actions actions) {
-    // TODO: store in vm
-    PageController pc = new PageController(initialPage: vm.daysSinceEpoch);
 
     var diary = new FoodDiaryCollection((b) => b
       ..userId = vm.userId
@@ -82,7 +80,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
     return Connector(actions, diary, builder: (BuildContext context) {
       return Scaffold(
         appBar: AppBar(
-          leading: DrawerNavButton(),
+          leading: GlobalDrawerNavButton(),
           title: Text(
             PageFactory.toText(Page.diary),
             style: TextStyle(fontFamily: "SourceSansPro"),
@@ -100,9 +98,9 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
               onPressed: () {
 //                actions.goToDate(DateTime.now());
                 int currentDaySinceEpoch = daysSinceEpoch(DateTime.now());
-                if (pc.page.round() != currentDaySinceEpoch) {
+                if (vm.pc.page.round() != currentDaySinceEpoch) {
                   print("animating");
-                  pc.animateToPage(currentDaySinceEpoch, duration: Duration(milliseconds: 200), curve: Curves.bounceIn); // TODO: as middleware - or do manually! (update state on onPageChanged)
+                  vm.pc.animateToPage(currentDaySinceEpoch, duration: Duration(milliseconds: 200), curve: Curves.bounceIn); // TODO: as middleware - or do manually! (update state on onPageChanged)
                 }
                 // TODO: filter foods based on days since epoch instead of by datetime (allows past midnight snacks) - only allow when manually changing timestamp
               },
@@ -110,7 +108,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
 
             IconButton(
               icon: Icon(Icons.info),
-              onPressed: () => pc.animateToPage(0, duration: Duration(milliseconds: 200), curve: Curves.bounceIn),
+              onPressed: () => vm.pc.animateToPage(0, duration: Duration(milliseconds: 200), curve: Curves.bounceIn),
 //              onPressed: () => pc.jumpToPage(1), // doesn't cause multiple index updates...
             ),
             IconButton(
@@ -121,7 +119,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
         ),
         // TODO: OrientationBuilder(builder: (context, orientation) {
         body: PageView.builder(
-          controller: pc,
+          controller: vm.pc,
           itemBuilder: (BuildContext context, int index) {
             // Don't show anything more than 1 day off FIXME
 //            if ((daysSinceEpoch(vm.date) - index).abs() > 1) {
@@ -132,13 +130,11 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
             MealsSnapshot mealSnapshot = vm.mealsSnapshots.last;
             BuiltList<FoodRecord> todaysFoodRecords = BuiltList.from(vm.diaryRecords.where((fr) => fr.daysSinceEpoch == index));
 
-              return Container(
-              // TODO: scrollable!
+            return Container(
               child: ListView(
-//                shrinkWrap: ,
                 children: [
                   Text(
-                    "INDEX: $index | meals: ${vm.mealsSnapshots.single.meals.length}",
+                    "INDEX: $index | meals: ${mealSnapshot.meals.length}",
                     style: TextStyle(
                       fontFamily: "SourceSansPro",
                     ),
@@ -172,7 +168,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
           onPageChanged: (int index) {
             print("INDEX NOW: $index");
 //            actions.goToDate(DateTime.fromMillisecondsSinceEpoch(Duration(days: index).inMilliseconds));
-            actions.goToDate(index);
+            actions.goToDaysSinceEpoch(index);
             // TODO: absolutely set current day in store (to avoid jumps during midnight)
           },
         ),
@@ -292,6 +288,8 @@ abstract class DiaryPageVM implements Built<DiaryPageVM, DiaryPageVMBuilder> {
   String get userId;
   int get daysSinceEpoch;
   DateTime get date;
+
+  PageController get pc;
 
   DiaryPageVM._();
   factory DiaryPageVM([updates(DiaryPageVMBuilder b)]) = _$DiaryPageVM;

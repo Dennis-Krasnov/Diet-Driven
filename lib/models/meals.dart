@@ -7,6 +7,24 @@ import 'package:built_value/serializer.dart';
 part 'meals.g.dart';
 
 ///
+abstract class MealInfo implements Built<MealInfo, MealInfoBuilder> {
+  static Serializer<MealInfo> get serializer => _$mealInfoSerializer;
+
+  //
+  String get name;
+
+  // In duration after midnight (0 <= startAt < 24h)
+  Duration get startsAt;
+
+  // in the day (redundant)
+  int get mealIndex;
+
+  factory MealInfo([updates(MealInfoBuilder b)]) = _$MealInfo;
+
+  MealInfo._();
+}
+
+///
 abstract class MealsSnapshot implements Built<MealsSnapshot, MealsSnapshotBuilder> {
   static Serializer<MealsSnapshot> get serializer => _$mealsSnapshotSerializer;
 
@@ -28,20 +46,13 @@ abstract class MealsSnapshot implements Built<MealsSnapshot, MealsSnapshotBuilde
 // idea: different meal schedules on different days (like calorie cycling) - use for this? - keep it simple
 
 ///
-abstract class MealInfo implements Built<MealInfo, MealInfoBuilder> {
-  static Serializer<MealInfo> get serializer => _$mealInfoSerializer;
+abstract class MealSnapshotCollection with FSCollection<MealsSnapshot> implements Built<MealSnapshotCollection, MealSnapshotCollectionBuilder> {
+  @nullable
+  String get userId;
 
-  //
-  String get name;
+  @override
+  CollectionReference get colRef => Firestore.instance.collection("users/$userId/meal_snapshots");
 
-  // (in the day) - rename (effectiveAsOf) (time from midnight) - must be positive?
-  // calculate by doing difference with dummy date
-  Duration get startsAt;
-
-  // in the day (redundant)
-  int get mealIndex;
-
-  factory MealInfo([updates(MealInfoBuilder b)]) = _$MealInfo;
-
-  MealInfo._();
+  MealSnapshotCollection._();
+  factory MealSnapshotCollection([updates(MealSnapshotCollectionBuilder b)]) = _$MealSnapshotCollection;
 }

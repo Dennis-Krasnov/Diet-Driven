@@ -16,56 +16,44 @@ part 'track_page.g.dart';
 class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
   TrackPage();
 
-//  @override
-//  FirebaseUser connect(AppState state) => state.user;
-
   @override
   TrackPageVM connect(AppState state) => TrackPageVM((b) => b
     ..auth = state.user.authUser
   );
 
-  // OLD FORMAT:
-//  @override
-//  TrackPageVM connect(AppState state) {
-//    return TrackPageVM((b) => b
-//      ..loading = state.loading
-//      ..user = state.user
-//    );
-//  }
-
   @override
   Widget build(BuildContext context, TrackPageVM vm, Actions actions) =>
-      Scaffold(
-        appBar: AppBar(
-          leading: DrawerNavButton(),
-          title: Text(PageFactory.toText(Page.track)),
+    Scaffold(
+      appBar: AppBar(
+        leading: GlobalDrawerNavButton(),
+        title: Text(PageFactory.toText(Page.track)),
+      ),
+      body: Center(
+        child: Column(
+          children: <Widget>[
+            RaisedButton(
+              onPressed: null, // TODO: anonymous by default
+              child: Text("Log in as Dennis Krasnov"),
+            ),
+            Text("uid: ${vm.auth.uid}"),
+            Text("email: ${vm.auth.email}"),
+            Text("display name: ${vm.auth.displayName}"),
+            FlatButton(
+              onPressed: () => actions.user.logout(),
+              child: Text("Log out"),
+            )
+          ],
         ),
-        body: Center(
-          child: Column(
-            children: <Widget>[
-              RaisedButton(
-                onPressed: null, // TODO: anonymous by default
-                child: Text("Log in as Dennis Krasnov"),
-              ),
-              Text("uid: ${vm.auth.uid}"),
-              Text("email: ${vm.auth.email}"),
-              Text("display name: ${vm.auth.displayName}"),
-              FlatButton(
-                onPressed: () => actions.user.logout(),
-                child: Text("Log out"),
-              )
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-//            child: Icon(Icons.edit),
-            icon: Icon(Icons.edit),
-            label: Text("HELLO"),
-//            heroTag: "ANIMATE_FAB",
-            onPressed: () {
-            }
-        ),
-      );
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+//          child: Icon(Icons.edit),
+        icon: Icon(Icons.edit),
+        label: Text("HELLO"),
+//          heroTag: "ANIMATE_FAB",
+        onPressed: () {
+        }
+      ),
+    );
 }
 
 abstract class TrackPageVM implements Built<TrackPageVM, TrackPageVMBuilder> {

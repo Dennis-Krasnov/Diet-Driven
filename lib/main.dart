@@ -17,8 +17,6 @@ import 'package:built_redux/built_redux.dart';
 import 'package:flutter_built_redux/flutter_built_redux.dart';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
-//import 'package:firebase_analytics/observer.dart';
-
 
 void main() => runApp(new DDApp());
 
@@ -34,31 +32,26 @@ class DDApp extends StatefulWidget {
 }
 
 class _DDAppState extends State<DDApp> {
-
   final store = new Store(
-//    reducerBuilder.build(),
     getBaseReducer(),
     new AppState(),
     new Actions(),
     middleware: [
-//      createEpicMiddleware([goToEpic]),
       createMiddleware(FirebaseAuth.instance),
       createEpicMiddleware(createEpicBuilder()),
-//      createEpicMiddleware([goToEpic])
     ],
   );
-
 
   @override
   void initState() {
     super.initState();
 
     // Configure logger
-    // TODO: upload to google cloud stack driver??
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen((LogRecord rec) {
       print("${rec.loggerName} ~ ${rec.level.name} ~ ${rec.time} ~ ${rec.message}");
     });
+    // TODO: upload to google cloud stack driver??
 
     store.actions.initApp();
   }
@@ -80,6 +73,7 @@ class _DDAppState extends State<DDApp> {
       value: (page) => (context) => PageFactory.toPage(page)
     );
 
+    // Home page
     routes.addAll({
       "/": (context) => HomeScreen()
     });
@@ -90,7 +84,7 @@ class _DDAppState extends State<DDApp> {
           navigatorKey: DDApp.navigatorKey,
           title: "Diet Driven",
           theme: ThemeData(fontFamily: 'FiraSans'),
-            routes: routes,
+          routes: routes,
           initialRoute: "/",
 //          onUnknownRoute: (settings) => settings.name, // TODO
         ),

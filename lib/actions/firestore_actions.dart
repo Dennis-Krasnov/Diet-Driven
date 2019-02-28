@@ -6,34 +6,18 @@ part 'firestore_actions.g.dart';
 
 ///
 abstract class FirestoreActions extends ReduxActions {
-  //
-  ActionDispatcher<String> fbStartDocListen;
+  // optional userId, doesn't require foodRecordId
+  ActionDispatcher<FSTuple<FoodRecord>> saveFoodRecord;
+
+  // optional userId
+  ActionDispatcher<FSTuple<FoodRecord>> updateFoodRecord;
 
   //
-  ActionDispatcher<String> fbStopDocListen;
+  ActionDispatcher<FoodRecord> diaryRecordReceived;
 
   //
-  ActionDispatcher<dynamic> fbDocListenError;
+  ActionDispatcher<BuiltList<FoodRecord>> diaryReceived;
 
-  //
-  ActionDispatcher<int> startSettingsListen;
-
-  //
-  ActionDispatcher<int> stopSettingsListen;
-//  ActionDispatcher<dynamic> updateError;
-//  ActionDispatcher<dynamic> addError; etc.
-
-  //
-  ActionDispatcher<FSPath> subscribe;
-
-  //
-  ActionDispatcher<FSPath> additionalSubscription;
-
-  //
-  ActionDispatcher<FSPath> unsubscribe;
-
-  //
-  ActionDispatcher<FS> unsubscribeAll;
 
   factory FirestoreActions() => new _$FirestoreActions();
   FirestoreActions._();

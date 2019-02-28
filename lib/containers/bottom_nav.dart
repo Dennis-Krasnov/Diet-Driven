@@ -44,6 +44,7 @@ class BottomNav extends StoreConnector<AppState, Actions, BottomNavigationVM> {
     });
 }
 
+// TODO: don't need VM if single property
 abstract class BottomNavigationVM implements Built<BottomNavigationVM, BottomNavigationVMBuilder> {
   List<Page> get pages;
 

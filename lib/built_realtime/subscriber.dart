@@ -15,7 +15,7 @@ class Connector extends StatefulWidget {
 }
 
 /// Higher order component subscribes to Firestore with given connector
-/*
+/* FIXME outdated
 class DiaryPage extends StoreConnector<AppState, Actions, int> {
 
   @override

@@ -48,9 +48,6 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   //
   double get grams;
 
-  // TODO: portion size
-
-//  @BuiltValueField(wireName: 'NaCl')
   @nullable
   double get sodium;
 

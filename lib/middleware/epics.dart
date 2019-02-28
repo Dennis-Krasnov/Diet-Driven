@@ -33,4 +33,6 @@ Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppStat
   // TODO: screenClassOverride: 'AnalyticsDemo',
 
   // TODO: Adjust allowed phone orientation on certain screens
+
+  // TODO: manage nested navigators
 });

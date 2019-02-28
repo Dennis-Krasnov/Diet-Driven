@@ -14,8 +14,8 @@ final Logger log = new Logger("MIDDLEWARE");
 /// MIDDLEWARE RUN BEFORE REDUCERS
 Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth auth) {
   return (MiddlewareBuilder<AppState, AppStateBuilder, Actions>()
-      ..add(ActionsNames.initApp, initApp(auth))
-      ..add(NavigationActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder())
+    ..add(ActionsNames.initApp, initApp(auth))
+    ..add(NavigationActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder())
 
       ..add(FirestoreActionsNames.subscribe, firestoreSubscribe())
       ..add(FirestoreActionsNames.unsubscribe, firestoreUnsubscribe())
@@ -29,7 +29,6 @@ Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth aut
 //      .then(capi.actions.increment(action.payload))
 //      .catchError(window.alert);
 //}
-
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth auth) {
 

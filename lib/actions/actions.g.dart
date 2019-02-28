@@ -17,14 +17,10 @@ class _$Actions extends Actions {
       new ActionDispatcher<dynamic>('Actions-initApp');
   final ActionDispatcher<dynamic> disposeApp =
       new ActionDispatcher<dynamic>('Actions-disposeApp');
-  final ActionDispatcher<int> changeDate =
-      new ActionDispatcher<int>('Actions-changeDate');
-  final ActionDispatcher<int> goToDate =
-      new ActionDispatcher<int>('Actions-goToDate');
-  final ActionDispatcher<FoodRecord> diaryRecordReceived =
-      new ActionDispatcher<FoodRecord>('Actions-diaryRecordReceived');
-  final ActionDispatcher<BuiltList<FoodRecord>> diaryReceived =
-      new ActionDispatcher<BuiltList<FoodRecord>>('Actions-diaryReceived');
+  final ActionDispatcher<int> changeDaysSinceEpoch =
+      new ActionDispatcher<int>('Actions-changeDaysSinceEpoch');
+  final ActionDispatcher<int> goToDaysSinceEpoch =
+      new ActionDispatcher<int>('Actions-goToDaysSinceEpoch');
   final UserActions user = new UserActions();
   final NavigationActions navigation = new NavigationActions();
   final FirestoreActions firestore = new FirestoreActions();
@@ -33,10 +29,8 @@ class _$Actions extends Actions {
   void setDispatcher(Dispatcher dispatcher) {
     initApp.setDispatcher(dispatcher);
     disposeApp.setDispatcher(dispatcher);
-    changeDate.setDispatcher(dispatcher);
-    goToDate.setDispatcher(dispatcher);
-    diaryRecordReceived.setDispatcher(dispatcher);
-    diaryReceived.setDispatcher(dispatcher);
+    changeDaysSinceEpoch.setDispatcher(dispatcher);
+    goToDaysSinceEpoch.setDispatcher(dispatcher);
     user.setDispatcher(dispatcher);
     navigation.setDispatcher(dispatcher);
     firestore.setDispatcher(dispatcher);
@@ -48,12 +42,8 @@ class ActionsNames {
       new ActionName<dynamic>('Actions-initApp');
   static final ActionName<dynamic> disposeApp =
       new ActionName<dynamic>('Actions-disposeApp');
-  static final ActionName<int> changeDate =
-      new ActionName<int>('Actions-changeDate');
-  static final ActionName<int> goToDate =
-      new ActionName<int>('Actions-goToDate');
-  static final ActionName<FoodRecord> diaryRecordReceived =
-      new ActionName<FoodRecord>('Actions-diaryRecordReceived');
-  static final ActionName<BuiltList<FoodRecord>> diaryReceived =
-      new ActionName<BuiltList<FoodRecord>>('Actions-diaryReceived');
+  static final ActionName<int> changeDaysSinceEpoch =
+      new ActionName<int>('Actions-changeDaysSinceEpoch');
+  static final ActionName<int> goToDaysSinceEpoch =
+      new ActionName<int>('Actions-goToDaysSinceEpoch');
 }

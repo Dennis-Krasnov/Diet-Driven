@@ -15,16 +15,11 @@ part 'built_firestore.g.dart';
 
 final Logger log = new Logger("FIRESTORE");
 
-/*
-new Path(fs, [widget.hash])
- */
-
 ///
-class FSPath {
-  final FS firestore;
-  final List<int> subscriptions;
-
-  FSPath(this.firestore, this.subscriptions);
+class FSTuple<T> {
+  final FS<T> fs;
+  final T data;
+  FSTuple(this.fs, this.data);
 }
 
 ///
@@ -52,16 +47,23 @@ abstract class FSDocument<T> implements FS<T> {
       standardSerializers.deserialize(ds.data..putIfAbsent("_id", () => ds.documentID))
   )).distinct();
 
-  //
-//  void addToCollection(T obj);
+  // TODO: test this thoroughly (test invalid inputs, etc)
+  @override
+  CollectionReference get parentCollection {
+    // strips documentID from path creating the collection
+    RegExp regex = new RegExp(r"((?:[^/]*/)*)(.*)");
+    return Firestore.instance.collection(regex.firstMatch(docRef.path).group(1));
+  }
 
   //
   void update(T obj, {bool merge: false}) {
+    // TODO: pass onError event!?
     docRef.setData(standardSerializers.serialize(obj), merge: merge).catchError(print);
   }
 
   //
   void delete() {
+    // TODO: pass onError event!?
     docRef.delete().catchError(print);
   }
 }
@@ -71,21 +73,27 @@ abstract class FSDocument<T> implements FS<T> {
 abstract class FSCollection<T> implements FS<BuiltList<T>> { // extends Built<T, dynamic>
   CollectionReference get colRef;
 
+  // FIXME: ovveride this method in each implementation, each parses collection reference path and generates proper object
+//  FSCollection.fromCollectionReference(CollectionReference cr);
+//  static FSCollection fromCollectionReference(CollectionReference cr) {
+//    return FSCollection((b) => b..);
+//  }
+
   @override
   Observable<BuiltList<T>> get snapshotObservable => Observable<BuiltList<T>>(Firestore.instance.collection(colRef.path).snapshots().asyncMap((ds) =>
       BuiltList<T>.from(ds.documents.map((doc) => standardSerializers.deserialize(doc.data..putIfAbsent("_id", () => doc.documentID))))
   )).distinct();
 
-//  @override
-//  Observable<BuiltList<T>> get snapshotObservable => Observable<BuiltList<T>>(Firestore.instance.collection(collectionRef.path).snapshots().asyncMap((ds) =>
-//    BuiltList<T>.from(ds.documents.map((doc) => standardSerializers.deserialize(doc.data)))
-//    // TODO: add doc.documentID somehow to every object? (T extends ??, set ??'s property?)
-//  )).distinct();
+
+  @override
+  CollectionReference get parentCollection {
+    // For root collections, null is returned
+    return colRef.parent();
+  }
 
   //
-  void add(T obj) {
-    colRef.add(standardSerializers.serialize(obj)).catchError(print);
-    // TODO: return DocumentReference
+  Future<DocumentReference> add(T obj) {
+    return colRef.add(standardSerializers.serialize(obj)).catchError(print);
   }
 
   // FIXME
