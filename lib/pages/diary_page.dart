@@ -182,7 +182,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
           onPressed: () {
             FoodRecord fr = new FoodRecord((b) => b
               ..daysSinceEpoch = vm.daysSinceEpoch
-              ..mealIndex = 2
+              ..mealIndex = 2 // TODO: choose correct meal based on today's mealsSnapshot's meal's start time
               ..foodName = randomFood()
               ..grams = new Random().nextInt(100).toDouble()
               ..uncertainty = Uncertainty.accurate

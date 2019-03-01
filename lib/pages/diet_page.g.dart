@@ -17,6 +17,8 @@ class _$DietPageVM extends DietPageVM {
   final int daysSinceEpoch;
   @override
   final DateTime date;
+  @override
+  final NavigationState navState;
 
   factory _$DietPageVM([void updates(DietPageVMBuilder b)]) =>
       (new DietPageVMBuilder()..update(updates)).build();
@@ -26,7 +28,8 @@ class _$DietPageVM extends DietPageVM {
       this.mealsSnapshots,
       this.userId,
       this.daysSinceEpoch,
-      this.date})
+      this.date,
+      this.navState})
       : super._() {
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('DietPageVM', 'diaryRecords');
@@ -42,6 +45,9 @@ class _$DietPageVM extends DietPageVM {
     }
     if (date == null) {
       throw new BuiltValueNullFieldError('DietPageVM', 'date');
+    }
+    if (navState == null) {
+      throw new BuiltValueNullFieldError('DietPageVM', 'navState');
     }
   }
 
@@ -60,17 +66,20 @@ class _$DietPageVM extends DietPageVM {
         mealsSnapshots == other.mealsSnapshots &&
         userId == other.userId &&
         daysSinceEpoch == other.daysSinceEpoch &&
-        date == other.date;
+        date == other.date &&
+        navState == other.navState;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, diaryRecords.hashCode), mealsSnapshots.hashCode),
-                userId.hashCode),
-            daysSinceEpoch.hashCode),
-        date.hashCode));
+            $jc(
+                $jc($jc($jc(0, diaryRecords.hashCode), mealsSnapshots.hashCode),
+                    userId.hashCode),
+                daysSinceEpoch.hashCode),
+            date.hashCode),
+        navState.hashCode));
   }
 
   @override
@@ -80,7 +89,8 @@ class _$DietPageVM extends DietPageVM {
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('userId', userId)
           ..add('daysSinceEpoch', daysSinceEpoch)
-          ..add('date', date))
+          ..add('date', date)
+          ..add('navState', navState))
         .toString();
   }
 }
@@ -113,6 +123,11 @@ class DietPageVMBuilder implements Builder<DietPageVM, DietPageVMBuilder> {
   DateTime get date => _$this._date;
   set date(DateTime date) => _$this._date = date;
 
+  NavigationStateBuilder _navState;
+  NavigationStateBuilder get navState =>
+      _$this._navState ??= new NavigationStateBuilder();
+  set navState(NavigationStateBuilder navState) => _$this._navState = navState;
+
   DietPageVMBuilder();
 
   DietPageVMBuilder get _$this {
@@ -122,6 +137,7 @@ class DietPageVMBuilder implements Builder<DietPageVM, DietPageVMBuilder> {
       _userId = _$v.userId;
       _daysSinceEpoch = _$v.daysSinceEpoch;
       _date = _$v.date;
+      _navState = _$v.navState?.toBuilder();
       _$v = null;
     }
     return this;
@@ -150,7 +166,8 @@ class DietPageVMBuilder implements Builder<DietPageVM, DietPageVMBuilder> {
               mealsSnapshots: mealsSnapshots.build(),
               userId: userId,
               daysSinceEpoch: daysSinceEpoch,
-              date: date);
+              date: date,
+              navState: navState.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -158,6 +175,9 @@ class DietPageVMBuilder implements Builder<DietPageVM, DietPageVMBuilder> {
         diaryRecords.build();
         _$failedField = 'mealsSnapshots';
         mealsSnapshots.build();
+
+        _$failedField = 'navState';
+        navState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'DietPageVM', _$failedField, e.toString());

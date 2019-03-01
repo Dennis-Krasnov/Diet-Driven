@@ -6,13 +6,67 @@ part of navigation_state;
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<NavigationState> _$navigationStateSerializer =
+    new _$NavigationStateSerializer();
+
+class _$NavigationStateSerializer
+    implements StructuredSerializer<NavigationState> {
+  @override
+  final Iterable<Type> types = const [NavigationState, _$NavigationState];
+  @override
+  final String wireName = 'NavigationState';
+
+  @override
+  Iterable serialize(Serializers serializers, NavigationState object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'defaultPage',
+      serializers.serialize(object.defaultPage,
+          specifiedType: const FullType(Page)),
+      'bottomNavigation',
+      serializers.serialize(object.bottomNavigation,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Page)])),
+    ];
+
+    return result;
+  }
+
+  @override
+  NavigationState deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new NavigationStateBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'defaultPage':
+          result.defaultPage = serializers.deserialize(value,
+              specifiedType: const FullType(Page)) as Page;
+          break;
+        case 'bottomNavigation':
+          result.bottomNavigation = serializers.deserialize(value,
+                  specifiedType:
+                      const FullType(BuiltList, const [const FullType(Page)]))
+              as BuiltList;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$NavigationState extends NavigationState {
   @override
   final Page activePage;
   @override
   final Page defaultPage;
   @override
-  final List<Page> bottomNavigation;
+  final BuiltList<Page> bottomNavigation;
   @override
   final Page bottomNavigationPage;
 
@@ -102,13 +156,13 @@ class _$NavigationStateBuilder extends NavigationStateBuilder {
   }
 
   @override
-  List<Page> get bottomNavigation {
+  BuiltList<Page> get bottomNavigation {
     _$this;
     return super.bottomNavigation;
   }
 
   @override
-  set bottomNavigation(List<Page> bottomNavigation) {
+  set bottomNavigation(BuiltList<Page> bottomNavigation) {
     _$this;
     super.bottomNavigation = bottomNavigation;
   }
@@ -159,6 +213,96 @@ class _$NavigationStateBuilder extends NavigationStateBuilder {
             defaultPage: defaultPage,
             bottomNavigation: bottomNavigation,
             bottomNavigationPage: bottomNavigationPage);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$NavigationStateDocument extends NavigationStateDocument {
+  @override
+  final String userId;
+  @override
+  final StreamSubscription streamSubscription;
+
+  factory _$NavigationStateDocument(
+          [void updates(NavigationStateDocumentBuilder b)]) =>
+      (new NavigationStateDocumentBuilder()..update(updates)).build();
+
+  _$NavigationStateDocument._({this.userId, this.streamSubscription})
+      : super._();
+
+  @override
+  NavigationStateDocument rebuild(
+          void updates(NavigationStateDocumentBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  NavigationStateDocumentBuilder toBuilder() =>
+      new NavigationStateDocumentBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is NavigationStateDocument && userId == other.userId;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, userId.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('NavigationStateDocument')
+          ..add('userId', userId)
+          ..add('streamSubscription', streamSubscription))
+        .toString();
+  }
+}
+
+class NavigationStateDocumentBuilder
+    implements
+        Builder<NavigationStateDocument, NavigationStateDocumentBuilder> {
+  _$NavigationStateDocument _$v;
+
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
+
+  StreamSubscription _streamSubscription;
+  StreamSubscription get streamSubscription => _$this._streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription) =>
+      _$this._streamSubscription = streamSubscription;
+
+  NavigationStateDocumentBuilder();
+
+  NavigationStateDocumentBuilder get _$this {
+    if (_$v != null) {
+      _userId = _$v.userId;
+      _streamSubscription = _$v.streamSubscription;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(NavigationStateDocument other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$NavigationStateDocument;
+  }
+
+  @override
+  void update(void updates(NavigationStateDocumentBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$NavigationStateDocument build() {
+    final _$result = _$v ??
+        new _$NavigationStateDocument._(
+            userId: userId, streamSubscription: streamSubscription);
     replace(_$result);
     return _$result;
   }

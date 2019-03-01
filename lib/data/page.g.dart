@@ -53,4 +53,23 @@ final BuiltSet<Page> _$appTabValues = new BuiltSet<Page>(const <Page>[
   _$loginScreen,
 ]);
 
+Serializer<Page> _$pageSerializer = new _$PageSerializer();
+
+class _$PageSerializer implements PrimitiveSerializer<Page> {
+  @override
+  final Iterable<Type> types = const <Type>[Page];
+  @override
+  final String wireName = 'Page';
+
+  @override
+  Object serialize(Serializers serializers, Page object,
+          {FullType specifiedType = FullType.unspecified}) =>
+      object.name;
+
+  @override
+  Page deserialize(Serializers serializers, Object serialized,
+          {FullType specifiedType = FullType.unspecified}) =>
+      Page.valueOf(serialized as String);
+}
+
 // ignore_for_file: always_put_control_body_on_new_line,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

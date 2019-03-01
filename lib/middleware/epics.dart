@@ -19,10 +19,17 @@ final Logger log = new Logger("EPICS");
 Iterable<Epic<AppState, AppStateBuilder, Actions>> createEpicBuilder() => (
   new EpicBuilder<AppState, AppStateBuilder, Actions>()
     ..add(NavigationActionsNames.goTo, goToEpic)
+
+    // DIARY
     ..add(FirestoreActionsNames.updateFoodRecord, updateFoodEpic)
     ..add(FirestoreActionsNames.saveFoodRecord, saveFoodToDiaryEpic)
     ..add(FirestoreActionsNames.deleteFoodRecord, deleteFoodRecordEpic)
-  ).build();
+
+
+    // SETTINGS
+    ..add(FirestoreActionsNames.updateNavigationState, updateNavigationSettingsEpic)
+
+).build();
 
 // Navigates to proper screen on state change
 Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
@@ -35,12 +42,10 @@ Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppStat
   }
 
   // Firebase Analytics page update
-  DDApp.analytics.setCurrentScreen(screenName: action.payload.name, screenClassOverride: PageFactory.toPage(action.payload).runtimeType.toString());
+  DDApp.analytics.setCurrentScreen(screenName: PageFactory.toText(action.payload), screenClassOverride: action.payload.name);
   // TODO: screenClassOverride: 'AnalyticsDemo',
-
-  // TODO: Adjust allowed phone orientation on certain screens
-
-  // TODO: manage nested navigators
+  //  Adjust allowed phone orientation on certain screens
+  //  manage nested navigators
 });
 
 // TODO: USE TRANSACTIONS
@@ -48,13 +53,11 @@ Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppStat
 Observable<void> updateFoodEpic(Observable<Action<FSTuple<FoodRecord>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
   log.info("Updating food record.");
 
-  // Casting to specific document
   FoodRecordDocument fs = action.payload.fs as FoodRecordDocument;
 
   // Add userId if it's missing
   fs = fs.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
 
-  // Directly update Firestore
   fs.update(action.payload.data);
 
   log.fine("updated food record  ${action.payload.data.id}.");
@@ -63,13 +66,11 @@ Observable<void> updateFoodEpic(Observable<Action<FSTuple<FoodRecord>>> stream, 
 Observable<void> saveFoodToDiaryEpic(Observable<Action<FSDynamicTuple<FoodRecord>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
   log.info("Saving new food record.");
 
-  // Casting to specific collection
   FoodDiaryCollection fdc = action.payload.fs as FoodDiaryCollection;
 
   // Add userId if it's missing
   fdc = fdc.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
 
-  // Add to foodDiary collection
   DocumentReference dr = await fdc.add(action.payload.data);
 
   log.fine("saved food record ${dr.documentID}.");
@@ -86,4 +87,18 @@ Observable<void> deleteFoodRecordEpic(Observable<Action<FoodRecordDocument>> str
   frd.delete();
 
   log.fine("deleted food record ${action.payload.foodRecordId}.");
+});
+
+
+Observable<void> updateNavigationSettingsEpic(Observable<Action<FSTuple<NavigationState>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+  log.info("Saving new navigation settings.");
+
+  NavigationStateDocument nsd = action.payload.fs as NavigationStateDocument;
+
+  // Add userId if it's missing
+  nsd = nsd.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
+
+  nsd.update(action.payload.data);
+
+  log.fine("saved navigation settings: ${action.payload.data}.");
 });

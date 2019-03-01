@@ -1,5 +1,6 @@
 library drawer_nav;
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
@@ -18,7 +19,7 @@ class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
   @override
   DrawerNavigationVM connect(AppState state) {
     return DrawerNavigationVM((b) => b
-        ..pages = state.navigation.bottomNavigation
+        ..pages = state.navigation.bottomNavigation.toBuilder()
         ..auth = state.user.authUser
     );
   }
@@ -78,7 +79,7 @@ class DrawerNav extends StoreConnector<AppState, Actions, DrawerNavigationVM> {
 }
 
 abstract class DrawerNavigationVM implements Built<DrawerNavigationVM, DrawerNavigationVMBuilder> {
-  List<Page> get pages;
+  BuiltList<Page> get pages;
   FirebaseUser get auth;
 
   DrawerNavigationVM._();

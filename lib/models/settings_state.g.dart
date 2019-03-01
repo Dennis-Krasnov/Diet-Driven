@@ -18,49 +18,21 @@ class _$SettingsStateSerializer implements StructuredSerializer<SettingsState> {
   @override
   Iterable serialize(Serializers serializers, SettingsState object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'effectiveAsOf',
-      serializers.serialize(object.effectiveAsOf,
-          specifiedType: const FullType(int)),
-    ];
-
-    return result;
+    return <Object>[];
   }
 
   @override
   SettingsState deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new SettingsStateBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current as String;
-      iterator.moveNext();
-      final dynamic value = iterator.current;
-      switch (key) {
-        case 'effectiveAsOf':
-          result.effectiveAsOf = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
-          break;
-      }
-    }
-
-    return result.build();
+    return new SettingsStateBuilder().build();
   }
 }
 
 class _$SettingsState extends SettingsState {
-  @override
-  final int effectiveAsOf;
-
   factory _$SettingsState([void updates(SettingsStateBuilder b)]) =>
       (new SettingsStateBuilder()..update(updates)).build();
 
-  _$SettingsState._({this.effectiveAsOf}) : super._() {
-    if (effectiveAsOf == null) {
-      throw new BuiltValueNullFieldError('SettingsState', 'effectiveAsOf');
-    }
-  }
+  _$SettingsState._() : super._();
 
   @override
   SettingsState rebuild(void updates(SettingsStateBuilder b)) =>
@@ -72,19 +44,17 @@ class _$SettingsState extends SettingsState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SettingsState && effectiveAsOf == other.effectiveAsOf;
+    return other is SettingsState;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, effectiveAsOf.hashCode));
+    return 925887568;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('SettingsState')
-          ..add('effectiveAsOf', effectiveAsOf))
-        .toString();
+    return newBuiltValueToStringHelper('SettingsState').toString();
   }
 }
 
@@ -92,19 +62,7 @@ class SettingsStateBuilder
     implements Builder<SettingsState, SettingsStateBuilder> {
   _$SettingsState _$v;
 
-  int _effectiveAsOf;
-  int get effectiveAsOf => _$this._effectiveAsOf;
-  set effectiveAsOf(int effectiveAsOf) => _$this._effectiveAsOf = effectiveAsOf;
-
   SettingsStateBuilder();
-
-  SettingsStateBuilder get _$this {
-    if (_$v != null) {
-      _effectiveAsOf = _$v.effectiveAsOf;
-      _$v = null;
-    }
-    return this;
-  }
 
   @override
   void replace(SettingsState other) {
@@ -121,7 +79,7 @@ class SettingsStateBuilder
 
   @override
   _$SettingsState build() {
-    final _$result = _$v ?? new _$SettingsState._(effectiveAsOf: effectiveAsOf);
+    final _$result = _$v ?? new _$SettingsState._();
     replace(_$result);
     return _$result;
   }

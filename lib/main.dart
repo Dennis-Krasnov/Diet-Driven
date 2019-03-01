@@ -2,6 +2,7 @@ library main;
 
 import 'package:diet_driven/pages/page_factory.dart';
 import 'package:diet_driven/widgets/home_screen.dart';
+import 'package:diet_driven/wrappers/subscriber.dart';
 import 'package:logging/logging.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/middleware/epics.dart';
@@ -78,16 +79,30 @@ class _DDAppState extends State<DDApp> {
       "/": (context) => HomeScreen()
     });
 
+    var navigationSettings = Subscription(
+      store.actions.firestore.navigationSettingsReceived,
+      print,
+//      NavigationStateDocument() // implicit userId
+      NavigationStateDocument((b) => b
+//        ..userId = store.state.user.authUser?.uid
+        ..userId = "q19uDFOwr3ZzxmPhnGq1GAodGfm1"
+      )
+    );
+
+
+
     return new ReduxProvider(
-        store: store,
-        child: new MaterialApp(
+      store: store,
+      child: Subscriber(hashCode, [navigationSettings], builder: (BuildContext context) { // TODO: manual subscription call! , autoSubscribe: false, call init first, get userId, then retrieve default page, navigation, then go to default page!!
+        return MaterialApp(
           navigatorKey: DDApp.navigatorKey,
           title: "Diet Driven",
           theme: ThemeData(fontFamily: 'FiraSans'),
           routes: routes,
           initialRoute: "/",
 //          onUnknownRoute: (settings) => settings.name, // TODO
-        ),
+        );
+      })
     );
   }
 }

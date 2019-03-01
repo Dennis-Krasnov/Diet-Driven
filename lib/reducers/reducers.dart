@@ -24,13 +24,13 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
     ..add(ActionsNames.changeDaysSinceEpoch, changeDaysSinceEpoch)
     ..add(ActionsNames.goToDaysSinceEpoch, goToDaysSinceEpoch)
 
-    // Diary // TODO: nest
+    // DIARY // TODO: nest
     ..combineList(new ListReducerBuilder((s) => s.diaryRecords, (b) => b.diaryRecords)
       ..add(FirestoreActionsNames.diaryReceived, diaryReceived)
       ..add(FirestoreActionsNames.diaryRecordReceived, diaryRecordReceived)
     )
 
-    // Diets // TODO: nest
+    // DIETS // TODO: nest
 
 
   ).build();

@@ -8,7 +8,7 @@ part of bottom_nav;
 
 class _$BottomNavigationVM extends BottomNavigationVM {
   @override
-  final List<Page> pages;
+  final BuiltList<Page> pages;
 
   factory _$BottomNavigationVM([void updates(BottomNavigationVMBuilder b)]) =>
       (new BottomNavigationVMBuilder()..update(updates)).build();
@@ -50,15 +50,15 @@ class BottomNavigationVMBuilder
     implements Builder<BottomNavigationVM, BottomNavigationVMBuilder> {
   _$BottomNavigationVM _$v;
 
-  List<Page> _pages;
-  List<Page> get pages => _$this._pages;
-  set pages(List<Page> pages) => _$this._pages = pages;
+  ListBuilder<Page> _pages;
+  ListBuilder<Page> get pages => _$this._pages ??= new ListBuilder<Page>();
+  set pages(ListBuilder<Page> pages) => _$this._pages = pages;
 
   BottomNavigationVMBuilder();
 
   BottomNavigationVMBuilder get _$this {
     if (_$v != null) {
-      _pages = _$v.pages;
+      _pages = _$v.pages?.toBuilder();
       _$v = null;
     }
     return this;
@@ -79,7 +79,20 @@ class BottomNavigationVMBuilder
 
   @override
   _$BottomNavigationVM build() {
-    final _$result = _$v ?? new _$BottomNavigationVM._(pages: pages);
+    _$BottomNavigationVM _$result;
+    try {
+      _$result = _$v ?? new _$BottomNavigationVM._(pages: pages.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'pages';
+        pages.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'BottomNavigationVM', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

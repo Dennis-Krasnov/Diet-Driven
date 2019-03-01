@@ -19,7 +19,8 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   @nullable
   String get id;
 
-  // Edamam foodId // TODO: abstract nutrition API to agnostic api
+  // TODO: abstract nutrition API to agnostic api
+  // Edamam foodId
   @nullable
   String get edamamId;
 
@@ -55,8 +56,7 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   @nullable
   double get sodium;
 
-  // TODO: portion size, portion quantity
-  // TODO: nutrition (/100grams) object
+  // TODO: portion size, portion quantity, nutrition (/100grams) object
 
   factory FoodRecord([updates(FoodRecordBuilder b)]) = _$FoodRecord;
 

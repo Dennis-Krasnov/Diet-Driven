@@ -8,7 +8,7 @@ part of settings_page;
 
 class _$SettingsPageVM extends SettingsPageVM {
   @override
-  final List<Page> pages;
+  final BuiltList<Page> pages;
   @override
   final Page defaultPage;
 
@@ -58,9 +58,9 @@ class SettingsPageVMBuilder
     implements Builder<SettingsPageVM, SettingsPageVMBuilder> {
   _$SettingsPageVM _$v;
 
-  List<Page> _pages;
-  List<Page> get pages => _$this._pages;
-  set pages(List<Page> pages) => _$this._pages = pages;
+  ListBuilder<Page> _pages;
+  ListBuilder<Page> get pages => _$this._pages ??= new ListBuilder<Page>();
+  set pages(ListBuilder<Page> pages) => _$this._pages = pages;
 
   Page _defaultPage;
   Page get defaultPage => _$this._defaultPage;
@@ -70,7 +70,7 @@ class SettingsPageVMBuilder
 
   SettingsPageVMBuilder get _$this {
     if (_$v != null) {
-      _pages = _$v.pages;
+      _pages = _$v.pages?.toBuilder();
       _defaultPage = _$v.defaultPage;
       _$v = null;
     }
@@ -92,8 +92,22 @@ class SettingsPageVMBuilder
 
   @override
   _$SettingsPageVM build() {
-    final _$result =
-        _$v ?? new _$SettingsPageVM._(pages: pages, defaultPage: defaultPage);
+    _$SettingsPageVM _$result;
+    try {
+      _$result = _$v ??
+          new _$SettingsPageVM._(
+              pages: pages.build(), defaultPage: defaultPage);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'pages';
+        pages.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'SettingsPageVM', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

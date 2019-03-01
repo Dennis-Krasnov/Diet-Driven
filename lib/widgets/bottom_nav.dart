@@ -1,5 +1,6 @@
 library bottom_nav;
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
@@ -17,7 +18,7 @@ class BottomNav extends StoreConnector<AppState, Actions, BottomNavigationVM> {
   @override
   BottomNavigationVM connect(AppState state) {
     return BottomNavigationVM((b) => b
-      ..pages = state.navigation.bottomNavigation
+      ..pages = state.navigation.bottomNavigation.toBuilder()
     );
   }
 
@@ -46,7 +47,7 @@ class BottomNav extends StoreConnector<AppState, Actions, BottomNavigationVM> {
 
 // TODO: don't need VM if single property
 abstract class BottomNavigationVM implements Built<BottomNavigationVM, BottomNavigationVMBuilder> {
-  List<Page> get pages;
+  BuiltList<Page> get pages;
 
   BottomNavigationVM._();
 
