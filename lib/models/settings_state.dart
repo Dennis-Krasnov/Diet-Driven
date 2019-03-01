@@ -6,7 +6,7 @@ import 'package:built_value/serializer.dart';
 
 part 'settings_state.g.dart';
 
-/// TODO
+///
 abstract class SettingsState implements Built<SettingsState, SettingsStateBuilder> {
   static Serializer<SettingsState> get serializer => _$settingsStateSerializer;
 
@@ -14,8 +14,7 @@ abstract class SettingsState implements Built<SettingsState, SettingsStateBuilde
 //  @nullable
 //  String get id;
 
-  // Days since epoch, maximum one per day
-  int get effectiveAsOf;
+
 
   factory SettingsState([updates(SettingsStateBuilder b)]) = _$SettingsState;
 

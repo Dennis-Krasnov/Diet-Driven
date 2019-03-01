@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/models/navigation_state.dart';
 import 'package:diet_driven/util/built_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -54,8 +55,23 @@ class SubscriberState extends State<Subscriber> {
     // Listen to every subscription
     widget.subscriptions.forEach((sub) {
       log.fine("subscribing to ${sub.connection}");
-      // DO THIS WITH GENERICS? / pass a type?
-      var conn = sub.connection as FoodDiaryCollection; //pass as param!?
+
+      var conn;
+      // TODO: DO THIS WITH GENERICS? / pass a type? (do this more elegantly...)
+      if (sub.connection is FoodDiaryCollection) {
+        print("IS FS DIARY");
+        conn = sub.connection as FoodDiaryCollection;
+      }
+      else if (sub.connection is NavigationStateDocument) {
+        print("IS FS NAVIGATION STATE");
+        conn = sub.connection as NavigationStateDocument;
+      }
+      else {
+        print("ITS NOT");
+        print(sub.connection.runtimeType);
+
+      }
+      // todo: pass type as param!?
 //      var conn2 = sub.connection as Built<sub.connection.runtimeType extends Built, sub.connection.runtimeType>; //pass as param!?
       sub.connection = conn.rebuild((b) => b..streamSubscription = sub.connection.snapshotObservable.listen(sub.onData, onError: sub.onError));
     });

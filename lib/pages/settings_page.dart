@@ -1,5 +1,6 @@
 library settings_page;
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:collection/collection.dart';
 import 'package:diet_driven/actions/actions.dart';
@@ -25,9 +26,10 @@ class SettingsPage extends StatelessWidget {
       ),
       body: new StoreConnection<AppState, Actions, SettingsPageVM>(
         connect: (state) => SettingsPageVM((b) => b
-          ..pages = state.navigation.bottomNavigation
+          ..pages = state.navigation.bottomNavigation.toBuilder()
           ..defaultPage = state.navigation.defaultPage
         ),
+
         builder: (BuildContext context, SettingsPageVM vm, Actions actions) {
           return Column(
             children: <Widget>[
@@ -51,7 +53,7 @@ class SettingsPage extends StatelessWidget {
                 title: const Text('Reset bottom navigation settings'),
                 onTap: () {
                   AppState original = new AppState();
-                  actions.navigation.reorderBottomNavigation(original.navigation.bottomNavigation);
+                  actions.navigation.reorderBottomNavigation(original.navigation.bottomNavigation.toList()); // FIXME
                   actions.navigation.setDefaultPage(original.navigation.defaultPage);
                 }
               ),
@@ -79,7 +81,7 @@ class SettingsPage extends StatelessWidget {
 
 abstract class SettingsPageVM
     implements Built<SettingsPageVM, SettingsPageVMBuilder> {
-  List<Page> get pages;
+  BuiltList<Page> get pages;
   Page get defaultPage;
 
   SettingsPageVM._();

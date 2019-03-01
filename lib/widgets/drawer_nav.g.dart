@@ -8,7 +8,7 @@ part of drawer_nav;
 
 class _$DrawerNavigationVM extends DrawerNavigationVM {
   @override
-  final List<Page> pages;
+  final BuiltList<Page> pages;
   @override
   final FirebaseUser auth;
 
@@ -58,9 +58,9 @@ class DrawerNavigationVMBuilder
     implements Builder<DrawerNavigationVM, DrawerNavigationVMBuilder> {
   _$DrawerNavigationVM _$v;
 
-  List<Page> _pages;
-  List<Page> get pages => _$this._pages;
-  set pages(List<Page> pages) => _$this._pages = pages;
+  ListBuilder<Page> _pages;
+  ListBuilder<Page> get pages => _$this._pages ??= new ListBuilder<Page>();
+  set pages(ListBuilder<Page> pages) => _$this._pages = pages;
 
   FirebaseUser _auth;
   FirebaseUser get auth => _$this._auth;
@@ -70,7 +70,7 @@ class DrawerNavigationVMBuilder
 
   DrawerNavigationVMBuilder get _$this {
     if (_$v != null) {
-      _pages = _$v.pages;
+      _pages = _$v.pages?.toBuilder();
       _auth = _$v.auth;
       _$v = null;
     }
@@ -92,8 +92,21 @@ class DrawerNavigationVMBuilder
 
   @override
   _$DrawerNavigationVM build() {
-    final _$result =
-        _$v ?? new _$DrawerNavigationVM._(pages: pages, auth: auth);
+    _$DrawerNavigationVM _$result;
+    try {
+      _$result =
+          _$v ?? new _$DrawerNavigationVM._(pages: pages.build(), auth: auth);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'pages';
+        pages.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'DrawerNavigationVM', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

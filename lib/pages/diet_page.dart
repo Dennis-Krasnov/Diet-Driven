@@ -8,6 +8,7 @@ import 'package:diet_driven/data/food_record.dart';
 import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/pages/page_factory.dart';
+import 'package:diet_driven/util/built_firestore.dart';
 import 'package:diet_driven/wrappers/drawer_nav_button.dart';
 import 'package:flutter/material.dart' hide Builder;
 import 'package:flutter_built_redux/flutter_built_redux.dart';
@@ -23,6 +24,7 @@ class DietPage extends StoreConnector<AppState, Actions, DietPageVM> {
       ..userId = state.user.authUser.uid
       ..daysSinceEpoch = state.currentDaysSinceEpoch
       ..date = state.currentDate()
+      ..navState = state.navigation.toBuilder()
     );
   }
 
@@ -33,8 +35,20 @@ class DietPage extends StoreConnector<AppState, Actions, DietPageVM> {
         leading: GlobalDrawerNavButton(),
         title: Text(PageFactory.toText(Page.diet)),
       ),
-      body: Container()
+      body: Container(),
        // TODO: meal logic (modifying last snapshot, do duplicates in day)
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.adb),
+        onPressed: () {
+          var temp = FSTuple<NavigationState>(
+            NavigationStateDocument((b) => b
+              ..userId = vm.userId
+            ),
+            vm.navState
+          );
+          actions.firestore.updateNavigationState(temp);
+        }
+      ),
     );
   }
 }
@@ -45,6 +59,7 @@ abstract class DietPageVM implements Built<DietPageVM, DietPageVMBuilder> {
   String get userId;
   int get daysSinceEpoch;
   DateTime get date;
+  NavigationState get navState;
 
   DietPageVM._();
   factory DietPageVM([updates(DietPageVMBuilder b)]) = _$DietPageVM;
