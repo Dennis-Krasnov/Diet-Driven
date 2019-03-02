@@ -18,9 +18,10 @@ class Subscription<T> {
 class Subscriber extends StatefulWidget {
   final int hash;
   final List<Subscription> subscriptions;
+  final bool autoSubscribe;
   final Widget Function(BuildContext context) builder;
 
-  Subscriber(this.hash, this.subscriptions, {@required this.builder});
+  Subscriber(this.hash, this.subscriptions, {this.autoSubscribe: true, @required this.builder});
 
   @override
   State<StatefulWidget> createState() => new SubscriberState();
@@ -52,12 +53,21 @@ class SubscriberState extends State<Subscriber> {
   @override
   void initState() {
     super.initState();
-    // Listen to every subscription
+
+    if (widget.autoSubscribe) {
+      subscribeToSubscriptions();
+    } else {
+      unsubscribeToSubscriptions();
+    }
+  }
+
+  /// Listen to every subscription
+  void subscribeToSubscriptions() {
     widget.subscriptions.forEach((sub) {
       log.fine("subscribing to ${sub.connection}");
 
       var conn;
-      // TODO: DO THIS WITH GENERICS? / pass a type? (do this more elegantly...)
+      // TODO: DO THIS WITH GENERICS? / pass a type? (do this more elegantly...) (just to doc or collection!?)
       if (sub.connection is FoodDiaryCollection) {
         print("IS FS DIARY");
         conn = sub.connection as FoodDiaryCollection;
@@ -77,10 +87,17 @@ class SubscriberState extends State<Subscriber> {
     });
   }
 
+  /// Cancel every non-null subscription
+  void unsubscribeToSubscriptions() {
+    widget.subscriptions.forEach((sub) {
+      log.fine("usubscribing from ${sub.connection}");
+      sub.connection.streamSubscription?.cancel();
+    });
+  }
+
   @override
   void dispose() {
-    // Cancel every non-null subscription
-    widget.subscriptions.forEach((sub) => sub.connection.streamSubscription?.cancel());
+    unsubscribeToSubscriptions();
     super.dispose();
   }
 

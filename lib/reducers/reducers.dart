@@ -21,6 +21,8 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
     ..combineNested(getNavigationReducer())
     ..combineNested(getUserReducer())
 
+    ..add(FirestoreActionsNames.navigationSettingsReceived, settingsReceived)
+
     ..add(ActionsNames.changeDaysSinceEpoch, changeDaysSinceEpoch)
     ..add(ActionsNames.goToDaysSinceEpoch, goToDaysSinceEpoch)
 
@@ -48,6 +50,28 @@ void goToDaysSinceEpoch(AppState state, Action<int> action, AppStateBuilder buil
   builder.currentDaysSinceEpoch = action.payload;
 
   log.fine("daysSinceEpoch is now ${action.payload}");
+}
+
+void settingsReceived(AppState state, Action<NavigationState> action, AppStateBuilder builder) {
+  log.fine("setttings received: ${action.payload}");
+  builder.settingsLoaded = true;
+  // what does replace do?
+  builder.navigation.update((b) => b
+    ..bottomNavigation = action.payload.bottomNavigation
+    ..defaultPage = action.payload.defaultPage
+//    ..activePage =  can't do this because editing from settings page
+  );
+
+  // First load into app
+  if (state.navigation.activePage == null) {
+    log.fine("going to default page ${action.payload.defaultPage}");
+    builder.navigation.update((b) => b
+      ..bottomNavigationPage = action.payload.defaultPage
+      ..activePage = action.payload.defaultPage
+    );
+  }
+
+  log.fine("settingsLoaded is now true");
 }
 
 void diaryReceived(BuiltList<FoodRecord> listState, Action<BuiltList<FoodRecord>> action, ListBuilder<FoodRecord> listBuilder) {

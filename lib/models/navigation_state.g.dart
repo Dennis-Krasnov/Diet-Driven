@@ -80,9 +80,6 @@ class _$NavigationState extends NavigationState {
       this.bottomNavigation,
       this.bottomNavigationPage})
       : super._() {
-    if (activePage == null) {
-      throw new BuiltValueNullFieldError('NavigationState', 'activePage');
-    }
     if (defaultPage == null) {
       throw new BuiltValueNullFieldError('NavigationState', 'defaultPage');
     }

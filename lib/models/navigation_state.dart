@@ -15,9 +15,9 @@ part 'navigation_state.g.dart';
 abstract class NavigationState implements Built<NavigationState, NavigationStateBuilder> {
   static Serializer<NavigationState> get serializer => _$navigationStateSerializer;
 
-
   //
   @BuiltValueField(serialize: false)
+  @nullable // settings received middleware sets active page as default page
   Page get activePage;
 
   //
@@ -29,7 +29,7 @@ abstract class NavigationState implements Built<NavigationState, NavigationState
 
   //
   @BuiltValueField(serialize: false)
-  @nullable
+  @nullable // settings received middleware sets bottom navigation page as default page
   Page get bottomNavigationPage;
 
   NavigationState._();
@@ -38,7 +38,7 @@ abstract class NavigationState implements Built<NavigationState, NavigationState
 
 ///
 abstract class NavigationStateBuilder implements Builder<NavigationState, NavigationStateBuilder> {
-  Page activePage = Page.diary;
+  Page activePage;
 
   Page defaultPage = Page.diary;
 
