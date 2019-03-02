@@ -12,6 +12,8 @@ class _$AppState extends AppState {
   @override
   final NavigationState navigation;
   @override
+  final bool settingsLoaded;
+  @override
   final BuiltList<FoodRecord> diaryRecords;
   @override
   final BuiltList<MealsSnapshot> mealsSnapshots;
@@ -24,6 +26,7 @@ class _$AppState extends AppState {
   _$AppState._(
       {this.user,
       this.navigation,
+      this.settingsLoaded,
       this.diaryRecords,
       this.mealsSnapshots,
       this.currentDaysSinceEpoch})
@@ -33,6 +36,9 @@ class _$AppState extends AppState {
     }
     if (navigation == null) {
       throw new BuiltValueNullFieldError('AppState', 'navigation');
+    }
+    if (settingsLoaded == null) {
+      throw new BuiltValueNullFieldError('AppState', 'settingsLoaded');
     }
     if (diaryRecords == null) {
       throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
@@ -58,6 +64,7 @@ class _$AppState extends AppState {
     return other is AppState &&
         user == other.user &&
         navigation == other.navigation &&
+        settingsLoaded == other.settingsLoaded &&
         diaryRecords == other.diaryRecords &&
         mealsSnapshots == other.mealsSnapshots &&
         currentDaysSinceEpoch == other.currentDaysSinceEpoch;
@@ -67,7 +74,9 @@ class _$AppState extends AppState {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+            $jc(
+                $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+                    settingsLoaded.hashCode),
                 diaryRecords.hashCode),
             mealsSnapshots.hashCode),
         currentDaysSinceEpoch.hashCode));
@@ -78,6 +87,7 @@ class _$AppState extends AppState {
     return (newBuiltValueToStringHelper('AppState')
           ..add('user', user)
           ..add('navigation', navigation)
+          ..add('settingsLoaded', settingsLoaded)
           ..add('diaryRecords', diaryRecords)
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('currentDaysSinceEpoch', currentDaysSinceEpoch))
@@ -110,6 +120,18 @@ class _$AppStateBuilder extends AppStateBuilder {
   set navigation(NavigationStateBuilder navigation) {
     _$this;
     super.navigation = navigation;
+  }
+
+  @override
+  bool get settingsLoaded {
+    _$this;
+    return super.settingsLoaded;
+  }
+
+  @override
+  set settingsLoaded(bool settingsLoaded) {
+    _$this;
+    super.settingsLoaded = settingsLoaded;
   }
 
   @override
@@ -154,6 +176,7 @@ class _$AppStateBuilder extends AppStateBuilder {
     if (_$v != null) {
       super.user = _$v.user?.toBuilder();
       super.navigation = _$v.navigation?.toBuilder();
+      super.settingsLoaded = _$v.settingsLoaded;
       super.diaryRecords = _$v.diaryRecords?.toBuilder();
       super.mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
       super.currentDaysSinceEpoch = _$v.currentDaysSinceEpoch;
@@ -183,6 +206,7 @@ class _$AppStateBuilder extends AppStateBuilder {
           new _$AppState._(
               user: user.build(),
               navigation: navigation.build(),
+              settingsLoaded: settingsLoaded,
               diaryRecords: diaryRecords.build(),
               mealsSnapshots: mealsSnapshots.build(),
               currentDaysSinceEpoch: currentDaysSinceEpoch);
@@ -193,6 +217,7 @@ class _$AppStateBuilder extends AppStateBuilder {
         user.build();
         _$failedField = 'navigation';
         navigation.build();
+
         _$failedField = 'diaryRecords';
         diaryRecords.build();
         _$failedField = 'mealsSnapshots';

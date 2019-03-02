@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/data/food_record.dart';
-import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/util/subscriptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart' hide Builder;
@@ -12,11 +13,12 @@ import 'package:logging/logging.dart';
 final Logger log = new Logger("MIDDLEWARE");
 
 /// MIDDLEWARE RUN BEFORE REDUCERS
-Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth auth) {
+Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth auth, Subscriptions subs) {
   return (MiddlewareBuilder<AppState, AppStateBuilder, Actions>()
-    ..add(ActionsNames.initApp, initApp(auth))
+    ..add(ActionsNames.initApp, initApp(auth, subs))
+    ..add(ActionsNames.disposeApp, disposeApp(auth, subs))
     ..add(NavigationActionsNames.reorderBottomNavigation, reorderBottomNavigationBuilder())
-
+    ..add(UserActionsNames.authStateChanged, authStateChanged)
   ).build();
 }
 
@@ -27,26 +29,30 @@ Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth aut
 //      .catchError(window.alert);
 //}
 
-MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth auth) {
-
+MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth auth, Subscriptions subs) {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
-    Page destination = api.state.navigation.defaultPage;
 
-    // User isn't authenticated
+    // Store not persisted
     if (api.state.user.authUser == null) {
       FirebaseUser authUser = await auth.currentUser();
 
-      // Firebase didn't persist user
+      // Firebase user not persisted
       if (authUser == null) {
-        print("CREATING ANONYMOUS USER");
-        // TODO: destination = Page.loginScreen;
         authUser = await auth.signInAnonymously().catchError((e) => api.actions.user.anonymousUserFail(e));
-      } else {
-        destination = api.state.navigation.activePage;
       }
 
+      // Saving authUser to store
       api.actions.user.anonymousUserLoaded(authUser);
     }
+
+    //
+    auth.onAuthStateChanged.listen((FirebaseUser fbUser) => api.actions.user.authStateChanged(fbUser));
+
+    subs.startNavigationSubscription(
+      api.actions.firestore.navigationSettingsReceived,
+      print,
+      NavigationStateDocument((b) => b..userId = api.state.user.authUser.uid)
+    );
 
 //    DDApp.analytics.logLogin().then(() => print("SUCCESS"));
     // Firebase analytics user (anonymous)
@@ -55,7 +61,15 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
     // TODO: load user preferences, call DDApp.analytics.setAnalyticsCollectionEnabled(enabled) before all else
 
     // Go to default page
-    api.actions.navigation.goTo(destination);
+//    api.actions.navigation.goTo(destination); // FIXME
+
+    next(action);
+  };
+}
+
+MiddlewareHandler<AppState, AppStateBuilder, Actions, void> disposeApp(FirebaseAuth auth, Subscriptions subs) {
+  return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
+    subs.stopNavigationSubscription();
 
     next(action);
   };
@@ -76,3 +90,45 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigat
     }
   };
 }
+
+void authStateChanged(MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action<FirebaseUser> action) async {
+  log.info("auth state changed middlware: ${action.payload}");
+  log.info("by this time settings loaded is ${api.state.settingsLoaded}");
+
+  bool existsBefore = api.state.user.authUser == null;
+  bool anonymousBefore;
+  String emailBefore;
+  if (existsBefore) {
+    anonymousBefore = api.state.user.authUser.isAnonymous;
+    emailBefore = api.state.user.authUser.email;
+  }
+
+  next(action);
+
+  bool anonymousAfter = api.state.user.authUser.isAnonymous;
+  String emailAfter = api.state.user.authUser.email;
+
+  if (existsBefore) {
+    if (anonymousBefore && !anonymousAfter) {
+      log.info("Anonymous user registered for account");
+    }
+    else {
+       log.shout("something new happened!!!");
+    }
+  }
+  if (!existsBefore) {
+    if (anonymousAfter) {
+      log.info("New anonymous user");
+    }
+    else if (emailAfter != null) {
+      log.info("Signed up with account from beginning / Existing user signed in");
+
+    }
+    else {
+      log.shout("something new happened!!!");
+    }
+  }
+}
+
+
+

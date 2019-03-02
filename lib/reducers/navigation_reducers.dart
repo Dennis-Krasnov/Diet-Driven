@@ -14,7 +14,7 @@ NestedReducerBuilder<AppState, AppStateBuilder, NavigationState, NavigationState
     ..add(NavigationActionsNames.reorderBottomNavigation, reorderBottomNav)
     ..add(NavigationActionsNames.setDefaultPage, setDefaultPage)
 
-    ..add(FirestoreActionsNames.navigationSettingsReceived, navigationStateReceived)
+//    ..add(FirestoreActionsNames.navigationSettingsReceived, navigationStateReceived)
   );
 
 ///
@@ -57,13 +57,6 @@ void setDefaultPage(NavigationState state, Action<Page> action, NavigationStateB
   }
 }
 
-///
-void navigationStateReceived(NavigationState state, Action<NavigationState> action, NavigationStateBuilder builder) {
-//  builder = action.payload.toBuilder();
-  builder.update((b) => b
-    ..defaultPage = action.payload.defaultPage
-    ..bottomNavigation = action.payload.bottomNavigation
-  );
-
-  log.fine("NAVIGATION SETTINGS HAVE ARRIVED ${action.payload}");
-}
+/// Not allowed to have multiple reducers with same action
+//void navigationStateReceived(NavigationState state, Action<NavigationState> action, NavigationStateBuilder builder) {
+//}

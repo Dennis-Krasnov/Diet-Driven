@@ -28,7 +28,11 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   NavigationState get navigation;
 
   //
+  bool get settingsLoaded;
+
+  //
   BuiltList<FoodRecord> get diaryRecords;
+
   //
   BuiltList<MealsSnapshot> get mealsSnapshots;
 
@@ -52,6 +56,8 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
 abstract class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   UserStateBuilder user;
   NavigationStateBuilder navigation;
+
+  bool settingsLoaded = false;
 
   ListBuilder<FoodRecord> diaryRecords;
 

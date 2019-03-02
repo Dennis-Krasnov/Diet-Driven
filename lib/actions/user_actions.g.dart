@@ -17,6 +17,8 @@ class _$UserActions extends UserActions {
       new ActionDispatcher<FirebaseUser>('UserActions-anonymousUserLoaded');
   final ActionDispatcher<dynamic> anonymousUserFail =
       new ActionDispatcher<dynamic>('UserActions-anonymousUserFail');
+  final ActionDispatcher<FirebaseUser> authStateChanged =
+      new ActionDispatcher<FirebaseUser>('UserActions-authStateChanged');
   final ActionDispatcher<dynamic> logout =
       new ActionDispatcher<dynamic>('UserActions-logout');
 
@@ -24,6 +26,7 @@ class _$UserActions extends UserActions {
   void setDispatcher(Dispatcher dispatcher) {
     anonymousUserLoaded.setDispatcher(dispatcher);
     anonymousUserFail.setDispatcher(dispatcher);
+    authStateChanged.setDispatcher(dispatcher);
     logout.setDispatcher(dispatcher);
   }
 }
@@ -33,6 +36,8 @@ class UserActionsNames {
       new ActionName<FirebaseUser>('UserActions-anonymousUserLoaded');
   static final ActionName<dynamic> anonymousUserFail =
       new ActionName<dynamic>('UserActions-anonymousUserFail');
+  static final ActionName<FirebaseUser> authStateChanged =
+      new ActionName<FirebaseUser>('UserActions-authStateChanged');
   static final ActionName<dynamic> logout =
       new ActionName<dynamic>('UserActions-logout');
 }

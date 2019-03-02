@@ -14,6 +14,9 @@ abstract class UserActions extends ReduxActions {
   ActionDispatcher<dynamic> anonymousUserFail;
 
   //
+  ActionDispatcher<FirebaseUser> authStateChanged;
+
+  //
   ActionDispatcher logout;
 
   factory UserActions() => new _$UserActions();
