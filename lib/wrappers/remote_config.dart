@@ -23,7 +23,7 @@ class RemoteConfigLoader extends StoreConnector<AppState, Actions, bool> {
   Widget build(BuildContext context, bool settingsLoaded, Actions actions) { // configure remoteConfig's listener actions higher up
     return FutureBuilder(
       // https://medium.com/saugo360/flutter-my-futurebuilder-keeps-firing-6e774830bc2
-      future: Future.delayed(Duration(seconds: 5)),
+      future: Future.delayed(Duration(seconds: 3)),
       builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
         print("SNAPSHOT ${snapshot.connectionState}");
         print("SETTINGS LOADED $settingsLoaded");

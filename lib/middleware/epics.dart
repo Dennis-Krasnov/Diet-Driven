@@ -4,7 +4,7 @@ import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/pages/page_factory.dart';
 import 'package:diet_driven/util/built_firestore.dart';
@@ -21,9 +21,12 @@ Iterable<Epic<AppState, AppStateBuilder, Actions>> createEpicBuilder() => (
     ..add(NavigationActionsNames.goTo, goToEpic)
 
     // DIARY
-    ..add(FirestoreActionsNames.updateFoodRecord, updateFoodEpic)
-    ..add(FirestoreActionsNames.saveFoodRecord, saveFoodToDiaryEpic)
-    ..add(FirestoreActionsNames.deleteFoodRecord, deleteFoodRecordEpic)
+    ..add(FirestoreActionsNames.updateFoodDiaryDay, updateFoodDiaryDayEpic)
+//    ..add(FirestoreActionsNames.saveFoodDiaryDay, saveFoodToDiaryEpic) // FIXME
+    ..add(FirestoreActionsNames.deleteFoodDiaryDay, deleteFoodDiaryDayEpic)
+
+
+    ..add(ActionsNames.populateWithDefaultSettings, populateWithDefaultSettingsEpic)
 
 
     // SETTINGS
@@ -50,45 +53,67 @@ Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppStat
 
 // TODO: USE TRANSACTIONS
 
-Observable<void> updateFoodEpic(Observable<Action<FSTuple<FoodRecord>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
-  log.info("Updating food record.");
+Observable<void> updateFoodDiaryDayEpic(Observable<Action<FoodDiaryDay>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
+  log.info("Updating food diary day.");
 
-  FoodRecordDocument fs = action.payload.fs as FoodRecordDocument;
+  // TODO: this is a much better way to do it, why would widgets know about documents, still keeps document abstraction
+  // Creating Document in epic
+  FoodDiaryDayDocument fs = new FoodDiaryDayDocument((b) => b
+    ..userId = b.userId ?? api.state.user.authUser.uid
+    ..daysSinceEpoch = action.payload.id
+  );
 
-  // Add userId if it's missing
-  fs = fs.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
+  // Delete day if no food records present TODO: check for other data
+  if (action.payload.foodRecords.isEmpty) {
+    fs.delete();
+  }
+  else {
+    fs.update(action.payload);
+  }
 
-  fs.update(action.payload.data);
-
-  log.fine("updated food record  ${action.payload.data.id}.");
+  log.fine("updated food diary day  ${action.payload.id}.");
 });
 
-Observable<void> saveFoodToDiaryEpic(Observable<Action<FSDynamicTuple<FoodRecord>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
-  log.info("Saving new food record.");
+Observable<void> deleteFoodDiaryDayEpic(Observable<Action<FoodDiaryDay>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
+  log.info("Deleting food diary day.");
 
-  FoodDiaryCollection fdc = action.payload.fs as FoodDiaryCollection;
+  // TODO: this is a much better way to do it, why would widgets know about documents, still keeps document abstraction
+  // Creating Document in epic
+  FoodDiaryDayDocument fs = new FoodDiaryDayDocument((b) => b
+    ..userId = b.userId ?? api.state.user.authUser.uid
+    ..daysSinceEpoch = action.payload.id
+  );
 
-  // Add userId if it's missing
-  fdc = fdc.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
+  fs.delete();
 
-  DocumentReference dr = await fdc.add(action.payload.data);
-
-  log.fine("saved food record ${dr.documentID}.");
+  log.fine("deleted food diary day  ${action.payload.id}.");
 });
 
-Observable<void> deleteFoodRecordEpic(Observable<Action<FoodRecordDocument>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
-  log.info("Deleting food record.");
-
-  FoodRecordDocument frd = action.payload;
-
-  // Add userId if it's missing
-  frd = frd.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
-
-  frd.delete();
-
-  log.fine("deleted food record ${action.payload.foodRecordId}.");
-});
-
+//Observable<void> saveFoodToDiaryEpic(Observable<Action<FSDynamicTuple<FoodRecord>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+//  log.info("Saving new food record.");
+//
+//  FoodDiaryCollection fdc = action.payload.fs as FoodDiaryCollection;
+//
+//  // Add userId if it's missing
+//  fdc = fdc.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
+//
+//  DocumentReference dr = await fdc.add(action.payload.data);
+//
+//  log.fine("saved food record ${dr.documentID}.");
+//});
+//
+//Observable<void> deleteFoodRecordEpic(Observable<Action<FoodRecordDocument>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+//  log.info("Deleting food record.");
+//
+//  FoodRecordDocument frd = action.payload;
+//
+//  // Add userId if it's missing
+//  frd = frd.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
+//
+//  frd.delete();
+//
+//  log.fine("deleted food record ${action.payload.foodRecordId}.");
+//});
 
 Observable<void> updateNavigationSettingsEpic(Observable<Action<FSTuple<NavigationState>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
   log.info("Saving new navigation settings.");
@@ -101,4 +126,16 @@ Observable<void> updateNavigationSettingsEpic(Observable<Action<FSTuple<Navigati
   nsd.update(action.payload.data);
 
   log.fine("saved navigation settings: ${action.payload.data}.");
+});
+
+Observable<void> populateWithDefaultSettingsEpic(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+  log.info("populating with default settings.");
+
+  NavigationState navigationState = NavigationState();
+
+  NavigationStateDocument((b) => b
+    ..userId = action.payload ?? api.state.user.authUser.uid
+  ).update(navigationState);
+
+  log.fine("populated with default settings: $navigationState.");
 });

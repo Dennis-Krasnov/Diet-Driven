@@ -1,6 +1,7 @@
 import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/pages/page_factory.dart';
 import 'package:diet_driven/wrappers/drawer_nav_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class ManualPage extends StatelessWidget {
@@ -13,6 +14,16 @@ class ManualPage extends StatelessWidget {
       ),
       body: Container(
         color: Colors.deepPurpleAccent,
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.close),
+        label: Text("sign out"),
+        onPressed: () async {
+          FirebaseUser user = await FirebaseAuth.instance.currentUser();
+          if (user != null && user.uid != null) {
+            FirebaseAuth.instance.signOut();
+          }
+        },
       ),
     );
   }

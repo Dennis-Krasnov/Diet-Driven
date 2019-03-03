@@ -73,9 +73,8 @@ class _$MealsSnapshotSerializer implements StructuredSerializer<MealsSnapshot> {
   Iterable serialize(Serializers serializers, MealsSnapshot object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'effectiveAsOf',
-      serializers.serialize(object.effectiveAsOf,
-          specifiedType: const FullType(int)),
+      '_id',
+      serializers.serialize(object.id, specifiedType: const FullType(String)),
       'modifiedAt',
       serializers.serialize(object.modifiedAt,
           specifiedType: const FullType(DateTime)),
@@ -84,12 +83,6 @@ class _$MealsSnapshotSerializer implements StructuredSerializer<MealsSnapshot> {
           specifiedType:
               const FullType(BuiltList, const [const FullType(MealInfo)])),
     ];
-    if (object.id != null) {
-      result
-        ..add('_id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(String)));
-    }
 
     return result;
   }
@@ -109,18 +102,14 @@ class _$MealsSnapshotSerializer implements StructuredSerializer<MealsSnapshot> {
           result.id = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
-        case 'effectiveAsOf':
-          result.effectiveAsOf = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
-          break;
         case 'modifiedAt':
           result.modifiedAt = serializers.deserialize(value,
               specifiedType: const FullType(DateTime)) as DateTime;
           break;
         case 'meals':
-          result.meals.replace(serializers.deserialize(value,
+          result.meals = serializers.deserialize(value,
               specifiedType: const FullType(
-                  BuiltList, const [const FullType(MealInfo)])) as BuiltList);
+                  BuiltList, const [const FullType(MealInfo)])) as BuiltList;
           break;
       }
     }
@@ -237,19 +226,16 @@ class _$MealsSnapshot extends MealsSnapshot {
   @override
   final String id;
   @override
-  final int effectiveAsOf;
-  @override
   final DateTime modifiedAt;
   @override
   final BuiltList<MealInfo> meals;
 
   factory _$MealsSnapshot([void updates(MealsSnapshotBuilder b)]) =>
-      (new MealsSnapshotBuilder()..update(updates)).build();
+      (new MealsSnapshotBuilder()..update(updates)).build() as _$MealsSnapshot;
 
-  _$MealsSnapshot._({this.id, this.effectiveAsOf, this.modifiedAt, this.meals})
-      : super._() {
-    if (effectiveAsOf == null) {
-      throw new BuiltValueNullFieldError('MealsSnapshot', 'effectiveAsOf');
+  _$MealsSnapshot._({this.id, this.modifiedAt, this.meals}) : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('MealsSnapshot', 'id');
     }
     if (modifiedAt == null) {
       throw new BuiltValueNullFieldError('MealsSnapshot', 'modifiedAt');
@@ -264,63 +250,78 @@ class _$MealsSnapshot extends MealsSnapshot {
       (toBuilder()..update(updates)).build();
 
   @override
-  MealsSnapshotBuilder toBuilder() => new MealsSnapshotBuilder()..replace(this);
+  _$MealsSnapshotBuilder toBuilder() =>
+      new _$MealsSnapshotBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is MealsSnapshot &&
-        effectiveAsOf == other.effectiveAsOf &&
         modifiedAt == other.modifiedAt &&
         meals == other.meals;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, effectiveAsOf.hashCode), modifiedAt.hashCode),
-        meals.hashCode));
+    return $jf($jc($jc(0, modifiedAt.hashCode), meals.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('MealsSnapshot')
           ..add('id', id)
-          ..add('effectiveAsOf', effectiveAsOf)
           ..add('modifiedAt', modifiedAt)
           ..add('meals', meals))
         .toString();
   }
 }
 
-class MealsSnapshotBuilder
-    implements Builder<MealsSnapshot, MealsSnapshotBuilder> {
+class _$MealsSnapshotBuilder extends MealsSnapshotBuilder {
   _$MealsSnapshot _$v;
 
-  String _id;
-  String get id => _$this._id;
-  set id(String id) => _$this._id = id;
+  @override
+  String get id {
+    _$this;
+    return super.id;
+  }
 
-  int _effectiveAsOf;
-  int get effectiveAsOf => _$this._effectiveAsOf;
-  set effectiveAsOf(int effectiveAsOf) => _$this._effectiveAsOf = effectiveAsOf;
+  @override
+  set id(String id) {
+    _$this;
+    super.id = id;
+  }
 
-  DateTime _modifiedAt;
-  DateTime get modifiedAt => _$this._modifiedAt;
-  set modifiedAt(DateTime modifiedAt) => _$this._modifiedAt = modifiedAt;
+  @override
+  DateTime get modifiedAt {
+    _$this;
+    return super.modifiedAt;
+  }
 
-  ListBuilder<MealInfo> _meals;
-  ListBuilder<MealInfo> get meals =>
-      _$this._meals ??= new ListBuilder<MealInfo>();
-  set meals(ListBuilder<MealInfo> meals) => _$this._meals = meals;
+  @override
+  set modifiedAt(DateTime modifiedAt) {
+    _$this;
+    super.modifiedAt = modifiedAt;
+  }
 
-  MealsSnapshotBuilder();
+  @override
+  BuiltList<MealInfo> get meals {
+    _$this;
+    return super.meals;
+  }
+
+  @override
+  set meals(BuiltList<MealInfo> meals) {
+    _$this;
+    super.meals = meals;
+  }
+
+  _$MealsSnapshotBuilder() : super._();
 
   MealsSnapshotBuilder get _$this {
     if (_$v != null) {
-      _id = _$v.id;
-      _effectiveAsOf = _$v.effectiveAsOf;
-      _modifiedAt = _$v.modifiedAt;
-      _meals = _$v.meals?.toBuilder();
+      super.id = _$v.id;
+      super.modifiedAt = _$v.modifiedAt;
+      super.meals = _$v.meals;
       _$v = null;
     }
     return this;
@@ -341,25 +342,8 @@ class MealsSnapshotBuilder
 
   @override
   _$MealsSnapshot build() {
-    _$MealsSnapshot _$result;
-    try {
-      _$result = _$v ??
-          new _$MealsSnapshot._(
-              id: id,
-              effectiveAsOf: effectiveAsOf,
-              modifiedAt: modifiedAt,
-              meals: meals.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'meals';
-        meals.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'MealsSnapshot', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ??
+        new _$MealsSnapshot._(id: id, modifiedAt: modifiedAt, meals: meals);
     replace(_$result);
     return _$result;
   }

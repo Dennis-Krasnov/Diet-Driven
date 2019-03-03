@@ -2,7 +2,7 @@ library firestore_actions;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/models/navigation_state.dart';
 import 'package:diet_driven/util/built_firestore.dart';
 part 'firestore_actions.g.dart';
@@ -11,20 +11,21 @@ part 'firestore_actions.g.dart';
 abstract class FirestoreActions extends ReduxActions {
   // DIARY
 
-  // optional userId, doesn't require foodRecordId
-  ActionDispatcher<FSDynamicTuple<FoodRecord>> saveFoodRecord;
+  // optional userId (can't do due to custom ids)
+//  ActionDispatcher<FSDynamicTuple<FoodDiaryDay>> saveFoodDiaryDay;
 
   // optional userId
-  ActionDispatcher<FSTuple<FoodRecord>> updateFoodRecord;
+//  ActionDispatcher<FSTuple<FoodDiaryDay>> updateFoodDiaryDay;
+  ActionDispatcher<FoodDiaryDay> updateFoodDiaryDay;
 
   // optional userId
-  ActionDispatcher<FoodRecordDocument> deleteFoodRecord;
+  ActionDispatcher<FoodDiaryDay> deleteFoodDiaryDay;
 
   //
-  ActionDispatcher<FoodRecord> diaryRecordReceived;
+//  ActionDispatcher<FoodRecord> diaryRecordReceived; // FIXME
 
   //
-  ActionDispatcher<BuiltList<FoodRecord>> diaryReceived;
+  ActionDispatcher<BuiltList<FoodDiaryDay>> foodDiaryReceived;
 
   // SETTINGS TODO: listen to entire collection!
   // optional userId, doesn't require foodRecordId

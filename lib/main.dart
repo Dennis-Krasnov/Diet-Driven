@@ -68,7 +68,7 @@ class _DDAppState extends State<DDApp> {
     super.initState();
 
     // Configure logger
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.FINE;
     Logger.root.onRecord.listen((LogRecord rec) {
       print("${rec.loggerName} ~ ${rec.level.name} ~ ${rec.time} ~ ${rec.message}");
     });

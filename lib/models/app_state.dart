@@ -2,7 +2,7 @@ library app_state;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/models/navigation_state.dart';
 import 'package:diet_driven/models/user_state.dart';
@@ -31,7 +31,7 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   bool get settingsLoaded;
 
   //
-  BuiltList<FoodRecord> get diaryRecords;
+  BuiltList<FoodDiaryDay> get foodDiaryDays;
 
   //
   BuiltList<MealsSnapshot> get mealsSnapshots;
@@ -59,37 +59,9 @@ abstract class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
 
   bool settingsLoaded = false;
 
-  ListBuilder<FoodRecord> diaryRecords;
+  ListBuilder<FoodDiaryDay> foodDiaryDays = ListBuilder([]);
 
-  // Fallback for firestore-persisted mealsSnapshots
-  ListBuilder<MealsSnapshot> mealsSnapshots = new ListBuilder([
-    MealsSnapshot((b) => b
-      ..effectiveAsOf = 0
-      ..modifiedAt = DateTime.fromMillisecondsSinceEpoch(0).toUtc()
-      ..meals = ListBuilder([
-        MealInfo((b) => b
-          ..mealIndex = 0
-          ..name = "Breakfast"
-          ..startsAt = Duration(hours: 6)
-        ),
-        MealInfo((b) => b
-          ..mealIndex = 1
-          ..name = "Lunch"
-          ..startsAt = Duration(hours: 9)
-        ),
-        MealInfo((b) => b
-          ..mealIndex = 2
-          ..name = "Dinner"
-          ..startsAt = Duration(hours: 15)
-        ),
-        MealInfo((b) => b
-          ..mealIndex = 3
-          ..name = "Snacks"
-          ..startsAt = Duration(hours: 18)
-        ),
-      ])
-    )
-  ]);
+  ListBuilder<MealsSnapshot> mealsSnapshots = ListBuilder([MealsSnapshot()]);
 
   int currentDaysSinceEpoch = daysSinceEpoch(DateTime.now().toLocal());
 

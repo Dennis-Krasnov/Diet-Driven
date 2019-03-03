@@ -1,12 +1,69 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of food_record;
+part of food;
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<FoodDiaryDay> _$foodDiaryDaySerializer =
+    new _$FoodDiaryDaySerializer();
 Serializer<FoodRecord> _$foodRecordSerializer = new _$FoodRecordSerializer();
+
+class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
+  @override
+  final Iterable<Type> types = const [FoodDiaryDay, _$FoodDiaryDay];
+  @override
+  final String wireName = 'FoodDiaryDay';
+
+  @override
+  Iterable serialize(Serializers serializers, FoodDiaryDay object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      '_id',
+      serializers.serialize(object.id, specifiedType: const FullType(String)),
+      'appertainingMealsSnapshotId',
+      serializers.serialize(object.appertainingMealsSnapshotId,
+          specifiedType: const FullType(String)),
+      'foodRecords',
+      serializers.serialize(object.foodRecords,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(FoodRecord)])),
+    ];
+
+    return result;
+  }
+
+  @override
+  FoodDiaryDay deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new FoodDiaryDayBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case '_id':
+          result.id = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'appertainingMealsSnapshotId':
+          result.appertainingMealsSnapshotId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'foodRecords':
+          result.foodRecords = serializers.deserialize(value,
+              specifiedType: const FullType(
+                  BuiltList, const [const FullType(FoodRecord)])) as BuiltList;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
 
 class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
   @override
@@ -28,28 +85,10 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       serializers.serialize(object.grams,
           specifiedType: const FullType(double)),
     ];
-    if (object.id != null) {
-      result
-        ..add('_id')
-        ..add(serializers.serialize(object.id,
-            specifiedType: const FullType(String)));
-    }
     if (object.edamamId != null) {
       result
         ..add('edamamId')
         ..add(serializers.serialize(object.edamamId,
-            specifiedType: const FullType(String)));
-    }
-    if (object.daysSinceEpoch != null) {
-      result
-        ..add('daysSinceEpoch')
-        ..add(serializers.serialize(object.daysSinceEpoch,
-            specifiedType: const FullType(int)));
-    }
-    if (object.mealSnapshotId != null) {
-      result
-        ..add('mealSnapshotId')
-        ..add(serializers.serialize(object.mealSnapshotId,
             specifiedType: const FullType(String)));
     }
     if (object.mealIndex != null) {
@@ -91,20 +130,8 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case '_id':
-          result.id = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
-          break;
         case 'edamamId':
           result.edamamId = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
-          break;
-        case 'daysSinceEpoch':
-          result.daysSinceEpoch = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
-          break;
-        case 'mealSnapshotId':
-          result.mealSnapshotId = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'mealIndex':
@@ -142,15 +169,145 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
   }
 }
 
+class _$FoodDiaryDay extends FoodDiaryDay {
+  @override
+  final String id;
+  @override
+  final String appertainingMealsSnapshotId;
+  @override
+  final BuiltList<FoodRecord> foodRecords;
+
+  factory _$FoodDiaryDay([void updates(FoodDiaryDayBuilder b)]) =>
+      (new FoodDiaryDayBuilder()..update(updates)).build() as _$FoodDiaryDay;
+
+  _$FoodDiaryDay._(
+      {this.id, this.appertainingMealsSnapshotId, this.foodRecords})
+      : super._() {
+    if (id == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryDay', 'id');
+    }
+    if (appertainingMealsSnapshotId == null) {
+      throw new BuiltValueNullFieldError(
+          'FoodDiaryDay', 'appertainingMealsSnapshotId');
+    }
+    if (foodRecords == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryDay', 'foodRecords');
+    }
+  }
+
+  @override
+  FoodDiaryDay rebuild(void updates(FoodDiaryDayBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  _$FoodDiaryDayBuilder toBuilder() =>
+      new _$FoodDiaryDayBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is FoodDiaryDay &&
+        appertainingMealsSnapshotId == other.appertainingMealsSnapshotId &&
+        foodRecords == other.foodRecords;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(
+        $jc(0, appertainingMealsSnapshotId.hashCode), foodRecords.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('FoodDiaryDay')
+          ..add('id', id)
+          ..add('appertainingMealsSnapshotId', appertainingMealsSnapshotId)
+          ..add('foodRecords', foodRecords))
+        .toString();
+  }
+}
+
+class _$FoodDiaryDayBuilder extends FoodDiaryDayBuilder {
+  _$FoodDiaryDay _$v;
+
+  @override
+  String get id {
+    _$this;
+    return super.id;
+  }
+
+  @override
+  set id(String id) {
+    _$this;
+    super.id = id;
+  }
+
+  @override
+  String get appertainingMealsSnapshotId {
+    _$this;
+    return super.appertainingMealsSnapshotId;
+  }
+
+  @override
+  set appertainingMealsSnapshotId(String appertainingMealsSnapshotId) {
+    _$this;
+    super.appertainingMealsSnapshotId = appertainingMealsSnapshotId;
+  }
+
+  @override
+  BuiltList<FoodRecord> get foodRecords {
+    _$this;
+    return super.foodRecords;
+  }
+
+  @override
+  set foodRecords(BuiltList<FoodRecord> foodRecords) {
+    _$this;
+    super.foodRecords = foodRecords;
+  }
+
+  _$FoodDiaryDayBuilder() : super._();
+
+  FoodDiaryDayBuilder get _$this {
+    if (_$v != null) {
+      super.id = _$v.id;
+      super.appertainingMealsSnapshotId = _$v.appertainingMealsSnapshotId;
+      super.foodRecords = _$v.foodRecords;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(FoodDiaryDay other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$FoodDiaryDay;
+  }
+
+  @override
+  void update(void updates(FoodDiaryDayBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$FoodDiaryDay build() {
+    final _$result = _$v ??
+        new _$FoodDiaryDay._(
+            id: id,
+            appertainingMealsSnapshotId: appertainingMealsSnapshotId,
+            foodRecords: foodRecords);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$FoodRecord extends FoodRecord {
   @override
   final String id;
   @override
   final String edamamId;
-  @override
-  final int daysSinceEpoch;
-  @override
-  final String mealSnapshotId;
   @override
   final int mealIndex;
   @override
@@ -172,8 +329,6 @@ class _$FoodRecord extends FoodRecord {
   _$FoodRecord._(
       {this.id,
       this.edamamId,
-      this.daysSinceEpoch,
-      this.mealSnapshotId,
       this.mealIndex,
       this.timestamp,
       this.foodName,
@@ -204,9 +359,8 @@ class _$FoodRecord extends FoodRecord {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is FoodRecord &&
+        id == other.id &&
         edamamId == other.edamamId &&
-        daysSinceEpoch == other.daysSinceEpoch &&
-        mealSnapshotId == other.mealSnapshotId &&
         mealIndex == other.mealIndex &&
         timestamp == other.timestamp &&
         foodName == other.foodName &&
@@ -224,11 +378,7 @@ class _$FoodRecord extends FoodRecord {
                 $jc(
                     $jc(
                         $jc(
-                            $jc(
-                                $jc(
-                                    $jc($jc(0, edamamId.hashCode),
-                                        daysSinceEpoch.hashCode),
-                                    mealSnapshotId.hashCode),
+                            $jc($jc($jc(0, id.hashCode), edamamId.hashCode),
                                 mealIndex.hashCode),
                             timestamp.hashCode),
                         foodName.hashCode),
@@ -243,8 +393,6 @@ class _$FoodRecord extends FoodRecord {
     return (newBuiltValueToStringHelper('FoodRecord')
           ..add('id', id)
           ..add('edamamId', edamamId)
-          ..add('daysSinceEpoch', daysSinceEpoch)
-          ..add('mealSnapshotId', mealSnapshotId)
           ..add('mealIndex', mealIndex)
           ..add('timestamp', timestamp)
           ..add('foodName', foodName)
@@ -266,16 +414,6 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   String _edamamId;
   String get edamamId => _$this._edamamId;
   set edamamId(String edamamId) => _$this._edamamId = edamamId;
-
-  int _daysSinceEpoch;
-  int get daysSinceEpoch => _$this._daysSinceEpoch;
-  set daysSinceEpoch(int daysSinceEpoch) =>
-      _$this._daysSinceEpoch = daysSinceEpoch;
-
-  String _mealSnapshotId;
-  String get mealSnapshotId => _$this._mealSnapshotId;
-  set mealSnapshotId(String mealSnapshotId) =>
-      _$this._mealSnapshotId = mealSnapshotId;
 
   int _mealIndex;
   int get mealIndex => _$this._mealIndex;
@@ -311,8 +449,6 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
     if (_$v != null) {
       _id = _$v.id;
       _edamamId = _$v.edamamId;
-      _daysSinceEpoch = _$v.daysSinceEpoch;
-      _mealSnapshotId = _$v.mealSnapshotId;
       _mealIndex = _$v.mealIndex;
       _timestamp = _$v.timestamp;
       _foodName = _$v.foodName;
@@ -344,8 +480,6 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
         new _$FoodRecord._(
             id: id,
             edamamId: edamamId,
-            daysSinceEpoch: daysSinceEpoch,
-            mealSnapshotId: mealSnapshotId,
             mealIndex: mealIndex,
             timestamp: timestamp,
             foodName: foodName,
@@ -358,79 +492,82 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   }
 }
 
-class _$FoodRecordDocument extends FoodRecordDocument {
+class _$FoodDiaryDayDocument extends FoodDiaryDayDocument {
   @override
   final String userId;
   @override
-  final String foodRecordId;
+  final String daysSinceEpoch;
   @override
   final StreamSubscription streamSubscription;
 
-  factory _$FoodRecordDocument([void updates(FoodRecordDocumentBuilder b)]) =>
-      (new FoodRecordDocumentBuilder()..update(updates)).build();
+  factory _$FoodDiaryDayDocument(
+          [void updates(FoodDiaryDayDocumentBuilder b)]) =>
+      (new FoodDiaryDayDocumentBuilder()..update(updates)).build();
 
-  _$FoodRecordDocument._(
-      {this.userId, this.foodRecordId, this.streamSubscription})
+  _$FoodDiaryDayDocument._(
+      {this.userId, this.daysSinceEpoch, this.streamSubscription})
       : super._() {
-    if (foodRecordId == null) {
-      throw new BuiltValueNullFieldError('FoodRecordDocument', 'foodRecordId');
+    if (daysSinceEpoch == null) {
+      throw new BuiltValueNullFieldError(
+          'FoodDiaryDayDocument', 'daysSinceEpoch');
     }
   }
 
   @override
-  FoodRecordDocument rebuild(void updates(FoodRecordDocumentBuilder b)) =>
+  FoodDiaryDayDocument rebuild(void updates(FoodDiaryDayDocumentBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  FoodRecordDocumentBuilder toBuilder() =>
-      new FoodRecordDocumentBuilder()..replace(this);
+  FoodDiaryDayDocumentBuilder toBuilder() =>
+      new FoodDiaryDayDocumentBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodRecordDocument &&
+    return other is FoodDiaryDayDocument &&
         userId == other.userId &&
-        foodRecordId == other.foodRecordId;
+        daysSinceEpoch == other.daysSinceEpoch;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, userId.hashCode), foodRecordId.hashCode));
+    return $jf($jc($jc(0, userId.hashCode), daysSinceEpoch.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('FoodRecordDocument')
+    return (newBuiltValueToStringHelper('FoodDiaryDayDocument')
           ..add('userId', userId)
-          ..add('foodRecordId', foodRecordId)
+          ..add('daysSinceEpoch', daysSinceEpoch)
           ..add('streamSubscription', streamSubscription))
         .toString();
   }
 }
 
-class FoodRecordDocumentBuilder
-    implements Builder<FoodRecordDocument, FoodRecordDocumentBuilder> {
-  _$FoodRecordDocument _$v;
+class FoodDiaryDayDocumentBuilder
+    implements Builder<FoodDiaryDayDocument, FoodDiaryDayDocumentBuilder> {
+  _$FoodDiaryDayDocument _$v;
 
   String _userId;
   String get userId => _$this._userId;
   set userId(String userId) => _$this._userId = userId;
 
-  String _foodRecordId;
-  String get foodRecordId => _$this._foodRecordId;
-  set foodRecordId(String foodRecordId) => _$this._foodRecordId = foodRecordId;
+  String _daysSinceEpoch;
+  String get daysSinceEpoch => _$this._daysSinceEpoch;
+  set daysSinceEpoch(String daysSinceEpoch) =>
+      _$this._daysSinceEpoch = daysSinceEpoch;
 
   StreamSubscription _streamSubscription;
   StreamSubscription get streamSubscription => _$this._streamSubscription;
   set streamSubscription(StreamSubscription streamSubscription) =>
       _$this._streamSubscription = streamSubscription;
 
-  FoodRecordDocumentBuilder();
+  FoodDiaryDayDocumentBuilder();
 
-  FoodRecordDocumentBuilder get _$this {
+  FoodDiaryDayDocumentBuilder get _$this {
     if (_$v != null) {
       _userId = _$v.userId;
-      _foodRecordId = _$v.foodRecordId;
+      _daysSinceEpoch = _$v.daysSinceEpoch;
       _streamSubscription = _$v.streamSubscription;
       _$v = null;
     }
@@ -438,24 +575,24 @@ class FoodRecordDocumentBuilder
   }
 
   @override
-  void replace(FoodRecordDocument other) {
+  void replace(FoodDiaryDayDocument other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$FoodRecordDocument;
+    _$v = other as _$FoodDiaryDayDocument;
   }
 
   @override
-  void update(void updates(FoodRecordDocumentBuilder b)) {
+  void update(void updates(FoodDiaryDayDocumentBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$FoodRecordDocument build() {
+  _$FoodDiaryDayDocument build() {
     final _$result = _$v ??
-        new _$FoodRecordDocument._(
+        new _$FoodDiaryDayDocument._(
             userId: userId,
-            foodRecordId: foodRecordId,
+            daysSinceEpoch: daysSinceEpoch,
             streamSubscription: streamSubscription);
     replace(_$result);
     return _$result;

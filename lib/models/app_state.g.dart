@@ -14,7 +14,7 @@ class _$AppState extends AppState {
   @override
   final bool settingsLoaded;
   @override
-  final BuiltList<FoodRecord> diaryRecords;
+  final BuiltList<FoodDiaryDay> foodDiaryDays;
   @override
   final BuiltList<MealsSnapshot> mealsSnapshots;
   @override
@@ -27,7 +27,7 @@ class _$AppState extends AppState {
       {this.user,
       this.navigation,
       this.settingsLoaded,
-      this.diaryRecords,
+      this.foodDiaryDays,
       this.mealsSnapshots,
       this.currentDaysSinceEpoch})
       : super._() {
@@ -40,8 +40,8 @@ class _$AppState extends AppState {
     if (settingsLoaded == null) {
       throw new BuiltValueNullFieldError('AppState', 'settingsLoaded');
     }
-    if (diaryRecords == null) {
-      throw new BuiltValueNullFieldError('AppState', 'diaryRecords');
+    if (foodDiaryDays == null) {
+      throw new BuiltValueNullFieldError('AppState', 'foodDiaryDays');
     }
     if (mealsSnapshots == null) {
       throw new BuiltValueNullFieldError('AppState', 'mealsSnapshots');
@@ -65,7 +65,7 @@ class _$AppState extends AppState {
         user == other.user &&
         navigation == other.navigation &&
         settingsLoaded == other.settingsLoaded &&
-        diaryRecords == other.diaryRecords &&
+        foodDiaryDays == other.foodDiaryDays &&
         mealsSnapshots == other.mealsSnapshots &&
         currentDaysSinceEpoch == other.currentDaysSinceEpoch;
   }
@@ -77,7 +77,7 @@ class _$AppState extends AppState {
             $jc(
                 $jc($jc($jc(0, user.hashCode), navigation.hashCode),
                     settingsLoaded.hashCode),
-                diaryRecords.hashCode),
+                foodDiaryDays.hashCode),
             mealsSnapshots.hashCode),
         currentDaysSinceEpoch.hashCode));
   }
@@ -88,7 +88,7 @@ class _$AppState extends AppState {
           ..add('user', user)
           ..add('navigation', navigation)
           ..add('settingsLoaded', settingsLoaded)
-          ..add('diaryRecords', diaryRecords)
+          ..add('foodDiaryDays', foodDiaryDays)
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('currentDaysSinceEpoch', currentDaysSinceEpoch))
         .toString();
@@ -135,15 +135,15 @@ class _$AppStateBuilder extends AppStateBuilder {
   }
 
   @override
-  ListBuilder<FoodRecord> get diaryRecords {
+  ListBuilder<FoodDiaryDay> get foodDiaryDays {
     _$this;
-    return super.diaryRecords ??= new ListBuilder<FoodRecord>();
+    return super.foodDiaryDays ??= new ListBuilder<FoodDiaryDay>();
   }
 
   @override
-  set diaryRecords(ListBuilder<FoodRecord> diaryRecords) {
+  set foodDiaryDays(ListBuilder<FoodDiaryDay> foodDiaryDays) {
     _$this;
-    super.diaryRecords = diaryRecords;
+    super.foodDiaryDays = foodDiaryDays;
   }
 
   @override
@@ -177,7 +177,7 @@ class _$AppStateBuilder extends AppStateBuilder {
       super.user = _$v.user?.toBuilder();
       super.navigation = _$v.navigation?.toBuilder();
       super.settingsLoaded = _$v.settingsLoaded;
-      super.diaryRecords = _$v.diaryRecords?.toBuilder();
+      super.foodDiaryDays = _$v.foodDiaryDays?.toBuilder();
       super.mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
       super.currentDaysSinceEpoch = _$v.currentDaysSinceEpoch;
       _$v = null;
@@ -207,7 +207,7 @@ class _$AppStateBuilder extends AppStateBuilder {
               user: user.build(),
               navigation: navigation.build(),
               settingsLoaded: settingsLoaded,
-              diaryRecords: diaryRecords.build(),
+              foodDiaryDays: foodDiaryDays.build(),
               mealsSnapshots: mealsSnapshots.build(),
               currentDaysSinceEpoch: currentDaysSinceEpoch);
     } catch (_) {
@@ -218,8 +218,8 @@ class _$AppStateBuilder extends AppStateBuilder {
         _$failedField = 'navigation';
         navigation.build();
 
-        _$failedField = 'diaryRecords';
-        diaryRecords.build();
+        _$failedField = 'foodDiaryDays';
+        foodDiaryDays.build();
         _$failedField = 'mealsSnapshots';
         mealsSnapshots.build();
       } catch (e) {

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/models/navigation_state.dart';
 import 'package:diet_driven/util/built_firestore.dart';
 import 'package:flutter/material.dart';
