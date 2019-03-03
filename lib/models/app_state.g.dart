@@ -14,6 +14,8 @@ class _$AppState extends AppState {
   @override
   final bool settingsLoaded;
   @override
+  final bool remoteConfigLoaded;
+  @override
   final BuiltList<FoodDiaryDay> foodDiaryDays;
   @override
   final BuiltList<MealsSnapshot> mealsSnapshots;
@@ -27,6 +29,7 @@ class _$AppState extends AppState {
       {this.user,
       this.navigation,
       this.settingsLoaded,
+      this.remoteConfigLoaded,
       this.foodDiaryDays,
       this.mealsSnapshots,
       this.currentDaysSinceEpoch})
@@ -39,6 +42,9 @@ class _$AppState extends AppState {
     }
     if (settingsLoaded == null) {
       throw new BuiltValueNullFieldError('AppState', 'settingsLoaded');
+    }
+    if (remoteConfigLoaded == null) {
+      throw new BuiltValueNullFieldError('AppState', 'remoteConfigLoaded');
     }
     if (foodDiaryDays == null) {
       throw new BuiltValueNullFieldError('AppState', 'foodDiaryDays');
@@ -65,6 +71,7 @@ class _$AppState extends AppState {
         user == other.user &&
         navigation == other.navigation &&
         settingsLoaded == other.settingsLoaded &&
+        remoteConfigLoaded == other.remoteConfigLoaded &&
         foodDiaryDays == other.foodDiaryDays &&
         mealsSnapshots == other.mealsSnapshots &&
         currentDaysSinceEpoch == other.currentDaysSinceEpoch;
@@ -75,8 +82,10 @@ class _$AppState extends AppState {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, user.hashCode), navigation.hashCode),
-                    settingsLoaded.hashCode),
+                $jc(
+                    $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+                        settingsLoaded.hashCode),
+                    remoteConfigLoaded.hashCode),
                 foodDiaryDays.hashCode),
             mealsSnapshots.hashCode),
         currentDaysSinceEpoch.hashCode));
@@ -88,6 +97,7 @@ class _$AppState extends AppState {
           ..add('user', user)
           ..add('navigation', navigation)
           ..add('settingsLoaded', settingsLoaded)
+          ..add('remoteConfigLoaded', remoteConfigLoaded)
           ..add('foodDiaryDays', foodDiaryDays)
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('currentDaysSinceEpoch', currentDaysSinceEpoch))
@@ -135,6 +145,18 @@ class _$AppStateBuilder extends AppStateBuilder {
   }
 
   @override
+  bool get remoteConfigLoaded {
+    _$this;
+    return super.remoteConfigLoaded;
+  }
+
+  @override
+  set remoteConfigLoaded(bool remoteConfigLoaded) {
+    _$this;
+    super.remoteConfigLoaded = remoteConfigLoaded;
+  }
+
+  @override
   ListBuilder<FoodDiaryDay> get foodDiaryDays {
     _$this;
     return super.foodDiaryDays ??= new ListBuilder<FoodDiaryDay>();
@@ -177,6 +199,7 @@ class _$AppStateBuilder extends AppStateBuilder {
       super.user = _$v.user?.toBuilder();
       super.navigation = _$v.navigation?.toBuilder();
       super.settingsLoaded = _$v.settingsLoaded;
+      super.remoteConfigLoaded = _$v.remoteConfigLoaded;
       super.foodDiaryDays = _$v.foodDiaryDays?.toBuilder();
       super.mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
       super.currentDaysSinceEpoch = _$v.currentDaysSinceEpoch;
@@ -207,6 +230,7 @@ class _$AppStateBuilder extends AppStateBuilder {
               user: user.build(),
               navigation: navigation.build(),
               settingsLoaded: settingsLoaded,
+              remoteConfigLoaded: remoteConfigLoaded,
               foodDiaryDays: foodDiaryDays.build(),
               mealsSnapshots: mealsSnapshots.build(),
               currentDaysSinceEpoch: currentDaysSinceEpoch);
@@ -233,4 +257,4 @@ class _$AppStateBuilder extends AppStateBuilder {
   }
 }
 
-// ignore_for_file: always_put_control_body_on_new_line,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

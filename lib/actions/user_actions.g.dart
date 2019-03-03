@@ -13,8 +13,6 @@ class _$UserActions extends UserActions {
   factory _$UserActions() => new _$UserActions._();
   _$UserActions._() : super._();
 
-  final ActionDispatcher<FirebaseUser> anonymousUserLoaded =
-      new ActionDispatcher<FirebaseUser>('UserActions-anonymousUserLoaded');
   final ActionDispatcher<dynamic> anonymousUserFail =
       new ActionDispatcher<dynamic>('UserActions-anonymousUserFail');
   final ActionDispatcher<FirebaseUser> authStateChanged =
@@ -24,7 +22,6 @@ class _$UserActions extends UserActions {
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
-    anonymousUserLoaded.setDispatcher(dispatcher);
     anonymousUserFail.setDispatcher(dispatcher);
     authStateChanged.setDispatcher(dispatcher);
     logout.setDispatcher(dispatcher);
@@ -32,8 +29,6 @@ class _$UserActions extends UserActions {
 }
 
 class UserActionsNames {
-  static final ActionName<FirebaseUser> anonymousUserLoaded =
-      new ActionName<FirebaseUser>('UserActions-anonymousUserLoaded');
   static final ActionName<dynamic> anonymousUserFail =
       new ActionName<dynamic>('UserActions-anonymousUserFail');
   static final ActionName<FirebaseUser> authStateChanged =

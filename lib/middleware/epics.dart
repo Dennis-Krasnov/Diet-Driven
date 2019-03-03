@@ -1,5 +1,4 @@
 import 'package:built_redux/built_redux.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/main.dart';
@@ -8,6 +7,7 @@ import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/pages/page_factory.dart';
 import 'package:diet_driven/util/built_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
@@ -18,23 +18,35 @@ final Logger log = new Logger("EPICS");
 /// EPICS RUN AFTER REDUCERS
 Iterable<Epic<AppState, AppStateBuilder, Actions>> createEpicBuilder() => (
   new EpicBuilder<AppState, AppStateBuilder, Actions>()
+    ..add(ActionsNames.populateWithDefaultSettings, populateWithDefaultSettingsEpic)
     ..add(NavigationActionsNames.goTo, goToEpic)
+    ..add(UserActionsNames.logout, logoutEpic)
 
     // DIARY
     ..add(FirestoreActionsNames.updateFoodDiaryDay, updateFoodDiaryDayEpic)
 //    ..add(FirestoreActionsNames.saveFoodDiaryDay, saveFoodToDiaryEpic) // FIXME
     ..add(FirestoreActionsNames.deleteFoodDiaryDay, deleteFoodDiaryDayEpic)
 
-
-    ..add(ActionsNames.populateWithDefaultSettings, populateWithDefaultSettingsEpic)
-
-
     // SETTINGS
     ..add(FirestoreActionsNames.updateNavigationState, updateNavigationSettingsEpic)
 
 ).build();
 
-// Navigates to proper screen on state change
+
+///
+Observable<void> populateWithDefaultSettingsEpic(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+  log.info("populating with default settings.");
+
+  NavigationState navigationState = NavigationState();
+
+  NavigationStateDocument((b) => b
+    ..userId = action.payload ?? api.state.user.authUser.uid
+  ).update(navigationState);
+
+  log.fine("populated with default settings: $navigationState.");
+});
+
+/// Navigates to proper screen on state change
 Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
   log.info("going to ${action.payload}");
   if (api.state.navigation.bottomNavigation.contains(action.payload)) {
@@ -51,8 +63,26 @@ Observable<void> goToEpic(Observable<Action<Page>> stream, MiddlewareApi<AppStat
   //  manage nested navigators
 });
 
-// TODO: USE TRANSACTIONS
+///
+Observable<void> logoutEpic(Observable<Action> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
+  FirebaseUser user = api.state.user.authUser;
+  log.info("logging out ${user?.uid}");
 
+  if (user != null) {
+    if (user.isAnonymous) {
+      // TODO: delete all firestore data!
+      user.delete();
+      log.info("deleted anonymous account");
+    } else {
+      FirebaseAuth.instance.signOut();
+      log.info("signed out");
+    }
+  }
+  // TODO: go to sign in page!
+});
+
+// TODO: USE TRANSACTIONS
+///
 Observable<void> updateFoodDiaryDayEpic(Observable<Action<FoodDiaryDay>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
   log.info("Updating food diary day.");
 
@@ -74,6 +104,7 @@ Observable<void> updateFoodDiaryDayEpic(Observable<Action<FoodDiaryDay>> stream,
   log.fine("updated food diary day  ${action.payload.id}.");
 });
 
+///
 Observable<void> deleteFoodDiaryDayEpic(Observable<Action<FoodDiaryDay>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) {
   log.info("Deleting food diary day.");
 
@@ -89,32 +120,7 @@ Observable<void> deleteFoodDiaryDayEpic(Observable<Action<FoodDiaryDay>> stream,
   log.fine("deleted food diary day  ${action.payload.id}.");
 });
 
-//Observable<void> saveFoodToDiaryEpic(Observable<Action<FSDynamicTuple<FoodRecord>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
-//  log.info("Saving new food record.");
-//
-//  FoodDiaryCollection fdc = action.payload.fs as FoodDiaryCollection;
-//
-//  // Add userId if it's missing
-//  fdc = fdc.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
-//
-//  DocumentReference dr = await fdc.add(action.payload.data);
-//
-//  log.fine("saved food record ${dr.documentID}.");
-//});
-//
-//Observable<void> deleteFoodRecordEpic(Observable<Action<FoodRecordDocument>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
-//  log.info("Deleting food record.");
-//
-//  FoodRecordDocument frd = action.payload;
-//
-//  // Add userId if it's missing
-//  frd = frd.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
-//
-//  frd.delete();
-//
-//  log.fine("deleted food record ${action.payload.foodRecordId}.");
-//});
-
+///
 Observable<void> updateNavigationSettingsEpic(Observable<Action<FSTuple<NavigationState>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
   log.info("Saving new navigation settings.");
 
@@ -126,16 +132,4 @@ Observable<void> updateNavigationSettingsEpic(Observable<Action<FSTuple<Navigati
   nsd.update(action.payload.data);
 
   log.fine("saved navigation settings: ${action.payload.data}.");
-});
-
-Observable<void> populateWithDefaultSettingsEpic(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
-  log.info("populating with default settings.");
-
-  NavigationState navigationState = NavigationState();
-
-  NavigationStateDocument((b) => b
-    ..userId = action.payload ?? api.state.user.authUser.uid
-  ).update(navigationState);
-
-  log.fine("populated with default settings: $navigationState.");
 });

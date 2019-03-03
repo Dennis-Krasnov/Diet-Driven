@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/util/subscriptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 
 import 'package:flutter/material.dart' hide Builder;
 import 'package:logging/logging.dart';
@@ -45,27 +44,49 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
         api.actions.populateWithDefaultSettings(authUser.uid);
       }
 
-      // Saving authUser to store
-      api.actions.user.anonymousUserLoaded(authUser);
+      // Saving authUser to store (not needed with authStateChanged listener)
+//      api.actions.user.anonymousUserLoaded(authUser);
     }
 
     //
-    auth.onAuthStateChanged.listen((FirebaseUser fbUser) => api.actions.user.authStateChanged(fbUser));
+    subs.authSubscription = auth.onAuthStateChanged.listen((FirebaseUser fbUser) => api.actions.user.authStateChanged(fbUser));
 
+    // Call remote config when launching app
+    RemoteConfig config = await RemoteConfig.instance;
+
+    // TODO: add default params to remoteConfig
+
+    // Enable developer mode to relax fetch throttling
+    await config.setConfigSettings(RemoteConfigSettings(debugMode: true));
+
+    try {
+      await config.fetch(expiration: const Duration(seconds: 0)); // FIXME
+      await config.activateFetched();
+      api.actions.firestore.remoteConfigReceived(config);
+
+    } on FetchThrottledException catch (exception) {
+      log.shout('Fetch throttled!');
+      log.shout(exception);
+      api.actions.firestore.remoteConfigReceived(null);
+    } catch (exception) {
+      log.shout('Unable to fetch remote config. Cached or default values will be used');
+      log.shout(exception);
+      api.actions.firestore.remoteConfigReceived(null);
+    }
+
+    // TODO: use cloud functions to mark every app as 'stale', re-fetch config settings
+
+    //
     subs.startNavigationSubscription(
       api.actions.firestore.navigationSettingsReceived,
       print,
       NavigationStateDocument((b) => b..userId = api.state.user.authUser.uid)
     );
 
-//    DDApp.analytics.logLogin().then(() => print("SUCCESS"));
-    // Firebase analytics user (anonymous)
+    // Firebase analytics user (anonymous) // TODO: move to authUserReceived!
     await DDApp.analytics.setUserId(api.state.user.authUser.uid);
     await DDApp.analytics.setUserProperty(name: "auth_type", value: "anonymous");
-    // TODO: load user preferences, call DDApp.analytics.setAnalyticsCollectionEnabled(enabled) before all else
-
-    // Go to default page
-//    api.actions.navigation.goTo(destination); // FIXME
+    // TODO: load user preferences first, call DDApp.analytics.setAnalyticsCollectionEnabled(enabled) // settingsReceived
 
     next(action);
   };
@@ -73,6 +94,13 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> disposeApp(FirebaseAuth auth, Subscriptions subs) {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
+    //
+    subs.authSubscription.cancel();
+
+    //
+    await RemoteConfig.instance..dispose();
+
+    //
     subs.stopNavigationSubscription();
 
     next(action);
@@ -99,7 +127,7 @@ void authStateChanged(MiddlewareApi<AppState, AppStateBuilder, Actions> api, Act
   log.info("auth state changed middlware: ${action.payload}");
   log.info("by this time settings loaded is ${api.state.settingsLoaded}");
 
-  bool existsBefore = api.state.user.authUser == null;
+  bool existsBefore = api.state.user.authUser != null;
   bool anonymousBefore;
   String emailBefore;
   if (existsBefore) {
@@ -109,6 +137,7 @@ void authStateChanged(MiddlewareApi<AppState, AppStateBuilder, Actions> api, Act
 
   next(action);
 
+  bool existsAfter = api.state.user.authUser != null; // TODO: use this in subsequent logic
   bool anonymousAfter = api.state.user.authUser.isAnonymous;
   String emailAfter = api.state.user.authUser.email;
 

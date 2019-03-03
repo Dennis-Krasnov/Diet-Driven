@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/models/navigation_state.dart';
 import 'package:diet_driven/util/built_firestore.dart';

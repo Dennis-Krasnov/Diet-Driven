@@ -31,6 +31,9 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   bool get settingsLoaded;
 
   //
+  bool get remoteConfigLoaded;
+
+  //
   BuiltList<FoodDiaryDay> get foodDiaryDays;
 
   //
@@ -58,6 +61,8 @@ abstract class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   NavigationStateBuilder navigation;
 
   bool settingsLoaded = false;
+
+  bool remoteConfigLoaded = false;
 
   ListBuilder<FoodDiaryDay> foodDiaryDays = ListBuilder([]);
 

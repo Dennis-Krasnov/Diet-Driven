@@ -3,9 +3,7 @@ library main;
 import 'package:diet_driven/pages/page_factory.dart';
 import 'package:diet_driven/util/subscriptions.dart';
 import 'package:diet_driven/widgets/home_screen.dart';
-import 'package:diet_driven/wrappers/remote_config.dart';
-import 'package:diet_driven/wrappers/subscriber.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:diet_driven/wrappers/theme_config_loader.dart';
 import 'package:logging/logging.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/middleware/epics.dart';
@@ -34,16 +32,13 @@ class DDApp extends StatefulWidget {
 //  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   //
-  static RemoteConfig remoteConfig = RemoteConfig();
-
-  //
   static Subscriptions subscriptions = Subscriptions();
 
   // Map routes to pages
   static Map<String, WidgetBuilder> routes = Map<String, WidgetBuilder>.fromIterable(
-      Page.values,
-      key: (page) => page.toString(),
-      value: (page) => (context) => PageFactory.toPage(page)
+    Page.values,
+    key: (page) => page.toString(),
+    value: (page) => (context) => PageFactory.toPage(page)
   )..addAll({
     "/": (context) => HomeScreen()
   });
@@ -58,7 +53,7 @@ class _DDAppState extends State<DDApp> {
     new AppState(),
     new Actions(),
     middleware: [
-      createMiddleware(FirebaseAuth.instance, DDApp.subscriptions), // TODO: pass remoteConfig?!, subscriptions!?
+      createMiddleware(FirebaseAuth.instance, DDApp.subscriptions),
       createEpicMiddleware(createEpicBuilder()),
     ],
   );
@@ -72,7 +67,7 @@ class _DDAppState extends State<DDApp> {
     Logger.root.onRecord.listen((LogRecord rec) {
       print("${rec.loggerName} ~ ${rec.level.name} ~ ${rec.time} ~ ${rec.message}");
     });
-    // TODO: upload to google cloud stack driver??
+    // TODO: upload logging to google cloud stack driver??
     store.actions.initApp();
   }
 
@@ -88,40 +83,16 @@ class _DDAppState extends State<DDApp> {
   Widget build(BuildContext context) {
      return new ReduxProvider(
       store: store,
-        child: RemoteConfigLoader(builder: (BuildContext context) {
+        child: ThemeConfigLoader(builder: (BuildContext context, String theme) {
           return MaterialApp(
             navigatorKey: DDApp.navigatorKey,
             title: "Diet Driven",
-            theme: ThemeData(fontFamily: 'FiraSans'), // TODO: store.state.theme,
+            theme: ThemeData(fontFamily: theme),
             routes: DDApp.routes,
             initialRoute: "/",
   //          onUnknownRoute: (settings) => settings.name, // TODO
           );
-//        });
       }),
     );
   }
 }
-
-
-
-//    var navigationSettings = Subscription(
-//      store.actions.firestore.navigationSettingsReceived,
-//      print,
-////      NavigationStateDocument() // implicit userId
-//      NavigationStateDocument((b) => b
-//        ..userId = store.state.user.authUser?.uid // If exists (doesn't at start)
-//      )
-//    );
-
-// GOAL: avoid 2 loading animations, combine into one!
-//
-// Settings listen (through callback) => settingsArrived => reducer changes page (non-breaking - falls back to default)
-
-// TODO: manual subscription call! , autoSubscribe: false, call init first, get userId, then retrieve default page, navigation, then go to default page!!
-
-// Subscriber must go before RemoteConfigLoader as it depends on subscription to arrive (doesn't matter, it's subscribed from init!)
-// TODO: store subscriptions on a static object instead of toying with props!!! (hard define, just built value, no redux)
-// or just place subscriptions object into store (dirty but probably easiest!!!) - contains hardcoded subscriptions!! (later support for dynamic)
-// only use subscriber for simple and unique subscriptions within app
-//      child: Subscriber(hashCode, [navigationSettings], autoSubscribe: store.state.loadSettings, builder: (BuildContext context) {
