@@ -8,19 +8,31 @@ part of settings_page;
 
 class _$SettingsPageVM extends SettingsPageVM {
   @override
-  final BuiltList<Page> pages;
+  final String userId;
   @override
-  final Page defaultPage;
+  final int daysSinceEpoch;
+  @override
+  final DateTime date;
+  @override
+  final NavigationState navState;
 
   factory _$SettingsPageVM([void updates(SettingsPageVMBuilder b)]) =>
       (new SettingsPageVMBuilder()..update(updates)).build();
 
-  _$SettingsPageVM._({this.pages, this.defaultPage}) : super._() {
-    if (pages == null) {
-      throw new BuiltValueNullFieldError('SettingsPageVM', 'pages');
+  _$SettingsPageVM._(
+      {this.userId, this.daysSinceEpoch, this.date, this.navState})
+      : super._() {
+    if (userId == null) {
+      throw new BuiltValueNullFieldError('SettingsPageVM', 'userId');
     }
-    if (defaultPage == null) {
-      throw new BuiltValueNullFieldError('SettingsPageVM', 'defaultPage');
+    if (daysSinceEpoch == null) {
+      throw new BuiltValueNullFieldError('SettingsPageVM', 'daysSinceEpoch');
+    }
+    if (date == null) {
+      throw new BuiltValueNullFieldError('SettingsPageVM', 'date');
+    }
+    if (navState == null) {
+      throw new BuiltValueNullFieldError('SettingsPageVM', 'navState');
     }
   }
 
@@ -36,20 +48,27 @@ class _$SettingsPageVM extends SettingsPageVM {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is SettingsPageVM &&
-        pages == other.pages &&
-        defaultPage == other.defaultPage;
+        userId == other.userId &&
+        daysSinceEpoch == other.daysSinceEpoch &&
+        date == other.date &&
+        navState == other.navState;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, pages.hashCode), defaultPage.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, userId.hashCode), daysSinceEpoch.hashCode),
+            date.hashCode),
+        navState.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('SettingsPageVM')
-          ..add('pages', pages)
-          ..add('defaultPage', defaultPage))
+          ..add('userId', userId)
+          ..add('daysSinceEpoch', daysSinceEpoch)
+          ..add('date', date)
+          ..add('navState', navState))
         .toString();
   }
 }
@@ -58,20 +77,32 @@ class SettingsPageVMBuilder
     implements Builder<SettingsPageVM, SettingsPageVMBuilder> {
   _$SettingsPageVM _$v;
 
-  ListBuilder<Page> _pages;
-  ListBuilder<Page> get pages => _$this._pages ??= new ListBuilder<Page>();
-  set pages(ListBuilder<Page> pages) => _$this._pages = pages;
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
 
-  Page _defaultPage;
-  Page get defaultPage => _$this._defaultPage;
-  set defaultPage(Page defaultPage) => _$this._defaultPage = defaultPage;
+  int _daysSinceEpoch;
+  int get daysSinceEpoch => _$this._daysSinceEpoch;
+  set daysSinceEpoch(int daysSinceEpoch) =>
+      _$this._daysSinceEpoch = daysSinceEpoch;
+
+  DateTime _date;
+  DateTime get date => _$this._date;
+  set date(DateTime date) => _$this._date = date;
+
+  NavigationStateBuilder _navState;
+  NavigationStateBuilder get navState =>
+      _$this._navState ??= new NavigationStateBuilder();
+  set navState(NavigationStateBuilder navState) => _$this._navState = navState;
 
   SettingsPageVMBuilder();
 
   SettingsPageVMBuilder get _$this {
     if (_$v != null) {
-      _pages = _$v.pages?.toBuilder();
-      _defaultPage = _$v.defaultPage;
+      _userId = _$v.userId;
+      _daysSinceEpoch = _$v.daysSinceEpoch;
+      _date = _$v.date;
+      _navState = _$v.navState?.toBuilder();
       _$v = null;
     }
     return this;
@@ -96,12 +127,15 @@ class SettingsPageVMBuilder
     try {
       _$result = _$v ??
           new _$SettingsPageVM._(
-              pages: pages.build(), defaultPage: defaultPage);
+              userId: userId,
+              daysSinceEpoch: daysSinceEpoch,
+              date: date,
+              navState: navState.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'pages';
-        pages.build();
+        _$failedField = 'navState';
+        navState.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'SettingsPageVM', _$failedField, e.toString());

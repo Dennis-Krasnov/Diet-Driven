@@ -60,7 +60,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
         )
       ).rebuild((b) => b
         // Updating food record
-        ..foodRecords = BuiltList.from(b.foodRecords.map((fr) => fr == old ? updated : fr))
+        ..foodRecords = BuiltList.from(b.foodRecords.map((fr) => fr.id == old.id ? updated : fr))
       );
 
       actions.firestore.updateFoodDiaryDay(updatedFoodDiaryDay);
@@ -74,7 +74,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
         )
       ).rebuild((b) => b
         // Deleting food record
-        ..foodRecords = BuiltList.from(b.foodRecords.where((fr) => fr != toDelete))
+        ..foodRecords = BuiltList.from(b.foodRecords.where((fr) => fr.id != toDelete.id))
       );
 
       actions.firestore.updateFoodDiaryDay(updatedFoodDiaryDay);

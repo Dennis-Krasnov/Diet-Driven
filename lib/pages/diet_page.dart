@@ -37,19 +37,6 @@ class DietPage extends StoreConnector<AppState, Actions, DietPageVM> {
       ),
       body: Container(),
        // TODO: meal logic (modifying last snapshot, do duplicates in day)
-      floatingActionButton: FloatingActionButton.extended(
-        icon: Icon(Icons.save),
-        label: Text("save navigation settings"),
-        onPressed: () {
-          var temp = FSTuple<NavigationState>(
-            NavigationStateDocument((b) => b
-              ..userId = vm.userId
-            ),
-            vm.navState
-          );
-          actions.firestore.updateNavigationState(temp);
-        }
-      ),
     );
   }
 }

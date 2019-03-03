@@ -359,7 +359,6 @@ class _$FoodRecord extends FoodRecord {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is FoodRecord &&
-        id == other.id &&
         edamamId == other.edamamId &&
         mealIndex == other.mealIndex &&
         timestamp == other.timestamp &&
@@ -377,9 +376,7 @@ class _$FoodRecord extends FoodRecord {
             $jc(
                 $jc(
                     $jc(
-                        $jc(
-                            $jc($jc($jc(0, id.hashCode), edamamId.hashCode),
-                                mealIndex.hashCode),
+                        $jc($jc($jc(0, edamamId.hashCode), mealIndex.hashCode),
                             timestamp.hashCode),
                         foodName.hashCode),
                     manufacturer.hashCode),
