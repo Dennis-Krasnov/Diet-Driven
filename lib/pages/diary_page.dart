@@ -10,7 +10,7 @@ import 'package:diet_driven/widgets/meal.dart';
 import 'package:diet_driven/wrappers/drawer_nav_button.dart';
 import 'package:diet_driven/wrappers/subscriber.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/data/uncertainty.dart';
@@ -38,20 +38,50 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
   @override
   DiaryPageVM connect(AppState state) {
     return DiaryPageVM((b) => b
-      ..diaryRecords = state.diaryRecords.toBuilder()
+      ..foodDiaryDays = state.foodDiaryDays.toBuilder()
       ..mealsSnapshots = state.mealsSnapshots.toBuilder()
       ..userId = state.user.authUser.uid
       ..daysSinceEpoch = state.currentDaysSinceEpoch
       ..date = state.currentDate()
-      ..pc = new PageController(initialPage: state.currentDaysSinceEpoch)
+      ..pc = new PageController(initialPage: state.currentDaysSinceEpoch) // keepPage ??
     );
   }
 
   @override
   Widget build(BuildContext context, DiaryPageVM vm, Actions actions) {
 
+    // Must define as functions otherwise they're called in-place
+
+    void updateFoodRecord(FoodRecord old, FoodRecord updated) {
+      FoodDiaryDay updatedFoodDiaryDay = vm.foodDiaryDays.singleWhere(
+        (day) => day.daysSinceEpoch == vm.daysSinceEpoch,
+        orElse: () => FoodDiaryDay((b) => b
+          ..id = vm.daysSinceEpoch.toString()
+        )
+      ).rebuild((b) => b
+        // Updating food record
+        ..foodRecords = BuiltList.from(b.foodRecords.map((fr) => fr == old ? updated : fr))
+      );
+
+      actions.firestore.updateFoodDiaryDay(updatedFoodDiaryDay);
+    }
+
+    void deleteFoodRecord(FoodRecord toDelete) {
+      FoodDiaryDay updatedFoodDiaryDay = vm.foodDiaryDays.singleWhere(
+        (day) => day.daysSinceEpoch == vm.daysSinceEpoch,
+        orElse: () => FoodDiaryDay((b) => b
+          ..id = vm.daysSinceEpoch.toString()
+        )
+      ).rebuild((b) => b
+        // Deleting food record
+        ..foodRecords = BuiltList.from(b.foodRecords.where((fr) => fr != toDelete))
+      );
+
+      actions.firestore.updateFoodDiaryDay(updatedFoodDiaryDay);
+    }
+
     var diarySubscription = Subscription(
-      actions.firestore.diaryReceived,
+      actions.firestore.foodDiaryReceived,
       log.shout,
       FoodDiaryCollection((b) => b
         ..userId = vm.userId
@@ -59,9 +89,9 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
     );
 
     // TODO: subscribe to list of FS instead!!!
-    var meals = new MealSnapshotCollection((b) => b
-      ..userId = vm.userId
-    );
+//    var meals = new MealSnapshotCollection((b) => b
+//      ..userId = vm.userId
+//    );
 
     // TODO: subscribe (call recordDoc.subscribe(hash) from middleware!!)
 
@@ -114,12 +144,9 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
             ),
             IconButton(
               icon: Icon(Icons.delete),
-              // TODO: do as transaction/batch!!! (by deleting all at once saves n factorial reads)
-              onPressed: () => vm.diaryRecords.forEach((fr) =>
-                actions.firestore.deleteFoodRecord(
-                  FoodRecordDocument((b) => b..foodRecordId = fr.id)
-                )
-              ),
+              onPressed: () => actions.firestore.deleteFoodDiaryDay(FoodDiaryDay((b) => b
+                ..id = vm.daysSinceEpoch.toString()
+              ))
             )
           ],
         ),
@@ -127,14 +154,21 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
         body: PageView.builder(
           controller: vm.pc,
           itemBuilder: (BuildContext context, int index) {
-            // Don't show anything more than 1 day off FIXME
-//            if ((daysSinceEpoch(vm.date) - index).abs() > 1) {
-//              return Container();
-//            }
 
-//            MealSnapshot mealSnapshot = vm.mealSnapshots.where((ms) => index <= ms.effectiveAsOf).first;
-            MealsSnapshot mealSnapshot = vm.mealsSnapshots.last;
-            BuiltList<FoodRecord> todaysFoodRecords = BuiltList.from(vm.diaryRecords.where((fr) => fr.daysSinceEpoch == index));
+            //
+            FoodDiaryDay ithFoodDiaryDay = vm.foodDiaryDays.singleWhere(
+              (day) => day.daysSinceEpoch == index,
+              orElse: () => FoodDiaryDay() // empty day... (defaults to 0th day, no items, 0th mealSnapshot!)
+              // TODO: display foodDiary with 'log here' empty meals instead!
+            );
+
+            // use to see if abs(i - current day) <= 1 check is needed
+            log.fine("$index'th day: $ithFoodDiaryDay}");
+
+            log.finer("day's mealsSnashotId: ${ithFoodDiaryDay.appertainingMealsSnapshotId}");
+            log.finer("mealsSnapshots: ${vm.mealsSnapshots}");
+            MealsSnapshot mealSnapshot = vm.mealsSnapshots.singleWhere((ms) => ms.id == ithFoodDiaryDay.appertainingMealsSnapshotId);
+            log.finer("current snapshot: $mealSnapshot");
 
             return Container(
               child: ListView(
@@ -153,7 +187,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
                     ),
                   ),
                   Text(
-                    "${todaysFoodRecords.length} entries",
+                    "${ithFoodDiaryDay.foodRecords.length} entries",
                     style: TextStyle(
                       fontFamily: "SourceSansPro",
                     ),
@@ -161,10 +195,16 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
                   Column(
                     children: mealSnapshot.meals.map((meal) {
                       BuiltList<FoodRecord> mealDiaryRecords = BuiltList.from(
-                        todaysFoodRecords.where((fr) => fr.mealIndex == meal.mealIndex).toList()
+                        ithFoodDiaryDay.foodRecords.where((fr) => fr.mealIndex == meal.mealIndex).toList()
                       );
 
-                      return Meal(meal, mealDiaryRecords, actions);
+                      return Meal(
+                        vm.daysSinceEpoch,
+                        meal,
+                        mealDiaryRecords,
+                        updateFoodRecord,
+                        deleteFoodRecord
+                      );
                     }).toList()
                   ),
                 ]
@@ -180,16 +220,25 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
           child: Icon(Icons.add),
 //          heroTag: "ANIMATE_FAB", // FIXME: only works for navigation events...
           onPressed: () {
-            FoodRecord fr = new FoodRecord((b) => b
-              ..daysSinceEpoch = vm.daysSinceEpoch
-              ..mealIndex = 2 // TODO: choose correct meal based on today's mealsSnapshot's meal's start time
-              ..foodName = randomFood()
-              ..grams = new Random().nextInt(100).toDouble()
-              ..uncertainty = Uncertainty.accurate
-              ..timestamp = DateTime.now().toUtc()
+            FoodDiaryDay newFoodDiaryDay = vm.foodDiaryDays.singleWhere(
+              (day) => day.daysSinceEpoch == vm.daysSinceEpoch,
+              orElse: () => FoodDiaryDay((b) => b
+                ..id = vm.daysSinceEpoch.toString()
+              )
+            ).rebuild((b) => b
+              // Adding food record to today
+              ..foodRecords = b.foodRecords.rebuild((b) => b
+                ..add(FoodRecord((b) => b
+                  ..mealIndex = 2 // TODO: choose correct meal based on today's mealsSnapshot's meal's start time
+                  ..foodName = randomFood()
+                  ..grams = new Random().nextInt(100).toDouble()
+                  ..uncertainty = Uncertainty.accurate
+                  ..timestamp = DateTime.now().toUtc()
+                ))
+              )
             );
 
-            actions.firestore.saveFoodRecord(FSDynamicTuple(FoodDiaryCollection(), fr));
+            actions.firestore.updateFoodDiaryDay(newFoodDiaryDay);
           }
         ),
       );
@@ -198,7 +247,7 @@ class DiaryPage extends StoreConnector<AppState, Actions, DiaryPageVM> {
 }
 
 abstract class DiaryPageVM implements Built<DiaryPageVM, DiaryPageVMBuilder> {
-  BuiltList<FoodRecord> get diaryRecords;
+  BuiltList<FoodDiaryDay> get foodDiaryDays;
   BuiltList<MealsSnapshot> get mealsSnapshots;
   String get userId;
   int get daysSinceEpoch;

@@ -39,6 +39,10 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
       // Firebase user not persisted
       if (authUser == null) {
         authUser = await auth.signInAnonymously().catchError((e) => api.actions.user.anonymousUserFail(e));
+
+        // Populate user with default firebase user
+        // Otherwise settings received never happens and forever stuck in loading screen
+        api.actions.populateWithDefaultSettings(authUser.uid);
       }
 
       // Saving authUser to store

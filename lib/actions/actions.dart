@@ -5,7 +5,7 @@ import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/firestore_actions.dart';
 import 'package:diet_driven/actions/navigation_actions.dart';
 import 'package:diet_driven/actions/user_actions.dart';
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 
 export 'package:diet_driven/actions/user_actions.dart';
 export 'package:diet_driven/actions/navigation_actions.dart';
@@ -32,6 +32,9 @@ abstract class Actions extends ReduxActions {
 
   //
   ActionDispatcher disposeApp;
+
+  //
+  ActionDispatcher<String> populateWithDefaultSettings;
 
   // Relatively changes date
   ActionDispatcher<int> changeDaysSinceEpoch;

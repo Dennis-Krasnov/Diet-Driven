@@ -8,7 +8,7 @@ part of diary_page;
 
 class _$DiaryPageVM extends DiaryPageVM {
   @override
-  final BuiltList<FoodRecord> diaryRecords;
+  final BuiltList<FoodDiaryDay> foodDiaryDays;
   @override
   final BuiltList<MealsSnapshot> mealsSnapshots;
   @override
@@ -24,15 +24,15 @@ class _$DiaryPageVM extends DiaryPageVM {
       (new DiaryPageVMBuilder()..update(updates)).build();
 
   _$DiaryPageVM._(
-      {this.diaryRecords,
+      {this.foodDiaryDays,
       this.mealsSnapshots,
       this.userId,
       this.daysSinceEpoch,
       this.date,
       this.pc})
       : super._() {
-    if (diaryRecords == null) {
-      throw new BuiltValueNullFieldError('DiaryPageVM', 'diaryRecords');
+    if (foodDiaryDays == null) {
+      throw new BuiltValueNullFieldError('DiaryPageVM', 'foodDiaryDays');
     }
     if (mealsSnapshots == null) {
       throw new BuiltValueNullFieldError('DiaryPageVM', 'mealsSnapshots');
@@ -62,7 +62,7 @@ class _$DiaryPageVM extends DiaryPageVM {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is DiaryPageVM &&
-        diaryRecords == other.diaryRecords &&
+        foodDiaryDays == other.foodDiaryDays &&
         mealsSnapshots == other.mealsSnapshots &&
         userId == other.userId &&
         daysSinceEpoch == other.daysSinceEpoch &&
@@ -75,7 +75,9 @@ class _$DiaryPageVM extends DiaryPageVM {
     return $jf($jc(
         $jc(
             $jc(
-                $jc($jc($jc(0, diaryRecords.hashCode), mealsSnapshots.hashCode),
+                $jc(
+                    $jc($jc(0, foodDiaryDays.hashCode),
+                        mealsSnapshots.hashCode),
                     userId.hashCode),
                 daysSinceEpoch.hashCode),
             date.hashCode),
@@ -85,7 +87,7 @@ class _$DiaryPageVM extends DiaryPageVM {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('DiaryPageVM')
-          ..add('diaryRecords', diaryRecords)
+          ..add('foodDiaryDays', foodDiaryDays)
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('userId', userId)
           ..add('daysSinceEpoch', daysSinceEpoch)
@@ -98,11 +100,11 @@ class _$DiaryPageVM extends DiaryPageVM {
 class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
   _$DiaryPageVM _$v;
 
-  ListBuilder<FoodRecord> _diaryRecords;
-  ListBuilder<FoodRecord> get diaryRecords =>
-      _$this._diaryRecords ??= new ListBuilder<FoodRecord>();
-  set diaryRecords(ListBuilder<FoodRecord> diaryRecords) =>
-      _$this._diaryRecords = diaryRecords;
+  ListBuilder<FoodDiaryDay> _foodDiaryDays;
+  ListBuilder<FoodDiaryDay> get foodDiaryDays =>
+      _$this._foodDiaryDays ??= new ListBuilder<FoodDiaryDay>();
+  set foodDiaryDays(ListBuilder<FoodDiaryDay> foodDiaryDays) =>
+      _$this._foodDiaryDays = foodDiaryDays;
 
   ListBuilder<MealsSnapshot> _mealsSnapshots;
   ListBuilder<MealsSnapshot> get mealsSnapshots =>
@@ -131,7 +133,7 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
 
   DiaryPageVMBuilder get _$this {
     if (_$v != null) {
-      _diaryRecords = _$v.diaryRecords?.toBuilder();
+      _foodDiaryDays = _$v.foodDiaryDays?.toBuilder();
       _mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
       _userId = _$v.userId;
       _daysSinceEpoch = _$v.daysSinceEpoch;
@@ -161,7 +163,7 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
     try {
       _$result = _$v ??
           new _$DiaryPageVM._(
-              diaryRecords: diaryRecords.build(),
+              foodDiaryDays: foodDiaryDays.build(),
               mealsSnapshots: mealsSnapshots.build(),
               userId: userId,
               daysSinceEpoch: daysSinceEpoch,
@@ -170,8 +172,8 @@ class DiaryPageVMBuilder implements Builder<DiaryPageVM, DiaryPageVMBuilder> {
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'diaryRecords';
-        diaryRecords.build();
+        _$failedField = 'foodDiaryDays';
+        foodDiaryDays.build();
         _$failedField = 'mealsSnapshots';
         mealsSnapshots.build();
       } catch (e) {

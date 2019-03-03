@@ -4,7 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/pages/page_factory.dart';
@@ -37,8 +37,9 @@ class DietPage extends StoreConnector<AppState, Actions, DietPageVM> {
       ),
       body: Container(),
        // TODO: meal logic (modifying last snapshot, do duplicates in day)
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.adb),
+      floatingActionButton: FloatingActionButton.extended(
+        icon: Icon(Icons.save),
+        label: Text("save navigation settings"),
         onPressed: () {
           var temp = FSTuple<NavigationState>(
             NavigationStateDocument((b) => b

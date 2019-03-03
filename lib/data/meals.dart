@@ -33,13 +33,12 @@ abstract class MealsSnapshot implements Built<MealsSnapshot, MealsSnapshotBuilde
   static Serializer<MealsSnapshot> get serializer => _$mealsSnapshotSerializer;
 
   @BuiltValueField(serialize: true, compare: false, wireName: "_id")
-  @nullable
   String get id;
 
-  // Days since epoch, maximum one per day
-  int get effectiveAsOf;
+  // Derived from Firestore ID, in days since epoch
+  int get effectiveAsOf => int.parse(id);
 
-  // Sort by this, in UTC
+  // Iin UTC
   DateTime get modifiedAt;
 
   //
@@ -48,6 +47,42 @@ abstract class MealsSnapshot implements Built<MealsSnapshot, MealsSnapshotBuilde
   factory MealsSnapshot([updates(MealsSnapshotBuilder b)]) = _$MealsSnapshot;
 
   MealsSnapshot._();
+}
+
+// TODO: upload default values upon account creation (also with all settings, navigation)
+abstract class MealsSnapshotBuilder implements Builder<MealsSnapshot, MealsSnapshotBuilder> {
+  // Default mealsSnapshot
+  String id = "0";
+
+  // Default modified date
+  DateTime modifiedAt = DateTime.utc(0);
+
+  // Default meals
+  BuiltList<MealInfo> meals = BuiltList.from([
+    MealInfo((b) => b
+      ..mealIndex = 0
+      ..name = "Breakfast"
+      ..startsAt = Duration(hours: 6)
+    ),
+    MealInfo((b) => b
+      ..mealIndex = 1
+      ..name = "Lunch"
+      ..startsAt = Duration(hours: 9)
+    ),
+    MealInfo((b) => b
+      ..mealIndex = 2
+      ..name = "Dinner"
+      ..startsAt = Duration(hours: 15)
+    ),
+    MealInfo((b) => b
+      ..mealIndex = 3
+      ..name = "Snacks"
+      ..startsAt = Duration(hours: 18)
+    ),
+  ]);
+
+  factory MealsSnapshotBuilder() = _$MealsSnapshotBuilder;
+  MealsSnapshotBuilder._();
 }
 
 // idea: different meal schedules on different days (like calorie cycling) - use for this? - keep it simple

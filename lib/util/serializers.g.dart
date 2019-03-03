@@ -7,11 +7,15 @@ part of serializers;
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(FoodDiaryDay.serializer)
       ..add(FoodRecord.serializer)
       ..add(NavigationState.serializer)
       ..add(Page.serializer)
       ..add(SettingsState.serializer)
       ..add(Uncertainty.serializer)
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(FoodRecord)]),
+          () => new ListBuilder<FoodRecord>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(Page)]),
           () => new ListBuilder<Page>()))

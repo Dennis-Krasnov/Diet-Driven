@@ -4,7 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/reducers/navigation_reducers.dart';
 import 'package:diet_driven/reducers/user_reducers.dart';
 import 'package:logging/logging.dart';
@@ -27,9 +27,9 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
     ..add(ActionsNames.goToDaysSinceEpoch, goToDaysSinceEpoch)
 
     // DIARY // TODO: nest
-    ..combineList(new ListReducerBuilder((s) => s.diaryRecords, (b) => b.diaryRecords)
-      ..add(FirestoreActionsNames.diaryReceived, diaryReceived)
-      ..add(FirestoreActionsNames.diaryRecordReceived, diaryRecordReceived)
+    ..combineList(new ListReducerBuilder((s) => s.foodDiaryDays, (b) => b.foodDiaryDays)
+      ..add(FirestoreActionsNames.foodDiaryReceived, foodDiaryReceived)
+//      ..add(FirestoreActionsNames.diaryRecordReceived, diaryRecordReceived)
     )
 
     // DIETS // TODO: nest
@@ -63,6 +63,7 @@ void settingsReceived(AppState state, Action<NavigationState> action, AppStateBu
   );
 
   // First load into app
+  // TODO: call firebase analytics from middleware!
   if (state.navigation.activePage == null) {
     log.fine("going to default page ${action.payload.defaultPage}");
     builder.navigation.update((b) => b
@@ -74,12 +75,18 @@ void settingsReceived(AppState state, Action<NavigationState> action, AppStateBu
   log.fine("settingsLoaded is now true");
 }
 
-void diaryReceived(BuiltList<FoodRecord> listState, Action<BuiltList<FoodRecord>> action, ListBuilder<FoodRecord> listBuilder) {
-  log.fine("${action.payload.length} diary records received.");
-  listBuilder.clear();
-  listBuilder.addAll(action.payload);
+void foodDiaryReceived(BuiltList<FoodDiaryDay> listState, Action<BuiltList<FoodDiaryDay>> action, ListBuilder<FoodDiaryDay> listBuilder) {
+  log.fine("${action.payload.length} food diary days received with ${action.payload.fold(0, (prev, element) => prev + element.foodRecords.length)} food records in totoal.");
+  listBuilder.clear(); // TODO: instead keep map {daysSinceEpoch: FoodDiaryDay}, simply override the key, if looking at data past last month/year - simply do a fetch request! - populates only that day / days around it - diary page logic becomes much easier (no more singlewhere)
+  // Giving each food record an unique ID TODO: do through cloud function?
+  listBuilder.addAll(BuiltList.from(action.payload.map((day) => day.rebuild((b) => b
+    ..foodRecords = BuiltList.from(b.foodRecords.map((fr) => fr.rebuild((b) => b
+      ..id = "${day.id}-${day.foodRecords.indexOf(fr)}"
+    )))
+  ))));
 }
 
+// FIXME
 void diaryRecordReceived(BuiltList<FoodRecord> listState, Action<FoodRecord> action, ListBuilder<FoodRecord> listBuilder) {
   log.fine("diary record received: ${action.payload} (does nothing atm)");
   // TODO: store a 'current food record' in state, convert this to normal reducer

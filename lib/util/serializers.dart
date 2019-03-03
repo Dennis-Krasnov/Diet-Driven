@@ -4,7 +4,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/data/page.dart';
 import 'package:diet_driven/models/navigation_state.dart';
@@ -19,6 +19,7 @@ part 'serializers.g.dart';
   Uncertainty,
   NavigationState,
   Page,
+  FoodDiaryDay,
 //  MealInfo,
 //  MealsSnapshot,
   SettingsState
@@ -32,6 +33,10 @@ final Serializers standardSerializers = (serializers.toBuilder()
   ..addBuilderFactory(
     const FullType(BuiltList, const [const FullType(Page)]),
     () => new ListBuilder<Page>()
+  )
+  ..addBuilderFactory(
+    const FullType(BuiltList, const [const FullType(FoodRecord)]),
+    () => new ListBuilder<FoodRecord>()
   )
   ..addPlugin(new StandardJsonPlugin())
 ).build();

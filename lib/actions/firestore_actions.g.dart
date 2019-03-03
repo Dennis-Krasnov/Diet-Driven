@@ -13,20 +13,13 @@ class _$FirestoreActions extends FirestoreActions {
   factory _$FirestoreActions() => new _$FirestoreActions._();
   _$FirestoreActions._() : super._();
 
-  final ActionDispatcher<FSDynamicTuple<FoodRecord>> saveFoodRecord =
-      new ActionDispatcher<FSDynamicTuple<FoodRecord>>(
-          'FirestoreActions-saveFoodRecord');
-  final ActionDispatcher<FSTuple<FoodRecord>> updateFoodRecord =
-      new ActionDispatcher<FSTuple<FoodRecord>>(
-          'FirestoreActions-updateFoodRecord');
-  final ActionDispatcher<FoodRecordDocument> deleteFoodRecord =
-      new ActionDispatcher<FoodRecordDocument>(
-          'FirestoreActions-deleteFoodRecord');
-  final ActionDispatcher<FoodRecord> diaryRecordReceived =
-      new ActionDispatcher<FoodRecord>('FirestoreActions-diaryRecordReceived');
-  final ActionDispatcher<BuiltList<FoodRecord>> diaryReceived =
-      new ActionDispatcher<BuiltList<FoodRecord>>(
-          'FirestoreActions-diaryReceived');
+  final ActionDispatcher<FoodDiaryDay> updateFoodDiaryDay =
+      new ActionDispatcher<FoodDiaryDay>('FirestoreActions-updateFoodDiaryDay');
+  final ActionDispatcher<FoodDiaryDay> deleteFoodDiaryDay =
+      new ActionDispatcher<FoodDiaryDay>('FirestoreActions-deleteFoodDiaryDay');
+  final ActionDispatcher<BuiltList<FoodDiaryDay>> foodDiaryReceived =
+      new ActionDispatcher<BuiltList<FoodDiaryDay>>(
+          'FirestoreActions-foodDiaryReceived');
   final ActionDispatcher<FSTuple<NavigationState>> updateNavigationState =
       new ActionDispatcher<FSTuple<NavigationState>>(
           'FirestoreActions-updateNavigationState');
@@ -36,28 +29,22 @@ class _$FirestoreActions extends FirestoreActions {
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
-    saveFoodRecord.setDispatcher(dispatcher);
-    updateFoodRecord.setDispatcher(dispatcher);
-    deleteFoodRecord.setDispatcher(dispatcher);
-    diaryRecordReceived.setDispatcher(dispatcher);
-    diaryReceived.setDispatcher(dispatcher);
+    updateFoodDiaryDay.setDispatcher(dispatcher);
+    deleteFoodDiaryDay.setDispatcher(dispatcher);
+    foodDiaryReceived.setDispatcher(dispatcher);
     updateNavigationState.setDispatcher(dispatcher);
     navigationSettingsReceived.setDispatcher(dispatcher);
   }
 }
 
 class FirestoreActionsNames {
-  static final ActionName<FSDynamicTuple<FoodRecord>> saveFoodRecord =
-      new ActionName<FSDynamicTuple<FoodRecord>>(
-          'FirestoreActions-saveFoodRecord');
-  static final ActionName<FSTuple<FoodRecord>> updateFoodRecord =
-      new ActionName<FSTuple<FoodRecord>>('FirestoreActions-updateFoodRecord');
-  static final ActionName<FoodRecordDocument> deleteFoodRecord =
-      new ActionName<FoodRecordDocument>('FirestoreActions-deleteFoodRecord');
-  static final ActionName<FoodRecord> diaryRecordReceived =
-      new ActionName<FoodRecord>('FirestoreActions-diaryRecordReceived');
-  static final ActionName<BuiltList<FoodRecord>> diaryReceived =
-      new ActionName<BuiltList<FoodRecord>>('FirestoreActions-diaryReceived');
+  static final ActionName<FoodDiaryDay> updateFoodDiaryDay =
+      new ActionName<FoodDiaryDay>('FirestoreActions-updateFoodDiaryDay');
+  static final ActionName<FoodDiaryDay> deleteFoodDiaryDay =
+      new ActionName<FoodDiaryDay>('FirestoreActions-deleteFoodDiaryDay');
+  static final ActionName<BuiltList<FoodDiaryDay>> foodDiaryReceived =
+      new ActionName<BuiltList<FoodDiaryDay>>(
+          'FirestoreActions-foodDiaryReceived');
   static final ActionName<FSTuple<NavigationState>> updateNavigationState =
       new ActionName<FSTuple<NavigationState>>(
           'FirestoreActions-updateNavigationState');

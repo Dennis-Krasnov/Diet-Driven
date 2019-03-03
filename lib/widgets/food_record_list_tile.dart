@@ -1,4 +1,4 @@
-import 'package:diet_driven/data/food_record.dart';
+import 'package:diet_driven/data/food.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,11 +25,11 @@ class FoodRecordListTile extends StatelessWidget {
         children: <Widget>[
           IconButton(
             icon: Icon(Icons.arrow_upward),
-            onPressed: () => update(foodRecord.rebuild((b) => b..mealIndex -= 1))
+            onPressed: () => update(foodRecord, foodRecord.rebuild((b) => b..mealIndex -= 1))
           ),
           IconButton(
             icon: Icon(Icons.arrow_downward),
-            onPressed: () => update(foodRecord.rebuild((b) => b..mealIndex += 1))
+            onPressed: () => update(foodRecord, foodRecord.rebuild((b) => b..mealIndex += 1))
           ),
         ],
       ),
@@ -37,7 +37,7 @@ class FoodRecordListTile extends StatelessWidget {
         icon: Icon(Icons.delete),
         onPressed: () => delete(foodRecord) // FIXME: broken for some reason
       ),
-      onTap: () => update(foodRecord.rebuild((b) => b..foodName = randomFood())),
+      onTap: () => update(foodRecord, foodRecord.rebuild((b) => b..foodName = randomFood())),
     );
   }
 }
