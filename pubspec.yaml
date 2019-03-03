@@ -8,7 +8,7 @@ description: No compromises calorie counter
 # Both the version and the builder number may be overridden in flutter
 # build by specifying --build-name and --build-number, respectively.
 # Read more about versioning at semver.org.
-version: 1.0.2+4
+version: 1.0.2+5
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -22,12 +22,12 @@ dependencies:
   built_redux: ^7.5.2
   flutter_built_redux: ^0.6.0
 #  built_redux_rx: ^0.1.2
-  rxdart: ^0.20.0
+  rxdart: ^0.21.0
 
   ## Firebase
-  cloud_firestore: ^0.8.2+3
-  cloud_functions: ^0.0.5
-  firebase_auth: ^0.6.6
+  cloud_firestore: ^0.9.5+2
+  cloud_functions: ^0.1.1+1
+  firebase_auth: ^0.8.1+4
   firebase_remote_config: ^0.1.0+2
 
   logging: ^0.11.3+2
