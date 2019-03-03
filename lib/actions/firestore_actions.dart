@@ -5,6 +5,7 @@ import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/models/navigation_state.dart';
 import 'package:diet_driven/util/built_firestore.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 part 'firestore_actions.g.dart';
 
 ///
@@ -39,6 +40,9 @@ abstract class FirestoreActions extends ReduxActions {
 
   //
   ActionDispatcher<NavigationState> navigationSettingsReceived;
+
+  //
+  ActionDispatcher<RemoteConfig> remoteConfigReceived;
 
   //
 //  ActionDispatcher<BuiltList<FoodRecord>> diaryReceived;

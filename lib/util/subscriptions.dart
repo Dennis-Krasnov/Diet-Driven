@@ -1,10 +1,7 @@
 import 'dart:async';
 
-import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/models/navigation_state.dart';
-import 'package:diet_driven/util/built_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 /// Singleton
 class Subscriptions {
@@ -13,6 +10,9 @@ class Subscriptions {
   // TODO: single collection for all settings
 //  Subscription<NavigationState> _navigationSettings;
   NavigationStateDocument _navigationSettings;
+
+  // ignore: cancel_subscriptions
+  StreamSubscription<FirebaseUser> authSubscription;
 
   void startNavigationSubscription(Function onData, Function onError, NavigationStateDocument document) {
     document = document.rebuild((b) => b
@@ -27,7 +27,7 @@ class Subscriptions {
     _navigationSettings?.streamSubscription?.cancel();
   }
 
-  // Globally store 100 most recent records
+  // Globally store 100 most recent records, only use Subscriber for temporary syncing
 //  Subscription<FoodRecord> foodDiary;
 
   factory Subscriptions() {

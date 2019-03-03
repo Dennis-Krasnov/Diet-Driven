@@ -10,5 +10,3 @@ final Logger log = new Logger("FS_REDUCER");
 //  (new NestedReducerBuilder<AppState, AppStateBuilder, NavigationState, NavigationStateBuilder>((s) => s.navigation, (b) => b.navigation)
 //
 //  );
-
-// TODO: another normal reducer? or put firestore logic into its own subsection of state!

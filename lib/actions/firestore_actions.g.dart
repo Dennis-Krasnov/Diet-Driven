@@ -26,6 +26,9 @@ class _$FirestoreActions extends FirestoreActions {
   final ActionDispatcher<NavigationState> navigationSettingsReceived =
       new ActionDispatcher<NavigationState>(
           'FirestoreActions-navigationSettingsReceived');
+  final ActionDispatcher<RemoteConfig> remoteConfigReceived =
+      new ActionDispatcher<RemoteConfig>(
+          'FirestoreActions-remoteConfigReceived');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
@@ -34,6 +37,7 @@ class _$FirestoreActions extends FirestoreActions {
     foodDiaryReceived.setDispatcher(dispatcher);
     updateNavigationState.setDispatcher(dispatcher);
     navigationSettingsReceived.setDispatcher(dispatcher);
+    remoteConfigReceived.setDispatcher(dispatcher);
   }
 }
 
@@ -51,4 +55,6 @@ class FirestoreActionsNames {
   static final ActionName<NavigationState> navigationSettingsReceived =
       new ActionName<NavigationState>(
           'FirestoreActions-navigationSettingsReceived');
+  static final ActionName<RemoteConfig> remoteConfigReceived =
+      new ActionName<RemoteConfig>('FirestoreActions-remoteConfigReceived');
 }

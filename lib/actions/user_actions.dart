@@ -8,9 +8,6 @@ part 'user_actions.g.dart';
 ///
 abstract class UserActions extends ReduxActions {
   //
-  ActionDispatcher<FirebaseUser> anonymousUserLoaded;
-
-  //
   ActionDispatcher<dynamic> anonymousUserFail;
 
   //
