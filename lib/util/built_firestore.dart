@@ -60,7 +60,7 @@ abstract class FSDocument<T> implements FS<T> {
   @override
   CollectionReference get parentCollection {
     // strips documentID from path creating the collection
-    RegExp regex = new RegExp(r"((?:[^/]*/)*)(.*)");
+    RegExp regex = new RegExp(r"((?:[^/]*/)*)(.*)"); // TODO: rocRef.path.split("/") then take all but last in list
     return Firestore.instance.collection(regex.firstMatch(docRef.path).group(1));
   }
 

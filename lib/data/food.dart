@@ -49,8 +49,8 @@ abstract class FoodDiaryDayBuilder implements Builder<FoodDiaryDay, FoodDiaryDay
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
 
-  // Firestore ID (used only for comparisons rn)
-  @BuiltValueField(serialize: false, compare: true)//, wireName: "_id")
+  // Self-generated ID for explicit comparisons
+  @BuiltValueField(serialize: false, compare: false)//, wireName: "_id")
   @nullable
   String get id;
 
