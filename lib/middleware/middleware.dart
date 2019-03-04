@@ -54,7 +54,10 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
     // Call remote config when launching app
     RemoteConfig config = await RemoteConfig.instance;
 
-    // TODO: add default params to remoteConfig
+    // Default parameters
+    config.setDefaults(<String, dynamic>{
+      'bonus': 1,
+    });
 
     // Enable developer mode to relax fetch throttling
     await config.setConfigSettings(RemoteConfigSettings(debugMode: true));
