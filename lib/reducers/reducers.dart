@@ -20,8 +20,9 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
     ..combineNested(getNavigationReducer())
     ..combineNested(getUserReducer())
 
-    // Loading ...
-    ..add(FirestoreActionsNames.navigationSettingsReceived, settingsReceived)
+    // SETTINGS
+    ..add(FirestoreActionsNames.userDataReceived, userDataReceived)
+    ..add(FirestoreActionsNames.settingsReceived, settingsReceived)
     ..add(FirestoreActionsNames.remoteConfigReceived, remoteConfigReceived)
 
     // ...
@@ -52,24 +53,45 @@ void remoteConfigReceived(AppState state, Action<RemoteConfig> action, AppStateB
   log.fine("remoteConfigLoaded is now true");
 }
 
+
 ///
-void settingsReceived(AppState state, Action<NavigationState> action, AppStateBuilder builder) {
+void userDataReceived(AppState state, Action<UserState> action, AppStateBuilder builder) {
+  log.fine("user data received: ${action.payload}");
+  builder.user.update((b) => b
+    ..staleRemoteConfig = action.payload.staleRemoteConfig
+    ..currentSubscription = action.payload.currentSubscription
+  );
+}
+
+///
+void settingsReceived(AppState state, Action<BuiltList<SettingsDocument>> action, AppStateBuilder builder) {
   log.fine("setttings received: ${action.payload}");
 
-  // ...
-  builder.navigation.update((b) => b
-    ..bottomNavigation = action.payload.bottomNavigation
-    ..defaultPage = action.payload.defaultPage
-  );
+  for (var doc in action.payload) {
+    if (doc is NavigationState) {
+      NavigationState navState = doc;
 
-  // First load into app
-  // TODO: call firebase analytics from middleware!
-  if (state.navigation.activePage == null) {
-    log.fine("going to default page ${action.payload.defaultPage}");
-    builder.navigation.update((b) => b
-      ..bottomNavigationPage = action.payload.defaultPage
-      ..activePage = action.payload.defaultPage
-    );
+      // ...
+      builder.navigation.update((b) => b
+        ..bottomNavigation = navState.bottomNavigation
+        ..defaultPage = navState.defaultPage
+      );
+
+      // First load into app
+      // TODO: call firebase analytics from middleware!
+      if (state.navigation.activePage == null) {
+        log.fine("going to default page ${navState.defaultPage}");
+        builder.navigation.update((b) => b
+          ..bottomNavigationPage = navState.defaultPage
+          ..activePage = navState.defaultPage
+        );
+      }
+
+      log.fine("navigation settings loaded");
+    }
+    else {
+      log.shout("NOT RECOGNIZED SETTINGS TYPE: $doc");
+    }
   }
 
   builder.settingsLoaded = true;

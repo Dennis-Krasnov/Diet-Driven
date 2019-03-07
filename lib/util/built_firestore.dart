@@ -28,7 +28,7 @@ class FSDynamicTuple<T> {
   FSDynamicTuple(this.fs, this.data);
 }
 
-/////
+///
 @BuiltValue(instantiable: false)
 abstract class FS<T> {
   //
@@ -51,6 +51,9 @@ abstract class FSDocument<T> implements FS<T> {
   //
   DocumentReference get docRef;
 
+  /*
+
+   */
   @override
   Observable<T> get snapshotObservable => Observable<T>(Firestore.instance.document(docRef.path).snapshots().asyncMap((ds) =>
       standardSerializers.deserialize(ds.data..putIfAbsent("_id", () => ds.documentID))
@@ -88,6 +91,9 @@ abstract class FSCollection<T> implements FS<BuiltList<T>> { // extends Built<T,
 //    return FSCollection((b) => b..);
 //  }
 
+  /*
+
+   */
   @override
   Observable<BuiltList<T>> get snapshotObservable => Observable<BuiltList<T>>(Firestore.instance.collection(colRef.path).snapshots().asyncMap((ds) =>
       BuiltList<T>.from(ds.documents.map((doc) => standardSerializers.deserialize(doc.data..putIfAbsent("_id", () => doc.documentID))))

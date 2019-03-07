@@ -1,7 +1,7 @@
 library main;
 
 import 'package:diet_driven/pages/page_factory.dart';
-import 'package:diet_driven/util/subscriptions.dart';
+import 'package:diet_driven/util/data_subscriptions.dart';
 import 'package:diet_driven/widgets/home_screen.dart';
 import 'package:diet_driven/wrappers/theme_config_loader.dart';
 import 'package:logging/logging.dart';
@@ -32,7 +32,7 @@ class DDApp extends StatefulWidget {
 //  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
 
   //
-  static Subscriptions subscriptions = Subscriptions();
+  static DataSubscriptions subscriptions = DataSubscriptions();
 
   // Map routes to pages
   static Map<String, WidgetBuilder> routes = Map<String, WidgetBuilder>.fromIterable(

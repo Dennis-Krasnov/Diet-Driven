@@ -20,24 +20,27 @@ class _$FirestoreActions extends FirestoreActions {
   final ActionDispatcher<BuiltList<FoodDiaryDay>> foodDiaryReceived =
       new ActionDispatcher<BuiltList<FoodDiaryDay>>(
           'FirestoreActions-foodDiaryReceived');
-  final ActionDispatcher<FSTuple<NavigationState>> updateNavigationState =
-      new ActionDispatcher<FSTuple<NavigationState>>(
-          'FirestoreActions-updateNavigationState');
-  final ActionDispatcher<NavigationState> navigationSettingsReceived =
-      new ActionDispatcher<NavigationState>(
-          'FirestoreActions-navigationSettingsReceived');
+  final ActionDispatcher<UserState> userDataReceived =
+      new ActionDispatcher<UserState>('FirestoreActions-userDataReceived');
   final ActionDispatcher<RemoteConfig> remoteConfigReceived =
       new ActionDispatcher<RemoteConfig>(
           'FirestoreActions-remoteConfigReceived');
+  final ActionDispatcher<BuiltList<SettingsDocument>> settingsReceived =
+      new ActionDispatcher<BuiltList<SettingsDocument>>(
+          'FirestoreActions-settingsReceived');
+  final ActionDispatcher<FSTuple<NavigationState>> updateNavigationState =
+      new ActionDispatcher<FSTuple<NavigationState>>(
+          'FirestoreActions-updateNavigationState');
 
   @override
   void setDispatcher(Dispatcher dispatcher) {
     updateFoodDiaryDay.setDispatcher(dispatcher);
     deleteFoodDiaryDay.setDispatcher(dispatcher);
     foodDiaryReceived.setDispatcher(dispatcher);
-    updateNavigationState.setDispatcher(dispatcher);
-    navigationSettingsReceived.setDispatcher(dispatcher);
+    userDataReceived.setDispatcher(dispatcher);
     remoteConfigReceived.setDispatcher(dispatcher);
+    settingsReceived.setDispatcher(dispatcher);
+    updateNavigationState.setDispatcher(dispatcher);
   }
 }
 
@@ -49,12 +52,14 @@ class FirestoreActionsNames {
   static final ActionName<BuiltList<FoodDiaryDay>> foodDiaryReceived =
       new ActionName<BuiltList<FoodDiaryDay>>(
           'FirestoreActions-foodDiaryReceived');
+  static final ActionName<UserState> userDataReceived =
+      new ActionName<UserState>('FirestoreActions-userDataReceived');
+  static final ActionName<RemoteConfig> remoteConfigReceived =
+      new ActionName<RemoteConfig>('FirestoreActions-remoteConfigReceived');
+  static final ActionName<BuiltList<SettingsDocument>> settingsReceived =
+      new ActionName<BuiltList<SettingsDocument>>(
+          'FirestoreActions-settingsReceived');
   static final ActionName<FSTuple<NavigationState>> updateNavigationState =
       new ActionName<FSTuple<NavigationState>>(
           'FirestoreActions-updateNavigationState');
-  static final ActionName<NavigationState> navigationSettingsReceived =
-      new ActionName<NavigationState>(
-          'FirestoreActions-navigationSettingsReceived');
-  static final ActionName<RemoteConfig> remoteConfigReceived =
-      new ActionName<RemoteConfig>('FirestoreActions-remoteConfigReceived');
 }

@@ -2,7 +2,7 @@ import 'package:built_redux/built_redux.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/main.dart';
 import 'package:diet_driven/models/app_state.dart';
-import 'package:diet_driven/util/subscriptions.dart';
+import 'package:diet_driven/util/data_subscriptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
@@ -12,7 +12,7 @@ import 'package:logging/logging.dart';
 final Logger log = new Logger("MIDDLEWARE");
 
 /// MIDDLEWARE RUN BEFORE REDUCERS
-Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth auth, Subscriptions subs) {
+Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth auth, DataSubscriptions subs) {
   return (MiddlewareBuilder<AppState, AppStateBuilder, Actions>()
     ..add(ActionsNames.initApp, initApp(auth, subs))
     ..add(ActionsNames.disposeApp, disposeApp(auth, subs))
@@ -28,7 +28,7 @@ Middleware<AppState, AppStateBuilder, Actions> createMiddleware(FirebaseAuth aut
 //      .catchError(window.alert);
 //}
 
-MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth auth, Subscriptions subs) {
+MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth auth, DataSubscriptions subs) {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
 
     // Store not persisted
@@ -80,10 +80,17 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
     // TODO: use cloud functions to mark every app as 'stale', re-fetch config settings
 
     //
-    subs.startNavigationSubscription(
-      api.actions.firestore.navigationSettingsReceived,
+    subs.startUserDataSubscription(
+      api.actions.firestore.userDataReceived,
       print,
-      NavigationStateDocument((b) => b..userId = api.state.user.authUser.uid)
+      UserStateDocument((b) => b..userId = api.state.user.authUser.uid)
+    );
+
+    //
+    subs.startSettingsSubscription(
+      api.actions.firestore.settingsReceived,
+      print,
+      SettingsCollection((b) => b..userId = api.state.user.authUser.uid)
     );
 
     // Firebase analytics user (anonymous) // TODO: move to authUserReceived!
@@ -95,7 +102,7 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
   };
 }
 
-MiddlewareHandler<AppState, AppStateBuilder, Actions, void> disposeApp(FirebaseAuth auth, Subscriptions subs) {
+MiddlewareHandler<AppState, AppStateBuilder, Actions, void> disposeApp(FirebaseAuth auth, DataSubscriptions subs) {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
     //
     subs.authSubscription.cancel();
@@ -104,7 +111,7 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> disposeApp(FirebaseA
     await RemoteConfig.instance..dispose();
 
     //
-    subs.stopNavigationSubscription();
+    subs.stopSettingsSubscription();
 
     next(action);
   };

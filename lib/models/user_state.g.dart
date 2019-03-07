@@ -10,14 +10,21 @@ class _$UserState extends UserState {
   @override
   final FirebaseUser authUser;
   @override
-  final bool isAdmin;
+  final bool staleRemoteConfig;
+  @override
+  final SubscriptionType currentSubscription;
 
   factory _$UserState([void updates(UserStateBuilder b)]) =>
       (new UserStateBuilder()..update(updates)).build() as _$UserState;
 
-  _$UserState._({this.authUser, this.isAdmin}) : super._() {
-    if (isAdmin == null) {
-      throw new BuiltValueNullFieldError('UserState', 'isAdmin');
+  _$UserState._(
+      {this.authUser, this.staleRemoteConfig, this.currentSubscription})
+      : super._() {
+    if (staleRemoteConfig == null) {
+      throw new BuiltValueNullFieldError('UserState', 'staleRemoteConfig');
+    }
+    if (currentSubscription == null) {
+      throw new BuiltValueNullFieldError('UserState', 'currentSubscription');
     }
   }
 
@@ -33,19 +40,22 @@ class _$UserState extends UserState {
     if (identical(other, this)) return true;
     return other is UserState &&
         authUser == other.authUser &&
-        isAdmin == other.isAdmin;
+        staleRemoteConfig == other.staleRemoteConfig &&
+        currentSubscription == other.currentSubscription;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, authUser.hashCode), isAdmin.hashCode));
+    return $jf($jc($jc($jc(0, authUser.hashCode), staleRemoteConfig.hashCode),
+        currentSubscription.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('UserState')
           ..add('authUser', authUser)
-          ..add('isAdmin', isAdmin))
+          ..add('staleRemoteConfig', staleRemoteConfig)
+          ..add('currentSubscription', currentSubscription))
         .toString();
   }
 }
@@ -66,15 +76,27 @@ class _$UserStateBuilder extends UserStateBuilder {
   }
 
   @override
-  bool get isAdmin {
+  bool get staleRemoteConfig {
     _$this;
-    return super.isAdmin;
+    return super.staleRemoteConfig;
   }
 
   @override
-  set isAdmin(bool isAdmin) {
+  set staleRemoteConfig(bool staleRemoteConfig) {
     _$this;
-    super.isAdmin = isAdmin;
+    super.staleRemoteConfig = staleRemoteConfig;
+  }
+
+  @override
+  SubscriptionType get currentSubscription {
+    _$this;
+    return super.currentSubscription;
+  }
+
+  @override
+  set currentSubscription(SubscriptionType currentSubscription) {
+    _$this;
+    super.currentSubscription = currentSubscription;
   }
 
   _$UserStateBuilder() : super._();
@@ -82,7 +104,8 @@ class _$UserStateBuilder extends UserStateBuilder {
   UserStateBuilder get _$this {
     if (_$v != null) {
       super.authUser = _$v.authUser;
-      super.isAdmin = _$v.isAdmin;
+      super.staleRemoteConfig = _$v.staleRemoteConfig;
+      super.currentSubscription = _$v.currentSubscription;
       _$v = null;
     }
     return this;
@@ -103,8 +126,196 @@ class _$UserStateBuilder extends UserStateBuilder {
 
   @override
   _$UserState build() {
-    final _$result =
-        _$v ?? new _$UserState._(authUser: authUser, isAdmin: isAdmin);
+    final _$result = _$v ??
+        new _$UserState._(
+            authUser: authUser,
+            staleRemoteConfig: staleRemoteConfig,
+            currentSubscription: currentSubscription);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$UserStateDocument extends UserStateDocument {
+  @override
+  final String userId;
+  @override
+  final String subPath;
+  @override
+  final StreamSubscription streamSubscription;
+
+  factory _$UserStateDocument([void updates(UserStateDocumentBuilder b)]) =>
+      (new UserStateDocumentBuilder()..update(updates)).build();
+
+  _$UserStateDocument._({this.userId, this.subPath, this.streamSubscription})
+      : super._();
+
+  @override
+  UserStateDocument rebuild(void updates(UserStateDocumentBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  UserStateDocumentBuilder toBuilder() =>
+      new UserStateDocumentBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is UserStateDocument &&
+        userId == other.userId &&
+        subPath == other.subPath;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, userId.hashCode), subPath.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('UserStateDocument')
+          ..add('userId', userId)
+          ..add('subPath', subPath)
+          ..add('streamSubscription', streamSubscription))
+        .toString();
+  }
+}
+
+class UserStateDocumentBuilder
+    implements Builder<UserStateDocument, UserStateDocumentBuilder> {
+  _$UserStateDocument _$v;
+
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
+
+  String _subPath;
+  String get subPath => _$this._subPath;
+  set subPath(String subPath) => _$this._subPath = subPath;
+
+  StreamSubscription _streamSubscription;
+  StreamSubscription get streamSubscription => _$this._streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription) =>
+      _$this._streamSubscription = streamSubscription;
+
+  UserStateDocumentBuilder();
+
+  UserStateDocumentBuilder get _$this {
+    if (_$v != null) {
+      _userId = _$v.userId;
+      _subPath = _$v.subPath;
+      _streamSubscription = _$v.streamSubscription;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(UserStateDocument other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$UserStateDocument;
+  }
+
+  @override
+  void update(void updates(UserStateDocumentBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$UserStateDocument build() {
+    final _$result = _$v ??
+        new _$UserStateDocument._(
+            userId: userId,
+            subPath: subPath,
+            streamSubscription: streamSubscription);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SettingsCollection extends SettingsCollection {
+  @override
+  final String userId;
+  @override
+  final StreamSubscription streamSubscription;
+
+  factory _$SettingsCollection([void updates(SettingsCollectionBuilder b)]) =>
+      (new SettingsCollectionBuilder()..update(updates)).build();
+
+  _$SettingsCollection._({this.userId, this.streamSubscription}) : super._();
+
+  @override
+  SettingsCollection rebuild(void updates(SettingsCollectionBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SettingsCollectionBuilder toBuilder() =>
+      new SettingsCollectionBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SettingsCollection && userId == other.userId;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, userId.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('SettingsCollection')
+          ..add('userId', userId)
+          ..add('streamSubscription', streamSubscription))
+        .toString();
+  }
+}
+
+class SettingsCollectionBuilder
+    implements Builder<SettingsCollection, SettingsCollectionBuilder> {
+  _$SettingsCollection _$v;
+
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
+
+  StreamSubscription _streamSubscription;
+  StreamSubscription get streamSubscription => _$this._streamSubscription;
+  set streamSubscription(StreamSubscription streamSubscription) =>
+      _$this._streamSubscription = streamSubscription;
+
+  SettingsCollectionBuilder();
+
+  SettingsCollectionBuilder get _$this {
+    if (_$v != null) {
+      _userId = _$v.userId;
+      _streamSubscription = _$v.streamSubscription;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(SettingsCollection other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SettingsCollection;
+  }
+
+  @override
+  void update(void updates(SettingsCollectionBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SettingsCollection build() {
+    final _$result = _$v ??
+        new _$SettingsCollection._(
+            userId: userId, streamSubscription: streamSubscription);
     replace(_$result);
     return _$result;
   }

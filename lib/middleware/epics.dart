@@ -39,8 +39,9 @@ Observable<void> populateWithDefaultSettingsEpic(Observable<Action<String>> stre
 
   NavigationState navigationState = NavigationState();
 
-  NavigationStateDocument((b) => b
+  UserStateDocument((b) => b
     ..userId = action.payload ?? api.state.user.authUser.uid
+    ..subPath = "navigation"
   ).update(navigationState);
 
   log.fine("populated with default settings: $navigationState.");
@@ -121,15 +122,19 @@ Observable<void> deleteFoodDiaryDayEpic(Observable<Action<FoodDiaryDay>> stream,
 });
 
 ///
-Observable<void> updateNavigationSettingsEpic(Observable<Action<FSTuple<NavigationState>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
+Observable<void> updateNavigationSettingsEpic(Observable<Action<FSTuple<dynamic>>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
   log.info("Saving new navigation settings.");
 
-  NavigationStateDocument nsd = action.payload.fs as NavigationStateDocument;
+  // TODO: make custom userTuple...
+  UserStateDocument usd = action.payload.fs as UserStateDocument;
 
-  // Add userId if it's missing
-  nsd = nsd.rebuild((b) => b..userId = b.userId ?? api.state.user.authUser.uid);
+  // Add userId and sub path if it's missing
+  usd = usd.rebuild((b) => b
+    ..userId = b.userId ?? api.state.user.authUser.uid
+    ..subPath = b.subPath ?? "navigation"
+  );
 
-  nsd.update(action.payload.data);
+  usd.update(action.payload.data);
 
   log.fine("saved navigation settings: ${action.payload.data}.");
 });

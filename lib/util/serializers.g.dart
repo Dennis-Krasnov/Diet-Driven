@@ -11,7 +11,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(FoodRecord.serializer)
       ..add(NavigationState.serializer)
       ..add(Page.serializer)
-      ..add(SettingsState.serializer)
+      ..add(SubscriptionType.serializer)
       ..add(Uncertainty.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FoodRecord)]),

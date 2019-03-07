@@ -7,12 +7,13 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/models/user_state.dart';
 import 'package:diet_driven/util/built_firestore.dart';
 
 part 'navigation_state.g.dart';
 
 ///
-abstract class NavigationState implements Built<NavigationState, NavigationStateBuilder> {
+abstract class NavigationState with SettingsDocument implements Built<NavigationState, NavigationStateBuilder> {
   static Serializer<NavigationState> get serializer => _$navigationStateSerializer;
 
   //
@@ -49,16 +50,4 @@ abstract class NavigationStateBuilder implements Builder<NavigationState, Naviga
 
   factory NavigationStateBuilder() = _$NavigationStateBuilder;
   NavigationStateBuilder._();
-}
-
-/// TODO: just use generic UserDocument - no, still need to specify /navigation
-abstract class NavigationStateDocument with FSDocument<NavigationState> implements Built<NavigationStateDocument, NavigationStateDocumentBuilder> {
-  @nullable
-  String get userId;
-
-  @override
-  DocumentReference get docRef => Firestore.instance.document("users/$userId/settings/navigation");
-
-  NavigationStateDocument._();
-  factory NavigationStateDocument([updates(NavigationStateDocumentBuilder b)]) = _$NavigationStateDocument;
 }

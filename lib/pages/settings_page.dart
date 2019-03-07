@@ -36,14 +36,14 @@ class SettingsPage extends StoreConnector<AppState, Actions, SettingsPageVM> {
   // TODO: edit entire navigation state!
   // TODO: bring back reset navigation button
     void onSave(BuiltList<Page> bottomNavigation, Page defaultPage) {
-      var temp = FSTuple<NavigationState>(
-          NavigationStateDocument((b) => b
-            ..userId = vm.userId
-          ),
-          vm.navState.rebuild((b) => b
-            ..bottomNavigation = bottomNavigation
-            ..defaultPage = defaultPage
-          )
+      var temp = FSTuple<dynamic>(
+        UserStateDocument((b) => b
+          ..userId = vm.userId
+        ),
+        vm.navState.rebuild((b) => b
+          ..bottomNavigation = bottomNavigation
+          ..defaultPage = defaultPage
+        )
       );
       actions.firestore.updateNavigationState(temp);
     }

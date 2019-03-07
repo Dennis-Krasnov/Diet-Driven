@@ -1,5 +1,6 @@
 import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/models/navigation_state.dart';
+import 'package:diet_driven/models/user_state.dart';
 import 'package:diet_driven/util/built_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -70,10 +71,10 @@ class SubscriberState extends State<Subscriber> {
         print("IS FS DIARY");
         conn = sub.connection as FoodDiaryCollection;
       }
-      else if (sub.connection is NavigationStateDocument) {
-        print("IS FS NAVIGATION STATE");
-        conn = sub.connection as NavigationStateDocument;
-      }
+//      else if (sub.connection is SettingsCollection) {
+//        print("IS SETTINGS COLLECTION");
+//        conn = sub.connection as SettingsCollection;
+//      }
       else {
         print("ITS NOT");
         print(sub.connection.runtimeType);

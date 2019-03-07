@@ -7,9 +7,10 @@ import 'package:built_value/standard_json_plugin.dart';
 import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/data/page.dart';
+import 'package:diet_driven/data/subscriptions.dart';
 import 'package:diet_driven/models/navigation_state.dart';
-import 'package:diet_driven/models/settings_state.dart';
 import 'package:diet_driven/data/uncertainty.dart';
+import 'package:diet_driven/models/user_state.dart';
 
 part 'serializers.g.dart';
 
@@ -17,18 +18,26 @@ part 'serializers.g.dart';
 @SerializersFor(const [
   FoodRecord,
   Uncertainty,
-  NavigationState,
   Page,
   FoodDiaryDay,
+
+  // Settings
+  UserState,
+  SubscriptionType,
+  NavigationState,
 //  MealInfo,
 //  MealsSnapshot,
-  SettingsState
 ])
 
 // Built value default serializer
 final Serializers serializers = _$serializers;
 
 // JSON serializer (can't simply do serializers.rebuild((b) => b) for some reason)
+/*
+...
+
+TODO: Explain FullType, link to github issue page
+ */
 final Serializers standardSerializers = (serializers.toBuilder()
   ..addBuilderFactory(
     const FullType(BuiltList, const [const FullType(Page)]),
