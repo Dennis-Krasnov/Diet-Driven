@@ -1,5 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_redux/built_redux.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/data/food.dart';
@@ -24,12 +25,13 @@ Reducer<AppState, AppStateBuilder, dynamic> getBaseReducer() =>
     ..add(FirestoreActionsNames.userDataReceived, userDataReceived)
     ..add(FirestoreActionsNames.settingsReceived, settingsReceived)
     ..add(FirestoreActionsNames.remoteConfigReceived, remoteConfigReceived)
+    ..add(ActionsNames.connectivityChanged, connectivityChanged)
 
     // ...
     ..add(ActionsNames.changeDaysSinceEpoch, changeDaysSinceEpoch)
     ..add(ActionsNames.goToDaysSinceEpoch, goToDaysSinceEpoch)
 
-    // DIARY // TODO: nest
+    // DIARY // TODO: possibly nest?
     ..combineList(new ListReducerBuilder((s) => s.foodDiaryDays, (b) => b.foodDiaryDays)
       ..add(FirestoreActionsNames.foodDiaryReceived, foodDiaryReceived)
 //      ..add(FirestoreActionsNames.diaryRecordReceived, diaryRecordReceived)
@@ -53,6 +55,12 @@ void remoteConfigReceived(AppState state, Action<RemoteConfig> action, AppStateB
   log.fine("remoteConfigLoaded is now true");
 }
 
+///
+void connectivityChanged(AppState state, Action<ConnectivityResult> action, AppStateBuilder builder) {
+  builder.currentConnectivity = action.payload;
+
+  log.info("connectivity is now ${action.payload}");
+}
 
 ///
 void userDataReceived(AppState state, Action<UserState> action, AppStateBuilder builder) {
@@ -61,6 +69,9 @@ void userDataReceived(AppState state, Action<UserState> action, AppStateBuilder 
     ..staleRemoteConfig = action.payload.staleRemoteConfig
     ..currentSubscription = action.payload.currentSubscription
   );
+
+  builder.userDataLoaded = true;
+  log.fine("userDataLoaded is now true");
 }
 
 ///

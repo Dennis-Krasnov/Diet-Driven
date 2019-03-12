@@ -3,7 +3,9 @@ library user_state;
 import 'dart:async';
 
 import 'package:built_value/built_value.dart';
+import 'package:built_value/serializer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:diet_driven/data/subscriptions.dart';
 import 'package:diet_driven/util/built_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,9 +13,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 part 'user_state.g.dart';
 
 
-// TODO: UserDocument(harcoded_subpath: "settings/navigatoin") named param!!!! this simplifies a lot of things!!!! - move this to userState!!! straight up remove settingsState... unnecessary encapsulation!
-
 abstract class UserState implements Built<UserState, UserStateBuilder> {
+  static Serializer<UserState> get serializer => _$userStateSerializer; // TODO: remove!
+
+
   /*
   User's current Firebase Authentication instance.
 
@@ -99,23 +102,10 @@ abstract class UserStateDocument with FSDocument<dynamic> implements Built<UserS
   factory UserStateDocument([updates(UserStateDocumentBuilder b)]) = _$UserStateDocument;
 }
 
-
-//abstract class UserStateDocumentBuilder implements Builder<UserStateDocument, UserStateDocumentBuilder> {
-//  @nullable
-//  String userId;
-//
-//  String subPath = "";
-//
-//  @nullable
-//  @BuiltValueField(serialize: false, compare: false)
-//  StreamSubscription streamSubscription;
-//
-//  factory UserStateDocumentBuilder() = _$UserStateDocumentBuilder;
-//  UserStateDocumentBuilder._();
-//}
-
+/// Every settings document must implement this mixin
 abstract class SettingsDocument {}
 
+///
 abstract class SettingsCollection with FSCollection<SettingsDocument> implements Built<SettingsCollection, SettingsCollectionBuilder> {
   @nullable
   String get userId;

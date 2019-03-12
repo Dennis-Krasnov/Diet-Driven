@@ -30,6 +30,7 @@ dependencies:
   firebase_auth: ^0.8.1+4
   firebase_remote_config: ^0.1.0+2
 
+  connectivity: ^0.4.2
   logging: ^0.11.3+2
   intl: ^0.15.7
   date_utils: ^0.1.0+2

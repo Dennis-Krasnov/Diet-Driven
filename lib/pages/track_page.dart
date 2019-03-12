@@ -35,9 +35,9 @@ class TrackPage extends StoreConnector<AppState, Actions, TrackPageVM> {
               onPressed: null, // TODO: anonymous by default
               child: Text("Log in as Dennis Krasnov"),
             ),
-            Text("uid: ${vm.auth.uid}"),
-            Text("email: ${vm.auth.email}"),
-            Text("display name: ${vm.auth.displayName}"),
+            Text("uid: ${vm.auth?.uid}"),
+            Text("email: ${vm.auth?.email}"),
+            Text("display name: ${vm.auth?.displayName}"),
             FlatButton(
               onPressed: () => actions.user.logout(),
               child: Text("Log out"),

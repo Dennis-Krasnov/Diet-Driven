@@ -13,6 +13,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Page.serializer)
       ..add(SubscriptionType.serializer)
       ..add(Uncertainty.serializer)
+      ..add(UserState.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FoodRecord)]),
           () => new ListBuilder<FoodRecord>())

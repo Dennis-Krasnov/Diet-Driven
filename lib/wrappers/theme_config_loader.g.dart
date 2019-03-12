@@ -10,6 +10,8 @@ class _$ThemeConfigLoaderVM extends ThemeConfigLoaderVM {
   @override
   final FirebaseUser authUser;
   @override
+  final bool userDataLoaded;
+  @override
   final bool settingsLoaded;
   @override
   final bool remoteConfigLoaded;
@@ -20,8 +22,16 @@ class _$ThemeConfigLoaderVM extends ThemeConfigLoaderVM {
       (new ThemeConfigLoaderVMBuilder()..update(updates)).build();
 
   _$ThemeConfigLoaderVM._(
-      {this.authUser, this.settingsLoaded, this.remoteConfigLoaded, this.theme})
+      {this.authUser,
+      this.userDataLoaded,
+      this.settingsLoaded,
+      this.remoteConfigLoaded,
+      this.theme})
       : super._() {
+    if (userDataLoaded == null) {
+      throw new BuiltValueNullFieldError(
+          'ThemeConfigLoaderVM', 'userDataLoaded');
+    }
     if (settingsLoaded == null) {
       throw new BuiltValueNullFieldError(
           'ThemeConfigLoaderVM', 'settingsLoaded');
@@ -48,6 +58,7 @@ class _$ThemeConfigLoaderVM extends ThemeConfigLoaderVM {
     if (identical(other, this)) return true;
     return other is ThemeConfigLoaderVM &&
         authUser == other.authUser &&
+        userDataLoaded == other.userDataLoaded &&
         settingsLoaded == other.settingsLoaded &&
         remoteConfigLoaded == other.remoteConfigLoaded &&
         theme == other.theme;
@@ -56,7 +67,9 @@ class _$ThemeConfigLoaderVM extends ThemeConfigLoaderVM {
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, authUser.hashCode), settingsLoaded.hashCode),
+        $jc(
+            $jc($jc($jc(0, authUser.hashCode), userDataLoaded.hashCode),
+                settingsLoaded.hashCode),
             remoteConfigLoaded.hashCode),
         theme.hashCode));
   }
@@ -65,6 +78,7 @@ class _$ThemeConfigLoaderVM extends ThemeConfigLoaderVM {
   String toString() {
     return (newBuiltValueToStringHelper('ThemeConfigLoaderVM')
           ..add('authUser', authUser)
+          ..add('userDataLoaded', userDataLoaded)
           ..add('settingsLoaded', settingsLoaded)
           ..add('remoteConfigLoaded', remoteConfigLoaded)
           ..add('theme', theme))
@@ -79,6 +93,11 @@ class ThemeConfigLoaderVMBuilder
   FirebaseUser _authUser;
   FirebaseUser get authUser => _$this._authUser;
   set authUser(FirebaseUser authUser) => _$this._authUser = authUser;
+
+  bool _userDataLoaded;
+  bool get userDataLoaded => _$this._userDataLoaded;
+  set userDataLoaded(bool userDataLoaded) =>
+      _$this._userDataLoaded = userDataLoaded;
 
   bool _settingsLoaded;
   bool get settingsLoaded => _$this._settingsLoaded;
@@ -99,6 +118,7 @@ class ThemeConfigLoaderVMBuilder
   ThemeConfigLoaderVMBuilder get _$this {
     if (_$v != null) {
       _authUser = _$v.authUser;
+      _userDataLoaded = _$v.userDataLoaded;
       _settingsLoaded = _$v.settingsLoaded;
       _remoteConfigLoaded = _$v.remoteConfigLoaded;
       _theme = _$v.theme;
@@ -125,6 +145,7 @@ class ThemeConfigLoaderVMBuilder
     final _$result = _$v ??
         new _$ThemeConfigLoaderVM._(
             authUser: authUser,
+            userDataLoaded: userDataLoaded,
             settingsLoaded: settingsLoaded,
             remoteConfigLoaded: remoteConfigLoaded,
             theme: theme);

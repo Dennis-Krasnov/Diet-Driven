@@ -17,6 +17,8 @@ class _$Actions extends Actions {
       new ActionDispatcher<dynamic>('Actions-initApp');
   final ActionDispatcher<dynamic> disposeApp =
       new ActionDispatcher<dynamic>('Actions-disposeApp');
+  final ActionDispatcher<ConnectivityResult> connectivityChanged =
+      new ActionDispatcher<ConnectivityResult>('Actions-connectivityChanged');
   final ActionDispatcher<String> populateWithDefaultSettings =
       new ActionDispatcher<String>('Actions-populateWithDefaultSettings');
   final ActionDispatcher<int> changeDaysSinceEpoch =
@@ -31,6 +33,7 @@ class _$Actions extends Actions {
   void setDispatcher(Dispatcher dispatcher) {
     initApp.setDispatcher(dispatcher);
     disposeApp.setDispatcher(dispatcher);
+    connectivityChanged.setDispatcher(dispatcher);
     populateWithDefaultSettings.setDispatcher(dispatcher);
     changeDaysSinceEpoch.setDispatcher(dispatcher);
     goToDaysSinceEpoch.setDispatcher(dispatcher);
@@ -45,6 +48,8 @@ class ActionsNames {
       new ActionName<dynamic>('Actions-initApp');
   static final ActionName<dynamic> disposeApp =
       new ActionName<dynamic>('Actions-disposeApp');
+  static final ActionName<ConnectivityResult> connectivityChanged =
+      new ActionName<ConnectivityResult>('Actions-connectivityChanged');
   static final ActionName<String> populateWithDefaultSettings =
       new ActionName<String>('Actions-populateWithDefaultSettings');
   static final ActionName<int> changeDaysSinceEpoch =

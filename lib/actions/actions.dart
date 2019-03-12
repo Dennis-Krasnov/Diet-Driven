@@ -1,6 +1,7 @@
 library actions;
 
 import 'package:built_redux/built_redux.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:diet_driven/actions/firestore_actions.dart';
 import 'package:diet_driven/actions/navigation_actions.dart';
 import 'package:diet_driven/actions/user_actions.dart';
@@ -30,6 +31,9 @@ abstract class Actions extends ReduxActions {
 
   //
   ActionDispatcher disposeApp;
+
+  //
+  ActionDispatcher<ConnectivityResult> connectivityChanged;
 
   //
   ActionDispatcher<String> populateWithDefaultSettings;

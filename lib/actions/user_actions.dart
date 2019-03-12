@@ -1,6 +1,7 @@
 library user_actions;
 
 import 'package:built_redux/built_redux.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 part 'user_actions.g.dart';

@@ -6,6 +6,56 @@ part of user_state;
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<UserState> _$userStateSerializer = new _$UserStateSerializer();
+
+class _$UserStateSerializer implements StructuredSerializer<UserState> {
+  @override
+  final Iterable<Type> types = const [UserState, _$UserState];
+  @override
+  final String wireName = 'UserState';
+
+  @override
+  Iterable serialize(Serializers serializers, UserState object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'staleRemoteConfig',
+      serializers.serialize(object.staleRemoteConfig,
+          specifiedType: const FullType(bool)),
+      'currentSubscription',
+      serializers.serialize(object.currentSubscription,
+          specifiedType: const FullType(SubscriptionType)),
+    ];
+
+    return result;
+  }
+
+  @override
+  UserState deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new UserStateBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'staleRemoteConfig':
+          result.staleRemoteConfig = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'currentSubscription':
+          result.currentSubscription = serializers.deserialize(value,
+                  specifiedType: const FullType(SubscriptionType))
+              as SubscriptionType;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$UserState extends UserState {
   @override
   final FirebaseUser authUser;

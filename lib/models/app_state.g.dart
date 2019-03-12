@@ -12,9 +12,13 @@ class _$AppState extends AppState {
   @override
   final NavigationState navigation;
   @override
+  final bool userDataLoaded;
+  @override
   final bool settingsLoaded;
   @override
   final bool remoteConfigLoaded;
+  @override
+  final ConnectivityResult currentConnectivity;
   @override
   final BuiltList<FoodDiaryDay> foodDiaryDays;
   @override
@@ -28,8 +32,10 @@ class _$AppState extends AppState {
   _$AppState._(
       {this.user,
       this.navigation,
+      this.userDataLoaded,
       this.settingsLoaded,
       this.remoteConfigLoaded,
+      this.currentConnectivity,
       this.foodDiaryDays,
       this.mealsSnapshots,
       this.currentDaysSinceEpoch})
@@ -39,6 +45,9 @@ class _$AppState extends AppState {
     }
     if (navigation == null) {
       throw new BuiltValueNullFieldError('AppState', 'navigation');
+    }
+    if (userDataLoaded == null) {
+      throw new BuiltValueNullFieldError('AppState', 'userDataLoaded');
     }
     if (settingsLoaded == null) {
       throw new BuiltValueNullFieldError('AppState', 'settingsLoaded');
@@ -70,8 +79,10 @@ class _$AppState extends AppState {
     return other is AppState &&
         user == other.user &&
         navigation == other.navigation &&
+        userDataLoaded == other.userDataLoaded &&
         settingsLoaded == other.settingsLoaded &&
         remoteConfigLoaded == other.remoteConfigLoaded &&
+        currentConnectivity == other.currentConnectivity &&
         foodDiaryDays == other.foodDiaryDays &&
         mealsSnapshots == other.mealsSnapshots &&
         currentDaysSinceEpoch == other.currentDaysSinceEpoch;
@@ -83,9 +94,13 @@ class _$AppState extends AppState {
         $jc(
             $jc(
                 $jc(
-                    $jc($jc($jc(0, user.hashCode), navigation.hashCode),
-                        settingsLoaded.hashCode),
-                    remoteConfigLoaded.hashCode),
+                    $jc(
+                        $jc(
+                            $jc($jc($jc(0, user.hashCode), navigation.hashCode),
+                                userDataLoaded.hashCode),
+                            settingsLoaded.hashCode),
+                        remoteConfigLoaded.hashCode),
+                    currentConnectivity.hashCode),
                 foodDiaryDays.hashCode),
             mealsSnapshots.hashCode),
         currentDaysSinceEpoch.hashCode));
@@ -96,8 +111,10 @@ class _$AppState extends AppState {
     return (newBuiltValueToStringHelper('AppState')
           ..add('user', user)
           ..add('navigation', navigation)
+          ..add('userDataLoaded', userDataLoaded)
           ..add('settingsLoaded', settingsLoaded)
           ..add('remoteConfigLoaded', remoteConfigLoaded)
+          ..add('currentConnectivity', currentConnectivity)
           ..add('foodDiaryDays', foodDiaryDays)
           ..add('mealsSnapshots', mealsSnapshots)
           ..add('currentDaysSinceEpoch', currentDaysSinceEpoch))
@@ -133,6 +150,18 @@ class _$AppStateBuilder extends AppStateBuilder {
   }
 
   @override
+  bool get userDataLoaded {
+    _$this;
+    return super.userDataLoaded;
+  }
+
+  @override
+  set userDataLoaded(bool userDataLoaded) {
+    _$this;
+    super.userDataLoaded = userDataLoaded;
+  }
+
+  @override
   bool get settingsLoaded {
     _$this;
     return super.settingsLoaded;
@@ -154,6 +183,18 @@ class _$AppStateBuilder extends AppStateBuilder {
   set remoteConfigLoaded(bool remoteConfigLoaded) {
     _$this;
     super.remoteConfigLoaded = remoteConfigLoaded;
+  }
+
+  @override
+  ConnectivityResult get currentConnectivity {
+    _$this;
+    return super.currentConnectivity;
+  }
+
+  @override
+  set currentConnectivity(ConnectivityResult currentConnectivity) {
+    _$this;
+    super.currentConnectivity = currentConnectivity;
   }
 
   @override
@@ -198,8 +239,10 @@ class _$AppStateBuilder extends AppStateBuilder {
     if (_$v != null) {
       super.user = _$v.user?.toBuilder();
       super.navigation = _$v.navigation?.toBuilder();
+      super.userDataLoaded = _$v.userDataLoaded;
       super.settingsLoaded = _$v.settingsLoaded;
       super.remoteConfigLoaded = _$v.remoteConfigLoaded;
+      super.currentConnectivity = _$v.currentConnectivity;
       super.foodDiaryDays = _$v.foodDiaryDays?.toBuilder();
       super.mealsSnapshots = _$v.mealsSnapshots?.toBuilder();
       super.currentDaysSinceEpoch = _$v.currentDaysSinceEpoch;
@@ -229,8 +272,10 @@ class _$AppStateBuilder extends AppStateBuilder {
           new _$AppState._(
               user: user.build(),
               navigation: navigation.build(),
+              userDataLoaded: userDataLoaded,
               settingsLoaded: settingsLoaded,
               remoteConfigLoaded: remoteConfigLoaded,
+              currentConnectivity: currentConnectivity,
               foodDiaryDays: foodDiaryDays.build(),
               mealsSnapshots: mealsSnapshots.build(),
               currentDaysSinceEpoch: currentDaysSinceEpoch);

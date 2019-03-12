@@ -20,6 +20,7 @@ class ThemeConfigLoader extends StoreConnector<AppState, Actions, ThemeConfigLoa
 
   @override
   ThemeConfigLoaderVM connect(AppState state) => new ThemeConfigLoaderVM((b) => b
+    ..userDataLoaded = state.userDataLoaded
     ..settingsLoaded = state.settingsLoaded
     ..remoteConfigLoaded = state.remoteConfigLoaded
     ..authUser = state.user.authUser
@@ -30,7 +31,7 @@ class ThemeConfigLoader extends StoreConnector<AppState, Actions, ThemeConfigLoa
   Widget build(BuildContext context, ThemeConfigLoaderVM vm, Actions actions) {
 
     // Settings or remote config is still loading
-    if (!vm.settingsLoaded || !vm.remoteConfigLoaded) {
+    if (!vm.settingsLoaded || !vm.userDataLoaded || !vm.remoteConfigLoaded) {
       // TODO: Flare animation
       return MaterialApp(
         home: Scaffold(
@@ -39,10 +40,12 @@ class ThemeConfigLoader extends StoreConnector<AppState, Actions, ThemeConfigLoa
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 CircularProgressIndicator(),
-                Text("Auth user: ${vm.authUser}"),
+                Text("Auth user: ${vm?.authUser?.uid}"),
+                Text("User data loaded: ${vm.userDataLoaded}"),
                 Text("Settings loaded: ${vm.settingsLoaded}"),
                 Text("Remote config: ${vm.remoteConfigLoaded}"),
                 Text("Theme: ${vm.theme}"),
+                FlatButton(onPressed: actions.user.logout, child: Text("sign out!"))
               ],
             )
           ),
@@ -59,6 +62,9 @@ abstract class ThemeConfigLoaderVM implements Built<ThemeConfigLoaderVM, ThemeCo
   //
   @nullable
   FirebaseUser get authUser;
+
+  //
+  bool get userDataLoaded;
 
   //
   bool get settingsLoaded;

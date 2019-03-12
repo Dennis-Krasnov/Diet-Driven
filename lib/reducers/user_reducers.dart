@@ -1,4 +1,5 @@
 import 'package:built_redux/built_redux.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/models/app_state.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -13,11 +14,12 @@ NestedReducerBuilder<AppState, AppStateBuilder, UserState, UserStateBuilder> get
     ..add(UserActionsNames.anonymousUserFail, anonymousUserFail)
   );
 
+
 ///
 void authStateChanged(UserState state, Action<FirebaseUser> action, UserStateBuilder builder) {
   builder.authUser = action.payload;
 
-  log.info("${action.payload.uid} user was loaded");
+  log.info("${action.payload?.uid} user was loaded");
 }
 
 ///

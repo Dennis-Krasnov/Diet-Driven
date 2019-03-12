@@ -5,6 +5,9 @@ import 'package:diet_driven/models/app_state.dart';
 import 'package:diet_driven/util/data_subscriptions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:connectivity/connectivity.dart';
+
 
 import 'package:flutter/material.dart' hide Builder;
 import 'package:logging/logging.dart';
@@ -37,10 +40,23 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
 
       // Firebase user not persisted
       if (authUser == null) {
+        // Firebase Authentication and cloud functions requires a network connection
+        var connectivityResult = await (Connectivity().checkConnectivity());
+        switch(connectivityResult) {
+          case ConnectivityResult.mobile:
+          case ConnectivityResult.wifi:
+            log.info("Connected to network");
+            break;
+          case ConnectivityResult.none:
+            log.info("Disconnected from network");
+            // TODO: display error screen, prompt to connect to a network (only for signup only)
+            break;
+        }
+
+        //
         authUser = await auth.signInAnonymously().catchError((e) => api.actions.user.anonymousUserFail(e));
 
-        // Populate user with default firebase user
-        // Otherwise settings received never happens and forever stuck in loading screen
+        //
         api.actions.populateWithDefaultSettings(authUser.uid);
       }
 
@@ -49,8 +65,12 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
     }
 
     //
+    subs.connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => api.actions.connectivityChanged(result));
+
+    //
     subs.authSubscription = auth.onAuthStateChanged.listen((FirebaseUser fbUser) => api.actions.user.authStateChanged(fbUser));
 
+    // TODO: extract into async function
     // Call remote config when launching app
     RemoteConfig config = await RemoteConfig.instance;
 
@@ -77,8 +97,6 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
       api.actions.firestore.remoteConfigReceived(null);
     }
 
-    // TODO: use cloud functions to mark every app as 'stale', re-fetch config settings
-
     //
     subs.startUserDataSubscription(
       api.actions.firestore.userDataReceived,
@@ -104,11 +122,18 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> initApp(FirebaseAuth
 
 MiddlewareHandler<AppState, AppStateBuilder, Actions, void> disposeApp(FirebaseAuth auth, DataSubscriptions subs) {
   return (MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action action) async {
+
     //
-    subs.authSubscription.cancel();
+    subs.connectivitySubscription?.cancel();
+
+    //
+    subs.authSubscription?.cancel();
 
     //
     await RemoteConfig.instance..dispose();
+
+    //
+    subs.stopUserDataSubscription();
 
     //
     subs.stopSettingsSubscription();
@@ -135,7 +160,6 @@ MiddlewareHandler<AppState, AppStateBuilder, Actions, void> reorderBottomNavigat
 
 void authStateChanged(MiddlewareApi<AppState, AppStateBuilder, Actions> api, ActionHandler next, Action<FirebaseUser> action) async {
   log.info("auth state changed middlware: ${action.payload}");
-  log.info("by this time settings loaded is ${api.state.settingsLoaded}");
 
   bool existsBefore = api.state.user.authUser != null;
   bool anonymousBefore;
@@ -148,29 +172,34 @@ void authStateChanged(MiddlewareApi<AppState, AppStateBuilder, Actions> api, Act
   next(action);
 
   bool existsAfter = api.state.user.authUser != null; // TODO: use this in subsequent logic
-  bool anonymousAfter = api.state.user.authUser.isAnonymous;
-  String emailAfter = api.state.user.authUser.email;
-
-  if (existsBefore) {
-    if (anonymousBefore && !anonymousAfter) {
-      log.info("Anonymous user registered for account");
-    }
-    else {
-       log.shout("something new happened!!!");
-    }
+  bool anonymousAfter;
+  String emailAfter;
+  if (existsAfter) {
+    anonymousAfter = api.state.user.authUser.isAnonymous;
+    emailAfter = api.state.user.authUser.email;
   }
-  if (!existsBefore) {
-    if (anonymousAfter) {
-      log.info("New anonymous user");
-    }
-    else if (emailAfter != null) {
-      log.info("Signed up with account from beginning / Existing user signed in");
 
-    }
-    else {
-      log.shout("something new happened!!!");
-    }
-  }
+  // FIXME:
+//  if (existsBefore) {
+//    if (anonymousBefore && !anonymousAfter) {
+//      log.info("Anonymous user registered for account");
+//    }
+//    else {
+//       log.shout("something new happened!!!");
+//    }
+//  }
+//  if (!existsBefore) {
+//    if (anonymousAfter) {
+//      log.info("New anonymous user");
+//    }
+//    else if (emailAfter != null) {
+//      log.info("Signed up with account from beginning / Existing user signed in");
+//
+//    }
+//    else {
+//      log.shout("something new happened!!!");
+//    }
+//  }
 }
 
 

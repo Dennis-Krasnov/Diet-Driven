@@ -2,6 +2,7 @@ library app_state;
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:diet_driven/data/food.dart';
 import 'package:diet_driven/data/meals.dart';
 import 'package:diet_driven/models/navigation_state.dart';
@@ -27,11 +28,21 @@ abstract class AppState implements Built<AppState, AppStateBuilder> {
   UserState get user;
   NavigationState get navigation;
 
+  // TODO: move connectivity here, asd well as staleRemoteConfig!!!
+  // TODO: clean up logging! - make it very clear, actually use different levels, 1 tells what happened; 2 started, data, ended!
+
+  //
+  bool get userDataLoaded;
+
   //
   bool get settingsLoaded;
 
   //
   bool get remoteConfigLoaded;
+
+  //
+  @nullable
+  ConnectivityResult get currentConnectivity;
 
   //
   BuiltList<FoodDiaryDay> get foodDiaryDays;
@@ -60,9 +71,14 @@ abstract class AppStateBuilder implements Builder<AppState, AppStateBuilder> {
   UserStateBuilder user;
   NavigationStateBuilder navigation;
 
+  bool userDataLoaded = false;
+
   bool settingsLoaded = false;
 
   bool remoteConfigLoaded = false;
+
+  @nullable
+  ConnectivityResult currentConnectivity;
 
   ListBuilder<FoodDiaryDay> foodDiaryDays = ListBuilder([]);
 

@@ -1,4 +1,5 @@
 import 'package:built_redux/built_redux.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:diet_driven/actions/actions.dart';
 import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
 import 'package:diet_driven/main.dart';
@@ -37,14 +38,17 @@ Iterable<Epic<AppState, AppStateBuilder, Actions>> createEpicBuilder() => (
 Observable<void> populateWithDefaultSettingsEpic(Observable<Action<String>> stream, MiddlewareApi<AppState, AppStateBuilder, Actions> api) => stream.asyncMap((action) async {
   log.info("populating with default settings.");
 
-  NavigationState navigationState = NavigationState();
+  String id = action.payload ?? api.state.user.authUser.uid;
 
+  // cloud function for read-only user document!
+
+  //
   UserStateDocument((b) => b
-    ..userId = action.payload ?? api.state.user.authUser.uid
-    ..subPath = "navigation"
-  ).update(navigationState);
+    ..userId = id
+    ..subPath = "settings/navigation"
+  ).update(new NavigationState());
 
-  log.fine("populated with default settings: $navigationState.");
+  log.fine("populated with default settings.");
 });
 
 /// Navigates to proper screen on state change
@@ -71,7 +75,7 @@ Observable<void> logoutEpic(Observable<Action> stream, MiddlewareApi<AppState, A
 
   if (user != null) {
     if (user.isAnonymous) {
-      // TODO: delete all firestore data!
+      // document: firestore data is deleted!!!
       user.delete();
       log.info("deleted anonymous account");
     } else {
