@@ -10,7 +10,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryState currentState, FoodDiaryEvent event) async* {
-    if (event is LoadFoodRecords) {
+    if (event is LoadFoodRecordDays) {
       yield* _mapLoadFoodDiaryToState();
     }
     else if (event is AddFoodRecord) {

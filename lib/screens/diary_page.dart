@@ -42,7 +42,7 @@ class DiaryPage extends StatelessWidget {
             child: FloatingActionButton(
               child: Icon(Icons.remove),
               onPressed: () {
-                _foodRecordBloc.dispatch(LoadFoodRecords());
+                _foodRecordBloc.dispatch(LoadFoodRecordDays());
               },
             ),
           ),

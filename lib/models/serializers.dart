@@ -8,7 +8,6 @@ import 'package:diet_driven/models/models.dart';
 
 part 'serializers.g.dart';
 
-/// Defines each serializable type.
 @SerializersFor(const [
   FoodRecord,
   FoodDiaryDay,

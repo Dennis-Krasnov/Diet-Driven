@@ -6,9 +6,9 @@ part 'food_diary_events.g.dart';
 
 abstract class FoodDiaryEvent {}
 
-abstract class LoadFoodRecords with FoodDiaryEvent implements Built<LoadFoodRecords, LoadFoodRecordsBuilder> {
-  LoadFoodRecords._();
-  factory LoadFoodRecords([updates(LoadFoodRecordsBuilder b)]) = _$LoadFoodRecords;
+abstract class LoadFoodRecordDays with FoodDiaryEvent implements Built<LoadFoodRecordDays, LoadFoodRecordDaysBuilder> {
+  LoadFoodRecordDays._();
+  factory LoadFoodRecordDays([updates(LoadFoodRecordDaysBuilder b)]) = _$LoadFoodRecordDays;
 }
 
 abstract class AddFoodRecord with FoodDiaryEvent implements Built<AddFoodRecord, AddFoodRecordBuilder> {

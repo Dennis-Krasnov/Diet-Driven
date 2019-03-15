@@ -6,59 +6,59 @@ part of 'food_diary_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$LoadFoodRecords extends LoadFoodRecords {
-  factory _$LoadFoodRecords([void updates(LoadFoodRecordsBuilder b)]) =>
-      (new LoadFoodRecordsBuilder()..update(updates)).build();
+class _$LoadFoodRecordDays extends LoadFoodRecordDays {
+  factory _$LoadFoodRecordDays([void updates(LoadFoodRecordDaysBuilder b)]) =>
+      (new LoadFoodRecordDaysBuilder()..update(updates)).build();
 
-  _$LoadFoodRecords._() : super._();
+  _$LoadFoodRecordDays._() : super._();
 
   @override
-  LoadFoodRecords rebuild(void updates(LoadFoodRecordsBuilder b)) =>
+  LoadFoodRecordDays rebuild(void updates(LoadFoodRecordDaysBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LoadFoodRecordsBuilder toBuilder() =>
-      new LoadFoodRecordsBuilder()..replace(this);
+  LoadFoodRecordDaysBuilder toBuilder() =>
+      new LoadFoodRecordDaysBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LoadFoodRecords;
+    return other is LoadFoodRecordDays;
   }
 
   @override
   int get hashCode {
-    return 743544230;
+    return 246537791;
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('LoadFoodRecords').toString();
+    return newBuiltValueToStringHelper('LoadFoodRecordDays').toString();
   }
 }
 
-class LoadFoodRecordsBuilder
-    implements Builder<LoadFoodRecords, LoadFoodRecordsBuilder> {
-  _$LoadFoodRecords _$v;
+class LoadFoodRecordDaysBuilder
+    implements Builder<LoadFoodRecordDays, LoadFoodRecordDaysBuilder> {
+  _$LoadFoodRecordDays _$v;
 
-  LoadFoodRecordsBuilder();
+  LoadFoodRecordDaysBuilder();
 
   @override
-  void replace(LoadFoodRecords other) {
+  void replace(LoadFoodRecordDays other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$LoadFoodRecords;
+    _$v = other as _$LoadFoodRecordDays;
   }
 
   @override
-  void update(void updates(LoadFoodRecordsBuilder b)) {
+  void update(void updates(LoadFoodRecordDaysBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$LoadFoodRecords build() {
-    final _$result = _$v ?? new _$LoadFoodRecords._();
+  _$LoadFoodRecordDays build() {
+    final _$result = _$v ?? new _$LoadFoodRecordDays._();
     replace(_$result);
     return _$result;
   }
