@@ -1,98 +1,56 @@
-library main;
+import 'dart:async';
 
-import 'package:diet_driven/pages/page_factory.dart';
-import 'package:diet_driven/util/data_subscriptions.dart';
-import 'package:diet_driven/widgets/home_screen.dart';
-import 'package:diet_driven/wrappers/theme_config_loader.dart';
-import 'package:logging/logging.dart';
-import 'package:diet_driven/built_redux_rx-master/lib/built_redux_rx.dart';
-import 'package:diet_driven/middleware/epics.dart';
-import 'package:diet_driven/middleware/middleware.dart';
-import 'package:diet_driven/data/page.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart' hide Builder;
-import 'package:diet_driven/actions/actions.dart';
-import 'package:diet_driven/reducers/reducers.dart';
-import 'package:diet_driven/models/app_state.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/material.dart';
 
-import 'package:built_redux/built_redux.dart';
-import 'package:flutter_built_redux/flutter_built_redux.dart';
+import 'package:diet_driven/screens/diary_page.dart';
+import 'package:diet_driven/blocs/blocs.dart';
 
-import 'package:firebase_analytics/firebase_analytics.dart';
 
-void main() => runApp(DDApp());
-
-///
-class DDApp extends StatefulWidget {
-  // Used for navigation middleware
-  static final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-
-  //
-  static FirebaseAnalytics analytics = FirebaseAnalytics();
-//  static FirebaseAnalyticsObserver observer = FirebaseAnalyticsObserver(analytics: analytics);
-
-  //
-  static DataSubscriptions subscriptions = DataSubscriptions();
-
-  // Map routes to pages
-  static Map<String, WidgetBuilder> routes = Map<String, WidgetBuilder>.fromIterable(
-    Page.values,
-    key: (page) => page.toString(),
-    value: (page) => (context) => PageFactory.toPage(page)
-  )..addAll({
-    "/": (context) => HomeScreen()
-  });
-
-  @override
-  State<StatefulWidget> createState() => _DDAppState();
+void main() {
+  BlocSupervisor().delegate = SimpleBlocDelegate();
+  runApp(App());
 }
 
-class _DDAppState extends State<DDApp> {
-  final store = new Store(
-    getBaseReducer(),
-    new AppState(),
-    new Actions(),
-    middleware: [
-      createMiddleware(FirebaseAuth.instance, DDApp.subscriptions),
-      createEpicMiddleware(createEpicBuilder()),
-    ],
-  );
-
+class App extends StatefulWidget {
   @override
-  void initState() {
-    super.initState();
+  State<StatefulWidget> createState() => _AppState();
+}
 
-    // Configure logger
-    Logger.root.level = Level.FINE;
-    Logger.root.onRecord.listen((LogRecord rec) {
-      print("${rec.loggerName} ~ ${rec.level.name} ~ ${rec.time} ~ ${rec.message}");
-    });
-    // TODO: upload logging to google cloud stack driver??
-    store.actions.initApp();
-  }
-
-
-  @override
-  void dispose() {
-    store.actions.disposeApp();
-    store.dispose();
-    super.dispose();
-  }
+class _AppState extends State<App> {
+  final FoodDiaryBloc _foodDiaryBloc = FoodDiaryBloc();
+  final ThemeBloc _themeBloc = ThemeBloc();
+  final AuthenticationBloc _authenticationBloc = AuthenticationBloc();
 
   @override
   Widget build(BuildContext context) {
-     return new ReduxProvider(
-      store: store,
-        child: ThemeConfigLoader(builder: (BuildContext context, String theme) {
+    return BlocProviderTree(
+      blocProviders: [
+        BlocProvider<FoodDiaryBloc>(bloc: _foodDiaryBloc), // TODO: move this lower in hierarchy
+        BlocProvider<ThemeBloc>(bloc: _themeBloc),
+        BlocProvider<AuthenticationBloc>(bloc: _authenticationBloc),
+      ],
+      child: BlocBuilder(
+        bloc: _themeBloc,
+        builder: (_, ThemeData theme) {
           return MaterialApp(
-            navigatorKey: DDApp.navigatorKey,
             title: "Diet Driven",
-            theme: ThemeData(fontFamily: theme),
-            routes: DDApp.routes,
+            home: DiaryPage(), // TODO: replace with routes! (use fluro?)
+            theme: theme,
             initialRoute: "/",
-  //          onUnknownRoute: (settings) => settings.name, // TODO
+//            routes: ,
           );
-      }),
+        },
+      ),
     );
+  }
+
+  @override
+  void dispose() {
+    _foodDiaryBloc.dispose();
+    _themeBloc.dispose();
+    _authenticationBloc.dispose();
+    super.dispose();
   }
 }
