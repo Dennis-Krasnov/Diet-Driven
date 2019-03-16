@@ -1,3 +1,5 @@
+library providers;
+
 export 'edamam.dart';
 export 'firebase_auth.dart';
 export 'firestore.dart';

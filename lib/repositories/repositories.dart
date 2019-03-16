@@ -1,3 +1,5 @@
+library repositories;
+
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/providers/providers.dart';
@@ -20,9 +22,9 @@ class Repository {
     return _firestoreProvider.foodDiaryDelete(userId, daysSinceEpoch);
   }
 
-  ///
+  /// TODO: get last element of stream, convert to normal data!!! - no stream builder needed! (could come from non-stream)
   Stream<BuiltList<FoodDiaryDay>> foodDiaryList(String userId) {
-    return _firestoreProvider.foodDiaryList(userId);
+    return _firestoreProvider.foodDiaryList(userId); //.last;
   }
 
 //  Future<FoodRecordComplete> // just a bunch of nullable stats instead !!!

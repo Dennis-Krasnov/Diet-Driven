@@ -22,6 +22,7 @@ dependencies:
   firebase_auth: ^0.8.1+4
   firebase_remote_config: ^0.1.0+2
   firebase_analytics: ^2.0.2+1
+  google_sign_in: ^4.0.1+1
 
   ## UTILS
   connectivity: ^0.4.2
@@ -39,6 +40,10 @@ dev_dependencies:
   built_value: ^6.2.0
   built_collection: ^4.1.0
   built_value_generator: ^6.2.0
+
+  ## TESTING
+  test: ^1.5.3
+  mockito: ^4.0.0
 
   flutter_launcher_icons: ^0.7.0
 
