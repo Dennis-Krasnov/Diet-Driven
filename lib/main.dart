@@ -26,13 +26,15 @@ void main() {
   BlocSupervisor().delegate = SimpleBlocDelegate();
   runApp(App(
     userRepository: AuthenticationRepository(),
+    foodRepository: FoodRepository(),
   ));
 }
 
 class App extends StatefulWidget {
   final AuthenticationRepository userRepository;
+  final FoodRepository foodRepository;
 
-  App({@required this.userRepository});
+  App({@required this.userRepository, @required this.foodRepository});
 
   @override
   State<StatefulWidget> createState() => _AppState();
@@ -40,6 +42,8 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   AuthenticationRepository get userRepository => widget.userRepository;
+  FoodRepository get foodRepository => widget.foodRepository;
+
 
   AuthenticationBloc authenticationBloc;
   final ThemeBloc themeBloc = ThemeBloc();
@@ -70,7 +74,7 @@ class _AppState extends State<App> {
                   return SplashPage();
                 }
                 if (state is AuthAuthenticated) {
-                  return HomePage();
+                  return HomePage(foodRepository: foodRepository);
                 }
                 if (state is AuthUnauthenticated) {
                   return LoginPage(userRepository: userRepository);

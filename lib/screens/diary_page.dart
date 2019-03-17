@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,56 +8,140 @@ import 'package:diet_driven/blocs/blocs.dart';
 class DiaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final FoodDiaryBloc _foodRecordBloc = BlocProvider.of<FoodDiaryBloc>(context);
-    final ThemeBloc _themeBloc = BlocProvider.of<ThemeBloc>(context);
+    final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
 
-    return Scaffold(
-      appBar: AppBar(title: Text("Diary")),
-      body: BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
-        bloc: _foodRecordBloc,
-        builder: (BuildContext context, FoodDiaryState state) {
-          return Center(
-            child: Text(
-              'food records: ${state is FoodDiaryLoaded ? state.foodDiaryDays : "it's not loaded!"}',
-              style: TextStyle(fontSize: 24.0),
+    return BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
+      bloc: _foodDiaryBloc,
+      builder: (BuildContext context, FoodDiaryState state) {
+        if (state is FoodDiaryLoading) {
+          return Scaffold(appBar: AppBar(title: Text("Diary loading")), body: Center(child: CircularProgressIndicator()), floatingActionButton: FAB());
+        }
+        if (state is FoodDiaryFailed) {
+          return Scaffold(appBar: AppBar(title: Text("Diary failed")), body: Center(child: Text("Failed... ${state.errorMessage}")));
+        }
+        if (state is FoodDiaryLoaded) {
+          return Scaffold(
+            appBar: AppBar(title: Text("Diary")), // TODO: date!!
+            body: Center(
+              child: StreamBuilder<BuiltList<FoodDiaryDay>>(
+                stream: state.foodDiaryDays,
+//                initialData: BuiltList(), // would need to use if (snapshot.connectionState == ConnectionState.waiting) {
+              // However, there's no point!
+                builder: (BuildContext context, AsyncSnapshot<BuiltList<FoodDiaryDay>> snapshot) {
+                  // For debugging
+                  showSubscriptionErrorMessages(snapshot.connectionState, context);
+
+                  if (!snapshot.hasData) {
+                    return CircularProgressIndicator();
+                  }
+
+                  return Column( // TODO: make component, pass on update
+                    children: snapshot.data.map((day) =>
+                      Column(
+                        children: day.foodRecords.map((foodRecord) =>
+                          FoodRecordTile(foodRecord) // TODO: pass on update
+                        ).toList(),
+                      )
+                    ).toList()
+                  );
+                }
+              )
             ),
+            floatingActionButton: FAB(),
           );
-        },
-      ),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () {
-                _foodRecordBloc.dispatch(AddFoodRecord((b) => b..foodRecord = FoodRecord((b) => b..foodName = "##@").toBuilder()));
+        }
+      }
+    );
+  }
+}
+
+class FoodRecordTile extends StatelessWidget {
+  final FoodRecord foodRecord;
+
+  FoodRecordTile(this.foodRecord);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(foodRecord.foodName),
+      subtitle: Text("50 grams"),
+      onTap: () {
+
+      },
+    );
+  }
+}
+
+void showSubscriptionErrorMessages(ConnectionState connection, BuildContext context) {
+  // Never happens..
+  if (connection == ConnectionState.none) {
+    _onWidgetDidBuild(() {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Not currently subscribed"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    });
+  }
+
+  if (connection == ConnectionState.done) {
+    _onWidgetDidBuild(() {
+      Scaffold.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Subscription has ended"),
+          backgroundColor: Colors.red,
+        ),
+      );
+    });
+  }
+}
+
+void _onWidgetDidBuild(Function callback) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    callback();
+  });
+}
+
+class FAB extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final ThemeBloc _themeBloc = BlocProvider.of<ThemeBloc>(context);
+    final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 5.0),
+          child: FloatingActionButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b..foodRecord = FoodRecord((b) => b..foodName = "##@").toBuilder()));
 //                _counterBloc.dispatch(CounterEvent.increment);
-              },
-            ),
+            },
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: Icon(Icons.remove),
-              onPressed: () {
-                _foodRecordBloc.dispatch(LoadFoodRecordDays());
-              },
-            ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 5.0),
+          child: FloatingActionButton(
+            child: Icon(Icons.remove),
+            onPressed: () {
+              _foodDiaryBloc.dispatch(LoadFoodRecordDays());
+            },
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: Icon(Icons.update),
-              onPressed: () {
-                _themeBloc.dispatch(ThemeEvent.toggle);
-              },
-            ),
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(vertical: 5.0),
+          child: FloatingActionButton(
+            child: Icon(Icons.update),
+            onPressed: () {
+              _themeBloc.dispatch(ThemeEvent.toggle);
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

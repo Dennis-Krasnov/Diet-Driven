@@ -9,6 +9,15 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     ..bottomNavigationPages = ListBuilder(["diary", "track", "diet", "profile"]) // TODO: recipes
   );
 
+
+  @override
+  void onTransition(Transition<NavigationEvent, NavigationState> transition) {
+    if (transition.event is NavigateToPage) {
+      // Firebase analytics!
+    }
+    // TODO: call NavigateToPage with default page on initialize!
+  }
+
   @override
   Stream<NavigationState> mapEventToState(NavigationState currentState, NavigationEvent event) async* {
     if (event is NavigateToPage) {

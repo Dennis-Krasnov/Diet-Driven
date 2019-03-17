@@ -6,6 +6,48 @@ part of food_record;
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<FoodRecord> _$foodRecordSerializer = new _$FoodRecordSerializer();
+
+class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
+  @override
+  final Iterable<Type> types = const [FoodRecord, _$FoodRecord];
+  @override
+  final String wireName = 'FoodRecord';
+
+  @override
+  Iterable serialize(Serializers serializers, FoodRecord object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'foodName',
+      serializers.serialize(object.foodName,
+          specifiedType: const FullType(String)),
+    ];
+
+    return result;
+  }
+
+  @override
+  FoodRecord deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new FoodRecordBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'foodName':
+          result.foodName = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
 class _$FoodRecord extends FoodRecord {
   @override
   final String foodName;

@@ -9,8 +9,12 @@ class FoodRepository {
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
   final RemoteConfigProvider _remoteConfigProvider = RemoteConfigProvider();
 
+  // An Observable that provides synchronous access to the last emitted item
+  ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryValue;
+
   ///
   Future<void> foodDiaryUpdate(String userId, int daysSinceEpoch, FoodDiaryDay foodDiaryDay) {
+    print("uploading $foodDiaryDay");
     return _firestoreProvider.foodDiaryUpdate(userId, daysSinceEpoch, foodDiaryDay);
   }
 
@@ -19,11 +23,29 @@ class FoodRepository {
     return _firestoreProvider.foodDiaryDelete(userId, daysSinceEpoch);
   }
 
-  /// TODO: get last element of stream, convert to normal data!!! - no stream builder needed! (could come from non-stream)
-//  BehaviorSubject<BuiltList<FoodDiaryDay>>
-//  A special StreamController that captures the latest item that has been added to the controller, and emits that as the first item to any new listener
-  Stream<BuiltList<FoodDiaryDay>> foodDiaryList(String userId) {
-    return _firestoreProvider.foodDiaryList(userId); //.last;
+  // It will subscribe to the stream as soon as there is a single subscriber (it will only subscribe once)
+  // and unsubscribe (and dispose the subject) when there are no more subscribers.
+  ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryList(String userId) {
+//    return BehaviorSubject<BuiltList<FoodDiaryDay>>()..close(); // subscription ended error message
+//    return BehaviorSubject<BuiltList<FoodDiaryDay>>()..add(null); // continuously waits
+
+
+    // assign only if it's null
+    foodDiaryValue ??= _firestoreProvider.foodDiaryList(userId).delay(Duration(seconds: 3)).shareValue()
+      ..listen((val) => print("Loaded ${val.length} days with ${val.fold(0, (prev, element) => prev + element.foodRecords.length)} records total"));
+      // printing (won't ever unsubscribe) TODO: remove print, multiple blocs listen to subscribe to this behaviour subject through repository!
+      // this would decouple blocs // TODO: place food diary bloc only around food diary page, compose only its subpages
+      // FIXME: if I remove print, and all unsubscribe, then this won't be null and will somehow need to re-initialize itself...
+//    somehow, using BehaviorSubject().isClosed;
+
+      /// do this: just keep a dummy listen (dispose of it alongside home screen), each bloc has a reference to this value observable, can clone, transform it in any way!
+
+
+    return foodDiaryValue;
+  }
+
+  Future<BuiltList<FoodDiaryDay>> foodDiaryListSingle(String userId) {
+    return _firestoreProvider.foodDiaryListSingle(userId);
   }
 
 //  Future<FoodRecordComplete> // just a bunch of nullable stats instead !!!

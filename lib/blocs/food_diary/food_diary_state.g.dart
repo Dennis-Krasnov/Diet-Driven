@@ -66,7 +66,7 @@ class FoodDiaryLoadingBuilder
 
 class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   @override
-  final List<FoodDiaryDay> foodDiaryDays;
+  final ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDays;
 
   factory _$FoodDiaryLoaded([void updates(FoodDiaryLoadedBuilder b)]) =>
       (new FoodDiaryLoadedBuilder()..update(updates)).build();
@@ -108,9 +108,10 @@ class FoodDiaryLoadedBuilder
     implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   _$FoodDiaryLoaded _$v;
 
-  List<FoodDiaryDay> _foodDiaryDays;
-  List<FoodDiaryDay> get foodDiaryDays => _$this._foodDiaryDays;
-  set foodDiaryDays(List<FoodDiaryDay> foodDiaryDays) =>
+  ValueObservable<BuiltList<FoodDiaryDay>> _foodDiaryDays;
+  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDays =>
+      _$this._foodDiaryDays;
+  set foodDiaryDays(ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDays) =>
       _$this._foodDiaryDays = foodDiaryDays;
 
   FoodDiaryLoadedBuilder();

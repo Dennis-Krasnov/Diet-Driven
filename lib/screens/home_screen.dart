@@ -1,3 +1,4 @@
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/screens/diary_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -5,14 +6,29 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
 class HomePage extends StatefulWidget {
+  final FoodRepository foodRepository;
+  HomePage({@required this.foodRepository});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final FoodDiaryBloc foodDiaryBloc = FoodDiaryBloc();
+  FoodRepository get foodRepository => widget.foodRepository;
+
+  FoodDiaryBloc foodDiaryBloc;
   // TODO: move up to main if needed ??? (can access navigation through key?)
   final NavigationBloc navigationBloc = NavigationBloc();
+
+
+  @override
+  void initState() {
+    super.initState();
+    foodDiaryBloc = FoodDiaryBloc(foodRepository: foodRepository);
+    // Start to load firestore stream
+    foodDiaryBloc.dispatch(LoadFoodRecordDays());
+    // FIXME: loading state isn't so useful when only waiting for firestore... (it returns a stream anyway)
+  }
 
   @override
   void dispose() {

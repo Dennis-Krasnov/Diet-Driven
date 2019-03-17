@@ -7,10 +7,9 @@ import 'package:diet_driven/models/models.dart';
 part 'food_diary_day.g.dart';
 
 abstract class FoodDiaryDay implements Built<FoodDiaryDay, FoodDiaryDayBuilder> {
-//  static Serializer<FoodDiaryDay> get serializer => _$foodDiaryDaySerializer;
+  static Serializer<FoodDiaryDay> get serializer => _$foodDiaryDaySerializer;
 
-//  BuiltList<FoodRecord> get foodRecords;
-  List<FoodRecord> get foodRecords;
+  BuiltList<FoodRecord> get foodRecords;
 
   FoodDiaryDay._();
   factory FoodDiaryDay([updates(FoodDiaryDayBuilder b)]) = _$FoodDiaryDay;

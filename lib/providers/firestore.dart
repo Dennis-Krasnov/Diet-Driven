@@ -26,9 +26,17 @@ class FirestoreProvider {
     return ref.delete();
   }
 
-  Stream<BuiltList<FoodDiaryDay>> foodDiaryList(String userId) {
+  Observable<BuiltList<FoodDiaryDay>> foodDiaryList(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
+    print("COLLECTION REFERENCE ${ref.path}");
     return fsDiary.deserializeCollection(ref.snapshots());
+  }
+
+  Future<BuiltList<FoodDiaryDay>> foodDiaryListSingle(String userId) {
+    CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
+    print("COLLECTION REFERENCE ${ref.path}");
+
+    return fsDiary.deserializeSingleCollection(ref.getDocuments());
   }
 }
 
@@ -47,16 +55,22 @@ class FS<T> {
   }
 
   ///
-  Stream<T> deserializeDocument(Stream<DocumentSnapshot> stream) {
-    return stream.map<T>((doc) =>
+  Observable<T> deserializeDocument(Stream<DocumentSnapshot> stream) {
+    return Observable(stream).map<T>((doc) =>
       jsonSerializers.deserialize(_dataWithId(doc))
     );
   }
 
   ///
-  Stream<BuiltList<T>> deserializeCollection(Stream<QuerySnapshot> stream) {
-    return stream.map<BuiltList<T>>((qs) =>
+  Observable<BuiltList<T>> deserializeCollection(Stream<QuerySnapshot> stream) {
+    return Observable(stream).map<BuiltList<T>>((qs) =>
       BuiltList<T>.from(qs.documents.map((doc) => jsonSerializers.deserialize(_dataWithId(doc))))
     );
+  }
+
+  ///
+  Future<BuiltList<T>> deserializeSingleCollection(Future<QuerySnapshot> snapshot) async {
+    var diary = await snapshot;
+    return BuiltList<T>.from(diary.documents.map((doc) => jsonSerializers.deserialize(_dataWithId(doc))));
   }
 }

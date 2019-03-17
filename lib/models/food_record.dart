@@ -6,6 +6,8 @@ import 'package:built_value/serializer.dart';
 part 'food_record.g.dart';
 
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
+  static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
+
   String get foodName;
 
   FoodRecord._();
