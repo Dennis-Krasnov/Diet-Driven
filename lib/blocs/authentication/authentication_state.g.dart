@@ -65,10 +65,17 @@ class AuthUninitializedBuilder
 }
 
 class _$AuthAuthenticated extends AuthAuthenticated {
+  @override
+  final FirebaseUser user;
+
   factory _$AuthAuthenticated([void updates(AuthAuthenticatedBuilder b)]) =>
       (new AuthAuthenticatedBuilder()..update(updates)).build();
 
-  _$AuthAuthenticated._() : super._();
+  _$AuthAuthenticated._({this.user}) : super._() {
+    if (user == null) {
+      throw new BuiltValueNullFieldError('AuthAuthenticated', 'user');
+    }
+  }
 
   @override
   AuthAuthenticated rebuild(void updates(AuthAuthenticatedBuilder b)) =>
@@ -81,17 +88,18 @@ class _$AuthAuthenticated extends AuthAuthenticated {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AuthAuthenticated;
+    return other is AuthAuthenticated && user == other.user;
   }
 
   @override
   int get hashCode {
-    return 245782184;
+    return $jf($jc(0, user.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('AuthAuthenticated').toString();
+    return (newBuiltValueToStringHelper('AuthAuthenticated')..add('user', user))
+        .toString();
   }
 }
 
@@ -99,7 +107,19 @@ class AuthAuthenticatedBuilder
     implements Builder<AuthAuthenticated, AuthAuthenticatedBuilder> {
   _$AuthAuthenticated _$v;
 
+  FirebaseUser _user;
+  FirebaseUser get user => _$this._user;
+  set user(FirebaseUser user) => _$this._user = user;
+
   AuthAuthenticatedBuilder();
+
+  AuthAuthenticatedBuilder get _$this {
+    if (_$v != null) {
+      _user = _$v.user;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(AuthAuthenticated other) {
@@ -116,7 +136,7 @@ class AuthAuthenticatedBuilder
 
   @override
   _$AuthAuthenticated build() {
-    final _$result = _$v ?? new _$AuthAuthenticated._();
+    final _$result = _$v ?? new _$AuthAuthenticated._(user: user);
     replace(_$result);
     return _$result;
   }

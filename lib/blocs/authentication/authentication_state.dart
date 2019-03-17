@@ -1,4 +1,5 @@
 import 'package:built_value/built_value.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 part 'authentication_state.g.dart';
 
@@ -10,6 +11,8 @@ abstract class AuthUninitialized with AuthenticationState implements Built<AuthU
 }
 
 abstract class AuthAuthenticated with AuthenticationState implements Built<AuthAuthenticated, AuthAuthenticatedBuilder> {
+  FirebaseUser get user;
+
   AuthAuthenticated._();
   factory AuthAuthenticated([updates(AuthAuthenticatedBuilder b)]) = _$AuthAuthenticated;
 }

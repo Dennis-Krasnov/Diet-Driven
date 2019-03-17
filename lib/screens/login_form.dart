@@ -19,19 +19,24 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  bool autoValidate = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   LoginBloc get _loginBloc => widget.loginBloc;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginEvent, LoginState>(
       bloc: _loginBloc,
-      builder: (
-          BuildContext context,
-          LoginState state,
-          ) {
+      builder: (BuildContext context, LoginState state) {
         if (state is LoginFailure) {
           _onWidgetDidBuild(() {
             Scaffold.of(context).showSnackBar(
@@ -44,16 +49,40 @@ class _LoginFormState extends State<LoginForm> {
         }
 
         return Form(
+          key: _formKey,
+          autovalidate: autoValidate,
           child: Column(
             children: [
               TextFormField(
-                decoration: InputDecoration(labelText: 'username'),
-                controller: _usernameController,
+                controller: _emailController,
+                decoration: InputDecoration(
+                  labelText: 'email',
+//                  errorText:
+                ),
+                validator: (value) {
+                  if (!isValidEmail(value)) {
+                    return 'Enter Valid Email';
+                  }
+                  return null;
+                },
               ),
               TextFormField(
                 decoration: InputDecoration(labelText: 'password'),
                 controller: _passwordController,
                 obscureText: true,
+                validator: (value) {
+                  if (value.length < 6) {
+                    return 'Password must be at least 6 characters';
+                  }
+                  return null;
+                },
+              ),
+              FlatButton(
+                child: Text("Enter Dennis' cridentials"),
+                onPressed: () {
+                  _emailController.text = "dennis.krasnov@gmail.com";
+                  _passwordController.text = "123456";
+                },
               ),
               RaisedButton(
                 onPressed: state is! LoginLoading ? _onLoginButtonPressed : null,
@@ -69,16 +98,28 @@ class _LoginFormState extends State<LoginForm> {
     );
   }
 
+  void _onLoginButtonPressed() {
+    if(_formKey.currentState.validate()) {
+      _loginBloc.dispatch(LoginButtonPressed((b) => b
+        ..username = _emailController.text
+        ..password = _passwordController.text
+      ));
+    } else {
+      setState(() {
+        autoValidate = true;
+      });
+    }
+  }
+
+  bool isValidEmail(String value) {
+    Pattern pattern = r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+    RegExp regex = new RegExp(pattern);
+    return regex.hasMatch(value);
+  }
+
   void _onWidgetDidBuild(Function callback) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       callback();
     });
-  }
-
-  _onLoginButtonPressed() {
-    _loginBloc.dispatch(LoginButtonPressed((b) => b
-      ..username = _usernameController.text
-      ..password = _passwordController.text
-    ));
   }
 }

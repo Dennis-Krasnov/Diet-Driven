@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of food_diary_state;
+part of 'food_diary_state.dart';
 
 // **************************************************************************
 // BuiltValueGenerator

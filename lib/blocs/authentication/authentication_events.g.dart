@@ -64,14 +64,14 @@ class AppStartedBuilder implements Builder<AppStarted, AppStartedBuilder> {
 
 class _$LoggedIn extends LoggedIn {
   @override
-  final String token;
+  final FirebaseUser user;
 
   factory _$LoggedIn([void updates(LoggedInBuilder b)]) =>
       (new LoggedInBuilder()..update(updates)).build();
 
-  _$LoggedIn._({this.token}) : super._() {
-    if (token == null) {
-      throw new BuiltValueNullFieldError('LoggedIn', 'token');
+  _$LoggedIn._({this.user}) : super._() {
+    if (user == null) {
+      throw new BuiltValueNullFieldError('LoggedIn', 'user');
     }
   }
 
@@ -85,17 +85,17 @@ class _$LoggedIn extends LoggedIn {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LoggedIn && token == other.token;
+    return other is LoggedIn && user == other.user;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, token.hashCode));
+    return $jf($jc(0, user.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('LoggedIn')..add('token', token))
+    return (newBuiltValueToStringHelper('LoggedIn')..add('user', user))
         .toString();
   }
 }
@@ -103,15 +103,15 @@ class _$LoggedIn extends LoggedIn {
 class LoggedInBuilder implements Builder<LoggedIn, LoggedInBuilder> {
   _$LoggedIn _$v;
 
-  String _token;
-  String get token => _$this._token;
-  set token(String token) => _$this._token = token;
+  FirebaseUser _user;
+  FirebaseUser get user => _$this._user;
+  set user(FirebaseUser user) => _$this._user = user;
 
   LoggedInBuilder();
 
   LoggedInBuilder get _$this {
     if (_$v != null) {
-      _token = _$v.token;
+      _user = _$v.user;
       _$v = null;
     }
     return this;
@@ -132,7 +132,7 @@ class LoggedInBuilder implements Builder<LoggedIn, LoggedInBuilder> {
 
   @override
   _$LoggedIn build() {
-    final _$result = _$v ?? new _$LoggedIn._(token: token);
+    final _$result = _$v ?? new _$LoggedIn._(user: user);
     replace(_$result);
     return _$result;
   }

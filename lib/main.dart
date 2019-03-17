@@ -25,12 +25,12 @@ void main() {
 
   BlocSupervisor().delegate = SimpleBlocDelegate();
   runApp(App(
-    userRepository: UserRepository(),
+    userRepository: AuthenticationRepository(),
   ));
 }
 
 class App extends StatefulWidget {
-  final UserRepository userRepository;
+  final AuthenticationRepository userRepository;
 
   App({@required this.userRepository});
 
@@ -39,16 +39,15 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  UserRepository get userRepository => widget.userRepository;
+  AuthenticationRepository get userRepository => widget.userRepository;
 
   AuthenticationBloc authenticationBloc;
   final ThemeBloc themeBloc = ThemeBloc();
-  final FoodDiaryBloc foodDiaryBloc = FoodDiaryBloc(); // TODO: move this lower in hierarchy
 
   @override
   void initState() {
     super.initState();
-    authenticationBloc = AuthenticationBloc(userRepository: userRepository);
+    authenticationBloc = AuthenticationBloc(authRepository: userRepository);
     authenticationBloc.dispatch(AppStarted());
   }
 
@@ -58,7 +57,6 @@ class _AppState extends State<App> {
       blocProviders: [
         BlocProvider<AuthenticationBloc>(bloc: authenticationBloc),
         BlocProvider<ThemeBloc>(bloc: themeBloc),
-        BlocProvider<FoodDiaryBloc>(bloc: foodDiaryBloc), // TODO: move this lower in hierarchy
       ],
       child: BlocBuilder(
         bloc: themeBloc,
@@ -95,7 +93,6 @@ class _AppState extends State<App> {
   void dispose() {
     authenticationBloc.dispose();
     themeBloc.dispose();
-    foodDiaryBloc.dispose();
     super.dispose();
   }
 }

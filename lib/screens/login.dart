@@ -7,7 +7,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 
 
 class LoginPage extends StatefulWidget {
-  final UserRepository userRepository;
+  final AuthenticationRepository userRepository;
 
   LoginPage({Key key, @required this.userRepository}): assert(userRepository != null), super(key: key);
 
@@ -19,13 +19,13 @@ class _LoginPageState extends State<LoginPage> {
   LoginBloc _loginBloc;
   AuthenticationBloc _authenticationBloc;
 
-  UserRepository get _userRepository => widget.userRepository;
+  AuthenticationRepository get _userRepository => widget.userRepository;
 
   @override
   void initState() {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     _loginBloc = LoginBloc(
-      userRepository: _userRepository,
+      authenticationRepository: _userRepository,
       authenticationBloc: _authenticationBloc,
     );
     super.initState();

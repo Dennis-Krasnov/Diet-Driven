@@ -10,7 +10,7 @@ import 'test_utils.dart';
 
 void main() {
   // Mocks
-  UserRepository userRepository;
+  AuthenticationRepository authRepository;
   FirebaseAuth firebaseAuth;
 //  GoogleSignIn googleSignIn;
 //  GoogleSignInAccount googleSignInAccount;
@@ -18,12 +18,12 @@ void main() {
   AuthenticationBloc authenticationBloc;
 
   setUp(() {
-    userRepository = MockUserRepository();
+    authRepository = MockAuthenticationRepository();
     firebaseAuth = FirebaseAuthMock();
 //    googleSignIn = GoogleSignInMock();
 //    googleSignInAccount = GoogleSignInAccountMock();
 
-    authenticationBloc = AuthenticationBloc(userRepository: userRepository);
+    authenticationBloc = AuthenticationBloc(authRepository: authRepository);
 
   });
 
@@ -37,8 +37,8 @@ void main() {
   });
 
   group("App started", () {
-    test("Emits [uninitialized, unauthenticated] for invalid token", () {
-      when(userRepository.hasToken()).thenAnswer((_) => Future.value(false));
+    test("Emits [uninitialized, unauthenticated] for no current user", () {
+      when(authRepository.currentUser).thenAnswer((_) => Future.value(null));
 
       expectLater(
         authenticationBloc.state,
@@ -50,27 +50,49 @@ void main() {
 
       authenticationBloc.dispatch(AppStarted());
     });
+
+    test("Emits [uninitialized, authenticated] for persisted current user", () {
+      FirebaseUser user = FirebaseUserMock();
+      when(user.uid).thenReturn("aslfkjslkej2i09f2m0");
+
+      when(authRepository.currentUser).thenAnswer((_) => Future.value(user));
+
+      expectLater(
+          authenticationBloc.state,
+          emitsInOrder([
+            AuthUninitialized(),
+            AuthAuthenticated((b) => b..user = user),
+          ])
+      );
+
+      authenticationBloc.dispatch(AppStarted());
+    });
   });
 
   group("Logged in", () {
-    test("Emits [uninitialized, loading, authenticated] when token is persisted", () {
+    test("Emits [uninitialized, loading, authenticated] when current user is logged in", () {
+      FirebaseUser user = FirebaseUserMock(); // for both anonymous and signed in
+      when(user.uid).thenReturn("aslfkjslkej2i09f2m0");
+
+      // TODO: check for global settings loaded
+
       expectLater(
         authenticationBloc.state,
         emitsInOrder([
           AuthUninitialized(),
           AuthLoading(),
-          AuthAuthenticated(),
+          AuthAuthenticated((b) => b..user = user),
         ])
       );
 
       authenticationBloc.dispatch(LoggedIn((b) => b
-        ..token = "instance.token"
+        ..user = user
       ));
     });
   });
 
   group("Logged out", () {
-    test("Emits [uninitialized, loading, unauthenticated] when token is deleted", () {
+    test("Emits [uninitialized, loading, unauthenticated] when user signs out", () {
       expectLater(
         authenticationBloc.state,
         emitsInOrder([
@@ -84,4 +106,5 @@ void main() {
     });
   });
 
+  // TODO: failure states!
 }
