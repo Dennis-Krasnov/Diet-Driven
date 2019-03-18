@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/blocs/stream_data/stream_data.dart';
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
@@ -13,6 +13,8 @@ import 'package:rxdart/rxdart.dart';
 
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   final FoodRepository foodRepository;
+  StreamDataBloc<BuiltList<FoodDiaryDay>> foodDiaryDayStreamBloc;
+
 
   FoodDiaryBloc({@required this.foodRepository}) : assert(foodRepository != null);
 
@@ -34,13 +36,16 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
   ///
   Stream<FoodDiaryState> _mapLoadFoodDiaryToState() async* {
-//    var diary = foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2").value;
-    var diary = foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2"); // TODO: listen to this stream!
+    // Don't re-initialize existing stream data subscription
+    foodDiaryDayStreamBloc ??= StreamDataBloc<BuiltList<FoodDiaryDay>>()
+      ..dispatch(StreamDataInit<BuiltList<FoodDiaryDay>>((b) => b
+        ..stream = foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2")
+      ));
 
-    // TODO: do other things or having a loading state is a bit redundant
-
+//    await otherData
     yield FoodDiaryLoaded((b) => b
-      ..foodDiaryDays = diary
+      ..foodDiaryDayStreamBloc = foodDiaryDayStreamBloc
+//      ..otherData
     );
   }
 
@@ -53,9 +58,10 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 //      );
 
       print("gonna add a food!");
+      // FIXME !!!
 
 
-    print(currentState.foodDiaryDays.length);
+//    print(currentState.foodDiaryDays.length);
 //    print(currentState.foodDiaryDays.length.then((i) => print(i)));
 
 //    ValueObservable<BuiltList<FoodDiaryDay>> val = currentState.foodDiaryDays.shareValue(); // uses Behaviorsubject in background
@@ -84,6 +90,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   }
 }
 
+// generic:
 //try {
 //final todos = await this.todosRepository.loadTodos();
 //yield TodosLoaded(

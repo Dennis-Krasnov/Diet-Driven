@@ -31,15 +31,18 @@ class FoodRepository {
 
 
     // assign only if it's null
-    foodDiaryValue ??= _firestoreProvider.foodDiaryList(userId).delay(Duration(seconds: 3)).shareValue()
-      ..listen((val) => print("Loaded ${val.length} days with ${val.fold(0, (prev, element) => prev + element.foodRecords.length)} records total"));
-      // printing (won't ever unsubscribe) TODO: remove print, multiple blocs listen to subscribe to this behaviour subject through repository!
-      // this would decouple blocs // TODO: place food diary bloc only around food diary page, compose only its subpages
-      // FIXME: if I remove print, and all unsubscribe, then this won't be null and will somehow need to re-initialize itself...
-//    somehow, using BehaviorSubject().isClosed;
-
+    foodDiaryValue ??= _firestoreProvider.foodDiaryList(userId).shareValue(); // delay(Duration(seconds: 3)).
+//      ..listen((val) => print("Loaded ${val.length} days with ${val.fold(0, (prev, element) => prev + element.foodRecords.length)} records total"));
       /// do this: just keep a dummy listen (dispose of it alongside home screen), each bloc has a reference to this value observable, can clone, transform it in any way!
+      // ie. TODO: create a subscription of fooddiarybloc init, close it on fooddiarybloc displose!!!!!!!!!!!!!
 
+    // this way I have decoupled loading state and firestore data, can show 'skeleton screens' instead of real data...
+    // https://www.sitepoint.com/how-to-speed-up-your-ux-with-skeleton-screens/ see facebook section!! - make loading state a blank screen!
+//    https://medium.com/flutter-community/make-shimmer-effect-in-flutter-dbe7a1bfd980
+    // loading state would only depend on everything but firestore (mission critical data like settings, whether allowed to see page at all)
+    // this is ok, no need to create another state... people try to accomplish this intentionally!
+
+    // try to use similar thing for displaying food information: show cached basic info, show skeleton loading for the micronutrients until loaded! (if possible)
 
     return foodDiaryValue;
   }
@@ -63,3 +66,9 @@ class FoodRepository {
 //    return filteredData;
 //  }
 }
+
+// old rambling:
+// printing (won't ever unsubscribe) TODO: remove print, multiple blocs listen to subscribe to this behaviour subject through repository!
+// this would decouple blocs // TODO: place food diary bloc only around food diary page, compose only its subpages
+// FIXME: if I remove print, and all unsubscribe, then this won't be null and will somehow need to re-initialize itself...
+//    somehow, using BehaviorSubject().isClosed;

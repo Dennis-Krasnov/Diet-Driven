@@ -6,6 +6,7 @@ export 'food_diary/food_diary.dart';
 export 'login/login.dart';
 export 'navigation/navigation.dart';
 export 'settings/settings.dart';
+export 'stream_data/stream_data.dart';
 export 'theme/theme.dart';
 export 'user/user.dart';
 

@@ -1,5 +1,6 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
+import 'package:diet_driven/blocs/blocs.dart';
 
 import 'package:diet_driven/models/models.dart';
 import 'package:rxdart/rxdart.dart';
@@ -7,8 +8,6 @@ import 'package:rxdart/rxdart.dart';
 part 'food_diary_state.g.dart';
 
 abstract class FoodDiaryState {}
-
-// Instead of adding a loading flag, I'm creating a separate state, as foodDiaryDays shouldn't be accessible from loading state.
 
 ///
 abstract class FoodDiaryLoading with FoodDiaryState implements Built<FoodDiaryLoading, FoodDiaryLoadingBuilder> {
@@ -18,9 +17,8 @@ abstract class FoodDiaryLoading with FoodDiaryState implements Built<FoodDiaryLo
 
 ///
 abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-//  BuiltList<FoodDiaryDay> get foodDiaryDays;
-//  Observable<BuiltList<FoodDiaryDay>> get foodDiaryDays;
-  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDays;
+//  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDays;
+  StreamDataBloc<BuiltList<FoodDiaryDay>> get foodDiaryDayStreamBloc;
 
   FoodDiaryLoaded._();
   factory FoodDiaryLoaded([updates(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;

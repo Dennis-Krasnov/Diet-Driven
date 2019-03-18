@@ -23,29 +23,71 @@ class DiaryPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(title: Text("Diary")), // TODO: date!!
             body: Center(
-              child: StreamBuilder<BuiltList<FoodDiaryDay>>(
-                stream: state.foodDiaryDays,
-//                initialData: BuiltList(), // would need to use if (snapshot.connectionState == ConnectionState.waiting) {
-              // However, there's no point!
-                builder: (BuildContext context, AsyncSnapshot<BuiltList<FoodDiaryDay>> snapshot) {
-                  // For debugging
-                  showSubscriptionErrorMessages(snapshot.connectionState, context);
-
-                  if (!snapshot.hasData) {
+              child: BlocBuilder<StreamDataEvent, StreamDataState>( // safer to do two bloc builders!
+                bloc: state.foodDiaryDayStreamBloc,
+                builder: (BuildContext context, StreamDataState state) {
+                  if (state is StreamDataNone) {
+                    _onWidgetDidBuild(() {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Not currently subscribed"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
                     return CircularProgressIndicator();
                   }
-
-                  return Column( // TODO: make component, pass on update
-                    children: snapshot.data.map((day) =>
-                      Column(
-                        children: day.foodRecords.map((foodRecord) =>
-                          FoodRecordTile(foodRecord) // TODO: pass on update
-                        ).toList(),
-                      )
-                    ).toList()
-                  );
+                  if (state is StreamDataWaiting) {
+                    // TODO: skeletons page!
+                    return CircularProgressIndicator();
+                  }
+                  if (state is StreamDataDone) {
+                    _onWidgetDidBuild(() {
+                      Scaffold.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("Subscription has ended"),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
+                    return CircularProgressIndicator();
+                  }
+                  if (state is StreamDataActive<BuiltList<FoodDiaryDay>>) {
+                    return Column( // TODO: make component, pass on update
+                      children: state.data.map((day) =>
+                        Column(
+                          children: day.foodRecords.map((foodRecord) =>
+                            FoodRecordTile(foodRecord) // TODO: pass on update
+                          ).toList(),
+                        )
+                      ).toList()
+                    );
+                  }
                 }
-              )
+              ),
+//              child: StreamBuilder<BuiltList<FoodDiaryDay>>(
+//                stream: state.foodDiaryDays,
+////                initialData: BuiltList(), // would need to use if (snapshot.connectionState == ConnectionState.waiting) {
+//              // However, there's no point!
+//                builder: (BuildContext context, AsyncSnapshot<BuiltList<FoodDiaryDay>> snapshot) {
+//                  // For debugging
+//                  showSubscriptionErrorMessages(snapshot.connectionState, context);
+//
+//                  if (!snapshot.hasData) {
+//                    return CircularProgressIndicator();
+//                  }
+//
+//                  return Column( // TODO: make component, pass on update
+//                    children: snapshot.data.map((day) =>
+//                      Column(
+//                        children: day.foodRecords.map((foodRecord) =>
+//                          FoodRecordTile(foodRecord) // TODO: pass on update
+//                        ).toList(),
+//                      )
+//                    ).toList()
+//                  );
+//                }
+//              )
             ),
             floatingActionButton: FAB(),
           );
@@ -72,30 +114,6 @@ class FoodRecordTile extends StatelessWidget {
   }
 }
 
-void showSubscriptionErrorMessages(ConnectionState connection, BuildContext context) {
-  // Never happens..
-  if (connection == ConnectionState.none) {
-    _onWidgetDidBuild(() {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Not currently subscribed"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    });
-  }
-
-  if (connection == ConnectionState.done) {
-    _onWidgetDidBuild(() {
-      Scaffold.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Subscription has ended"),
-          backgroundColor: Colors.red,
-        ),
-      );
-    });
-  }
-}
 
 void _onWidgetDidBuild(Function callback) {
   WidgetsBinding.instance.addPostFrameCallback((_) {

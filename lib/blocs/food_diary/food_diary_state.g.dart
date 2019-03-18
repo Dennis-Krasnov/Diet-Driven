@@ -66,14 +66,15 @@ class FoodDiaryLoadingBuilder
 
 class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   @override
-  final ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDays;
+  final StreamDataBloc<BuiltList<FoodDiaryDay>> foodDiaryDayStreamBloc;
 
   factory _$FoodDiaryLoaded([void updates(FoodDiaryLoadedBuilder b)]) =>
       (new FoodDiaryLoadedBuilder()..update(updates)).build();
 
-  _$FoodDiaryLoaded._({this.foodDiaryDays}) : super._() {
-    if (foodDiaryDays == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryLoaded', 'foodDiaryDays');
+  _$FoodDiaryLoaded._({this.foodDiaryDayStreamBloc}) : super._() {
+    if (foodDiaryDayStreamBloc == null) {
+      throw new BuiltValueNullFieldError(
+          'FoodDiaryLoaded', 'foodDiaryDayStreamBloc');
     }
   }
 
@@ -88,18 +89,19 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryLoaded && foodDiaryDays == other.foodDiaryDays;
+    return other is FoodDiaryLoaded &&
+        foodDiaryDayStreamBloc == other.foodDiaryDayStreamBloc;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, foodDiaryDays.hashCode));
+    return $jf($jc(0, foodDiaryDayStreamBloc.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryLoaded')
-          ..add('foodDiaryDays', foodDiaryDays))
+          ..add('foodDiaryDayStreamBloc', foodDiaryDayStreamBloc))
         .toString();
   }
 }
@@ -108,17 +110,18 @@ class FoodDiaryLoadedBuilder
     implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   _$FoodDiaryLoaded _$v;
 
-  ValueObservable<BuiltList<FoodDiaryDay>> _foodDiaryDays;
-  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDays =>
-      _$this._foodDiaryDays;
-  set foodDiaryDays(ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDays) =>
-      _$this._foodDiaryDays = foodDiaryDays;
+  StreamDataBloc<BuiltList<FoodDiaryDay>> _foodDiaryDayStreamBloc;
+  StreamDataBloc<BuiltList<FoodDiaryDay>> get foodDiaryDayStreamBloc =>
+      _$this._foodDiaryDayStreamBloc;
+  set foodDiaryDayStreamBloc(
+          StreamDataBloc<BuiltList<FoodDiaryDay>> foodDiaryDayStreamBloc) =>
+      _$this._foodDiaryDayStreamBloc = foodDiaryDayStreamBloc;
 
   FoodDiaryLoadedBuilder();
 
   FoodDiaryLoadedBuilder get _$this {
     if (_$v != null) {
-      _foodDiaryDays = _$v.foodDiaryDays;
+      _foodDiaryDayStreamBloc = _$v.foodDiaryDayStreamBloc;
       _$v = null;
     }
     return this;
@@ -139,8 +142,8 @@ class FoodDiaryLoadedBuilder
 
   @override
   _$FoodDiaryLoaded build() {
-    final _$result =
-        _$v ?? new _$FoodDiaryLoaded._(foodDiaryDays: foodDiaryDays);
+    final _$result = _$v ??
+        new _$FoodDiaryLoaded._(foodDiaryDayStreamBloc: foodDiaryDayStreamBloc);
     replace(_$result);
     return _$result;
   }
