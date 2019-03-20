@@ -1,5 +1,6 @@
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/screens/diary_page.dart';
+import 'package:diet_driven/screens/penguin_animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,6 +39,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocProviderTree(
       blocProviders: [
         BlocProvider<FoodDiaryBloc>(bloc: foodDiaryBloc),
@@ -86,10 +88,12 @@ Widget generatePage(String page) {
     return TestPage(page);
   }
   if (page == "profile") {
+    // TODO: checks hasDietDrivenAccess in its bloc (nest subscription bloc)
+    // also check autentication bloc to display correct content
     return TestPage(page);
   }
+  // TODO: if (page == "recipes")
   return TestPage("FAILURE");
-//  if (page == "recipes")
 }
 
 class TestPage extends StatelessWidget {
@@ -116,29 +120,3 @@ class TestPage extends StatelessWidget {
     );
   }
 }
-
-
-//class HomePage extends StatelessWidget {
-//  @override
-//  Widget build(BuildContext context) {
-//    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-//
-//
-//
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text('Home'),
-//      ),
-//      body: Container(
-//        child: Center(
-//          child: RaisedButton(
-//            child: Text('logout'),
-//            onPressed: () {
-//              authenticationBloc.dispatch(LoggedOut());
-//            },
-//          )
-//        ),
-//      ),
-//    );
-//  }
-//}

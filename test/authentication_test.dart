@@ -58,11 +58,11 @@ void main() {
       when(authRepository.currentUser).thenAnswer((_) => Future.value(user));
 
       expectLater(
-          authenticationBloc.state,
-          emitsInOrder([
-            AuthUninitialized(),
-            AuthAuthenticated((b) => b..user = user),
-          ])
+        authenticationBloc.state,
+        emitsInOrder([
+          AuthUninitialized(),
+          AuthAuthenticated((b) => b..user = user),
+        ])
       );
 
       authenticationBloc.dispatch(AppStarted());

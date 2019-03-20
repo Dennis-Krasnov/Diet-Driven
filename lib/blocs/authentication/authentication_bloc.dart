@@ -27,7 +27,7 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     else if (event is LoggedIn) {
       yield AuthLoading();
       // TODO: load global settings!
-      await Future.delayed(Duration(seconds: 2));
+      await Future.delayed(Duration(seconds: 5));
       yield AuthAuthenticated((b) => b.user = event.user);
     }
     else if (event is LoggedOut) {

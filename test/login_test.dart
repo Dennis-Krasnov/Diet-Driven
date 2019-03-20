@@ -42,8 +42,8 @@ void main() {
     test("Logs in on correct cridentials", () {
       FirebaseUser user = FirebaseUserMock();
       when(userRepository.signInWithEmail(
-          argThat(startsWith("valid")),
-          argThat(startsWith("valid"))
+        argThat(startsWith("valid")),
+        argThat(startsWith("valid"))
       )).thenAnswer((_) => Future.value(user));
 
       expectLater(
@@ -78,6 +78,7 @@ void main() {
             LoginFailure((b) => b.error = "ERROR"),
           ])
       ).then((_) { // TODO: use async await
+        // FIXME
 //        verifyNever(authenticationBloc.dispatch(LoggedIn((b) => b..user = user)));
       });
 

@@ -7,6 +7,7 @@ export 'login/login.dart';
 export 'navigation/navigation.dart';
 export 'settings/settings.dart';
 export 'stream_data/stream_data.dart';
+export 'subscription/subscription.dart';
 export 'theme/theme.dart';
 export 'user/user.dart';
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:diet_driven/screens/penguin_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:bloc/bloc.dart';
@@ -104,7 +105,46 @@ class _AppState extends State<App> {
 // TODO: make animation loader
 class LoadingIndicator extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => Center(
-    child: CircularProgressIndicator(),
-  );
+  Widget build(BuildContext context) {
+    return new Scaffold(
+      body: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(child: PenguinAnimation(), height: 200, width: 200,),
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                "loading...",
+                style: TextStyle(
+                  fontSize: 36,
+                  fontWeight: FontWeight.bold
+                ),
+              ),
+            ),
+          )
+//          FractionalTranslation(
+//            translation: Offset(0.0, 0.5),
+//            child: Text(
+//              "Loading...",
+//            )
+//  //          child: new Container(
+//  //            alignment: new FractionalOffset(0.0, 0.0),
+//  //            decoration: new BoxDecoration(
+//  //              border: new Border.all(
+//  //                color: Colors.blue.withOpacity(0.5),
+//  //                width: 50.0,
+//  //              ),
+//  //              shape: BoxShape.circle,
+//  //            ),
+//  //          )
+//          )
+        ],
+        fit: StackFit.expand,
+      )
+    );
+  }
 }

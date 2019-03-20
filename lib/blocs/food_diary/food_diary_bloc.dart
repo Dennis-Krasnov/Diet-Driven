@@ -21,6 +21,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   @override
   FoodDiaryState get initialState => FoodDiaryLoading();
 
+
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryState currentState, FoodDiaryEvent event) async* {
     if (event is LoadFoodRecordDays) {

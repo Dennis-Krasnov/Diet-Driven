@@ -40,5 +40,8 @@ class StreamDataBloc<T> extends Bloc<StreamDataEvent, StreamDataState> {
     if (event is StreamDoneArrived) {
       yield StreamDataDone();
     }
+    // TODO: pause and resume events!?
+//    subscription.pause()
+//    subscription.resume()
   }
 }

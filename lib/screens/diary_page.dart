@@ -26,10 +26,15 @@ class DiaryPage extends StatelessWidget {
               child: BlocBuilder<StreamDataEvent, StreamDataState>( // safer to do two bloc builders!
                 bloc: state.foodDiaryDayStreamBloc,
                 builder: (BuildContext context, StreamDataState state) {
+                  if (state is StreamDataDone) {
+
+                  }
+
                   if (state is StreamDataNone) {
                     _onWidgetDidBuild(() {
                       Scaffold.of(context).showSnackBar(
                         SnackBar(
+//                          content: Text("Not currently subscribed"),
                           content: Text("Not currently subscribed"),
                           backgroundColor: Colors.red,
                         ),
