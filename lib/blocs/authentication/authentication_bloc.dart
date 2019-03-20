@@ -9,6 +9,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   AuthenticationBloc({@required this.authRepository}) : assert(authRepository != null);
 
+  // FIXME: listen to authentication.authStateChanged, update accordingly
+
   @override
   AuthenticationState get initialState => AuthUninitialized();
 
@@ -37,6 +39,8 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
     }
     else {
       print("AUTHENTICATION EVENT NOT DEFINED: $event");
+      // TODO: setup logging on all unexpected events
+      // TODO: make assertions on class and function arguments
     }
   }
 }

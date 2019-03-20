@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:diet_driven/screens/penguin_animation.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:bloc/bloc.dart';
@@ -25,10 +26,25 @@ void main() {
   });
 
   BlocSupervisor().delegate = SimpleBlocDelegate();
+
+  //
   runApp(App(
     userRepository: AuthenticationRepository(),
     foodRepository: FoodRepository(),
   ));
+
+  // TODO: create bloc to manage system preferences, orientation, overlays (eg. for maximizing screen) on per-page basis
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+//    statusBarColor:
+//  systemNavigationBarColor:
+//    systemNavigationBarIconBrightness:
+  ));
+
+  //
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown
+  ]);
 }
 
 class App extends StatefulWidget {

@@ -8,7 +8,6 @@ import 'package:diet_driven/repositories/repositories.dart';
 
 final StreamMatcher doesNotEmit = emitsInOrder([]);
 
-
 // Mock repositories
 class MockAuthenticationRepository extends Mock implements AuthenticationRepository {}
 
