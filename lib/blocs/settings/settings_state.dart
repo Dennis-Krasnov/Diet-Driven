@@ -1,0 +1,23 @@
+import 'package:built_value/built_value.dart';
+import 'package:diet_driven/models/models.dart';
+
+part 'settings_state.g.dart';
+
+abstract class SettingsState {}
+
+abstract class SettingsUninitialized with SettingsState implements Built<SettingsUninitialized, SettingsUninitializedBuilder> {
+  SettingsUninitialized._();
+  factory SettingsUninitialized([updates(SettingsUninitializedBuilder b)]) = _$SettingsUninitialized;
+}
+
+abstract class SettingsLoading with SettingsState implements Built<SettingsLoading, SettingsLoadingBuilder> {
+  SettingsLoading._();
+  factory SettingsLoading([updates(SettingsLoadingBuilder b)]) = _$SettingsLoading;
+}
+
+abstract class SettingsLoaded with SettingsState implements Built<SettingsLoaded, SettingsLoadedBuilder> {
+  Settings get settings;
+
+  SettingsLoaded._();
+  factory SettingsLoaded([updates(SettingsLoadedBuilder b)]) = _$SettingsLoaded;
+}

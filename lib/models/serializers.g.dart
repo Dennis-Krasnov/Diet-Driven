@@ -9,6 +9,8 @@ part of serializers;
 Serializers _$serializers = (new Serializers().toBuilder()
       ..add(FoodDiaryDay.serializer)
       ..add(FoodRecord.serializer)
+      ..add(NavigationSettings.serializer)
+      ..add(UserData.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FoodRecord)]),
           () => new ListBuilder<FoodRecord>()))

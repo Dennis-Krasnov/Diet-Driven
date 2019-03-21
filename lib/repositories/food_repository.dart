@@ -51,6 +51,21 @@ class FoodRepository {
     return _firestoreProvider.foodDiaryListSingle(userId);
   }
 
+  Future<BuiltList<FoodRecord>> searchForFood(String search) {
+    // Parsed is matching result (give it a star or something - boolean flag)
+    // manually create my own objects! create fromJSON methods in provider...
+    // hints is all other result...
+
+    // cache next page uri if called again... (hide from bloc details)
+    return _edamamProvider.searchForFood(search);
+  }
+
+// TODO: create enum for each measure, make a method here that does a switch, converts to edamam url...
+//  Name	URI
+//  Ounce	http://www.edamam.com/ontologies/edamam.owl#Measure_ounce
+//  Gram	http://www.edamam.com/ontologies/edamam.owl#Measure_gram
+//  Pound	http://www.edamam.com/ontologies/edamam.owl#Measure_pound
+
 //  Future<FoodRecordComplete> // just a bunch of nullable stats instead !!!
   Future<FoodRecord> foodRecordInfo(FoodRecord foodRecord) {
     // Cached server, edamam, load food statistics, history, pictures, everything about it
@@ -72,3 +87,39 @@ class FoodRepository {
 // this would decouple blocs // TODO: place food diary bloc only around food diary page, compose only its subpages
 // FIXME: if I remove print, and all unsubscribe, then this won't be null and will somehow need to re-initialize itself...
 //    somehow, using BehaviorSubject().isClosed;
+
+//{"text":"apple",
+//  "parsed": [
+//    {"food": {
+//      "foodId":"food_bnbh4ycaqj9as0a9z7h9xb2wmgat",
+//      "uri":"http://www.edamam.com/ontologies/edamam.owl#Food_09003",
+//      "label":"Apples, raw, with skin",
+//      "nutrients": {
+//        "ENERC_KCAL":52.0,
+//        "PROCNT":0.26,
+//        "FAT":0.17,
+//        "CHOCDF":13.81,
+//        "FIBTG":2.4
+//      },
+//      "category": "Generic foods",
+//      "categoryLabel":"food"
+//    }}
+//  ],
+//  "hints": [
+//    {"food":{
+//      "foodId":"food_bnbh4ycaqj9as0a9z7h9xb2wmgat",
+//      "uri":"http://www.edamam.com/ontologies/edamam.owl#Food_09003",
+//      "label":"Apples, raw, with skin",
+//      "nutrients":{"ENERC_KCAL":52.0,"PROCNT":0.26,"FAT":0.17,"CHOCDF":13.81,"FIBTG":2.4},
+//      "category":"Generic foods","categoryLabel":"food"},
+//      "measures":[
+//        {
+//          "uri":"http://www.edamam.com/ontologies/edamam.owl#Measure_unit",
+//          "label": "Whole",
+//          "qualified":[
+//            [{"uri":"http://www.edamam.com/ontologies/edamam.owl#Qualifier_small","label":"small"}],
+//            [{"uri":"http://www.edamam.com/ontologies/edamam.owl#Qualifier_medium","label":"medium"}],
+//            [{"uri":"http://www.edamam.com/ontologies/edamam.owl#Qualifier_large","label":"large"}]
+//          ]
+//        },
+//        {"uri":"http://www.edamam.com/ontologies/

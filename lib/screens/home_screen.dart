@@ -8,7 +8,9 @@ import 'package:diet_driven/blocs/blocs.dart';
 
 class HomePage extends StatefulWidget {
   final FoodRepository foodRepository;
-  HomePage({@required this.foodRepository});
+  final SettingsRepository settingsRepository;
+  HomePage({@required this.foodRepository, @required this.settingsRepository}) :
+      assert(foodRepository != null), assert(settingsRepository != null);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -16,19 +18,34 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   FoodRepository get foodRepository => widget.foodRepository;
+  SettingsRepository get settingsRepository => widget.settingsRepository;
 
   FoodDiaryBloc foodDiaryBloc;
-  // TODO: move up to main if needed ??? (can access navigation through key?)
+  SettingsBloc settingsBloc;
+
   final NavigationBloc navigationBloc = NavigationBloc();
 
 
   @override
   void initState() {
     super.initState();
+
+    // FIXME: pass down? or do on dependencies update where context is available
+    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+
     foodDiaryBloc = FoodDiaryBloc(foodRepository: foodRepository);
-    // Start to load firestore stream
+    settingsBloc = SettingsBloc(
+      settingsRepository: settingsRepository,
+      authenticationBloc: _authenticationBloc
+    );
+
+    // Subscriptions
     foodDiaryBloc.dispatch(LoadFoodRecordDays());
-    // FIXME: loading state isn't so useful when only waiting for firestore... (it returns a stream anyway)
+    // fixme: this was supposed to be called from auth bloc to await critical settings...
+    // TODO: make main page also take into consideration settings state!!!!
+//    settingsBloc.dispatch(LoadInitialSettings((b) => b
+//      ..userId = (_authenticationBloc.currentState as AuthAuthenticated).user.uid
+//    )); // FIXME: this is broken (i put initial value to loaded!)
   }
 
   @override

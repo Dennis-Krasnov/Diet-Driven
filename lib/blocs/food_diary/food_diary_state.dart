@@ -17,8 +17,7 @@ abstract class FoodDiaryLoading with FoodDiaryState implements Built<FoodDiaryLo
 
 ///
 abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-//  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDays;
-  StreamDataBloc<BuiltList<FoodDiaryDay>> get foodDiaryDayStreamBloc;
+  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDayStream;
 
   FoodDiaryLoaded._();
   factory FoodDiaryLoaded([updates(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;

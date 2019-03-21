@@ -1,0 +1,218 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+part of 'settings_state.dart';
+
+// **************************************************************************
+// BuiltValueGenerator
+// **************************************************************************
+
+class _$SettingsUninitialized extends SettingsUninitialized {
+  factory _$SettingsUninitialized(
+          [void updates(SettingsUninitializedBuilder b)]) =>
+      (new SettingsUninitializedBuilder()..update(updates)).build();
+
+  _$SettingsUninitialized._() : super._();
+
+  @override
+  SettingsUninitialized rebuild(void updates(SettingsUninitializedBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SettingsUninitializedBuilder toBuilder() =>
+      new SettingsUninitializedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SettingsUninitialized;
+  }
+
+  @override
+  int get hashCode {
+    return 212135114;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('SettingsUninitialized').toString();
+  }
+}
+
+class SettingsUninitializedBuilder
+    implements Builder<SettingsUninitialized, SettingsUninitializedBuilder> {
+  _$SettingsUninitialized _$v;
+
+  SettingsUninitializedBuilder();
+
+  @override
+  void replace(SettingsUninitialized other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SettingsUninitialized;
+  }
+
+  @override
+  void update(void updates(SettingsUninitializedBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SettingsUninitialized build() {
+    final _$result = _$v ?? new _$SettingsUninitialized._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SettingsLoading extends SettingsLoading {
+  factory _$SettingsLoading([void updates(SettingsLoadingBuilder b)]) =>
+      (new SettingsLoadingBuilder()..update(updates)).build();
+
+  _$SettingsLoading._() : super._();
+
+  @override
+  SettingsLoading rebuild(void updates(SettingsLoadingBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SettingsLoadingBuilder toBuilder() =>
+      new SettingsLoadingBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SettingsLoading;
+  }
+
+  @override
+  int get hashCode {
+    return 482380299;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('SettingsLoading').toString();
+  }
+}
+
+class SettingsLoadingBuilder
+    implements Builder<SettingsLoading, SettingsLoadingBuilder> {
+  _$SettingsLoading _$v;
+
+  SettingsLoadingBuilder();
+
+  @override
+  void replace(SettingsLoading other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SettingsLoading;
+  }
+
+  @override
+  void update(void updates(SettingsLoadingBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SettingsLoading build() {
+    final _$result = _$v ?? new _$SettingsLoading._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SettingsLoaded extends SettingsLoaded {
+  @override
+  final Settings settings;
+
+  factory _$SettingsLoaded([void updates(SettingsLoadedBuilder b)]) =>
+      (new SettingsLoadedBuilder()..update(updates)).build();
+
+  _$SettingsLoaded._({this.settings}) : super._() {
+    if (settings == null) {
+      throw new BuiltValueNullFieldError('SettingsLoaded', 'settings');
+    }
+  }
+
+  @override
+  SettingsLoaded rebuild(void updates(SettingsLoadedBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SettingsLoadedBuilder toBuilder() =>
+      new SettingsLoadedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SettingsLoaded && settings == other.settings;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, settings.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('SettingsLoaded')
+          ..add('settings', settings))
+        .toString();
+  }
+}
+
+class SettingsLoadedBuilder
+    implements Builder<SettingsLoaded, SettingsLoadedBuilder> {
+  _$SettingsLoaded _$v;
+
+  SettingsBuilder _settings;
+  SettingsBuilder get settings => _$this._settings ??= new SettingsBuilder();
+  set settings(SettingsBuilder settings) => _$this._settings = settings;
+
+  SettingsLoadedBuilder();
+
+  SettingsLoadedBuilder get _$this {
+    if (_$v != null) {
+      _settings = _$v.settings?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(SettingsLoaded other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SettingsLoaded;
+  }
+
+  @override
+  void update(void updates(SettingsLoadedBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SettingsLoaded build() {
+    _$SettingsLoaded _$result;
+    try {
+      _$result = _$v ?? new _$SettingsLoaded._(settings: settings.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'settings';
+        settings.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'SettingsLoaded', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+// ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

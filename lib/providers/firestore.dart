@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:diet_driven/models/food_diary_day.dart';
+import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/models/serializers.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -34,9 +35,25 @@ class FirestoreProvider {
 
   Future<BuiltList<FoodDiaryDay>> foodDiaryListSingle(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
-    print("COLLECTION REFERENCE ${ref.path}");
+    print("FOOD COLLECTION REFERENCE ${ref.path}");
 
     return fsDiary.deserializeSingleCollection(ref.getDocuments());
+  }
+
+  /// SETTINGS
+  final fsUserData = FS<UserData>();
+  final fsSettings = FS<SettingsDocument>();
+
+  Observable<BuiltList<SettingsDocument>> settingsDocumentList(String userId) {
+    CollectionReference ref = _firestore.collection("${userPath(userId)}/settings");
+    print("SETTINGS COLLECTION REFERENCE ${ref.path}");
+    return fsSettings.deserializeCollection(ref.snapshots());
+  }
+
+  Observable<UserData> userDataDocument(String userId) {
+    DocumentReference ref = _firestore.document("${userPath(userId)}");
+    print("USER DATA DOCUMENT REFERENCE ${ref.path}");
+    return fsUserData.deserializeDocument(ref.snapshots());
   }
 }
 

@@ -24,16 +24,10 @@ void main() {
 //    googleSignInAccount = GoogleSignInAccountMock();
 
     authenticationBloc = AuthenticationBloc(authRepository: authRepository);
-
   });
 
   test("Initial state is correct", () {
     expect(authenticationBloc.initialState, AuthUninitialized());
-  });
-
-  test("Dispose doesn't emit new state", () {
-    expectLater(authenticationBloc.state, doesNotEmit);
-    authenticationBloc.dispose();
   });
 
   group("App started", () {

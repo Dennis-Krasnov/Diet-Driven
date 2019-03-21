@@ -11,6 +11,10 @@ part 'serializers.g.dart';
 @SerializersFor(const [
   FoodRecord,
   FoodDiaryDay,
+
+  UserData,
+  NavigationSettings,
+
 //  Uncertainty,
 ])
 

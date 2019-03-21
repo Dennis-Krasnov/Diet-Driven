@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/blocs/stream_data/stream_data.dart';
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
@@ -13,8 +12,8 @@ import 'package:rxdart/rxdart.dart';
 
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   final FoodRepository foodRepository;
-  StreamDataBloc<BuiltList<FoodDiaryDay>> foodDiaryDayStreamBloc;
 
+  ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDayStream;
 
   FoodDiaryBloc({@required this.foodRepository}) : assert(foodRepository != null);
 
@@ -38,14 +37,15 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   ///
   Stream<FoodDiaryState> _mapLoadFoodDiaryToState() async* {
     // Don't re-initialize existing stream data subscription
-    foodDiaryDayStreamBloc ??= StreamDataBloc<BuiltList<FoodDiaryDay>>()
-      ..dispatch(StreamDataInit<BuiltList<FoodDiaryDay>>((b) => b
-        ..stream = foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2")
-      ));
+    foodDiaryDayStream ??= foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2");
+//    foodDiaryDayStreamBloc ??= StreamDataBloc<BuiltList<FoodDiaryDay>>()
+//      ..dispatch(StreamDataInit<BuiltList<FoodDiaryDay>>((b) => b
+//        ..stream = foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2")
+//      ));
 
 //    await otherData
     yield FoodDiaryLoaded((b) => b
-      ..foodDiaryDayStreamBloc = foodDiaryDayStreamBloc
+      ..foodDiaryDayStream = foodDiaryDayStream
 //      ..otherData
     );
   }
@@ -59,6 +59,9 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 //      );
 
       print("gonna add a food!");
+
+      var searchResult = await foodRepository.searchForFood("apple");
+      print(searchResult);
       // FIXME !!!
 
 

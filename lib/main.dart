@@ -31,6 +31,7 @@ void main() {
   runApp(App(
     userRepository: AuthenticationRepository(),
     foodRepository: FoodRepository(),
+    settingsRepository: SettingsRepository(),
   ));
 
   // TODO: create bloc to manage system preferences, orientation, overlays (eg. for maximizing screen) on per-page basis
@@ -50,8 +51,9 @@ void main() {
 class App extends StatefulWidget {
   final AuthenticationRepository userRepository;
   final FoodRepository foodRepository;
+  final SettingsRepository settingsRepository;
 
-  App({@required this.userRepository, @required this.foodRepository});
+  App({@required this.userRepository, @required this.foodRepository, @required this.settingsRepository});
 
   @override
   State<StatefulWidget> createState() => _AppState();
@@ -60,6 +62,7 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   AuthenticationRepository get userRepository => widget.userRepository;
   FoodRepository get foodRepository => widget.foodRepository;
+  SettingsRepository get settingsRepository => widget.settingsRepository;
 
 
   AuthenticationBloc authenticationBloc;
@@ -70,6 +73,7 @@ class _AppState extends State<App> {
     super.initState();
     authenticationBloc = AuthenticationBloc(authRepository: userRepository);
     authenticationBloc.dispatch(AppStarted());
+    // TODO: settingsBloc.dispatch(manually fetch remote config!)
   }
 
   @override
@@ -91,7 +95,7 @@ class _AppState extends State<App> {
                   return SplashPage();
                 }
                 if (state is AuthAuthenticated) {
-                  return HomePage(foodRepository: foodRepository);
+                  return HomePage(foodRepository: foodRepository, settingsRepository: settingsRepository,);
                 }
                 if (state is AuthUnauthenticated) {
                   return LoginPage(userRepository: userRepository);
