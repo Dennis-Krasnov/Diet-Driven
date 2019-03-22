@@ -27,11 +27,3 @@ abstract class AuthUnauthenticated with AuthenticationState implements Built<Aut
   @override
   String toString() => runtimeType.toString();
 }
-
-abstract class AuthLoading with AuthenticationState implements Built<AuthLoading, AuthLoadingBuilder> {
-  AuthLoading._();
-  factory AuthLoading([updates(AuthLoadingBuilder b)]) = _$AuthLoading;
-
-  @override
-  String toString() => runtimeType.toString();
-}

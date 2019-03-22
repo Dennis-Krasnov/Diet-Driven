@@ -87,7 +87,7 @@ class _AppState extends State<App> {
     );
 
     // Initialize blocs
-    authenticationBloc.dispatch(AppStarted());
+//    authenticationBloc.dispatch(AppStarted());
     configurationBloc.dispatch(FetchConfiguration());
   }
 
@@ -118,7 +118,7 @@ class _AppState extends State<App> {
                     if (configurationState is ConfigurationUninitialized || authenticationState is AuthUninitialized) {
                       return SplashPage();
                     }
-                    if (configurationState is ConfigurationLoading || authenticationState is AuthLoading) {
+                    if (configurationState is ConfigurationLoading) {
                       return LoadingIndicator();
                     }
 

@@ -8,13 +8,13 @@ part 'authentication_events.g.dart';
 abstract class AuthenticationEvent {}
 
 /// check if the user is currently authenticated or not.
-abstract class AppStarted with AuthenticationEvent implements Built<AppStarted, AppStartedBuilder> {
-  AppStarted._();
-  factory AppStarted([updates(AppStartedBuilder b)]) = _$AppStarted;
-
-  @override
-  String toString() => runtimeType.toString();
-}
+//abstract class AppStarted with AuthenticationEvent implements Built<AppStarted, AppStartedBuilder> {
+//  AppStarted._();
+//  factory AppStarted([updates(AppStartedBuilder b)]) = _$AppStarted;
+//
+//  @override
+//  String toString() => runtimeType.toString();
+//}
 
 /// user has successfully logged in.
 abstract class LoggedIn with AuthenticationEvent implements Built<LoggedIn, LoggedInBuilder> {
@@ -31,4 +31,9 @@ abstract class LoggedOut with AuthenticationEvent implements Built<LoggedOut, Lo
 
   @override
   String toString() => runtimeType.toString();
+}
+
+abstract class Disconnected with AuthenticationEvent implements Built<Disconnected, DisconnectedBuilder> {
+  Disconnected._();
+  factory Disconnected([updates(DisconnectedBuilder b)]) = _$Disconnected;
 }

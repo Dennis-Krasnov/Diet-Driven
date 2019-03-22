@@ -1,19 +1,47 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:diet_driven/blocs/authentication/authentication.dart';
-import 'package:diet_driven/repositories/repositories.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
+import 'package:diet_driven/blocs/authentication/authentication.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
+  final Logger log = new Logger("authentication bloc");
+
   final AuthenticationRepository authRepository;
 
-  AuthenticationBloc({
-    @required this.authRepository
-  }) : assert(authRepository != null);
-
   StreamSubscription<FirebaseUser> onAuthStateChangedSubscription;
+
+  AuthenticationBloc({@required this.authRepository}) {
+    assert(authRepository != null);
+
+    // Called immediately on app start
+    onAuthStateChangedSubscription = authRepository.onAuthStateChangedStream.listen((user) {
+      log.fine("on auth state change trigger");
+      log.fine("user: $user");
+
+      if (user != null) {
+        // Triggers settings reload
+        dispatch(LoggedIn((b) => b.user = user));
+        log.info("authenticated with $user");
+      }
+      else {
+        if (currentState is AuthUninitialized) {
+          // User not persisted
+          dispatch(Disconnected());
+          log.info("user not persisted");
+        }
+        if (currentState is AuthAuthenticated) {
+          // Timeout or other unexpected authentication termination
+          dispatch(Disconnected());
+          log.info("disconnected");
+        }
+      }
+    });
+  }
 
   @override
   AuthenticationState get initialState => AuthUninitialized();
@@ -26,53 +54,20 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationState currentState, AuthenticationEvent event) async* {
-    if (event is AppStarted) {
-
-      // Load global config settings
-//      TODO: fetchRemoteConfig (settings bloc)
-
-      // Persisted authentication
-      final FirebaseUser user = await authRepository.currentUser;
-      if (user != null) {
-        yield AuthAuthenticated((b) => b.user = user);
-      }
-
-      // Timeout or other unexpected authentication termination
-      AuthenticationState timeoutState;
-//      onAuthStateChangedSubscription = authRepository.onAuthStateChangedStream.listen((user) =>
-//        // Safely triggers on LoggedOut event
-//        timeoutState = user == null ? AuthUnauthenticated() : null
-//      );
-      onAuthStateChangedSubscription = authRepository.onAuthStateChangedStream.listen((user) {
-        if (user != null) {
-          // Triggers settings reload
-          timeoutState = AuthAuthenticated((b) => b.user = user);
-        } else {
-          // Safely triggers on LoggedOut event
-          timeoutState = AuthUnauthenticated();
-        }
-      });
-
-      if (timeoutState != null) {
-        yield timeoutState;
-      }
-    }
-    else if (event is LoggedIn) {
-      yield AuthLoading();
-      // TODO: load user settings! (critical) (settings bloc)
-
-      await Future.delayed(Duration(seconds: 5));
+    if (event is LoggedIn) {
+//      await Future.delayed(Duration(seconds: 5));
       yield AuthAuthenticated((b) => b.user = event.user);
+      log.info("logged in");
     }
-    else if (event is LoggedOut) {
-      yield AuthLoading();
-      await authRepository.signOut(); // can't throw
+    // TODO: combine loggedOut and disconnected
+    if (event is LoggedOut) {
+      await authRepository.signOut();
       yield AuthUnauthenticated();
+      log.info("logged out");
     }
-    else {
-      print("AUTHENTICATION EVENT NOT DEFINED: $event");
-      // TODO: setup logging on all unexpected events
-      // TODO: make assertions on class and function arguments
+    if (event is Disconnected) {
+      yield AuthUnauthenticated();
+      log.info("trigger-based quit");
     }
   }
 }

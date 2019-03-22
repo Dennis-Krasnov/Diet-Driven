@@ -14,7 +14,8 @@ class AuthenticationRepository {
     return user.uid;
   }
 
-  ValueObservable<FirebaseUser> get onAuthStateChangedStream => FirebaseAuth.instance.onAuthStateChanged;
+  // TODO: provider returns in observable form
+  ValueObservable<FirebaseUser> get onAuthStateChangedStream => Observable(FirebaseAuth.instance.onAuthStateChanged).shareValue();
 
   Future<bool> get isCurrentUserAnonymous async {
     var user = await FirebaseAuth.instance.currentUser();

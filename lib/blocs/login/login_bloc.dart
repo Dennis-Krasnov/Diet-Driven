@@ -34,7 +34,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         final FirebaseUser user = await authenticationRepository.signInWithEmail(event.username, event.password);
-        authenticationBloc.dispatch(LoggedIn((b) => b..user = user));
+//        authenticationBloc.dispatch(LoggedIn((b) => b..user = user)); // OPTIMIZE: not necessary with auth subscription
         yield LoginInitial();
       } catch (error) {
         // TODO: catch different types of errors once they improve error handling in android

@@ -5,6 +5,7 @@ import 'package:mockito/mockito.dart';
 
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:rxdart/rxdart.dart';
 
 import '../test_utils.dart';
 
@@ -17,13 +18,22 @@ void main() {
 
   AuthenticationBloc authenticationBloc;
 
+  ///
+  void mockAuthenticationRepositoryStream(List<FirebaseUser> events) {
+    when(authRepository.onAuthStateChangedStream).thenAnswer((_) =>
+        Observable<FirebaseUser>.fromIterable(events).shareValue()
+    );
+    authenticationBloc = AuthenticationBloc(authRepository: authRepository);
+  }
+
   setUp(() {
     authRepository = MockAuthenticationRepository();
     firebaseAuth = FirebaseAuthMock();
+    mockAuthenticationRepositoryStream([]); // No events by default
 //    googleSignIn = GoogleSignInMock();
 //    googleSignInAccount = GoogleSignInAccountMock();
 
-    authenticationBloc = AuthenticationBloc(authRepository: authRepository);
+//    authenticationBloc = AuthenticationBloc(authRepository: authRepository);
   });
 
   test("Initial state is correct", () {
@@ -31,8 +41,21 @@ void main() {
   });
 
   group("App started", () {
-    test("Emits [uninitialized, unauthenticated] for no current user", () {
-      when(authRepository.currentUser).thenAnswer((_) => Future.value(null));
+    test("Persists current user", () {
+      FirebaseUser user = FirebaseUserMock();
+      mockAuthenticationRepositoryStream([user]);
+
+      expectLater(
+        authenticationBloc.state,
+        emitsInOrder([
+          AuthUninitialized(),
+          AuthAuthenticated((b) => b..user = user),
+        ])
+      );
+    });
+
+    test("Unauthenticated current user", () {
+      mockAuthenticationRepositoryStream([null]);
 
       expectLater(
         authenticationBloc.state,
@@ -41,64 +64,84 @@ void main() {
           AuthUnauthenticated(),
         ])
       );
-
-      authenticationBloc.dispatch(AppStarted());
     });
+  });
 
-    test("Emits [uninitialized, authenticated] for persisted current user", () {
+  group("Logged in", ()
+  {
+    test("Authentices from manual sign in", () {
       FirebaseUser user = FirebaseUserMock();
-      when(user.uid).thenReturn("aslfkjslkej2i09f2m0");
-
-      when(authRepository.currentUser).thenAnswer((_) => Future.value(user));
 
       expectLater(
         authenticationBloc.state,
         emitsInOrder([
           AuthUninitialized(),
-          AuthAuthenticated((b) => b..user = user),
+          AuthAuthenticated((b) => b..user = user)
         ])
       );
 
-      authenticationBloc.dispatch(AppStarted());
+      authenticationBloc.dispatch(LoggedIn((b) => b..user = user));
     });
-  });
 
-  group("Logged in", () {
-    test("Emits [uninitialized, loading, authenticated] when current user is logged in", () {
-      FirebaseUser user = FirebaseUserMock(); // for both anonymous and signed in
-      when(user.uid).thenReturn("aslfkjslkej2i09f2m0");
-
-      // TODO: check for global settings loaded
+    test("Authentices from tiggered sign in", () {
+      FirebaseUser user = FirebaseUserMock();
+      mockAuthenticationRepositoryStream(
+          [null, user]); // TODO: see what real one emits, try just [user]
 
       expectLater(
         authenticationBloc.state,
         emitsInOrder([
           AuthUninitialized(),
-          AuthLoading(),
-          AuthAuthenticated((b) => b..user = user),
+          AuthUnauthenticated(),
+          AuthAuthenticated((b) => b..user = user)
         ])
       );
-
-      authenticationBloc.dispatch(LoggedIn((b) => b
-        ..user = user
-      ));
     });
+
+    test("Reauthenticated from triggred user change", () {
+      // user a -> user b
+    });
+
   });
+
 
   group("Logged out", () {
-    test("Emits [uninitialized, loading, unauthenticated] when user signs out", () {
+//    test("Unauthentices from manual sign out", () {
+//      FirebaseUser user = FirebaseUserMock();
+//      mockAuthenticationRepositoryStream([null, user]);
+//      when(authRepository.signOut()).thenThrow(Error());
+////          .thenAnswer((_) => Future.delayed(Duration(seconds: 1))); // FIXME: future void return...
+//
+//      expectLater(
+//        authenticationBloc.state,
+//        emitsInOrder([
+//          AuthUninitialized(),
+//          AuthUnauthenticated(),
+//          AuthAuthenticated((b) => b..user = user),
+//          AuthUnauthenticated(),
+//        ])
+//      ).then((_) {
+////        verify(authRepository.signOut()).called(1);
+//      });
+//
+//      authenticationBloc.dispatch(LoggedOut());
+//    });
+
+    test("Unauthentices from tiggered sign out", () {
+      FirebaseUser user = FirebaseUserMock();
+      mockAuthenticationRepositoryStream([null, user, null]);
+
       expectLater(
         authenticationBloc.state,
         emitsInOrder([
           AuthUninitialized(),
-          AuthLoading(),
+          AuthUnauthenticated(),
+          AuthAuthenticated((b) => b..user = user),
           AuthUnauthenticated(),
         ])
-      );
-
-      authenticationBloc.dispatch(LoggedOut());
+      ).then((_) {
+        verifyNever(authRepository.signOut());
+      });
     });
   });
-
-  // TODO: failure states!
 }

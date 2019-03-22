@@ -6,57 +6,6 @@ part of 'authentication_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$AppStarted extends AppStarted {
-  factory _$AppStarted([void updates(AppStartedBuilder b)]) =>
-      (new AppStartedBuilder()..update(updates)).build();
-
-  _$AppStarted._() : super._();
-
-  @override
-  AppStarted rebuild(void updates(AppStartedBuilder b)) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  AppStartedBuilder toBuilder() => new AppStartedBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is AppStarted;
-  }
-
-  @override
-  int get hashCode {
-    return 805240986;
-  }
-}
-
-class AppStartedBuilder implements Builder<AppStarted, AppStartedBuilder> {
-  _$AppStarted _$v;
-
-  AppStartedBuilder();
-
-  @override
-  void replace(AppStarted other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$AppStarted;
-  }
-
-  @override
-  void update(void updates(AppStartedBuilder b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$AppStarted build() {
-    final _$result = _$v ?? new _$AppStarted._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$LoggedIn extends LoggedIn {
   @override
   final FirebaseUser user;
@@ -179,6 +128,63 @@ class LoggedOutBuilder implements Builder<LoggedOut, LoggedOutBuilder> {
   @override
   _$LoggedOut build() {
     final _$result = _$v ?? new _$LoggedOut._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$Disconnected extends Disconnected {
+  factory _$Disconnected([void updates(DisconnectedBuilder b)]) =>
+      (new DisconnectedBuilder()..update(updates)).build();
+
+  _$Disconnected._() : super._();
+
+  @override
+  Disconnected rebuild(void updates(DisconnectedBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DisconnectedBuilder toBuilder() => new DisconnectedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is Disconnected;
+  }
+
+  @override
+  int get hashCode {
+    return 695619079;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('Disconnected').toString();
+  }
+}
+
+class DisconnectedBuilder
+    implements Builder<Disconnected, DisconnectedBuilder> {
+  _$Disconnected _$v;
+
+  DisconnectedBuilder();
+
+  @override
+  void replace(Disconnected other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$Disconnected;
+  }
+
+  @override
+  void update(void updates(DisconnectedBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$Disconnected build() {
+    final _$result = _$v ?? new _$Disconnected._();
     replace(_$result);
     return _$result;
   }
