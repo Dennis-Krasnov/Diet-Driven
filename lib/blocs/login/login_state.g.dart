@@ -29,11 +29,6 @@ class _$LoginInitial extends LoginInitial {
   int get hashCode {
     return 864398879;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('LoginInitial').toString();
-  }
 }
 
 class LoginInitialBuilder
@@ -85,11 +80,6 @@ class _$LoginLoading extends LoginLoading {
   @override
   int get hashCode {
     return 75875038;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('LoginLoading').toString();
   }
 }
 

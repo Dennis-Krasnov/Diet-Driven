@@ -19,7 +19,7 @@ import 'package:diet_driven/blocs/blocs.dart';
 void main() {
   // Configure logger
   // const [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
-  Logger.root.level = Level.INFO; //Level.FINE
+  Logger.root.level = Level.FINE; //Level.INFO
   var format = new DateFormat("jms");
   Logger.root.onRecord.listen((LogRecord rec) {
     print("${rec.loggerName} ~ ${rec.level.name} ~ ${format.format(rec.time)} ~ ${rec.message}");
@@ -66,14 +66,29 @@ class _AppState extends State<App> {
 
 
   AuthenticationBloc authenticationBloc;
+  SettingsBloc settingsBloc;
+  ConfigurationBloc configurationBloc;
   final ThemeBloc themeBloc = ThemeBloc();
 
   @override
   void initState() {
     super.initState();
+
     authenticationBloc = AuthenticationBloc(authRepository: userRepository);
+
+    settingsBloc = SettingsBloc(
+      settingsRepository: settingsRepository,
+      authenticationBloc: authenticationBloc
+    );
+
+    configurationBloc = ConfigurationBloc(
+      settingsRepository: settingsRepository,
+      settingsBloc: settingsBloc
+    );
+
+    // Initialize blocs
     authenticationBloc.dispatch(AppStarted());
-    // TODO: settingsBloc.dispatch(manually fetch remote config!)
+    configurationBloc.dispatch(FetchConfiguration());
   }
 
   @override
@@ -81,42 +96,56 @@ class _AppState extends State<App> {
     return BlocProviderTree(
       blocProviders: [
         BlocProvider<AuthenticationBloc>(bloc: authenticationBloc),
+        BlocProvider<SettingsBloc>(bloc: settingsBloc),
+        BlocProvider<ConfigurationBloc>(bloc: configurationBloc),
         BlocProvider<ThemeBloc>(bloc: themeBloc),
       ],
+      // Theme
       child: BlocBuilder(
         bloc: themeBloc,
         builder: (_, ThemeData theme) {
           return MaterialApp(
             title: "Diet Driven",
-            home: BlocBuilder<AuthenticationEvent, AuthenticationState>(
-              bloc: authenticationBloc,
-              builder: (BuildContext context, AuthenticationState state) {
-                if (state is AuthUninitialized) {
-                  return SplashPage();
-                }
-                if (state is AuthAuthenticated) {
-                  return HomePage(foodRepository: foodRepository, settingsRepository: settingsRepository,);
-                }
-                if (state is AuthUnauthenticated) {
-                  return LoginPage(userRepository: userRepository);
-                }
-                if (state is AuthLoading) {
-                  return LoadingIndicator();
-                }
-              },
+            // Configuration
+            home: BlocBuilder<ConfigurationEvent, ConfigurationState>(
+              bloc: configurationBloc,
+              builder: (BuildContext context, ConfigurationState configurationState) {
+                // Authentication
+                return BlocBuilder<AuthenticationEvent, AuthenticationState>(
+                  bloc: authenticationBloc,
+                  builder: (BuildContext context, AuthenticationState authenticationState) {
+                    // Loading
+                    if (configurationState is ConfigurationUninitialized || authenticationState is AuthUninitialized) {
+                      return SplashPage();
+                    }
+                    if (configurationState is ConfigurationLoading || authenticationState is AuthLoading) {
+                      return LoadingIndicator();
+                    }
+
+                    // Application
+                    if (authenticationState is AuthAuthenticated) {
+                      return HomePage(foodRepository: foodRepository, settingsRepository: settingsRepository,);
+                    }
+                    if (authenticationState is AuthUnauthenticated) {
+                      return LoginPage(userRepository: userRepository);
+                    }
+                  },
+                );
+              }
             ),
             theme: theme,
             initialRoute: "/", // TODO: replace with fluro?
-//            routes: ,
           );
-        },
-      ),
+        }
+      )
     );
   }
 
   @override
   void dispose() {
     authenticationBloc.dispose();
+    settingsBloc.dispose();
+    configurationBloc.dispose();
     themeBloc.dispose();
     super.dispose();
   }

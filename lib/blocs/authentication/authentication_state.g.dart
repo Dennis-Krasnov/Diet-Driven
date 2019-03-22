@@ -30,11 +30,6 @@ class _$AuthUninitialized extends AuthUninitialized {
   int get hashCode {
     return 764423904;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('AuthUninitialized').toString();
-  }
 }
 
 class AuthUninitializedBuilder
@@ -166,11 +161,6 @@ class _$AuthUnauthenticated extends AuthUnauthenticated {
   int get hashCode {
     return 467607408;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('AuthUnauthenticated').toString();
-  }
 }
 
 class AuthUnauthenticatedBuilder
@@ -222,11 +212,6 @@ class _$AuthLoading extends AuthLoading {
   @override
   int get hashCode {
     return 1054918839;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('AuthLoading').toString();
   }
 }
 

@@ -32,11 +32,6 @@ class _$SubscriptionUninitialized extends SubscriptionUninitialized {
   int get hashCode {
     return 201393689;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('SubscriptionUninitialized').toString();
-  }
 }
 
 class SubscriptionUninitializedBuilder
@@ -90,11 +85,6 @@ class _$NoSubscription extends NoSubscription {
   @override
   int get hashCode {
     return 632906267;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('NoSubscription').toString();
   }
 }
 

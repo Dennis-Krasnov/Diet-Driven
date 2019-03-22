@@ -31,11 +31,6 @@ class _$SettingsUninitialized extends SettingsUninitialized {
   int get hashCode {
     return 212135114;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('SettingsUninitialized').toString();
-  }
 }
 
 class SettingsUninitializedBuilder
@@ -88,11 +83,6 @@ class _$SettingsLoading extends SettingsLoading {
   @override
   int get hashCode {
     return 482380299;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('SettingsLoading').toString();
   }
 }
 

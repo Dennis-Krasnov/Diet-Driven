@@ -32,11 +32,6 @@ class _$LoadExistingSubscription extends LoadExistingSubscription {
   int get hashCode {
     return 162373163;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('LoadExistingSubscription').toString();
-  }
 }
 
 class LoadExistingSubscriptionBuilder
@@ -168,11 +163,6 @@ class _$Unsubscribed extends Unsubscribed {
   @override
   int get hashCode {
     return 444864888;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('Unsubscribed').toString();
   }
 }
 

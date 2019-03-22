@@ -30,11 +30,6 @@ class _$FoodDiaryLoading extends FoodDiaryLoading {
   int get hashCode {
     return 754067686;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('FoodDiaryLoading').toString();
-  }
 }
 
 class FoodDiaryLoadingBuilder

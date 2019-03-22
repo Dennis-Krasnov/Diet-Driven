@@ -30,11 +30,6 @@ class _$LoadFoodRecordDays extends LoadFoodRecordDays {
   int get hashCode {
     return 246537791;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('LoadFoodRecordDays').toString();
-  }
 }
 
 class LoadFoodRecordDaysBuilder

@@ -8,11 +8,17 @@ abstract class SettingsState {}
 abstract class SettingsUninitialized with SettingsState implements Built<SettingsUninitialized, SettingsUninitializedBuilder> {
   SettingsUninitialized._();
   factory SettingsUninitialized([updates(SettingsUninitializedBuilder b)]) = _$SettingsUninitialized;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 abstract class SettingsLoading with SettingsState implements Built<SettingsLoading, SettingsLoadingBuilder> {
   SettingsLoading._();
   factory SettingsLoading([updates(SettingsLoadingBuilder b)]) = _$SettingsLoading;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 abstract class SettingsLoaded with SettingsState implements Built<SettingsLoaded, SettingsLoadedBuilder> {

@@ -9,6 +9,9 @@ abstract class FoodDiaryEvent {}
 abstract class LoadFoodRecordDays with FoodDiaryEvent implements Built<LoadFoodRecordDays, LoadFoodRecordDaysBuilder> {
   LoadFoodRecordDays._();
   factory LoadFoodRecordDays([updates(LoadFoodRecordDaysBuilder b)]) = _$LoadFoodRecordDays;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 abstract class AddFoodRecord with FoodDiaryEvent implements Built<AddFoodRecord, AddFoodRecordBuilder> {

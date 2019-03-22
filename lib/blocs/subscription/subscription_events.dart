@@ -10,6 +10,9 @@ abstract class SubscriptionEvent {}
 abstract class LoadExistingSubscription with SubscriptionEvent implements Built<LoadExistingSubscription, LoadExistingSubscriptionBuilder> {
   LoadExistingSubscription._();
   factory LoadExistingSubscription([updates(LoadExistingSubscriptionBuilder b)]) = _$LoadExistingSubscription;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 // TODO: rename auth appstarted event as well (can't have duplicates)
@@ -17,6 +20,8 @@ abstract class LoadExistingSubscription with SubscriptionEvent implements Built<
 //  AppStarted._();
 //  factory AppStarted([updates(AppStartedBuilder b)]) = _$AppStarted;
 //}
+
+// TODO: change all to present tense!
 
 ///
 abstract class Subscribed with SubscriptionEvent implements Built<Subscribed, SubscribedBuilder> {
@@ -30,4 +35,7 @@ abstract class Subscribed with SubscriptionEvent implements Built<Subscribed, Su
 abstract class Unsubscribed with SubscriptionEvent implements Built<Unsubscribed, UnsubscribedBuilder> {
   Unsubscribed._();
   factory Unsubscribed([updates(UnsubscribedBuilder b)]) = _$Unsubscribed;
+
+  @override
+  String toString() => runtimeType.toString();
 }

@@ -8,12 +8,18 @@ abstract class LoginState {}
 abstract class LoginInitial with LoginState implements Built<LoginInitial, LoginInitialBuilder> {
   LoginInitial._();
   factory LoginInitial([updates(LoginInitialBuilder b)]) = _$LoginInitial;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 /// when we are validating credentials
 abstract class LoginLoading with LoginState implements Built<LoginLoading, LoginLoadingBuilder> {
   LoginLoading._();
   factory LoginLoading([updates(LoginLoadingBuilder b)]) = _$LoginLoading;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 /// login attempt has failed.

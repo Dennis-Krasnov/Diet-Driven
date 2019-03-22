@@ -9,8 +9,13 @@ import 'package:diet_driven/blocs/blocs.dart';
 class HomePage extends StatefulWidget {
   final FoodRepository foodRepository;
   final SettingsRepository settingsRepository;
-  HomePage({@required this.foodRepository, @required this.settingsRepository}) :
-      assert(foodRepository != null), assert(settingsRepository != null);
+
+  HomePage({
+    @required this.foodRepository,
+    @required this.settingsRepository
+  }) :
+    assert(foodRepository != null),
+    assert(settingsRepository != null);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -21,42 +26,28 @@ class _HomePageState extends State<HomePage> {
   SettingsRepository get settingsRepository => widget.settingsRepository;
 
   FoodDiaryBloc foodDiaryBloc;
-  SettingsBloc settingsBloc;
-
+  // TODO: tracking, profile, recipes, exercise blocs
   final NavigationBloc navigationBloc = NavigationBloc();
-
 
   @override
   void initState() {
     super.initState();
-
-    // FIXME: pass down? or do on dependencies update where context is available
-    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-
     foodDiaryBloc = FoodDiaryBloc(foodRepository: foodRepository);
-    settingsBloc = SettingsBloc(
-      settingsRepository: settingsRepository,
-      authenticationBloc: _authenticationBloc
-    );
 
-    // Subscriptions
+    // Initialize blocs
     foodDiaryBloc.dispatch(LoadFoodRecordDays());
-    // fixme: this was supposed to be called from auth bloc to await critical settings...
-    // TODO: make main page also take into consideration settings state!!!!
-//    settingsBloc.dispatch(LoadInitialSettings((b) => b
-//      ..userId = (_authenticationBloc.currentState as AuthAuthenticated).user.uid
-//    )); // FIXME: this is broken (i put initial value to loaded!)
+    navigationBloc.dispatch(NavigateToPage((b) => b..page = "track")); // TODO: default page via. settings bloc
   }
 
   @override
   void dispose() {
     foodDiaryBloc.dispose();
+    navigationBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-
     return BlocProviderTree(
       blocProviders: [
         BlocProvider<FoodDiaryBloc>(bloc: foodDiaryBloc),

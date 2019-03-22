@@ -11,6 +11,9 @@ abstract class AuthenticationEvent {}
 abstract class AppStarted with AuthenticationEvent implements Built<AppStarted, AppStartedBuilder> {
   AppStarted._();
   factory AppStarted([updates(AppStartedBuilder b)]) = _$AppStarted;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 /// user has successfully logged in.
@@ -25,4 +28,7 @@ abstract class LoggedIn with AuthenticationEvent implements Built<LoggedIn, Logg
 abstract class LoggedOut with AuthenticationEvent implements Built<LoggedOut, LoggedOutBuilder> {
   LoggedOut._();
   factory LoggedOut([updates(LoggedOutBuilder b)]) = _$LoggedOut;
+
+  @override
+  String toString() => runtimeType.toString();
 }

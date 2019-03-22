@@ -7,13 +7,6 @@ part 'settings_events.g.dart';
 
 abstract class SettingsEvent {}
 
-abstract class LoadInitialSettings with SettingsEvent implements Built<LoadInitialSettings, LoadInitialSettingsBuilder> {
-  String get userId;
-
-  LoadInitialSettings._();
-  factory LoadInitialSettings([updates(LoadInitialSettingsBuilder b)]) = _$LoadInitialSettings;
-}
-
 abstract class UserDataArrived with SettingsEvent implements Built<UserDataArrived, UserDataArrivedBuilder> {
   UserData get userData;
 

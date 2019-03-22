@@ -4,7 +4,6 @@ import 'package:built_value/serializer.dart';
 part 'settings.g.dart';
 
 abstract class Settings implements Built<Settings, SettingsBuilder> {
-  ConfigSettings get configSettings;
   UserData get userData;
   NavigationSettings get navigationSettings;
 
@@ -24,11 +23,12 @@ abstract class UserData implements Built<UserData, UserDataBuilder> {
 }
 
 /// Remote config
-abstract class ConfigSettings implements Built<ConfigSettings, ConfigSettingsBuilder> {
+abstract class RemoteConfiguration implements Built<RemoteConfiguration, RemoteConfigurationBuilder> {
+  bool get defaultConfiguration;
   int get bonus;
 
-  ConfigSettings._();
-  factory ConfigSettings([updates(ConfigSettingsBuilder b)]) = _$ConfigSettings;
+  RemoteConfiguration._();
+  factory RemoteConfiguration([updates(RemoteConfigurationBuilder b)]) = _$RemoteConfiguration;
 }
 
 abstract class SettingsDocument {}

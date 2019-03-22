@@ -12,15 +12,16 @@ class SettingsRepository {
   final RemoteConfigProvider _remoteConfigProvider = RemoteConfigProvider();
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
 
-  Future<ConfigSettings> fetchRemoteConfig() async {
+  Future<RemoteConfiguration> fetchRemoteConfig() async {
     try {
       RemoteConfig config = await _remoteConfigProvider.fetchRemoteConfig();
       int bonus = config.getInt("bonus");
 
       print("bonus: $bonus");
 
-      var configSettings = ConfigSettings((b) => b
-        ..bonus = bonus ?? 1234567
+      var configSettings = RemoteConfiguration((b) => b
+        ..defaultConfiguration = false
+        ..bonus = bonus
       );
 
       log.info("successfully loaded config: $configSettings");

@@ -99,8 +99,6 @@ class _$NavigationSettingsSerializer
 
 class _$Settings extends Settings {
   @override
-  final ConfigSettings configSettings;
-  @override
   final UserData userData;
   @override
   final NavigationSettings navigationSettings;
@@ -108,11 +106,7 @@ class _$Settings extends Settings {
   factory _$Settings([void updates(SettingsBuilder b)]) =>
       (new SettingsBuilder()..update(updates)).build();
 
-  _$Settings._({this.configSettings, this.userData, this.navigationSettings})
-      : super._() {
-    if (configSettings == null) {
-      throw new BuiltValueNullFieldError('Settings', 'configSettings');
-    }
+  _$Settings._({this.userData, this.navigationSettings}) : super._() {
     if (userData == null) {
       throw new BuiltValueNullFieldError('Settings', 'userData');
     }
@@ -132,21 +126,18 @@ class _$Settings extends Settings {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Settings &&
-        configSettings == other.configSettings &&
         userData == other.userData &&
         navigationSettings == other.navigationSettings;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, configSettings.hashCode), userData.hashCode),
-        navigationSettings.hashCode));
+    return $jf($jc($jc(0, userData.hashCode), navigationSettings.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Settings')
-          ..add('configSettings', configSettings)
           ..add('userData', userData)
           ..add('navigationSettings', navigationSettings))
         .toString();
@@ -155,12 +146,6 @@ class _$Settings extends Settings {
 
 class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
   _$Settings _$v;
-
-  ConfigSettingsBuilder _configSettings;
-  ConfigSettingsBuilder get configSettings =>
-      _$this._configSettings ??= new ConfigSettingsBuilder();
-  set configSettings(ConfigSettingsBuilder configSettings) =>
-      _$this._configSettings = configSettings;
 
   UserDataBuilder _userData;
   UserDataBuilder get userData => _$this._userData ??= new UserDataBuilder();
@@ -176,7 +161,6 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
 
   SettingsBuilder get _$this {
     if (_$v != null) {
-      _configSettings = _$v.configSettings?.toBuilder();
       _userData = _$v.userData?.toBuilder();
       _navigationSettings = _$v.navigationSettings?.toBuilder();
       _$v = null;
@@ -203,14 +187,11 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
     try {
       _$result = _$v ??
           new _$Settings._(
-              configSettings: configSettings.build(),
               userData: userData.build(),
               navigationSettings: navigationSettings.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'configSettings';
-        configSettings.build();
         _$failedField = 'userData';
         userData.build();
         _$failedField = 'navigationSettings';
@@ -322,57 +303,73 @@ class UserDataBuilder implements Builder<UserData, UserDataBuilder> {
   }
 }
 
-class _$ConfigSettings extends ConfigSettings {
+class _$RemoteConfiguration extends RemoteConfiguration {
+  @override
+  final bool defaultConfiguration;
   @override
   final int bonus;
 
-  factory _$ConfigSettings([void updates(ConfigSettingsBuilder b)]) =>
-      (new ConfigSettingsBuilder()..update(updates)).build();
+  factory _$RemoteConfiguration([void updates(RemoteConfigurationBuilder b)]) =>
+      (new RemoteConfigurationBuilder()..update(updates)).build();
 
-  _$ConfigSettings._({this.bonus}) : super._() {
+  _$RemoteConfiguration._({this.defaultConfiguration, this.bonus}) : super._() {
+    if (defaultConfiguration == null) {
+      throw new BuiltValueNullFieldError(
+          'RemoteConfiguration', 'defaultConfiguration');
+    }
     if (bonus == null) {
-      throw new BuiltValueNullFieldError('ConfigSettings', 'bonus');
+      throw new BuiltValueNullFieldError('RemoteConfiguration', 'bonus');
     }
   }
 
   @override
-  ConfigSettings rebuild(void updates(ConfigSettingsBuilder b)) =>
+  RemoteConfiguration rebuild(void updates(RemoteConfigurationBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  ConfigSettingsBuilder toBuilder() =>
-      new ConfigSettingsBuilder()..replace(this);
+  RemoteConfigurationBuilder toBuilder() =>
+      new RemoteConfigurationBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ConfigSettings && bonus == other.bonus;
+    return other is RemoteConfiguration &&
+        defaultConfiguration == other.defaultConfiguration &&
+        bonus == other.bonus;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, bonus.hashCode));
+    return $jf($jc($jc(0, defaultConfiguration.hashCode), bonus.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ConfigSettings')..add('bonus', bonus))
+    return (newBuiltValueToStringHelper('RemoteConfiguration')
+          ..add('defaultConfiguration', defaultConfiguration)
+          ..add('bonus', bonus))
         .toString();
   }
 }
 
-class ConfigSettingsBuilder
-    implements Builder<ConfigSettings, ConfigSettingsBuilder> {
-  _$ConfigSettings _$v;
+class RemoteConfigurationBuilder
+    implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {
+  _$RemoteConfiguration _$v;
+
+  bool _defaultConfiguration;
+  bool get defaultConfiguration => _$this._defaultConfiguration;
+  set defaultConfiguration(bool defaultConfiguration) =>
+      _$this._defaultConfiguration = defaultConfiguration;
 
   int _bonus;
   int get bonus => _$this._bonus;
   set bonus(int bonus) => _$this._bonus = bonus;
 
-  ConfigSettingsBuilder();
+  RemoteConfigurationBuilder();
 
-  ConfigSettingsBuilder get _$this {
+  RemoteConfigurationBuilder get _$this {
     if (_$v != null) {
+      _defaultConfiguration = _$v.defaultConfiguration;
       _bonus = _$v.bonus;
       _$v = null;
     }
@@ -380,21 +377,23 @@ class ConfigSettingsBuilder
   }
 
   @override
-  void replace(ConfigSettings other) {
+  void replace(RemoteConfiguration other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ConfigSettings;
+    _$v = other as _$RemoteConfiguration;
   }
 
   @override
-  void update(void updates(ConfigSettingsBuilder b)) {
+  void update(void updates(RemoteConfigurationBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ConfigSettings build() {
-    final _$result = _$v ?? new _$ConfigSettings._(bonus: bonus);
+  _$RemoteConfiguration build() {
+    final _$result = _$v ??
+        new _$RemoteConfiguration._(
+            defaultConfiguration: defaultConfiguration, bonus: bonus);
     replace(_$result);
     return _$result;
   }

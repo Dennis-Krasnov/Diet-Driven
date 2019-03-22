@@ -29,11 +29,6 @@ class _$AppStarted extends AppStarted {
   int get hashCode {
     return 805240986;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('AppStarted').toString();
-  }
 }
 
 class AppStartedBuilder implements Builder<AppStarted, AppStartedBuilder> {
@@ -160,11 +155,6 @@ class _$LoggedOut extends LoggedOut {
   @override
   int get hashCode {
     return 755061653;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('LoggedOut').toString();
   }
 }
 

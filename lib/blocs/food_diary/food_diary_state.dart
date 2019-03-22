@@ -13,6 +13,9 @@ abstract class FoodDiaryState {}
 abstract class FoodDiaryLoading with FoodDiaryState implements Built<FoodDiaryLoading, FoodDiaryLoadingBuilder> {
   FoodDiaryLoading._();
   factory FoodDiaryLoading([updates(FoodDiaryLoadingBuilder b)]) = _$FoodDiaryLoading;
+
+  @override
+  String toString() => runtimeType.toString();
 }
 
 ///
