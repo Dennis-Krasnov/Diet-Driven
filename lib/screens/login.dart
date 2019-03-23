@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+
     _loginBloc = LoginBloc(
       authenticationRepository: _userRepository,
       authenticationBloc: _authenticationBloc,

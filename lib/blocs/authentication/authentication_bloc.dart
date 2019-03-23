@@ -29,16 +29,9 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         log.info("authenticated with $user");
       }
       else {
-        if (currentState is AuthUninitialized) {
-          // User not persisted
-          dispatch(Disconnected());
-          log.info("user not persisted");
-        }
-        if (currentState is AuthAuthenticated) {
-          // Timeout or other unexpected authentication termination
-          dispatch(Disconnected());
-          log.info("disconnected");
-        }
+        // User not persisted or timeout or other unexpected authentication termination
+        dispatch(LoggedOut());
+        log.info("user logged out");
       }
     });
   }
@@ -55,19 +48,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationState currentState, AuthenticationEvent event) async* {
     if (event is LoggedIn) {
-//      await Future.delayed(Duration(seconds: 5));
       yield AuthAuthenticated((b) => b.user = event.user);
       log.info("logged in");
     }
     // TODO: combine loggedOut and disconnected
     if (event is LoggedOut) {
-      await authRepository.signOut();
       yield AuthUnauthenticated();
       log.info("logged out");
-    }
-    if (event is Disconnected) {
-      yield AuthUnauthenticated();
-      log.info("trigger-based quit");
+
+      // TODO: logout button accesses authentication repository
     }
   }
 }

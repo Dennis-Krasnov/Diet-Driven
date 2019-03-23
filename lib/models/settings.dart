@@ -4,7 +4,6 @@ import 'package:built_value/serializer.dart';
 part 'settings.g.dart';
 
 abstract class Settings implements Built<Settings, SettingsBuilder> {
-  UserData get userData;
   NavigationSettings get navigationSettings;
 
   Settings._();

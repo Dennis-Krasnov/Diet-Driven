@@ -32,8 +32,3 @@ abstract class LoggedOut with AuthenticationEvent implements Built<LoggedOut, Lo
   @override
   String toString() => runtimeType.toString();
 }
-
-abstract class Disconnected with AuthenticationEvent implements Built<Disconnected, DisconnectedBuilder> {
-  Disconnected._();
-  factory Disconnected([updates(DisconnectedBuilder b)]) = _$Disconnected;
-}

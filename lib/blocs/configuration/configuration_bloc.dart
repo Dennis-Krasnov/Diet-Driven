@@ -11,18 +11,18 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   final Logger log = new Logger("configuration bloc");
 
   final SettingsRepository settingsRepository;
-  final SettingsBloc settingsBloc;
+  final UserDataBloc userDataBloc;
 
-  StreamSubscription<SettingsState> settingsSubscription;
+  StreamSubscription<UserDataState> userDataSubscription;
 
-  ConfigurationBloc({this.settingsRepository, this.settingsBloc}) {
+  ConfigurationBloc({this.settingsRepository, this.userDataBloc}) {
     assert(settingsRepository != null);
-    assert(settingsBloc != null);
+    assert(userDataBloc != null);
 
     // Subscribe to stale configurations
-    settingsSubscription = settingsBloc.state.listen((state) {
-      if (state is SettingsLoaded) {
-        if (state.settings.userData.staleRemoteConfig) {
+    userDataSubscription = userDataBloc.state.listen((state) {
+      if (state is UserDataLoaded) {
+        if (state.userData.staleRemoteConfig) {
           log.info("stale remote config");
           dispatch(FetchConfiguration());
         }
@@ -35,7 +35,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
 
   @override
   void dispose() {
-    settingsSubscription?.cancel();
+    userDataSubscription?.cancel();
     super.dispose();
   }
 
@@ -62,7 +62,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         ..configuration = config.toBuilder()
       );
 
-      if ((settingsBloc.currentState as SettingsLoaded).settings.userData.staleRemoteConfig) {
+      if ((userDataBloc.currentState as UserDataLoaded).userData.staleRemoteConfig) {
         log.fine("called cloud function to mark staleRemoteConfig false"); // TODO
       }
 

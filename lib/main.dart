@@ -67,6 +67,7 @@ class _AppState extends State<App> {
 
   AuthenticationBloc authenticationBloc;
   SettingsBloc settingsBloc;
+  UserDataBloc userDataBloc;
   ConfigurationBloc configurationBloc;
   final ThemeBloc themeBloc = ThemeBloc();
 
@@ -81,13 +82,17 @@ class _AppState extends State<App> {
       authenticationBloc: authenticationBloc
     );
 
+    userDataBloc = UserDataBloc(
+      settingsRepository: settingsRepository,
+      authenticationBloc: authenticationBloc
+    );
+
     configurationBloc = ConfigurationBloc(
       settingsRepository: settingsRepository,
-      settingsBloc: settingsBloc
+      userDataBloc: userDataBloc
     );
 
     // Initialize blocs
-//    authenticationBloc.dispatch(AppStarted());
     configurationBloc.dispatch(FetchConfiguration());
   }
 
@@ -106,33 +111,31 @@ class _AppState extends State<App> {
         builder: (_, ThemeData theme) {
           return MaterialApp(
             title: "Diet Driven",
-            // Configuration
-            home: BlocBuilder<ConfigurationEvent, ConfigurationState>(
-              bloc: configurationBloc,
-              builder: (BuildContext context, ConfigurationState configurationState) {
-                // Authentication
-                return BlocBuilder<AuthenticationEvent, AuthenticationState>(
-                  bloc: authenticationBloc,
-                  builder: (BuildContext context, AuthenticationState authenticationState) {
-                    // Loading
-                    if (configurationState is ConfigurationUninitialized || authenticationState is AuthUninitialized) {
-                      return SplashPage();
-                    }
-                    if (configurationState is ConfigurationLoading) {
-                      return LoadingIndicator();
-                    }
-
-                    // Application
-                    if (authenticationState is AuthAuthenticated) {
-                      return HomePage(foodRepository: foodRepository, settingsRepository: settingsRepository,);
-                    }
-                    if (authenticationState is AuthUnauthenticated) {
-                      return LoginPage(userRepository: userRepository);
-                    }
-                  },
-                );
+            home: AppBlocBuilders(builder: (context, configurationState, authenticationState, settingsState, userDataState) {
+              // Loading
+              if (configurationState is ConfigurationUninitialized ||
+                  configurationState is ConfigurationLoading ||
+                  authenticationState is AuthUninitialized) {
+                return SplashPage();
               }
-            ),
+
+              if (authenticationState is AuthUnauthenticated) {
+                return LoginPage(userRepository: userRepository);
+              }
+
+              // Authenticated from this point on
+              if (authenticationState is AuthAuthenticated) { // redundant
+
+                // Load critical user settings
+                if (settingsState is SettingsUninitialized || userDataState is UserDataUninitialized) { // FIXME
+                  //  create a bool that checks that both userData and settingsDocument have arrived
+                  // TODO: separate into settings and userData blocs, show loading indicator if either are uninitialized
+                  return LoadingIndicator();
+                }
+
+                return HomePage(foodRepository: foodRepository, settingsRepository: settingsRepository,);
+              }
+            }),
             theme: theme,
             initialRoute: "/", // TODO: replace with fluro?
           );
@@ -197,3 +200,55 @@ class LoadingIndicator extends StatelessWidget {
     );
   }
 }
+
+//Widget AppBlocBuilders() {
+//
+//}
+
+// TODO: make this a method that returns a widget... (nest within app class)
+class AppBlocBuilders extends StatelessWidget {
+  final Widget Function(
+    BuildContext context,
+    ConfigurationState configurationState,
+    AuthenticationState authenticationState,
+    SettingsState settingsState,
+    UserDataState userDataState,
+  ) builder;
+
+  AppBlocBuilders({@required this.builder});
+
+  @override
+  Widget build(BuildContext context) {
+    final ConfigurationBloc _configurationBloc = BlocProvider.of<ConfigurationBloc>(context);
+    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final SettingsBloc _settingsBloc = BlocProvider.of<SettingsBloc>(context);
+    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
+
+    // Configuration
+    return BlocBuilder<ConfigurationEvent, ConfigurationState>(
+      bloc: _configurationBloc,
+      builder: (BuildContext context, ConfigurationState configurationState) {
+        // Authentication
+        return BlocBuilder<AuthenticationEvent, AuthenticationState>(
+          bloc: _authenticationBloc,
+          builder: (BuildContext context, AuthenticationState authenticationState) {
+            // Settings
+            return BlocBuilder<SettingsEvent, SettingsState>(
+              bloc: _settingsBloc,
+              builder: (BuildContext context, SettingsState settingsState) {
+                // User data
+                return BlocBuilder<UserDataEvent, UserDataState>(
+                  bloc: _userDataBloc,
+                  builder: (BuildContext context, UserDataState userDataState) {
+                    return builder(context, configurationState, authenticationState, settingsState, userDataState);
+                  }
+                );
+              }
+            );
+          }
+        );
+      }
+    );
+  }
+}
+

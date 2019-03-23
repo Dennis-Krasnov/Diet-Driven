@@ -60,59 +60,6 @@ class SettingsUninitializedBuilder
   }
 }
 
-class _$SettingsLoading extends SettingsLoading {
-  factory _$SettingsLoading([void updates(SettingsLoadingBuilder b)]) =>
-      (new SettingsLoadingBuilder()..update(updates)).build();
-
-  _$SettingsLoading._() : super._();
-
-  @override
-  SettingsLoading rebuild(void updates(SettingsLoadingBuilder b)) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  SettingsLoadingBuilder toBuilder() =>
-      new SettingsLoadingBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is SettingsLoading;
-  }
-
-  @override
-  int get hashCode {
-    return 482380299;
-  }
-}
-
-class SettingsLoadingBuilder
-    implements Builder<SettingsLoading, SettingsLoadingBuilder> {
-  _$SettingsLoading _$v;
-
-  SettingsLoadingBuilder();
-
-  @override
-  void replace(SettingsLoading other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$SettingsLoading;
-  }
-
-  @override
-  void update(void updates(SettingsLoadingBuilder b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$SettingsLoading build() {
-    final _$result = _$v ?? new _$SettingsLoading._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$SettingsLoaded extends SettingsLoaded {
   @override
   final Settings settings;

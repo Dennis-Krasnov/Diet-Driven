@@ -99,17 +99,12 @@ class _$NavigationSettingsSerializer
 
 class _$Settings extends Settings {
   @override
-  final UserData userData;
-  @override
   final NavigationSettings navigationSettings;
 
   factory _$Settings([void updates(SettingsBuilder b)]) =>
       (new SettingsBuilder()..update(updates)).build();
 
-  _$Settings._({this.userData, this.navigationSettings}) : super._() {
-    if (userData == null) {
-      throw new BuiltValueNullFieldError('Settings', 'userData');
-    }
+  _$Settings._({this.navigationSettings}) : super._() {
     if (navigationSettings == null) {
       throw new BuiltValueNullFieldError('Settings', 'navigationSettings');
     }
@@ -125,20 +120,17 @@ class _$Settings extends Settings {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Settings &&
-        userData == other.userData &&
-        navigationSettings == other.navigationSettings;
+    return other is Settings && navigationSettings == other.navigationSettings;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, userData.hashCode), navigationSettings.hashCode));
+    return $jf($jc(0, navigationSettings.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Settings')
-          ..add('userData', userData)
           ..add('navigationSettings', navigationSettings))
         .toString();
   }
@@ -146,10 +138,6 @@ class _$Settings extends Settings {
 
 class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
   _$Settings _$v;
-
-  UserDataBuilder _userData;
-  UserDataBuilder get userData => _$this._userData ??= new UserDataBuilder();
-  set userData(UserDataBuilder userData) => _$this._userData = userData;
 
   NavigationSettingsBuilder _navigationSettings;
   NavigationSettingsBuilder get navigationSettings =>
@@ -161,7 +149,6 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
 
   SettingsBuilder get _$this {
     if (_$v != null) {
-      _userData = _$v.userData?.toBuilder();
       _navigationSettings = _$v.navigationSettings?.toBuilder();
       _$v = null;
     }
@@ -186,14 +173,10 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
     _$Settings _$result;
     try {
       _$result = _$v ??
-          new _$Settings._(
-              userData: userData.build(),
-              navigationSettings: navigationSettings.build());
+          new _$Settings._(navigationSettings: navigationSettings.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'userData';
-        userData.build();
         _$failedField = 'navigationSettings';
         navigationSettings.build();
       } catch (e) {

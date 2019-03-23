@@ -17,9 +17,6 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
 
   StreamSubscription<AuthenticationState> authenticationSubscription;
 
-  ValueObservable<UserData> userDataStream;
-  StreamSubscription<UserData> userDataSubscription;
-
   ValueObservable<BuiltList<SettingsDocument>> settingsDocumentStream;
   StreamSubscription<BuiltList<SettingsDocument>> settingsDocumentSubscription;
 
@@ -27,24 +24,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
     assert(settingsRepository != null);
     assert(authenticationBloc != null);
 
+    // TODO: if already authenticated, set settings as uninitialized so that they don't use old user's settings!
+    // TODO: do this by checking if currentState is loaded, if so make a wipeSettings event (sets to uninitialized)
+
     // Subscribing to authentication changes
     authenticationSubscription = authenticationBloc.state.listen((state) {
       // Cancel old user settings subscriptions
-      userDataSubscription?.cancel();
       settingsDocumentSubscription?.cancel();
-      log.fine("cancelled old subscriptions");
+      log.fine("cancelled old settings documents subscription");
 
       // Start new settings subscriptions
       if (state is AuthAuthenticated) {
         String id = state.user.uid;
-
-        // User data
-        userDataStream = settingsRepository.userDataDocument(id);
-        userDataSubscription = userDataStream.listen((userData) =>
-          dispatch(UserDataArrived((b) => b
-            ..userData = userData.toBuilder()
-          ))
-        );
 
         // Settings documents
         settingsDocumentStream = settingsRepository.settingsDocumentsList(id);
@@ -54,7 +45,7 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
           ))
         );
 
-        log.info("subscribed to $id's settings");
+        log.info("subscribed to $id's settings documents");
       }
     });
   }
@@ -65,37 +56,16 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   @override
   void dispose() {
     authenticationSubscription?.cancel();
-    userDataSubscription?.cancel();
     settingsDocumentSubscription?.cancel();
   }
 
   @override
   Stream<SettingsState> mapEventToState(SettingsState currentState, SettingsEvent event) async* {
-    Settings settings;
-
-    // Modifying existing settings
-    if (currentState is SettingsLoaded) {
-      settings = currentState.settings;
-      log.fine("modifying existing settings");
-    } else {
-      log.fine("first time settings load");
-    }
-
-    // Events
-    if (event is UserDataArrived) {
-      yield SettingsLoaded((b) => b
-        ..settings = settings.rebuild((b) => b
-          ..userData = event.userData.toBuilder()
-        ).toBuilder()
-      );
-
-      log.info("loaded user data");
-      log.fine("data: ${event.userData}");
-    }
     if (event is SettingsDocumentsArrived) {
       yield SettingsLoaded((b) => b
-        ..settings = settings.rebuild((b) => b
+        ..settings = Settings((b) => b
           ..navigationSettings = event.settingsDocuments.whereType<NavigationSettings>().single.toBuilder()
+          // TODO: other settings
         ).toBuilder()
       );
 

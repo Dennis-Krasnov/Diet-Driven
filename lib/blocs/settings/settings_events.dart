@@ -7,13 +7,6 @@ part 'settings_events.g.dart';
 
 abstract class SettingsEvent {}
 
-abstract class UserDataArrived with SettingsEvent implements Built<UserDataArrived, UserDataArrivedBuilder> {
-  UserData get userData;
-
-  UserDataArrived._();
-  factory UserDataArrived([updates(UserDataArrivedBuilder b)]) = _$UserDataArrived;
-}
-
 abstract class SettingsDocumentsArrived with SettingsEvent implements Built<SettingsDocumentsArrived, SettingsDocumentsArrivedBuilder> {
   BuiltList<SettingsDocument> get settingsDocuments;
 
