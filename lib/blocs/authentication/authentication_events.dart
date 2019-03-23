@@ -7,27 +7,16 @@ part 'authentication_events.g.dart';
 
 abstract class AuthenticationEvent {}
 
-/// check if the user is currently authenticated or not.
-//abstract class AppStarted with AuthenticationEvent implements Built<AppStarted, AppStartedBuilder> {
-//  AppStarted._();
-//  factory AppStarted([updates(AppStartedBuilder b)]) = _$AppStarted;
-//
-//  @override
-//  String toString() => runtimeType.toString();
-//}
-
-/// user has successfully logged in.
-abstract class LoggedIn with AuthenticationEvent implements Built<LoggedIn, LoggedInBuilder> {
+abstract class SignIn with AuthenticationEvent implements Built<SignIn, SignInBuilder> {
   FirebaseUser get user;
 
-  LoggedIn._();
-  factory LoggedIn([updates(LoggedInBuilder b)]) = _$LoggedIn;
+  SignIn._();
+  factory SignIn([updates(SignInBuilder b)]) = _$SignIn;
 }
 
-/// user has successfully logged out.
-abstract class LoggedOut with AuthenticationEvent implements Built<LoggedOut, LoggedOutBuilder> {
-  LoggedOut._();
-  factory LoggedOut([updates(LoggedOutBuilder b)]) = _$LoggedOut;
+abstract class SignOut with AuthenticationEvent implements Built<SignOut, SignOutBuilder> {
+  SignOut._();
+  factory SignOut([updates(SignOutBuilder b)]) = _$SignOut;
 
   @override
   String toString() => runtimeType.toString();

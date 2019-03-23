@@ -100,7 +100,7 @@ class _LoginFormState extends State<LoginForm> {
 
   void _onLoginButtonPressed() {
     if(_formKey.currentState.validate()) {
-      _loginBloc.dispatch(LoginButtonPressed((b) => b
+      _loginBloc.dispatch(PressLoginButton((b) => b
         ..username = _emailController.text
         ..password = _passwordController.text
       ));

@@ -45,7 +45,7 @@ void main() {
         ])
       );
 
-      authenticationBloc.dispatch(LoggedIn((b) => b..user = user));
+      authenticationBloc.dispatch(SignIn((b) => b..user = user));
     });
 
     test("Logs out", () {
@@ -62,8 +62,8 @@ void main() {
         verifyNever(authRepository.signOut());
       });
 
-      authenticationBloc.dispatch(LoggedIn((b) => b..user = user));
-      authenticationBloc.dispatch(LoggedOut());
+      authenticationBloc.dispatch(SignIn((b) => b..user = user));
+      authenticationBloc.dispatch(SignOut());
     });
   });
 
@@ -106,8 +106,8 @@ void main() {
         ])
       );
 
-      authenticationBloc.dispatch(LoggedIn((b) => b..user = userA));
-      authenticationBloc.dispatch(LoggedIn((b) => b..user = userB));
+      authenticationBloc.dispatch(SignIn((b) => b..user = userA));
+      authenticationBloc.dispatch(SignIn((b) => b..user = userB));
     });
 
     test("Handles authentication termination", () {

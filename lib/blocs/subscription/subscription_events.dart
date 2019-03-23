@@ -24,17 +24,17 @@ abstract class LoadExistingSubscription with SubscriptionEvent implements Built<
 // TODO: change all to present tense!
 
 ///
-abstract class Subscribed with SubscriptionEvent implements Built<Subscribed, SubscribedBuilder> {
+abstract class Subscribe with SubscriptionEvent implements Built<Subscribe, SubscribeBuilder> {
   SubscriptionType get subscriptionType;
 
-  Subscribed._();
-  factory Subscribed([updates(SubscribedBuilder b)]) = _$Subscribed;
+  Subscribe._();
+  factory Subscribe([updates(SubscribeBuilder b)]) = _$Subscribe;
 }
 
 ///
-abstract class Unsubscribed with SubscriptionEvent implements Built<Unsubscribed, UnsubscribedBuilder> {
-  Unsubscribed._();
-  factory Unsubscribed([updates(UnsubscribedBuilder b)]) = _$Unsubscribed;
+abstract class Unsubscribe with SubscriptionEvent implements Built<Unsubscribe, UnsubscribeBuilder> {
+  Unsubscribe._();
+  factory Unsubscribe([updates(UnsubscribeBuilder b)]) = _$Unsubscribe;
 
   @override
   String toString() => runtimeType.toString();

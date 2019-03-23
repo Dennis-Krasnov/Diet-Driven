@@ -54,10 +54,10 @@ void main() {
           LoginInitial(),
         ])
       ).then((_) { // TODO: use async await
-        verify(authenticationBloc.dispatch(LoggedIn((b) => b..user = user))).called(1);
+        verify(authenticationBloc.dispatch(SignIn((b) => b..user = user))).called(1);
       });
 
-      loginBloc.dispatch(LoginButtonPressed((b) => b
+      loginBloc.dispatch(PressLoginButton((b) => b
         ..username = "valid@email.com"
         ..password = "valid_password"
       ));
@@ -82,7 +82,7 @@ void main() {
 //        verifyNever(authenticationBloc.dispatch(LoggedIn((b) => b..user = user)));
       });
 
-      loginBloc.dispatch(LoginButtonPressed((b) => b
+      loginBloc.dispatch(PressLoginButton((b) => b
         ..username = "invalid_email"
         ..password = "valid_password"
       ));

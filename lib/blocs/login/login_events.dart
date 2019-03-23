@@ -6,10 +6,10 @@ part 'login_events.g.dart';
 
 abstract class LoginEvent {}
 
-abstract class LoginButtonPressed with LoginEvent implements Built<LoginButtonPressed, LoginButtonPressedBuilder> {
+abstract class PressLoginButton with LoginEvent implements Built<PressLoginButton, PressLoginButtonBuilder> {
   String get username;
   String get password;
 
-  LoginButtonPressed._();
-  factory LoginButtonPressed([updates(LoginButtonPressedBuilder b)]) = _$LoginButtonPressed;
+  PressLoginButton._();
+  factory PressLoginButton([updates(PressLoginButtonBuilder b)]) = _$PressLoginButton;
 }

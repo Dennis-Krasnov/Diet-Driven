@@ -120,7 +120,7 @@ class TestPage extends StatelessWidget {
           child: RaisedButton(
             child: Text('logout'),
             onPressed: () {
-              authenticationBloc.dispatch(LoggedOut());
+//              authenticationBloc.dispatch(SignsOut()); // FIXME: call auth repository's sign out instead!!!
             },
           )
         ),

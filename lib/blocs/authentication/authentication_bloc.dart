@@ -25,12 +25,12 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
       if (user != null) {
         // Triggers settings reload
-        dispatch(LoggedIn((b) => b.user = user));
+        dispatch(SignIn((b) => b.user = user));
         log.info("authenticated with $user");
       }
       else {
         // User not persisted or timeout or other unexpected authentication termination
-        dispatch(LoggedOut());
+        dispatch(SignOut());
         log.info("user logged out");
       }
     });
@@ -47,16 +47,13 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationState currentState, AuthenticationEvent event) async* {
-    if (event is LoggedIn) {
+    if (event is SignIn) {
       yield AuthAuthenticated((b) => b.user = event.user);
       log.info("logged in");
     }
-    // TODO: combine loggedOut and disconnected
-    if (event is LoggedOut) {
+    if (event is SignOut) {
       yield AuthUnauthenticated();
       log.info("logged out");
-
-      // TODO: logout button accesses authentication repository
     }
   }
 }

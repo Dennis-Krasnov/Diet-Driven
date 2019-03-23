@@ -102,6 +102,7 @@ class _AppState extends State<App> {
       blocProviders: [
         BlocProvider<AuthenticationBloc>(bloc: authenticationBloc),
         BlocProvider<SettingsBloc>(bloc: settingsBloc),
+        BlocProvider<UserDataBloc>(bloc: userDataBloc),
         BlocProvider<ConfigurationBloc>(bloc: configurationBloc),
         BlocProvider<ThemeBloc>(bloc: themeBloc),
       ],
@@ -119,25 +120,25 @@ class _AppState extends State<App> {
                 return SplashPage();
               }
 
+              // First time user
               if (authenticationState is AuthUnauthenticated) {
                 return LoginPage(userRepository: userRepository);
               }
 
               // Authenticated from this point on
-              if (authenticationState is AuthAuthenticated) { // redundant
+              if (authenticationState is AuthAuthenticated) {
 
                 // Load critical user settings
-                if (settingsState is SettingsUninitialized || userDataState is UserDataUninitialized) { // FIXME
-                  //  create a bool that checks that both userData and settingsDocument have arrived
-                  // TODO: separate into settings and userData blocs, show loading indicator if either are uninitialized
+                if (settingsState is SettingsUninitialized || userDataState is UserDataUninitialized) {
                   return LoadingIndicator();
                 }
 
+                // Show application
                 return HomePage(foodRepository: foodRepository, settingsRepository: settingsRepository,);
               }
             }),
             theme: theme,
-            initialRoute: "/", // TODO: replace with fluro?
+            initialRoute: "/", // TODO: replace with fluro
           );
         }
       )
@@ -178,22 +179,6 @@ class LoadingIndicator extends StatelessWidget {
               ),
             ),
           )
-//          FractionalTranslation(
-//            translation: Offset(0.0, 0.5),
-//            child: Text(
-//              "Loading...",
-//            )
-//  //          child: new Container(
-//  //            alignment: new FractionalOffset(0.0, 0.0),
-//  //            decoration: new BoxDecoration(
-//  //              border: new Border.all(
-//  //                color: Colors.blue.withOpacity(0.5),
-//  //                width: 50.0,
-//  //              ),
-//  //              shape: BoxShape.circle,
-//  //            ),
-//  //          )
-//          )
         ],
         fit: StackFit.expand,
       )
@@ -201,11 +186,6 @@ class LoadingIndicator extends StatelessWidget {
   }
 }
 
-//Widget AppBlocBuilders() {
-//
-//}
-
-// TODO: make this a method that returns a widget... (nest within app class)
 class AppBlocBuilders extends StatelessWidget {
   final Widget Function(
     BuildContext context,
@@ -251,4 +231,3 @@ class AppBlocBuilders extends StatelessWidget {
     );
   }
 }
-

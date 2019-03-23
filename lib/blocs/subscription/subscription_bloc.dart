@@ -21,12 +21,12 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
         yield NoSubscription();
       }
     }
-    if (event is Subscribed) {
+    if (event is Subscribe) {
       // TODO: subscription bloc actually subscribes, similar to  LoggedOut() action
       // subscription page bloc validates using subscription api, whether already has subscription, etc
       yield HasSubscription((b) => b..subscriptionType = event.subscriptionType);
     }
-    if (event is Unsubscribed) {
+    if (event is Unsubscribe) {
       yield NoSubscription();
     }
   }
