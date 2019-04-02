@@ -21,3 +21,8 @@ abstract class SignOut with AuthenticationEvent implements Built<SignOut, SignOu
   @override
   String toString() => runtimeType.toString();
 }
+
+abstract class WipeAuthentication with AuthenticationEvent implements Built<WipeAuthentication, WipeAuthenticationBuilder> {
+  WipeAuthentication._();
+  factory WipeAuthentication([updates(WipeAuthenticationBuilder b)]) = _$WipeAuthentication;
+}

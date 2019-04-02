@@ -12,8 +12,9 @@ dependencies:
     sdk: flutter
 
   ## BLOC
-  bloc: ^0.9.5
-  flutter_bloc: ^0.7.1
+  rxdart: ^0.21.0
+  bloc: ^0.11.1
+  flutter_bloc: ^0.9.1
   equatable: ^0.2.0
 
   ## FIREBASE

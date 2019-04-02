@@ -9,7 +9,7 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   SubscriptionState get initialState => SubscriptionUninitialized();
 
   @override
-  Stream<SubscriptionState> mapEventToState(SubscriptionState currentState, SubscriptionEvent event) async* {
+  Stream<SubscriptionState> mapEventToState(SubscriptionEvent event) async* {
     if (event is LoadExistingSubscription) {
 //      final FirebaseUser user = await authRepository.currentUser; // TODO: await repository.currentSubscription...
       final SubscriptionType subscriptionType = SubscriptionType.all_access;

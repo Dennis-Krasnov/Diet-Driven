@@ -19,6 +19,8 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
   Iterable serialize(Serializers serializers, FoodDiaryDay object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'date',
+      serializers.serialize(object.date, specifiedType: const FullType(int)),
       'foodRecords',
       serializers.serialize(object.foodRecords,
           specifiedType:
@@ -39,6 +41,10 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'date':
+          result.date = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
         case 'foodRecords':
           result.foodRecords.replace(serializers.deserialize(value,
               specifiedType: const FullType(
@@ -53,12 +59,17 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
 
 class _$FoodDiaryDay extends FoodDiaryDay {
   @override
+  final int date;
+  @override
   final BuiltList<FoodRecord> foodRecords;
 
   factory _$FoodDiaryDay([void updates(FoodDiaryDayBuilder b)]) =>
       (new FoodDiaryDayBuilder()..update(updates)).build();
 
-  _$FoodDiaryDay._({this.foodRecords}) : super._() {
+  _$FoodDiaryDay._({this.date, this.foodRecords}) : super._() {
+    if (date == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryDay', 'date');
+    }
     if (foodRecords == null) {
       throw new BuiltValueNullFieldError('FoodDiaryDay', 'foodRecords');
     }
@@ -74,17 +85,20 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryDay && foodRecords == other.foodRecords;
+    return other is FoodDiaryDay &&
+        date == other.date &&
+        foodRecords == other.foodRecords;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, foodRecords.hashCode));
+    return $jf($jc($jc(0, date.hashCode), foodRecords.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryDay')
+          ..add('date', date)
           ..add('foodRecords', foodRecords))
         .toString();
   }
@@ -93,6 +107,10 @@ class _$FoodDiaryDay extends FoodDiaryDay {
 class FoodDiaryDayBuilder
     implements Builder<FoodDiaryDay, FoodDiaryDayBuilder> {
   _$FoodDiaryDay _$v;
+
+  int _date;
+  int get date => _$this._date;
+  set date(int date) => _$this._date = date;
 
   ListBuilder<FoodRecord> _foodRecords;
   ListBuilder<FoodRecord> get foodRecords =>
@@ -104,6 +122,7 @@ class FoodDiaryDayBuilder
 
   FoodDiaryDayBuilder get _$this {
     if (_$v != null) {
+      _date = _$v.date;
       _foodRecords = _$v.foodRecords?.toBuilder();
       _$v = null;
     }
@@ -127,7 +146,8 @@ class FoodDiaryDayBuilder
   _$FoodDiaryDay build() {
     _$FoodDiaryDay _$result;
     try {
-      _$result = _$v ?? new _$FoodDiaryDay._(foodRecords: foodRecords.build());
+      _$result = _$v ??
+          new _$FoodDiaryDay._(date: date, foodRecords: foodRecords.build());
     } catch (_) {
       String _$failedField;
       try {

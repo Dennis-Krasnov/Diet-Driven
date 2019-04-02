@@ -6,31 +6,32 @@ part of 'user_data_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$UserDataArrived extends UserDataArrived {
+class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   @override
   final UserData userData;
 
-  factory _$UserDataArrived([void updates(UserDataArrivedBuilder b)]) =>
-      (new UserDataArrivedBuilder()..update(updates)).build();
+  factory _$RemoteUserDataArrived(
+          [void updates(RemoteUserDataArrivedBuilder b)]) =>
+      (new RemoteUserDataArrivedBuilder()..update(updates)).build();
 
-  _$UserDataArrived._({this.userData}) : super._() {
+  _$RemoteUserDataArrived._({this.userData}) : super._() {
     if (userData == null) {
-      throw new BuiltValueNullFieldError('UserDataArrived', 'userData');
+      throw new BuiltValueNullFieldError('RemoteUserDataArrived', 'userData');
     }
   }
 
   @override
-  UserDataArrived rebuild(void updates(UserDataArrivedBuilder b)) =>
+  RemoteUserDataArrived rebuild(void updates(RemoteUserDataArrivedBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  UserDataArrivedBuilder toBuilder() =>
-      new UserDataArrivedBuilder()..replace(this);
+  RemoteUserDataArrivedBuilder toBuilder() =>
+      new RemoteUserDataArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UserDataArrived && userData == other.userData;
+    return other is RemoteUserDataArrived && userData == other.userData;
   }
 
   @override
@@ -40,23 +41,23 @@ class _$UserDataArrived extends UserDataArrived {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('UserDataArrived')
+    return (newBuiltValueToStringHelper('RemoteUserDataArrived')
           ..add('userData', userData))
         .toString();
   }
 }
 
-class UserDataArrivedBuilder
-    implements Builder<UserDataArrived, UserDataArrivedBuilder> {
-  _$UserDataArrived _$v;
+class RemoteUserDataArrivedBuilder
+    implements Builder<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
+  _$RemoteUserDataArrived _$v;
 
   UserDataBuilder _userData;
   UserDataBuilder get userData => _$this._userData ??= new UserDataBuilder();
   set userData(UserDataBuilder userData) => _$this._userData = userData;
 
-  UserDataArrivedBuilder();
+  RemoteUserDataArrivedBuilder();
 
-  UserDataArrivedBuilder get _$this {
+  RemoteUserDataArrivedBuilder get _$this {
     if (_$v != null) {
       _userData = _$v.userData?.toBuilder();
       _$v = null;
@@ -65,23 +66,24 @@ class UserDataArrivedBuilder
   }
 
   @override
-  void replace(UserDataArrived other) {
+  void replace(RemoteUserDataArrived other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$UserDataArrived;
+    _$v = other as _$RemoteUserDataArrived;
   }
 
   @override
-  void update(void updates(UserDataArrivedBuilder b)) {
+  void update(void updates(RemoteUserDataArrivedBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$UserDataArrived build() {
-    _$UserDataArrived _$result;
+  _$RemoteUserDataArrived build() {
+    _$RemoteUserDataArrived _$result;
     try {
-      _$result = _$v ?? new _$UserDataArrived._(userData: userData.build());
+      _$result =
+          _$v ?? new _$RemoteUserDataArrived._(userData: userData.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -89,10 +91,144 @@ class UserDataArrivedBuilder
         userData.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'UserDataArrived', _$failedField, e.toString());
+            'RemoteUserDataArrived', _$failedField, e.toString());
       }
       rethrow;
     }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$UserDataError extends UserDataError {
+  @override
+  final String error;
+
+  factory _$UserDataError([void updates(UserDataErrorBuilder b)]) =>
+      (new UserDataErrorBuilder()..update(updates)).build();
+
+  _$UserDataError._({this.error}) : super._() {
+    if (error == null) {
+      throw new BuiltValueNullFieldError('UserDataError', 'error');
+    }
+  }
+
+  @override
+  UserDataError rebuild(void updates(UserDataErrorBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  UserDataErrorBuilder toBuilder() => new UserDataErrorBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is UserDataError && error == other.error;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, error.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('UserDataError')..add('error', error))
+        .toString();
+  }
+}
+
+class UserDataErrorBuilder
+    implements Builder<UserDataError, UserDataErrorBuilder> {
+  _$UserDataError _$v;
+
+  String _error;
+  String get error => _$this._error;
+  set error(String error) => _$this._error = error;
+
+  UserDataErrorBuilder();
+
+  UserDataErrorBuilder get _$this {
+    if (_$v != null) {
+      _error = _$v.error;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(UserDataError other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$UserDataError;
+  }
+
+  @override
+  void update(void updates(UserDataErrorBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$UserDataError build() {
+    final _$result = _$v ?? new _$UserDataError._(error: error);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$WipeUserData extends WipeUserData {
+  factory _$WipeUserData([void updates(WipeUserDataBuilder b)]) =>
+      (new WipeUserDataBuilder()..update(updates)).build();
+
+  _$WipeUserData._() : super._();
+
+  @override
+  WipeUserData rebuild(void updates(WipeUserDataBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  WipeUserDataBuilder toBuilder() => new WipeUserDataBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is WipeUserData;
+  }
+
+  @override
+  int get hashCode {
+    return 711102098;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('WipeUserData').toString();
+  }
+}
+
+class WipeUserDataBuilder
+    implements Builder<WipeUserData, WipeUserDataBuilder> {
+  _$WipeUserData _$v;
+
+  WipeUserDataBuilder();
+
+  @override
+  void replace(WipeUserData other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$WipeUserData;
+  }
+
+  @override
+  void update(void updates(WipeUserDataBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$WipeUserData build() {
+    final _$result = _$v ?? new _$WipeUserData._();
     replace(_$result);
     return _$result;
   }

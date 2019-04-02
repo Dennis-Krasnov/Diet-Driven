@@ -62,30 +62,30 @@ class LoadExistingSubscriptionBuilder
   }
 }
 
-class _$Subscribed extends Subscribed {
+class _$Subscribe extends Subscribe {
   @override
   final SubscriptionType subscriptionType;
 
-  factory _$Subscribed([void updates(SubscribedBuilder b)]) =>
-      (new SubscribedBuilder()..update(updates)).build();
+  factory _$Subscribe([void updates(SubscribeBuilder b)]) =>
+      (new SubscribeBuilder()..update(updates)).build();
 
-  _$Subscribed._({this.subscriptionType}) : super._() {
+  _$Subscribe._({this.subscriptionType}) : super._() {
     if (subscriptionType == null) {
-      throw new BuiltValueNullFieldError('Subscribed', 'subscriptionType');
+      throw new BuiltValueNullFieldError('Subscribe', 'subscriptionType');
     }
   }
 
   @override
-  Subscribed rebuild(void updates(SubscribedBuilder b)) =>
+  Subscribe rebuild(void updates(SubscribeBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  SubscribedBuilder toBuilder() => new SubscribedBuilder()..replace(this);
+  SubscribeBuilder toBuilder() => new SubscribeBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Subscribed && subscriptionType == other.subscriptionType;
+    return other is Subscribe && subscriptionType == other.subscriptionType;
   }
 
   @override
@@ -95,23 +95,23 @@ class _$Subscribed extends Subscribed {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('Subscribed')
+    return (newBuiltValueToStringHelper('Subscribe')
           ..add('subscriptionType', subscriptionType))
         .toString();
   }
 }
 
-class SubscribedBuilder implements Builder<Subscribed, SubscribedBuilder> {
-  _$Subscribed _$v;
+class SubscribeBuilder implements Builder<Subscribe, SubscribeBuilder> {
+  _$Subscribe _$v;
 
   SubscriptionType _subscriptionType;
   SubscriptionType get subscriptionType => _$this._subscriptionType;
   set subscriptionType(SubscriptionType subscriptionType) =>
       _$this._subscriptionType = subscriptionType;
 
-  SubscribedBuilder();
+  SubscribeBuilder();
 
-  SubscribedBuilder get _$this {
+  SubscribeBuilder get _$this {
     if (_$v != null) {
       _subscriptionType = _$v.subscriptionType;
       _$v = null;
@@ -120,74 +120,73 @@ class SubscribedBuilder implements Builder<Subscribed, SubscribedBuilder> {
   }
 
   @override
-  void replace(Subscribed other) {
+  void replace(Subscribe other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$Subscribed;
+    _$v = other as _$Subscribe;
   }
 
   @override
-  void update(void updates(SubscribedBuilder b)) {
+  void update(void updates(SubscribeBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$Subscribed build() {
+  _$Subscribe build() {
     final _$result =
-        _$v ?? new _$Subscribed._(subscriptionType: subscriptionType);
+        _$v ?? new _$Subscribe._(subscriptionType: subscriptionType);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$Unsubscribed extends Unsubscribed {
-  factory _$Unsubscribed([void updates(UnsubscribedBuilder b)]) =>
-      (new UnsubscribedBuilder()..update(updates)).build();
+class _$Unsubscribe extends Unsubscribe {
+  factory _$Unsubscribe([void updates(UnsubscribeBuilder b)]) =>
+      (new UnsubscribeBuilder()..update(updates)).build();
 
-  _$Unsubscribed._() : super._();
+  _$Unsubscribe._() : super._();
 
   @override
-  Unsubscribed rebuild(void updates(UnsubscribedBuilder b)) =>
+  Unsubscribe rebuild(void updates(UnsubscribeBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  UnsubscribedBuilder toBuilder() => new UnsubscribedBuilder()..replace(this);
+  UnsubscribeBuilder toBuilder() => new UnsubscribeBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is Unsubscribed;
+    return other is Unsubscribe;
   }
 
   @override
   int get hashCode {
-    return 444864888;
+    return 130218988;
   }
 }
 
-class UnsubscribedBuilder
-    implements Builder<Unsubscribed, UnsubscribedBuilder> {
-  _$Unsubscribed _$v;
+class UnsubscribeBuilder implements Builder<Unsubscribe, UnsubscribeBuilder> {
+  _$Unsubscribe _$v;
 
-  UnsubscribedBuilder();
+  UnsubscribeBuilder();
 
   @override
-  void replace(Unsubscribed other) {
+  void replace(Unsubscribe other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$Unsubscribed;
+    _$v = other as _$Unsubscribe;
   }
 
   @override
-  void update(void updates(UnsubscribedBuilder b)) {
+  void update(void updates(UnsubscribeBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$Unsubscribed build() {
-    final _$result = _$v ?? new _$Unsubscribed._();
+  _$Unsubscribe build() {
+    final _$result = _$v ?? new _$Unsubscribe._();
     replace(_$result);
     return _$result;
   }

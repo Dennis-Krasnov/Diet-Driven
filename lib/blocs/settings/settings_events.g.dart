@@ -6,102 +6,145 @@ part of 'settings_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$SettingsDocumentsArrived extends SettingsDocumentsArrived {
+class _$SettingsArrived extends SettingsArrived {
   @override
-  final BuiltList<SettingsDocument> settingsDocuments;
+  final Settings settings;
 
-  factory _$SettingsDocumentsArrived(
-          [void updates(SettingsDocumentsArrivedBuilder b)]) =>
-      (new SettingsDocumentsArrivedBuilder()..update(updates)).build();
+  factory _$SettingsArrived([void updates(SettingsArrivedBuilder b)]) =>
+      (new SettingsArrivedBuilder()..update(updates)).build();
 
-  _$SettingsDocumentsArrived._({this.settingsDocuments}) : super._() {
-    if (settingsDocuments == null) {
-      throw new BuiltValueNullFieldError(
-          'SettingsDocumentsArrived', 'settingsDocuments');
+  _$SettingsArrived._({this.settings}) : super._() {
+    if (settings == null) {
+      throw new BuiltValueNullFieldError('SettingsArrived', 'settings');
     }
   }
 
   @override
-  SettingsDocumentsArrived rebuild(
-          void updates(SettingsDocumentsArrivedBuilder b)) =>
+  SettingsArrived rebuild(void updates(SettingsArrivedBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  SettingsDocumentsArrivedBuilder toBuilder() =>
-      new SettingsDocumentsArrivedBuilder()..replace(this);
+  SettingsArrivedBuilder toBuilder() =>
+      new SettingsArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SettingsDocumentsArrived &&
-        settingsDocuments == other.settingsDocuments;
+    return other is SettingsArrived && settings == other.settings;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, settingsDocuments.hashCode));
+    return $jf($jc(0, settings.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('SettingsDocumentsArrived')
-          ..add('settingsDocuments', settingsDocuments))
+    return (newBuiltValueToStringHelper('SettingsArrived')
+          ..add('settings', settings))
         .toString();
   }
 }
 
-class SettingsDocumentsArrivedBuilder
-    implements
-        Builder<SettingsDocumentsArrived, SettingsDocumentsArrivedBuilder> {
-  _$SettingsDocumentsArrived _$v;
+class SettingsArrivedBuilder
+    implements Builder<SettingsArrived, SettingsArrivedBuilder> {
+  _$SettingsArrived _$v;
 
-  ListBuilder<SettingsDocument> _settingsDocuments;
-  ListBuilder<SettingsDocument> get settingsDocuments =>
-      _$this._settingsDocuments ??= new ListBuilder<SettingsDocument>();
-  set settingsDocuments(ListBuilder<SettingsDocument> settingsDocuments) =>
-      _$this._settingsDocuments = settingsDocuments;
+  SettingsBuilder _settings;
+  SettingsBuilder get settings => _$this._settings ??= new SettingsBuilder();
+  set settings(SettingsBuilder settings) => _$this._settings = settings;
 
-  SettingsDocumentsArrivedBuilder();
+  SettingsArrivedBuilder();
 
-  SettingsDocumentsArrivedBuilder get _$this {
+  SettingsArrivedBuilder get _$this {
     if (_$v != null) {
-      _settingsDocuments = _$v.settingsDocuments?.toBuilder();
+      _settings = _$v.settings?.toBuilder();
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(SettingsDocumentsArrived other) {
+  void replace(SettingsArrived other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$SettingsDocumentsArrived;
+    _$v = other as _$SettingsArrived;
   }
 
   @override
-  void update(void updates(SettingsDocumentsArrivedBuilder b)) {
+  void update(void updates(SettingsArrivedBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$SettingsDocumentsArrived build() {
-    _$SettingsDocumentsArrived _$result;
+  _$SettingsArrived build() {
+    _$SettingsArrived _$result;
     try {
-      _$result = _$v ??
-          new _$SettingsDocumentsArrived._(
-              settingsDocuments: settingsDocuments.build());
+      _$result = _$v ?? new _$SettingsArrived._(settings: settings.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'settingsDocuments';
-        settingsDocuments.build();
+        _$failedField = 'settings';
+        settings.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'SettingsDocumentsArrived', _$failedField, e.toString());
+            'SettingsArrived', _$failedField, e.toString());
       }
       rethrow;
     }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$WipeSettings extends WipeSettings {
+  factory _$WipeSettings([void updates(WipeSettingsBuilder b)]) =>
+      (new WipeSettingsBuilder()..update(updates)).build();
+
+  _$WipeSettings._() : super._();
+
+  @override
+  WipeSettings rebuild(void updates(WipeSettingsBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  WipeSettingsBuilder toBuilder() => new WipeSettingsBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is WipeSettings;
+  }
+
+  @override
+  int get hashCode {
+    return 1009509314;
+  }
+}
+
+class WipeSettingsBuilder
+    implements Builder<WipeSettings, WipeSettingsBuilder> {
+  _$WipeSettings _$v;
+
+  WipeSettingsBuilder();
+
+  @override
+  void replace(WipeSettings other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$WipeSettings;
+  }
+
+  @override
+  void update(void updates(WipeSettingsBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$WipeSettings build() {
+    final _$result = _$v ?? new _$WipeSettings._();
     replace(_$result);
     return _$result;
   }

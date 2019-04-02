@@ -6,139 +6,150 @@ part of 'food_diary_state.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$FoodDiaryLoading extends FoodDiaryLoading {
-  factory _$FoodDiaryLoading([void updates(FoodDiaryLoadingBuilder b)]) =>
-      (new FoodDiaryLoadingBuilder()..update(updates)).build();
+class _$FoodDiaryUninitialized extends FoodDiaryUninitialized {
+  factory _$FoodDiaryUninitialized(
+          [void updates(FoodDiaryUninitializedBuilder b)]) =>
+      (new FoodDiaryUninitializedBuilder()..update(updates)).build();
 
-  _$FoodDiaryLoading._() : super._();
+  _$FoodDiaryUninitialized._() : super._();
 
   @override
-  FoodDiaryLoading rebuild(void updates(FoodDiaryLoadingBuilder b)) =>
+  FoodDiaryUninitialized rebuild(
+          void updates(FoodDiaryUninitializedBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  FoodDiaryLoadingBuilder toBuilder() =>
-      new FoodDiaryLoadingBuilder()..replace(this);
+  FoodDiaryUninitializedBuilder toBuilder() =>
+      new FoodDiaryUninitializedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryLoading;
+    return other is FoodDiaryUninitialized;
   }
 
   @override
   int get hashCode {
-    return 754067686;
+    return 9984324;
   }
 }
 
-class FoodDiaryLoadingBuilder
-    implements Builder<FoodDiaryLoading, FoodDiaryLoadingBuilder> {
-  _$FoodDiaryLoading _$v;
+class FoodDiaryUninitializedBuilder
+    implements Builder<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
+  _$FoodDiaryUninitialized _$v;
 
-  FoodDiaryLoadingBuilder();
+  FoodDiaryUninitializedBuilder();
 
   @override
-  void replace(FoodDiaryLoading other) {
+  void replace(FoodDiaryUninitialized other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$FoodDiaryLoading;
+    _$v = other as _$FoodDiaryUninitialized;
   }
 
   @override
-  void update(void updates(FoodDiaryLoadingBuilder b)) {
+  void update(void updates(FoodDiaryUninitializedBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$FoodDiaryLoading build() {
-    final _$result = _$v ?? new _$FoodDiaryLoading._();
+  _$FoodDiaryUninitialized build() {
+    final _$result = _$v ?? new _$FoodDiaryUninitialized._();
     replace(_$result);
     return _$result;
   }
 }
 
-class _$FoodDiaryLoaded extends FoodDiaryLoaded {
+class _$FoodDiaryReady extends FoodDiaryReady {
   @override
-  final ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDayStream;
+  final ValueObservable<BuiltList<FoodDiaryDay>> diaryDays;
+  @override
+  final int currentDate;
 
-  factory _$FoodDiaryLoaded([void updates(FoodDiaryLoadedBuilder b)]) =>
-      (new FoodDiaryLoadedBuilder()..update(updates)).build();
+  factory _$FoodDiaryReady([void updates(FoodDiaryReadyBuilder b)]) =>
+      (new FoodDiaryReadyBuilder()..update(updates)).build();
 
-  _$FoodDiaryLoaded._({this.foodDiaryDayStream}) : super._() {
-    if (foodDiaryDayStream == null) {
-      throw new BuiltValueNullFieldError(
-          'FoodDiaryLoaded', 'foodDiaryDayStream');
+  _$FoodDiaryReady._({this.diaryDays, this.currentDate}) : super._() {
+    if (diaryDays == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryReady', 'diaryDays');
+    }
+    if (currentDate == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryReady', 'currentDate');
     }
   }
 
   @override
-  FoodDiaryLoaded rebuild(void updates(FoodDiaryLoadedBuilder b)) =>
+  FoodDiaryReady rebuild(void updates(FoodDiaryReadyBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  FoodDiaryLoadedBuilder toBuilder() =>
-      new FoodDiaryLoadedBuilder()..replace(this);
+  FoodDiaryReadyBuilder toBuilder() =>
+      new FoodDiaryReadyBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryLoaded &&
-        foodDiaryDayStream == other.foodDiaryDayStream;
+    return other is FoodDiaryReady &&
+        diaryDays == other.diaryDays &&
+        currentDate == other.currentDate;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, foodDiaryDayStream.hashCode));
+    return $jf($jc($jc(0, diaryDays.hashCode), currentDate.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('FoodDiaryLoaded')
-          ..add('foodDiaryDayStream', foodDiaryDayStream))
+    return (newBuiltValueToStringHelper('FoodDiaryReady')
+          ..add('diaryDays', diaryDays)
+          ..add('currentDate', currentDate))
         .toString();
   }
 }
 
-class FoodDiaryLoadedBuilder
-    implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-  _$FoodDiaryLoaded _$v;
+class FoodDiaryReadyBuilder
+    implements Builder<FoodDiaryReady, FoodDiaryReadyBuilder> {
+  _$FoodDiaryReady _$v;
 
-  ValueObservable<BuiltList<FoodDiaryDay>> _foodDiaryDayStream;
-  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDayStream =>
-      _$this._foodDiaryDayStream;
-  set foodDiaryDayStream(
-          ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDayStream) =>
-      _$this._foodDiaryDayStream = foodDiaryDayStream;
+  ValueObservable<BuiltList<FoodDiaryDay>> _diaryDays;
+  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays => _$this._diaryDays;
+  set diaryDays(ValueObservable<BuiltList<FoodDiaryDay>> diaryDays) =>
+      _$this._diaryDays = diaryDays;
 
-  FoodDiaryLoadedBuilder();
+  int _currentDate;
+  int get currentDate => _$this._currentDate;
+  set currentDate(int currentDate) => _$this._currentDate = currentDate;
 
-  FoodDiaryLoadedBuilder get _$this {
+  FoodDiaryReadyBuilder();
+
+  FoodDiaryReadyBuilder get _$this {
     if (_$v != null) {
-      _foodDiaryDayStream = _$v.foodDiaryDayStream;
+      _diaryDays = _$v.diaryDays;
+      _currentDate = _$v.currentDate;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(FoodDiaryLoaded other) {
+  void replace(FoodDiaryReady other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$FoodDiaryLoaded;
+    _$v = other as _$FoodDiaryReady;
   }
 
   @override
-  void update(void updates(FoodDiaryLoadedBuilder b)) {
+  void update(void updates(FoodDiaryReadyBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$FoodDiaryLoaded build() {
-    final _$result =
-        _$v ?? new _$FoodDiaryLoaded._(foodDiaryDayStream: foodDiaryDayStream);
+  _$FoodDiaryReady build() {
+    final _$result = _$v ??
+        new _$FoodDiaryReady._(diaryDays: diaryDays, currentDate: currentDate);
     replace(_$result);
     return _$result;
   }
@@ -146,14 +157,14 @@ class FoodDiaryLoadedBuilder
 
 class _$FoodDiaryFailed extends FoodDiaryFailed {
   @override
-  final String errorMessage;
+  final String error;
 
   factory _$FoodDiaryFailed([void updates(FoodDiaryFailedBuilder b)]) =>
       (new FoodDiaryFailedBuilder()..update(updates)).build();
 
-  _$FoodDiaryFailed._({this.errorMessage}) : super._() {
-    if (errorMessage == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryFailed', 'errorMessage');
+  _$FoodDiaryFailed._({this.error}) : super._() {
+    if (error == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryFailed', 'error');
     }
   }
 
@@ -168,18 +179,17 @@ class _$FoodDiaryFailed extends FoodDiaryFailed {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryFailed && errorMessage == other.errorMessage;
+    return other is FoodDiaryFailed && error == other.error;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, errorMessage.hashCode));
+    return $jf($jc(0, error.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('FoodDiaryFailed')
-          ..add('errorMessage', errorMessage))
+    return (newBuiltValueToStringHelper('FoodDiaryFailed')..add('error', error))
         .toString();
   }
 }
@@ -188,15 +198,15 @@ class FoodDiaryFailedBuilder
     implements Builder<FoodDiaryFailed, FoodDiaryFailedBuilder> {
   _$FoodDiaryFailed _$v;
 
-  String _errorMessage;
-  String get errorMessage => _$this._errorMessage;
-  set errorMessage(String errorMessage) => _$this._errorMessage = errorMessage;
+  String _error;
+  String get error => _$this._error;
+  set error(String error) => _$this._error = error;
 
   FoodDiaryFailedBuilder();
 
   FoodDiaryFailedBuilder get _$this {
     if (_$v != null) {
-      _errorMessage = _$v.errorMessage;
+      _error = _$v.error;
       _$v = null;
     }
     return this;
@@ -217,7 +227,7 @@ class FoodDiaryFailedBuilder
 
   @override
   _$FoodDiaryFailed build() {
-    final _$result = _$v ?? new _$FoodDiaryFailed._(errorMessage: errorMessage);
+    final _$result = _$v ?? new _$FoodDiaryFailed._(error: error);
     replace(_$result);
     return _$result;
   }

@@ -6,36 +6,36 @@ part of 'login_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$LoginButtonPressed extends LoginButtonPressed {
+class _$PressLoginButton extends PressLoginButton {
   @override
   final String username;
   @override
   final String password;
 
-  factory _$LoginButtonPressed([void updates(LoginButtonPressedBuilder b)]) =>
-      (new LoginButtonPressedBuilder()..update(updates)).build();
+  factory _$PressLoginButton([void updates(PressLoginButtonBuilder b)]) =>
+      (new PressLoginButtonBuilder()..update(updates)).build();
 
-  _$LoginButtonPressed._({this.username, this.password}) : super._() {
+  _$PressLoginButton._({this.username, this.password}) : super._() {
     if (username == null) {
-      throw new BuiltValueNullFieldError('LoginButtonPressed', 'username');
+      throw new BuiltValueNullFieldError('PressLoginButton', 'username');
     }
     if (password == null) {
-      throw new BuiltValueNullFieldError('LoginButtonPressed', 'password');
+      throw new BuiltValueNullFieldError('PressLoginButton', 'password');
     }
   }
 
   @override
-  LoginButtonPressed rebuild(void updates(LoginButtonPressedBuilder b)) =>
+  PressLoginButton rebuild(void updates(PressLoginButtonBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LoginButtonPressedBuilder toBuilder() =>
-      new LoginButtonPressedBuilder()..replace(this);
+  PressLoginButtonBuilder toBuilder() =>
+      new PressLoginButtonBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LoginButtonPressed &&
+    return other is PressLoginButton &&
         username == other.username &&
         password == other.password;
   }
@@ -47,16 +47,16 @@ class _$LoginButtonPressed extends LoginButtonPressed {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('LoginButtonPressed')
+    return (newBuiltValueToStringHelper('PressLoginButton')
           ..add('username', username)
           ..add('password', password))
         .toString();
   }
 }
 
-class LoginButtonPressedBuilder
-    implements Builder<LoginButtonPressed, LoginButtonPressedBuilder> {
-  _$LoginButtonPressed _$v;
+class PressLoginButtonBuilder
+    implements Builder<PressLoginButton, PressLoginButtonBuilder> {
+  _$PressLoginButton _$v;
 
   String _username;
   String get username => _$this._username;
@@ -66,9 +66,9 @@ class LoginButtonPressedBuilder
   String get password => _$this._password;
   set password(String password) => _$this._password = password;
 
-  LoginButtonPressedBuilder();
+  PressLoginButtonBuilder();
 
-  LoginButtonPressedBuilder get _$this {
+  PressLoginButtonBuilder get _$this {
     if (_$v != null) {
       _username = _$v.username;
       _password = _$v.password;
@@ -78,22 +78,22 @@ class LoginButtonPressedBuilder
   }
 
   @override
-  void replace(LoginButtonPressed other) {
+  void replace(PressLoginButton other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$LoginButtonPressed;
+    _$v = other as _$PressLoginButton;
   }
 
   @override
-  void update(void updates(LoginButtonPressedBuilder b)) {
+  void update(void updates(PressLoginButtonBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$LoginButtonPressed build() {
-    final _$result = _$v ??
-        new _$LoginButtonPressed._(username: username, password: password);
+  _$PressLoginButton build() {
+    final _$result =
+        _$v ?? new _$PressLoginButton._(username: username, password: password);
     replace(_$result);
     return _$result;
   }

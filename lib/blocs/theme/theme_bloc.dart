@@ -8,7 +8,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeData> {
   ThemeData get initialState => ThemeData.light();
 
   @override
-  Stream<ThemeData> mapEventToState(ThemeData currentState, ThemeEvent event) async* {
+  Stream<ThemeData> mapEventToState(ThemeEvent event) async* {
     switch (event) {
       //
       case ThemeEvent.toggle:

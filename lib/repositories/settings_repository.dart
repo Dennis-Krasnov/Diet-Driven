@@ -38,45 +38,32 @@ class SettingsRepository {
   }
 
   ValueObservable<UserData> userDataDocument(String userId) {
+//     _firestoreProvider.userDataDocument(userId).withLatestFrom(_firestoreProvider.otherThings(userId), (userData, other) {
+////      return Object(userData, other);
+//    });
+
     return _firestoreProvider.userDataDocument(userId).shareValue();
   }
 
-  ValueObservable<BuiltList<SettingsDocument>> settingsDocumentsList(String userId) {
-    // OPTIMIZE: I'm unsubscribing in bloc, userId may change! (food diary repo)
-    return _firestoreProvider.settingsDocumentList(userId).shareValue();
+  ValueObservable<Settings> settingsDocumentsList(String userId) {
+    return _firestoreProvider.settingsDocumentList(userId).map((settingsDocuments) =>
+      Settings((b) => b
+        ..navigationSettings = settingsDocuments.whereType<NavigationSettings>().single.toBuilder()
+        // TODO: other settings
+      )).shareValue();
   }
-
-
 }
 
 //subs.connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) => api.actions.connectivityChanged(result));
-//
-////
-//subs.authSubscription = auth.onAuthStateChanged.listen((FirebaseUser fbUser) => api.actions.user.authStateChanged(fbUser));
-//
-//// TODO: extract into async function
-//// Call remote config when launching app
-//RemoteConfig config = await RemoteConfig.instance;
-//
-//// Default parameters
-//config.setDefaults(<String, dynamic>{
-//'bonus': 1,
-//});
-//
-//// Enable developer mode to relax fetch throttling
-//await config.setConfigSettings(RemoteConfigSettings(debugMode: true));
-//
-//try {
-//await config.fetch(expiration: const Duration(seconds: 0)); // FIXME
-//await config.activateFetched();
-//api.actions.firestore.remoteConfigReceived(config);
-//
-//} on FetchThrottledException catch (exception) {
-//log.shout('Fetch throttled!');
-//log.shout(exception);
-//api.actions.firestore.remoteConfigReceived(null);
-//} catch (exception) {
-//log.shout('Unable to fetch remote config. Cached or default values will be used');
-//log.shout(exception);
-//api.actions.firestore.remoteConfigReceived(null);
-//}
+
+//return _firestoreProvider.settingsDocumentList(userId).map((settingsDocuments) {
+//      try {
+//        return Settings((b) => b
+//          ..navigationSettings = settingsDocuments.whereType<NavigationSettings>().single.toBuilder()
+//          // TODO: other settings
+//        );
+//      } on StateError catch(e) {
+//        log.severe("invalid settings format received: $e");
+//        return null;
+//      }
+//    }).shareValue();

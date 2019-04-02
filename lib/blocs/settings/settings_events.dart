@@ -7,9 +7,19 @@ part 'settings_events.g.dart';
 
 abstract class SettingsEvent {}
 
-abstract class SettingsDocumentsArrived with SettingsEvent implements Built<SettingsDocumentsArrived, SettingsDocumentsArrivedBuilder> {
-  BuiltList<SettingsDocument> get settingsDocuments;
+///
+abstract class SettingsArrived with SettingsEvent implements Built<SettingsArrived, SettingsArrivedBuilder> {
+  Settings get settings;
 
-  SettingsDocumentsArrived._();
-  factory SettingsDocumentsArrived([updates(SettingsDocumentsArrivedBuilder b)]) = _$SettingsDocumentsArrived;
+  SettingsArrived._();
+  factory SettingsArrived([updates(SettingsArrivedBuilder b)]) = _$SettingsArrived;
+}
+
+///
+abstract class WipeSettings with SettingsEvent implements Built<WipeSettings, WipeSettingsBuilder> {
+  WipeSettings._();
+  factory WipeSettings([updates(WipeSettingsBuilder b)]) = _$WipeSettings;
+
+  @override
+  String toString() => runtimeType.toString();
 }

@@ -17,46 +17,60 @@ class FirestoreProvider {
   String foodDiaryPath(userId, daysSinceEpoch) => "${userPath(userId)}/food_diary/$daysSinceEpoch";
   final fsDiary = FS<FoodDiaryDay>();
 
-  Future<void> foodDiaryUpdate(String userId, int daysSinceEpoch, FoodDiaryDay foodDiaryDay) {
-    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+  Future<void> setFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
+    DocumentReference ref = _firestore.document(foodDiaryPath(userId, foodDiaryDay.date));
     return ref.setData(fsDiary.serializeDocument(foodDiaryDay));
   }
 
-  Future<void> foodDiaryDelete(String userId, int daysSinceEpoch) {
+  Future<void> deleteFoodDiaryDay(String userId, int daysSinceEpoch) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
     return ref.delete();
   }
 
-  Observable<BuiltList<FoodDiaryDay>> foodDiaryList(String userId) {
+  Future<void> addFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
+    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+//    ref.updateData(data) // TODO: array operations
+  }
+
+  Future<void> deleteFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
+    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+//    ref.updateData(data) // TODO: array operations
+  }
+
+  Future<void> editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
+    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+    // TODO: wire batch!
+    // TODO: array operations
+    // TODO: remove old then add new
+  }
+
+  Observable<BuiltList<FoodDiaryDay>> streamFoodDiary(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
-    print("COLLECTION REFERENCE ${ref.path}");
     return fsDiary.deserializeCollection(ref.snapshots());
   }
 
-  Future<BuiltList<FoodDiaryDay>> foodDiaryListSingle(String userId) {
+  Future<BuiltList<FoodDiaryDay>> getFoodDiary(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
-    print("FOOD COLLECTION REFERENCE ${ref.path}");
-
     return fsDiary.deserializeSingleCollection(ref.getDocuments());
   }
 
   /// SETTINGS
-  final fsUserData = FS<UserData>();
-  final fsSettings = FS<SettingsDocument>();
+  String settingsDocumentPath(userId, setting) => "${userPath(userId)}/settings/$setting";
 
   Observable<BuiltList<SettingsDocument>> settingsDocumentList(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/settings");
     print("SETTINGS COLLECTION REFERENCE ${ref.path}");
-    return fsSettings.deserializeCollection(ref.snapshots());
+    return FS<SettingsDocument>().deserializeCollection(ref.snapshots());
   }
 
   Observable<UserData> userDataDocument(String userId) {
     DocumentReference ref = _firestore.document("${userPath(userId)}");
     print("USER DATA DOCUMENT REFERENCE ${ref.path}");
-    return fsUserData.deserializeDocument(ref.snapshots());
+    return FS<UserData>().deserializeDocument(ref.snapshots());
   }
 }
 
+///
 class FS<T> {
   ///
   Map<String, dynamic> _dataWithId(DocumentSnapshot doc) => doc.data..putIfAbsent("_id", () => doc.documentID);

@@ -9,6 +9,7 @@ part 'food_diary_day.g.dart';
 abstract class FoodDiaryDay implements Built<FoodDiaryDay, FoodDiaryDayBuilder> {
   static Serializer<FoodDiaryDay> get serializer => _$foodDiaryDaySerializer;
 
+  int get date;
   BuiltList<FoodRecord> get foodRecords;
 
   FoodDiaryDay._();

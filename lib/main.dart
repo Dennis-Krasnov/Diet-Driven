@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/screens/penguin_animation.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -131,6 +132,11 @@ class _AppState extends State<App> {
                 // Load critical user settings
                 if (settingsState is SettingsUninitialized || userDataState is UserDataUninitialized) {
                   return LoadingIndicator();
+                }
+
+                // Loading user data failed // TODO: await settings as well? // settingsState is SettingsFailed ||
+                if (userDataState is UserDataFailed) {
+                  return ErrorPage(error: userDataState.error);
                 }
 
                 // Show application

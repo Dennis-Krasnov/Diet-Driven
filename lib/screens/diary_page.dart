@@ -13,18 +13,18 @@ class DiaryPage extends StatelessWidget {
     return BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
       bloc: _foodDiaryBloc,
       builder: (BuildContext context, FoodDiaryState state) {
-        if (state is FoodDiaryLoading) {
+        if (state is FoodDiaryUninitialized) {
           return Scaffold(appBar: AppBar(title: Text("Diary loading")), body: Center(child: CircularProgressIndicator()), floatingActionButton: FAB());
         }
         if (state is FoodDiaryFailed) {
-          return Scaffold(appBar: AppBar(title: Text("Diary failed")), body: Center(child: Text("Failed... ${state.errorMessage}")));
+          return Scaffold(appBar: AppBar(title: Text("Diary failed")), body: Center(child: Text("Failed... ${state.error}")));
         }
-        if (state is FoodDiaryLoaded) {
+        if (state is FoodDiaryReady) {
           return Scaffold(
             appBar: AppBar(title: Text("Diary")), // TODO: date!!
             body: Center(
               child: StreamBuilder<BuiltList<FoodDiaryDay>>(
-                stream: state.foodDiaryDayStream,
+                stream: state.diaryDays,
 //                initialData: BuiltList(), // would need to use if (snapshot.connectionState == ConnectionState.waiting) (no point)
                 builder: (BuildContext context, AsyncSnapshot<BuiltList<FoodDiaryDay>> snapshot) {
                   // For debugging
@@ -93,7 +93,8 @@ class FAB extends StatelessWidget {
           child: FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () {
-              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b..foodRecord = FoodRecord((b) => b..foodName = "##@").toBuilder()));
+              // TODO: create diary day bloc!
+//              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b..foodRecord = FoodRecord((b) => b..foodName = "##@").toBuilder()));
 //                _counterBloc.dispatch(CounterEvent.increment);
             },
           ),
@@ -103,7 +104,7 @@ class FAB extends StatelessWidget {
           child: FloatingActionButton(
             child: Icon(Icons.remove),
             onPressed: () {
-              _foodDiaryBloc.dispatch(LoadFoodRecordDays());
+//              _foodDiaryBloc.dispatch(LoadFoodRecordDays());
             },
           ),
         ),

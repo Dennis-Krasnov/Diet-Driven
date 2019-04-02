@@ -23,7 +23,7 @@ abstract class LoginLoading with LoginState implements Built<LoginLoading, Login
 }
 
 /// login attempt has failed.
-abstract class LoginFailure with LoginState implements Built<LoginFailure, LoginFailureBuilder> {
+abstract class LoginFailure with LoginState implements Built<LoginFailure, LoginFailureBuilder> { // TODO: rename
   String get error;
 
   LoginFailure._();

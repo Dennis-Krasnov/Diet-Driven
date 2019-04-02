@@ -8,44 +8,33 @@ import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/models/models.dart';
 
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
-  final Logger log = new Logger("user data bloc");
+  final Logger _log = new Logger("user data bloc");
 
+  // TODO: make these private, or allow to access parent's repos and blocs? (to avoid passing down everything)
   final SettingsRepository settingsRepository;
   final AuthenticationBloc authenticationBloc;
 
-  StreamSubscription<AuthenticationState> authenticationSubscription;
+//  StreamSubscription<AuthenticationState> authenticationSubscription;
 
-  ValueObservable<UserData> userDataStream;
-  StreamSubscription<UserData> userDataSubscription;
+  Observable<UserData> _userDataStream;
+  StreamSubscription<UserData> _userDataSubscription;
 
   UserDataBloc({this.settingsRepository, this.authenticationBloc}) {
     assert(settingsRepository != null);
     assert(authenticationBloc != null);
 
-    // TODO: if already authenticated, set settings as uninitialized so that they don't use old user's settings!
-    // TODO: do this by checking if currentState is loaded, if so make a wipeSettings event (sets to uninitialized)
+    _userDataStream = Observable<AuthenticationState>(authenticationBloc.state)
+      .where((authState) => authState is AuthAuthenticated)
+      .map<String>((authState) => (authState as AuthAuthenticated).user.uid) // TODO: save important bits of user, not just uid???
+      .distinct()
+      .switchMap<UserData>((userId) => settingsRepository.userDataDocument(userId))
+      .distinct();
 
-    // Subscribing to authentication changes
-    authenticationSubscription = authenticationBloc.state.listen((state) {
-      // Cancel old user settings subscriptions
-      userDataSubscription?.cancel();
-      log.fine("cancelled old user data subscription");
-
-      // Start new settings subscriptions
-      if (state is AuthAuthenticated) {
-        String id = state.user.uid;
-
-        // User data
-        userDataStream = settingsRepository.userDataDocument(id);
-        userDataSubscription = userDataStream.listen((userData) =>
-          dispatch(UserDataArrived((b) => b
-            ..userData = userData.toBuilder()
-          ))
-        );
-
-        log.info("subscribed to $id's user data");
-      }
-    });
+    _userDataSubscription = _userDataStream.listen((userData) =>
+      dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
+      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error)),
+      onDone: () => dispatch(WipeUserData())
+    );
   }
 
   @override
@@ -53,19 +42,26 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   @override
   void dispose() {
-    authenticationSubscription?.cancel();
-    userDataSubscription?.cancel();
+    _userDataSubscription?.cancel();
+    super.dispose();
   }
 
   @override
-  Stream<UserDataState> mapEventToState(UserDataState currentState, UserDataEvent event) async* {
-    if (event is UserDataArrived) {
+  Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
+    if (event is UserDataError) {
+      yield UserDataFailed((b) => b..error = event.error);
+
+      _log.info("user data failed");
+    }
+    if (event is RemoteUserDataArrived) {
+      assert(event.userData != null);
+
       yield UserDataLoaded((b) => b
         ..userData = event.userData.toBuilder()
       );
 
-      log.info("loaded user data");
-      log.fine("data: ${event.userData}");
+      _log.info("loaded user data");
+      _log.fine("data: ${event.userData}");
     }
   }
 }

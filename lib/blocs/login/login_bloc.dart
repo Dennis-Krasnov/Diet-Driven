@@ -8,6 +8,8 @@ import 'package:diet_driven/repositories/repositories.dart';
 import 'package:rxdart/rxdart.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
+  // TODO: log
+
   final AuthenticationRepository authenticationRepository;
   final AuthenticationBloc authenticationBloc;
 
@@ -28,7 +30,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   @override
-  Stream<LoginState> mapEventToState(LoginState currentState, LoginEvent event) async* {
+  Stream<LoginState> mapEventToState(LoginEvent event) async* {
     if (event is PressLoginButton) {
       yield LoginLoading();
 

@@ -6,30 +6,30 @@ part of 'authentication_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$LoggedIn extends LoggedIn {
+class _$SignIn extends SignIn {
   @override
   final FirebaseUser user;
 
-  factory _$LoggedIn([void updates(LoggedInBuilder b)]) =>
-      (new LoggedInBuilder()..update(updates)).build();
+  factory _$SignIn([void updates(SignInBuilder b)]) =>
+      (new SignInBuilder()..update(updates)).build();
 
-  _$LoggedIn._({this.user}) : super._() {
+  _$SignIn._({this.user}) : super._() {
     if (user == null) {
-      throw new BuiltValueNullFieldError('LoggedIn', 'user');
+      throw new BuiltValueNullFieldError('SignIn', 'user');
     }
   }
 
   @override
-  LoggedIn rebuild(void updates(LoggedInBuilder b)) =>
+  SignIn rebuild(void updates(SignInBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LoggedInBuilder toBuilder() => new LoggedInBuilder()..replace(this);
+  SignInBuilder toBuilder() => new SignInBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LoggedIn && user == other.user;
+    return other is SignIn && user == other.user;
   }
 
   @override
@@ -39,21 +39,21 @@ class _$LoggedIn extends LoggedIn {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('LoggedIn')..add('user', user))
+    return (newBuiltValueToStringHelper('SignIn')..add('user', user))
         .toString();
   }
 }
 
-class LoggedInBuilder implements Builder<LoggedIn, LoggedInBuilder> {
-  _$LoggedIn _$v;
+class SignInBuilder implements Builder<SignIn, SignInBuilder> {
+  _$SignIn _$v;
 
   FirebaseUser _user;
   FirebaseUser get user => _$this._user;
   set user(FirebaseUser user) => _$this._user = user;
 
-  LoggedInBuilder();
+  SignInBuilder();
 
-  LoggedInBuilder get _$this {
+  SignInBuilder get _$this {
     if (_$v != null) {
       _user = _$v.user;
       _$v = null;
@@ -62,72 +62,130 @@ class LoggedInBuilder implements Builder<LoggedIn, LoggedInBuilder> {
   }
 
   @override
-  void replace(LoggedIn other) {
+  void replace(SignIn other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$LoggedIn;
+    _$v = other as _$SignIn;
   }
 
   @override
-  void update(void updates(LoggedInBuilder b)) {
+  void update(void updates(SignInBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$LoggedIn build() {
-    final _$result = _$v ?? new _$LoggedIn._(user: user);
+  _$SignIn build() {
+    final _$result = _$v ?? new _$SignIn._(user: user);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$LoggedOut extends LoggedOut {
-  factory _$LoggedOut([void updates(LoggedOutBuilder b)]) =>
-      (new LoggedOutBuilder()..update(updates)).build();
+class _$SignOut extends SignOut {
+  factory _$SignOut([void updates(SignOutBuilder b)]) =>
+      (new SignOutBuilder()..update(updates)).build();
 
-  _$LoggedOut._() : super._();
+  _$SignOut._() : super._();
 
   @override
-  LoggedOut rebuild(void updates(LoggedOutBuilder b)) =>
+  SignOut rebuild(void updates(SignOutBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  LoggedOutBuilder toBuilder() => new LoggedOutBuilder()..replace(this);
+  SignOutBuilder toBuilder() => new SignOutBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LoggedOut;
+    return other is SignOut;
   }
 
   @override
   int get hashCode {
-    return 755061653;
+    return 957153408;
   }
 }
 
-class LoggedOutBuilder implements Builder<LoggedOut, LoggedOutBuilder> {
-  _$LoggedOut _$v;
+class SignOutBuilder implements Builder<SignOut, SignOutBuilder> {
+  _$SignOut _$v;
 
-  LoggedOutBuilder();
+  SignOutBuilder();
 
   @override
-  void replace(LoggedOut other) {
+  void replace(SignOut other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$LoggedOut;
+    _$v = other as _$SignOut;
   }
 
   @override
-  void update(void updates(LoggedOutBuilder b)) {
+  void update(void updates(SignOutBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$LoggedOut build() {
-    final _$result = _$v ?? new _$LoggedOut._();
+  _$SignOut build() {
+    final _$result = _$v ?? new _$SignOut._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$WipeAuthentication extends WipeAuthentication {
+  factory _$WipeAuthentication([void updates(WipeAuthenticationBuilder b)]) =>
+      (new WipeAuthenticationBuilder()..update(updates)).build();
+
+  _$WipeAuthentication._() : super._();
+
+  @override
+  WipeAuthentication rebuild(void updates(WipeAuthenticationBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  WipeAuthenticationBuilder toBuilder() =>
+      new WipeAuthenticationBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is WipeAuthentication;
+  }
+
+  @override
+  int get hashCode {
+    return 471029259;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('WipeAuthentication').toString();
+  }
+}
+
+class WipeAuthenticationBuilder
+    implements Builder<WipeAuthentication, WipeAuthenticationBuilder> {
+  _$WipeAuthentication _$v;
+
+  WipeAuthenticationBuilder();
+
+  @override
+  void replace(WipeAuthentication other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$WipeAuthentication;
+  }
+
+  @override
+  void update(void updates(WipeAuthenticationBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$WipeAuthentication build() {
+    final _$result = _$v ?? new _$WipeAuthentication._();
     replace(_$result);
     return _$result;
   }

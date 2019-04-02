@@ -60,6 +60,84 @@ class UserDataUninitializedBuilder
   }
 }
 
+class _$UserDataFailed extends UserDataFailed {
+  @override
+  final String error;
+
+  factory _$UserDataFailed([void updates(UserDataFailedBuilder b)]) =>
+      (new UserDataFailedBuilder()..update(updates)).build();
+
+  _$UserDataFailed._({this.error}) : super._() {
+    if (error == null) {
+      throw new BuiltValueNullFieldError('UserDataFailed', 'error');
+    }
+  }
+
+  @override
+  UserDataFailed rebuild(void updates(UserDataFailedBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  UserDataFailedBuilder toBuilder() =>
+      new UserDataFailedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is UserDataFailed && error == other.error;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, error.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('UserDataFailed')..add('error', error))
+        .toString();
+  }
+}
+
+class UserDataFailedBuilder
+    implements Builder<UserDataFailed, UserDataFailedBuilder> {
+  _$UserDataFailed _$v;
+
+  String _error;
+  String get error => _$this._error;
+  set error(String error) => _$this._error = error;
+
+  UserDataFailedBuilder();
+
+  UserDataFailedBuilder get _$this {
+    if (_$v != null) {
+      _error = _$v.error;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(UserDataFailed other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$UserDataFailed;
+  }
+
+  @override
+  void update(void updates(UserDataFailedBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$UserDataFailed build() {
+    final _$result = _$v ?? new _$UserDataFailed._(error: error);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$UserDataLoaded extends UserDataLoaded {
   @override
   final UserData userData;

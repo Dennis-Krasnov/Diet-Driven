@@ -1,34 +1,38 @@
+import 'package:rxdart/rxdart.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
-import 'package:diet_driven/blocs/blocs.dart';
 
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:diet_driven/models/models.dart';
 
 part 'food_diary_state.g.dart';
 
 abstract class FoodDiaryState {}
 
 ///
-abstract class FoodDiaryLoading with FoodDiaryState implements Built<FoodDiaryLoading, FoodDiaryLoadingBuilder> {
-  FoodDiaryLoading._();
-  factory FoodDiaryLoading([updates(FoodDiaryLoadingBuilder b)]) = _$FoodDiaryLoading;
+abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
+  FoodDiaryUninitialized._();
+  factory FoodDiaryUninitialized([updates(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
 
   @override
   String toString() => runtimeType.toString();
 }
 
 ///
-abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-  ValueObservable<BuiltList<FoodDiaryDay>> get foodDiaryDayStream;
+abstract class FoodDiaryReady with FoodDiaryState implements Built<FoodDiaryReady, FoodDiaryReadyBuilder> {
+//  BuiltList<FoodDiaryDay> get diaryDays;
+  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays;
+  int get currentDate;
+//  String get timeFrame; // daily vs. weekly
 
-  FoodDiaryLoaded._();
-  factory FoodDiaryLoaded([updates(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
+  FoodDiaryReady._();
+  factory FoodDiaryReady([updates(FoodDiaryReadyBuilder b)]) = _$FoodDiaryReady;
 }
 
 ///
 abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFailed, FoodDiaryFailedBuilder> {
-  String get errorMessage;
+  String get error;
 
   FoodDiaryFailed._();
   factory FoodDiaryFailed([updates(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;

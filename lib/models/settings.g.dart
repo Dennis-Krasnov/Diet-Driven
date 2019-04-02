@@ -20,6 +20,9 @@ class _$UserDataSerializer implements StructuredSerializer<UserData> {
   Iterable serialize(Serializers serializers, UserData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'userId',
+      serializers.serialize(object.userId,
+          specifiedType: const FullType(String)),
       'staleRemoteConfig',
       serializers.serialize(object.staleRemoteConfig,
           specifiedType: const FullType(bool)),
@@ -27,6 +30,12 @@ class _$UserDataSerializer implements StructuredSerializer<UserData> {
       serializers.serialize(object.currentSubscription,
           specifiedType: const FullType(String)),
     ];
+    if (object.name != null) {
+      result
+        ..add('name')
+        ..add(serializers.serialize(object.name,
+            specifiedType: const FullType(String)));
+    }
 
     return result;
   }
@@ -42,6 +51,14 @@ class _$UserDataSerializer implements StructuredSerializer<UserData> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'userId':
+          result.userId = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
+        case 'name':
+          result.name = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'staleRemoteConfig':
           result.staleRemoteConfig = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
@@ -192,14 +209,26 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
 
 class _$UserData extends UserData {
   @override
+  final String userId;
+  @override
+  final String name;
+  @override
   final bool staleRemoteConfig;
   @override
   final String currentSubscription;
 
   factory _$UserData([void updates(UserDataBuilder b)]) =>
-      (new UserDataBuilder()..update(updates)).build();
+      (new UserDataBuilder()..update(updates)).build() as _$UserData;
 
-  _$UserData._({this.staleRemoteConfig, this.currentSubscription}) : super._() {
+  _$UserData._(
+      {this.userId,
+      this.name,
+      this.staleRemoteConfig,
+      this.currentSubscription})
+      : super._() {
+    if (userId == null) {
+      throw new BuiltValueNullFieldError('UserData', 'userId');
+    }
     if (staleRemoteConfig == null) {
       throw new BuiltValueNullFieldError('UserData', 'staleRemoteConfig');
     }
@@ -213,50 +242,96 @@ class _$UserData extends UserData {
       (toBuilder()..update(updates)).build();
 
   @override
-  UserDataBuilder toBuilder() => new UserDataBuilder()..replace(this);
+  _$UserDataBuilder toBuilder() => new _$UserDataBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is UserData &&
+        userId == other.userId &&
+        name == other.name &&
         staleRemoteConfig == other.staleRemoteConfig &&
         currentSubscription == other.currentSubscription;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc(0, staleRemoteConfig.hashCode), currentSubscription.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, userId.hashCode), name.hashCode),
+            staleRemoteConfig.hashCode),
+        currentSubscription.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('UserData')
+          ..add('userId', userId)
+          ..add('name', name)
           ..add('staleRemoteConfig', staleRemoteConfig)
           ..add('currentSubscription', currentSubscription))
         .toString();
   }
 }
 
-class UserDataBuilder implements Builder<UserData, UserDataBuilder> {
+class _$UserDataBuilder extends UserDataBuilder {
   _$UserData _$v;
 
-  bool _staleRemoteConfig;
-  bool get staleRemoteConfig => _$this._staleRemoteConfig;
-  set staleRemoteConfig(bool staleRemoteConfig) =>
-      _$this._staleRemoteConfig = staleRemoteConfig;
+  @override
+  String get userId {
+    _$this;
+    return super.userId;
+  }
 
-  String _currentSubscription;
-  String get currentSubscription => _$this._currentSubscription;
-  set currentSubscription(String currentSubscription) =>
-      _$this._currentSubscription = currentSubscription;
+  @override
+  set userId(String userId) {
+    _$this;
+    super.userId = userId;
+  }
 
-  UserDataBuilder();
+  @override
+  String get name {
+    _$this;
+    return super.name;
+  }
+
+  @override
+  set name(String name) {
+    _$this;
+    super.name = name;
+  }
+
+  @override
+  bool get staleRemoteConfig {
+    _$this;
+    return super.staleRemoteConfig;
+  }
+
+  @override
+  set staleRemoteConfig(bool staleRemoteConfig) {
+    _$this;
+    super.staleRemoteConfig = staleRemoteConfig;
+  }
+
+  @override
+  String get currentSubscription {
+    _$this;
+    return super.currentSubscription;
+  }
+
+  @override
+  set currentSubscription(String currentSubscription) {
+    _$this;
+    super.currentSubscription = currentSubscription;
+  }
+
+  _$UserDataBuilder() : super._();
 
   UserDataBuilder get _$this {
     if (_$v != null) {
-      _staleRemoteConfig = _$v.staleRemoteConfig;
-      _currentSubscription = _$v.currentSubscription;
+      super.userId = _$v.userId;
+      super.name = _$v.name;
+      super.staleRemoteConfig = _$v.staleRemoteConfig;
+      super.currentSubscription = _$v.currentSubscription;
       _$v = null;
     }
     return this;
@@ -279,6 +354,8 @@ class UserDataBuilder implements Builder<UserData, UserDataBuilder> {
   _$UserData build() {
     final _$result = _$v ??
         new _$UserData._(
+            userId: userId,
+            name: name,
             staleRemoteConfig: staleRemoteConfig,
             currentSubscription: currentSubscription);
     replace(_$result);
@@ -387,7 +464,8 @@ class _$NavigationSettings extends NavigationSettings {
   final String temp;
 
   factory _$NavigationSettings([void updates(NavigationSettingsBuilder b)]) =>
-      (new NavigationSettingsBuilder()..update(updates)).build();
+      (new NavigationSettingsBuilder()..update(updates)).build()
+          as _$NavigationSettings;
 
   _$NavigationSettings._({this.temp}) : super._() {
     if (temp == null) {
@@ -400,8 +478,8 @@ class _$NavigationSettings extends NavigationSettings {
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigationSettingsBuilder toBuilder() =>
-      new NavigationSettingsBuilder()..replace(this);
+  _$NavigationSettingsBuilder toBuilder() =>
+      new _$NavigationSettingsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -422,19 +500,26 @@ class _$NavigationSettings extends NavigationSettings {
   }
 }
 
-class NavigationSettingsBuilder
-    implements Builder<NavigationSettings, NavigationSettingsBuilder> {
+class _$NavigationSettingsBuilder extends NavigationSettingsBuilder {
   _$NavigationSettings _$v;
 
-  String _temp;
-  String get temp => _$this._temp;
-  set temp(String temp) => _$this._temp = temp;
+  @override
+  String get temp {
+    _$this;
+    return super.temp;
+  }
 
-  NavigationSettingsBuilder();
+  @override
+  set temp(String temp) {
+    _$this;
+    super.temp = temp;
+  }
+
+  _$NavigationSettingsBuilder() : super._();
 
   NavigationSettingsBuilder get _$this {
     if (_$v != null) {
-      _temp = _$v.temp;
+      super.temp = _$v.temp;
       _$v = null;
     }
     return this;

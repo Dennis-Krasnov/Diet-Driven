@@ -1,105 +1,95 @@
-import 'dart:math';
+import 'dart:async';
 
+import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
-import 'package:diet_driven/models/food_record.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:rxdart/rxdart.dart';
 
+// TODO: create foodDiaryDay blocs in UI as needed. pass foodDiaryBloc as argument
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
+  final Logger _log = new Logger("food diary bloc");
+
   final FoodRepository foodRepository;
+  final UserDataBloc userDataBloc;
 
-  ValueObservable<BuiltList<FoodDiaryDay>> foodDiaryDayStream;
+  // User-specific stream of data streams of food diary days
+  Observable<ValueObservable<BuiltList<FoodDiaryDay>>> _foodDiaryDayStream;
+  StreamSubscription<ValueObservable<BuiltList<FoodDiaryDay>>> _foodDiaryDaySubscription;
 
-  FoodDiaryBloc({@required this.foodRepository}) : assert(foodRepository != null);
+  FoodDiaryBloc({@required this.foodRepository, @required this.userDataBloc}) {
+    assert(foodRepository != null);
+    assert(userDataBloc != null);
 
-  @override
-  FoodDiaryState get initialState => FoodDiaryLoading();
+    _foodDiaryDayStream = Observable<UserDataState>(userDataBloc.state)
+      .where((userDataState) => userDataState is UserDataLoaded)
+      .map<String>((userDataState) => (userDataState as UserDataLoaded).userData.userId)
+      .distinct()
+      .switchMap<ValueObservable<BuiltList<FoodDiaryDay>>>((userId) => Observable.just(foodRepository.streamDiary(userId))) // observable.just is a hack? // Combine latest here if needed
+      .distinct();
 
-
-  @override
-  Stream<FoodDiaryState> mapEventToState(FoodDiaryState currentState, FoodDiaryEvent event) async* {
-    if (event is LoadFoodRecordDays) {
-      yield* _mapLoadFoodDiaryToState();
-    }
-    else if (event is AddFoodRecord) {
-      yield* _mapAddFoodRecordToState(currentState, event);
-    }
-    else {
-      print("FOOD DIARY EVENT NOT DEFINED: $event");
-    }
-  }
-
-  ///
-  Stream<FoodDiaryState> _mapLoadFoodDiaryToState() async* {
-    // Don't re-initialize existing stream data subscription
-    foodDiaryDayStream ??= foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2");
-//    foodDiaryDayStreamBloc ??= StreamDataBloc<BuiltList<FoodDiaryDay>>()
-//      ..dispatch(StreamDataInit<BuiltList<FoodDiaryDay>>((b) => b
-//        ..stream = foodRepository.foodDiaryList("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2")
-//      ));
-
-//    await otherData
-    yield FoodDiaryLoaded((b) => b
-      ..foodDiaryDayStream = foodDiaryDayStream
-//      ..otherData
+    _foodDiaryDaySubscription = _foodDiaryDayStream.listen((diaryDays) =>
+      dispatch(RemoteDiaryArrived((b) => b..diaryDays = diaryDays)),
+//      onError: (error, trace) => dispatch(FoodDiaryFailed((b) => b..error = error)); // TODO: failed event
     );
   }
 
-  ///
-  Stream<FoodDiaryState> _mapAddFoodRecordToState(FoodDiaryState currentState, AddFoodRecord event) async* {
-    // FIXME: doesn't update (can click theme to update)
-    if (currentState is FoodDiaryLoaded) {
-//      var day = currentState.foodDiaryDays[0].rebuild((b) => b
-//        ..foodRecords = b.foodRecords.build().rebuild((b) => b.add(FoodRecord((b) => b..foodName = "FOO"))).toBuilder()
-//      );
+  @override
+  FoodDiaryState get initialState => FoodDiaryUninitialized();
 
-      print("gonna add a food!");
+  @override
+  Stream<FoodDiaryEvent> transform(Stream<FoodDiaryEvent> events) {
+    Observable<FoodDiaryEvent>(events)
+      .groupBy((event) => event.runtimeType)
+      .flatMap((eventType) {
+        if (eventType.key is SaveFoodDiaryDay) {
+          return eventType.distinct();
+        }
+        return eventType;
+      });
+    return events;
+  }
 
-      var searchResult = await foodRepository.searchForFood("apple");
-      print(searchResult);
-      // FIXME !!!
+  @override
+  void dispose() {
+    _foodDiaryDaySubscription?.cancel();
+    super.dispose();
+  }
 
+  @override
+  Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
+    if (event is RemoteDiaryArrived) {
+      assert(event.diaryDays != null);
 
-//    print(currentState.foodDiaryDays.length);
-//    print(currentState.foodDiaryDays.length.then((i) => print(i)));
+      // Updated food diary days
+      if (currentState is FoodDiaryReady) {
+        yield (currentState as FoodDiaryReady).rebuild((b) => b
+          ..diaryDays = event.diaryDays
+        );
+      }
+      // Initial load
+      else {
+        yield FoodDiaryReady((b) => b
+          ..diaryDays = event.diaryDays
+          ..currentDate = 0 // FIXME: current days since epoch
+        );
+      }
 
-//    ValueObservable<BuiltList<FoodDiaryDay>> val = currentState.foodDiaryDays.shareValue(); // uses Behaviorsubject in background
-//
-//    print("VALUE: $val ");
-//    print("VALUE VALUE ${val.value}");
-//
-//      var i = Random().nextInt(1000);
-//      var day = val.value[0].rebuild((b) => b
-//        ..foodRecords = b.foodRecords.build().rebuild((b) => b.add(FoodRecord((b) => b..foodName = "OOH $i"))).toBuilder()
-//      );
-//
-//      print("DAY: $day");
-////
-//      await foodRepository.foodDiaryUpdate("Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", 124, day);
+      _log.info("${event.diaryDays.length} food diary days arrived");
+    }
+    if (event is SaveFoodDiaryDay) {
+      assert(currentState is FoodDiaryReady);
+      if (currentState is FoodDiaryReady) {
+        foodRepository.saveDiaryDay(event.userId, event.day);
+        // TODO: use completer to show snack bar upon completion
 
-//      yield currentState;
-//      yield currentState.rebuild((b) => b
-//        ..foodDiaryDays[0] = b.foodDiaryDays[0].rebuild((b) => b
-//          ..foodRecords = List.from(b.foodRecords..add(FoodRecord((b) => b..foodName = "FOO")))
-//        )
-//      );
-    } else {
-      print("can't add to a non-loaded food diary");
+        _log.info("${event.day.date} day saved");
+      }
     }
   }
 }
-
-// generic:
-//try {
-//final todos = await this.todosRepository.loadTodos();
-//yield TodosLoaded(
-//todos.map(Todo.fromEntity).toList(),
-//);
-//} catch (_) {
-//yield TodosNotLoaded();
-//}

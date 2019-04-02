@@ -35,7 +35,7 @@ class _HomePageState extends State<HomePage> {
     foodDiaryBloc = FoodDiaryBloc(foodRepository: foodRepository);
 
     // Initialize blocs
-    foodDiaryBloc.dispatch(LoadFoodRecordDays());
+//    foodDiaryBloc.dispatch(LoadFoodRecordDays());
     navigationBloc.dispatch(NavigateToPage((b) => b..page = "track")); // TODO: default page via. settings bloc
   }
 

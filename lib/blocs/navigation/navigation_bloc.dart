@@ -1,8 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/navigation/navigation.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+import 'package:meta/meta.dart';
 
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
+  // TODO: log
+  final AnalyticsRepository analyticsRepository;
+
+  NavigationBloc({@required this.analyticsRepository}) : assert(analyticsRepository != null);
+
   @override
   NavigationState get initialState => NavigationState((b) => b
     ..currentPage = "diary"
@@ -13,13 +20,12 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   @override
   void onTransition(Transition<NavigationEvent, NavigationState> transition) {
     if (transition.event is NavigateToPage) {
-      // Firebase analytics!
+      analyticsRepository.navigatePage((transition.event as NavigateToPage).page);
     }
-    // TODO: call NavigateToPage with default page on initialize!
   }
 
   @override
-  Stream<NavigationState> mapEventToState(NavigationState currentState, NavigationEvent event) async* {
+  Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
     if (event is NavigateToPage) {
       yield currentState.rebuild((b) => b
         ..currentPage = event.page

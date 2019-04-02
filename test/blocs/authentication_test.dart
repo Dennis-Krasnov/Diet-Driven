@@ -10,8 +10,8 @@ import 'package:rxdart/rxdart.dart';
 import '../test_utils.dart';
 
 void main() {
+  // Mocks
   AuthenticationRepository authRepository;
-  FirebaseAuth firebaseAuth;
 
   AuthenticationBloc authenticationBloc;
 
@@ -25,7 +25,6 @@ void main() {
 
   setUp(() {
     authRepository = MockAuthenticationRepository();
-    firebaseAuth = FirebaseAuthMock();
     mockAuthenticationRepositoryStream([]); // No events by default
   });
 
@@ -67,7 +66,7 @@ void main() {
     });
   });
 
-  group("Stream event triggers", () {
+  group("Auth stream event triggers", () {
     test("Persists current user", () {
       FirebaseUser user = FirebaseUserMock();
       mockAuthenticationRepositoryStream([user]);

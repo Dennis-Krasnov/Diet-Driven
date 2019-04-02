@@ -6,144 +6,184 @@ part of 'food_diary_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$LoadFoodRecordDays extends LoadFoodRecordDays {
-  factory _$LoadFoodRecordDays([void updates(LoadFoodRecordDaysBuilder b)]) =>
-      (new LoadFoodRecordDaysBuilder()..update(updates)).build();
-
-  _$LoadFoodRecordDays._() : super._();
-
+class _$RemoteDiaryArrived extends RemoteDiaryArrived {
   @override
-  LoadFoodRecordDays rebuild(void updates(LoadFoodRecordDaysBuilder b)) =>
-      (toBuilder()..update(updates)).build();
+  final ValueObservable<BuiltList<FoodDiaryDay>> diaryDays;
 
-  @override
-  LoadFoodRecordDaysBuilder toBuilder() =>
-      new LoadFoodRecordDaysBuilder()..replace(this);
+  factory _$RemoteDiaryArrived([void updates(RemoteDiaryArrivedBuilder b)]) =>
+      (new RemoteDiaryArrivedBuilder()..update(updates)).build();
 
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is LoadFoodRecordDays;
-  }
-
-  @override
-  int get hashCode {
-    return 246537791;
-  }
-}
-
-class LoadFoodRecordDaysBuilder
-    implements Builder<LoadFoodRecordDays, LoadFoodRecordDaysBuilder> {
-  _$LoadFoodRecordDays _$v;
-
-  LoadFoodRecordDaysBuilder();
-
-  @override
-  void replace(LoadFoodRecordDays other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$LoadFoodRecordDays;
-  }
-
-  @override
-  void update(void updates(LoadFoodRecordDaysBuilder b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$LoadFoodRecordDays build() {
-    final _$result = _$v ?? new _$LoadFoodRecordDays._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$AddFoodRecord extends AddFoodRecord {
-  @override
-  final FoodRecord foodRecord;
-
-  factory _$AddFoodRecord([void updates(AddFoodRecordBuilder b)]) =>
-      (new AddFoodRecordBuilder()..update(updates)).build();
-
-  _$AddFoodRecord._({this.foodRecord}) : super._() {
-    if (foodRecord == null) {
-      throw new BuiltValueNullFieldError('AddFoodRecord', 'foodRecord');
+  _$RemoteDiaryArrived._({this.diaryDays}) : super._() {
+    if (diaryDays == null) {
+      throw new BuiltValueNullFieldError('RemoteDiaryArrived', 'diaryDays');
     }
   }
 
   @override
-  AddFoodRecord rebuild(void updates(AddFoodRecordBuilder b)) =>
+  RemoteDiaryArrived rebuild(void updates(RemoteDiaryArrivedBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  AddFoodRecordBuilder toBuilder() => new AddFoodRecordBuilder()..replace(this);
+  RemoteDiaryArrivedBuilder toBuilder() =>
+      new RemoteDiaryArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is AddFoodRecord && foodRecord == other.foodRecord;
+    return other is RemoteDiaryArrived && diaryDays == other.diaryDays;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, foodRecord.hashCode));
+    return $jf($jc(0, diaryDays.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('AddFoodRecord')
-          ..add('foodRecord', foodRecord))
+    return (newBuiltValueToStringHelper('RemoteDiaryArrived')
+          ..add('diaryDays', diaryDays))
         .toString();
   }
 }
 
-class AddFoodRecordBuilder
-    implements Builder<AddFoodRecord, AddFoodRecordBuilder> {
-  _$AddFoodRecord _$v;
+class RemoteDiaryArrivedBuilder
+    implements Builder<RemoteDiaryArrived, RemoteDiaryArrivedBuilder> {
+  _$RemoteDiaryArrived _$v;
 
-  FoodRecordBuilder _foodRecord;
-  FoodRecordBuilder get foodRecord =>
-      _$this._foodRecord ??= new FoodRecordBuilder();
-  set foodRecord(FoodRecordBuilder foodRecord) =>
-      _$this._foodRecord = foodRecord;
+  ValueObservable<BuiltList<FoodDiaryDay>> _diaryDays;
+  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays => _$this._diaryDays;
+  set diaryDays(ValueObservable<BuiltList<FoodDiaryDay>> diaryDays) =>
+      _$this._diaryDays = diaryDays;
 
-  AddFoodRecordBuilder();
+  RemoteDiaryArrivedBuilder();
 
-  AddFoodRecordBuilder get _$this {
+  RemoteDiaryArrivedBuilder get _$this {
     if (_$v != null) {
-      _foodRecord = _$v.foodRecord?.toBuilder();
+      _diaryDays = _$v.diaryDays;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(AddFoodRecord other) {
+  void replace(RemoteDiaryArrived other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$AddFoodRecord;
+    _$v = other as _$RemoteDiaryArrived;
   }
 
   @override
-  void update(void updates(AddFoodRecordBuilder b)) {
+  void update(void updates(RemoteDiaryArrivedBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$AddFoodRecord build() {
-    _$AddFoodRecord _$result;
+  _$RemoteDiaryArrived build() {
+    final _$result = _$v ?? new _$RemoteDiaryArrived._(diaryDays: diaryDays);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SaveFoodDiaryDay extends SaveFoodDiaryDay {
+  @override
+  final String userId;
+  @override
+  final FoodDiaryDay day;
+
+  factory _$SaveFoodDiaryDay([void updates(SaveFoodDiaryDayBuilder b)]) =>
+      (new SaveFoodDiaryDayBuilder()..update(updates)).build();
+
+  _$SaveFoodDiaryDay._({this.userId, this.day}) : super._() {
+    if (userId == null) {
+      throw new BuiltValueNullFieldError('SaveFoodDiaryDay', 'userId');
+    }
+    if (day == null) {
+      throw new BuiltValueNullFieldError('SaveFoodDiaryDay', 'day');
+    }
+  }
+
+  @override
+  SaveFoodDiaryDay rebuild(void updates(SaveFoodDiaryDayBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SaveFoodDiaryDayBuilder toBuilder() =>
+      new SaveFoodDiaryDayBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SaveFoodDiaryDay &&
+        userId == other.userId &&
+        day == other.day;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, userId.hashCode), day.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('SaveFoodDiaryDay')
+          ..add('userId', userId)
+          ..add('day', day))
+        .toString();
+  }
+}
+
+class SaveFoodDiaryDayBuilder
+    implements Builder<SaveFoodDiaryDay, SaveFoodDiaryDayBuilder> {
+  _$SaveFoodDiaryDay _$v;
+
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
+
+  FoodDiaryDayBuilder _day;
+  FoodDiaryDayBuilder get day => _$this._day ??= new FoodDiaryDayBuilder();
+  set day(FoodDiaryDayBuilder day) => _$this._day = day;
+
+  SaveFoodDiaryDayBuilder();
+
+  SaveFoodDiaryDayBuilder get _$this {
+    if (_$v != null) {
+      _userId = _$v.userId;
+      _day = _$v.day?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(SaveFoodDiaryDay other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SaveFoodDiaryDay;
+  }
+
+  @override
+  void update(void updates(SaveFoodDiaryDayBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SaveFoodDiaryDay build() {
+    _$SaveFoodDiaryDay _$result;
     try {
-      _$result = _$v ?? new _$AddFoodRecord._(foodRecord: foodRecord.build());
+      _$result =
+          _$v ?? new _$SaveFoodDiaryDay._(userId: userId, day: day.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'foodRecord';
-        foodRecord.build();
+        _$failedField = 'day';
+        day.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'AddFoodRecord', _$failedField, e.toString());
+            'SaveFoodDiaryDay', _$failedField, e.toString());
       }
       rethrow;
     }
