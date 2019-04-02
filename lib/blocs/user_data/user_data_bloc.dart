@@ -27,12 +27,14 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       .where((authState) => authState is AuthAuthenticated)
       .map<String>((authState) => (authState as AuthAuthenticated).user.uid) // TODO: save important bits of user, not just uid???
       .distinct()
-      .switchMap<UserData>((userId) => settingsRepository.userDataDocument(userId))
+      .switchMap<UserData>((userId) => settingsRepository.userDataDocument(userId)
+        .map((userData) => userData.rebuild((b) => b..userId = userId)) // FIXME: had to make userId nullable
+      )
       .distinct();
 
     _userDataSubscription = _userDataStream.listen((userData) =>
       dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
-      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error)),
+      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())),
       onDone: () => dispatch(WipeUserData())
     );
   }

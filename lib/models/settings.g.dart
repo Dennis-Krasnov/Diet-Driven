@@ -20,9 +20,6 @@ class _$UserDataSerializer implements StructuredSerializer<UserData> {
   Iterable serialize(Serializers serializers, UserData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'userId',
-      serializers.serialize(object.userId,
-          specifiedType: const FullType(String)),
       'staleRemoteConfig',
       serializers.serialize(object.staleRemoteConfig,
           specifiedType: const FullType(bool)),
@@ -30,6 +27,12 @@ class _$UserDataSerializer implements StructuredSerializer<UserData> {
       serializers.serialize(object.currentSubscription,
           specifiedType: const FullType(String)),
     ];
+    if (object.userId != null) {
+      result
+        ..add('userId')
+        ..add(serializers.serialize(object.userId,
+            specifiedType: const FullType(String)));
+    }
     if (object.name != null) {
       result
         ..add('name')
@@ -226,9 +229,6 @@ class _$UserData extends UserData {
       this.staleRemoteConfig,
       this.currentSubscription})
       : super._() {
-    if (userId == null) {
-      throw new BuiltValueNullFieldError('UserData', 'userId');
-    }
     if (staleRemoteConfig == null) {
       throw new BuiltValueNullFieldError('UserData', 'staleRemoteConfig');
     }

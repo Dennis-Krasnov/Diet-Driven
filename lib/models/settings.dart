@@ -15,6 +15,7 @@ abstract class UserData implements Built<UserData, UserDataBuilder> {
   static Serializer<UserData> get serializer => _$userDataSerializer;
 
   // Authentication bloc
+  @nullable
   String get userId;
   @nullable
   String get name;

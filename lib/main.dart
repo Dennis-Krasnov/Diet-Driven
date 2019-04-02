@@ -33,6 +33,7 @@ void main() {
     userRepository: AuthenticationRepository(),
     foodRepository: FoodRepository(),
     settingsRepository: SettingsRepository(),
+    analyticsRepository: AnalyticsRepository(),
   ));
 
   // TODO: create bloc to manage system preferences, orientation, overlays (eg. for maximizing screen) on per-page basis
@@ -53,8 +54,10 @@ class App extends StatefulWidget {
   final AuthenticationRepository userRepository;
   final FoodRepository foodRepository;
   final SettingsRepository settingsRepository;
+  final AnalyticsRepository analyticsRepository;
 
-  App({@required this.userRepository, @required this.foodRepository, @required this.settingsRepository});
+
+  App({@required this.userRepository, @required this.foodRepository, @required this.settingsRepository, @required this.analyticsRepository});
 
   @override
   State<StatefulWidget> createState() => _AppState();
@@ -64,6 +67,7 @@ class _AppState extends State<App> {
   AuthenticationRepository get userRepository => widget.userRepository;
   FoodRepository get foodRepository => widget.foodRepository;
   SettingsRepository get settingsRepository => widget.settingsRepository;
+  AnalyticsRepository get analyticsRepository => widget.analyticsRepository;
 
 
   AuthenticationBloc authenticationBloc;
@@ -140,7 +144,11 @@ class _AppState extends State<App> {
                 }
 
                 // Show application
-                return HomePage(foodRepository: foodRepository, settingsRepository: settingsRepository,);
+                return HomePage(
+                  foodRepository: foodRepository,
+                  settingsRepository: settingsRepository,
+                  analyticsRepository: analyticsRepository,
+                );
               }
             }),
             theme: theme,

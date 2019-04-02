@@ -9,13 +9,16 @@ import 'package:diet_driven/blocs/blocs.dart';
 class HomePage extends StatefulWidget {
   final FoodRepository foodRepository;
   final SettingsRepository settingsRepository;
+  final AnalyticsRepository analyticsRepository;
 
   HomePage({
     @required this.foodRepository,
-    @required this.settingsRepository
+    @required this.settingsRepository,
+    @required this.analyticsRepository
   }) :
     assert(foodRepository != null),
-    assert(settingsRepository != null);
+    assert(settingsRepository != null),
+    assert(analyticsRepository != null);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -24,15 +27,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   FoodRepository get foodRepository => widget.foodRepository;
   SettingsRepository get settingsRepository => widget.settingsRepository;
+  AnalyticsRepository get analyticsRepository => widget.analyticsRepository;
 
   FoodDiaryBloc foodDiaryBloc;
   // TODO: tracking, profile, recipes, exercise blocs
-  final NavigationBloc navigationBloc = NavigationBloc();
+  NavigationBloc navigationBloc;
 
   @override
   void initState() {
     super.initState();
-    foodDiaryBloc = FoodDiaryBloc(foodRepository: foodRepository);
+
+    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
+
+    foodDiaryBloc = FoodDiaryBloc(userDataBloc: _userDataBloc, foodRepository: foodRepository);
+    navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository);
 
     // Initialize blocs
 //    foodDiaryBloc.dispatch(LoadFoodRecordDays());
