@@ -8,18 +8,23 @@ part 'settings_events.g.dart';
 abstract class SettingsEvent {}
 
 ///
-abstract class SettingsArrived with SettingsEvent implements Built<SettingsArrived, SettingsArrivedBuilder> {
+abstract class RemoteSettingsArrived with SettingsEvent implements Built<RemoteSettingsArrived, RemoteSettingsArrivedBuilder> {
   Settings get settings;
 
-  SettingsArrived._();
-  factory SettingsArrived([updates(SettingsArrivedBuilder b)]) = _$SettingsArrived;
+  RemoteSettingsArrived._();
+  factory RemoteSettingsArrived([updates(RemoteSettingsArrivedBuilder b)]) = _$RemoteSettingsArrived;
+}
+
+///
+abstract class SettingsError with SettingsEvent implements Built<SettingsError, SettingsErrorBuilder> {
+  String get error;
+
+  SettingsError._();
+  factory SettingsError([updates(SettingsErrorBuilder b)]) = _$SettingsError;
 }
 
 ///
 abstract class WipeSettings with SettingsEvent implements Built<WipeSettings, WipeSettingsBuilder> {
   WipeSettings._();
   factory WipeSettings([updates(WipeSettingsBuilder b)]) = _$WipeSettings;
-
-  @override
-  String toString() => runtimeType.toString();
 }

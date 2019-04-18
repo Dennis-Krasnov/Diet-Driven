@@ -60,6 +60,84 @@ class SettingsUninitializedBuilder
   }
 }
 
+class _$SettingsFailed extends SettingsFailed {
+  @override
+  final String error;
+
+  factory _$SettingsFailed([void updates(SettingsFailedBuilder b)]) =>
+      (new SettingsFailedBuilder()..update(updates)).build();
+
+  _$SettingsFailed._({this.error}) : super._() {
+    if (error == null) {
+      throw new BuiltValueNullFieldError('SettingsFailed', 'error');
+    }
+  }
+
+  @override
+  SettingsFailed rebuild(void updates(SettingsFailedBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SettingsFailedBuilder toBuilder() =>
+      new SettingsFailedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SettingsFailed && error == other.error;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, error.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('SettingsFailed')..add('error', error))
+        .toString();
+  }
+}
+
+class SettingsFailedBuilder
+    implements Builder<SettingsFailed, SettingsFailedBuilder> {
+  _$SettingsFailed _$v;
+
+  String _error;
+  String get error => _$this._error;
+  set error(String error) => _$this._error = error;
+
+  SettingsFailedBuilder();
+
+  SettingsFailedBuilder get _$this {
+    if (_$v != null) {
+      _error = _$v.error;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(SettingsFailed other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SettingsFailed;
+  }
+
+  @override
+  void update(void updates(SettingsFailedBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SettingsFailed build() {
+    final _$result = _$v ?? new _$SettingsFailed._(error: error);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$SettingsLoaded extends SettingsLoaded {
   @override
   final Settings settings;

@@ -17,41 +17,66 @@ class FirestoreProvider {
   String foodDiaryPath(userId, daysSinceEpoch) => "${userPath(userId)}/food_diary/$daysSinceEpoch";
   final fsDiary = FS<FoodDiaryDay>();
 
+  ///
   Future<void> setFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, foodDiaryDay.date));
     return ref.setData(fsDiary.serializeDocument(foodDiaryDay));
   }
 
+  /// Throws if day doesn't exist
   Future<void> deleteFoodDiaryDay(String userId, int daysSinceEpoch) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
     return ref.delete();
   }
 
-  Future<void> addFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
+  ///
+  Observable<FoodDiaryDay> streamFoodDiaryDay(String userId, int daysSinceEpoch) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
-//    ref.updateData(data) // TODO: array operations
+    return fsDiary.deserializeDocument(ref.snapshots());
   }
 
-  Future<void> deleteFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
-    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
-//    ref.updateData(data) // TODO: array operations
-  }
-
-  Future<void> editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
-    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
-    // TODO: wire batch!
-    // TODO: array operations
-    // TODO: remove old then add new
-  }
-
-  Observable<BuiltList<FoodDiaryDay>> streamFoodDiary(String userId) {
+  /// TODO: provide start date
+  Observable<BuiltList<FoodDiaryDay>> streamFullFoodDiary(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
     return fsDiary.deserializeCollection(ref.snapshots());
   }
 
-  Future<BuiltList<FoodDiaryDay>> getFoodDiary(String userId) {
+  ///
+  Future<BuiltList<FoodDiaryDay>> getFullFoodDiary(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
     return fsDiary.deserializeSingleCollection(ref.getDocuments());
+  }
+
+  /// FOOD RECORD
+  Future<void> addFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
+    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+    return ref.updateData({
+      "foodRecords": FieldValue.arrayUnion([foodRecord])
+    });
+  }
+
+  /// Throws if day doesn't exist
+  Future<void> deleteFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
+    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+    return ref.updateData({
+      "foodRecords": FieldValue.arrayRemove([foodRecord])
+    });
+  }
+
+  /// Throws if day doesn't exist
+  Future<void> editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
+    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+    final WriteBatch batch = _firestore.batch();
+
+    batch.updateData(ref, <String, dynamic>{
+      "foodRecords": FieldValue.arrayRemove([oldRecord])
+    });
+
+    batch.updateData(ref, <String, dynamic>{
+      "foodRecords": FieldValue.arrayUnion([newRecord])
+    });
+
+    return batch.commit();
   }
 
   /// SETTINGS

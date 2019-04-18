@@ -63,19 +63,14 @@ class FoodDiaryUninitializedBuilder
 
 class _$FoodDiaryReady extends FoodDiaryReady {
   @override
-  final ValueObservable<BuiltList<FoodDiaryDay>> diaryDays;
-  @override
-  final int currentDate;
+  final ValueObservable<FoodDiaryDay> diaryDay;
 
   factory _$FoodDiaryReady([void updates(FoodDiaryReadyBuilder b)]) =>
       (new FoodDiaryReadyBuilder()..update(updates)).build();
 
-  _$FoodDiaryReady._({this.diaryDays, this.currentDate}) : super._() {
-    if (diaryDays == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryReady', 'diaryDays');
-    }
-    if (currentDate == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryReady', 'currentDate');
+  _$FoodDiaryReady._({this.diaryDay}) : super._() {
+    if (diaryDay == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryReady', 'diaryDay');
     }
   }
 
@@ -90,21 +85,18 @@ class _$FoodDiaryReady extends FoodDiaryReady {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryReady &&
-        diaryDays == other.diaryDays &&
-        currentDate == other.currentDate;
+    return other is FoodDiaryReady && diaryDay == other.diaryDay;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, diaryDays.hashCode), currentDate.hashCode));
+    return $jf($jc(0, diaryDay.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryReady')
-          ..add('diaryDays', diaryDays)
-          ..add('currentDate', currentDate))
+          ..add('diaryDay', diaryDay))
         .toString();
   }
 }
@@ -113,21 +105,16 @@ class FoodDiaryReadyBuilder
     implements Builder<FoodDiaryReady, FoodDiaryReadyBuilder> {
   _$FoodDiaryReady _$v;
 
-  ValueObservable<BuiltList<FoodDiaryDay>> _diaryDays;
-  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays => _$this._diaryDays;
-  set diaryDays(ValueObservable<BuiltList<FoodDiaryDay>> diaryDays) =>
-      _$this._diaryDays = diaryDays;
-
-  int _currentDate;
-  int get currentDate => _$this._currentDate;
-  set currentDate(int currentDate) => _$this._currentDate = currentDate;
+  ValueObservable<FoodDiaryDay> _diaryDay;
+  ValueObservable<FoodDiaryDay> get diaryDay => _$this._diaryDay;
+  set diaryDay(ValueObservable<FoodDiaryDay> diaryDay) =>
+      _$this._diaryDay = diaryDay;
 
   FoodDiaryReadyBuilder();
 
   FoodDiaryReadyBuilder get _$this {
     if (_$v != null) {
-      _diaryDays = _$v.diaryDays;
-      _currentDate = _$v.currentDate;
+      _diaryDay = _$v.diaryDay;
       _$v = null;
     }
     return this;
@@ -148,8 +135,7 @@ class FoodDiaryReadyBuilder
 
   @override
   _$FoodDiaryReady build() {
-    final _$result = _$v ??
-        new _$FoodDiaryReady._(diaryDays: diaryDays, currentDate: currentDate);
+    final _$result = _$v ?? new _$FoodDiaryReady._(diaryDay: diaryDay);
     replace(_$result);
     return _$result;
   }

@@ -15,6 +15,14 @@ abstract class SettingsUninitialized with SettingsState implements Built<Setting
 }
 
 ///
+abstract class SettingsFailed with SettingsState implements Built<SettingsFailed, SettingsFailedBuilder> {
+  String get error;
+
+  SettingsFailed._();
+  factory SettingsFailed([updates(SettingsFailedBuilder b)]) = _$SettingsFailed;
+}
+
+///
 abstract class SettingsLoaded with SettingsState implements Built<SettingsLoaded, SettingsLoadedBuilder> {
   Settings get settings;
 

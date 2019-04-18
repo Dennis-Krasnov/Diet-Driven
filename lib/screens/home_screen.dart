@@ -6,16 +6,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 
+// TODO: rename userData to UserState, should aggregate all data needed
+// main should build only based on userState
+// TODO: trace through logs! - draw on paper!
+
 class HomePage extends StatefulWidget {
+  final DiaryRepository diaryRepository;
   final FoodRepository foodRepository;
   final SettingsRepository settingsRepository;
   final AnalyticsRepository analyticsRepository;
 
   HomePage({
+    @required this.diaryRepository,
     @required this.foodRepository,
     @required this.settingsRepository,
     @required this.analyticsRepository
   }) :
+    assert(diaryRepository != null),
     assert(foodRepository != null),
     assert(settingsRepository != null),
     assert(analyticsRepository != null);
@@ -25,6 +32,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  DiaryRepository get diaryRepository => widget.diaryRepository;
   FoodRepository get foodRepository => widget.foodRepository;
   SettingsRepository get settingsRepository => widget.settingsRepository;
   AnalyticsRepository get analyticsRepository => widget.analyticsRepository;
@@ -39,7 +47,8 @@ class _HomePageState extends State<HomePage> {
 
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
 
-    foodDiaryBloc = FoodDiaryBloc(userDataBloc: _userDataBloc, foodRepository: foodRepository);
+//    foodDiaryBloc = FoodDiaryBloc(userDataBloc: _userDataBloc, foodRepository: foodRepository);
+    foodDiaryBloc = FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124); // FIXME: wrapper should switchmap on user data
     navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository);
 
     // Initialize blocs

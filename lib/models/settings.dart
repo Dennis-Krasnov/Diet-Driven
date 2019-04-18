@@ -10,19 +10,15 @@ abstract class Settings implements Built<Settings, SettingsBuilder> {
   factory Settings([updates(SettingsBuilder b)]) = _$Settings;
 }
 
-/// Read only
+/// Read only document
 abstract class UserData implements Built<UserData, UserDataBuilder> {
   static Serializer<UserData> get serializer => _$userDataSerializer;
 
-  // Authentication bloc
   @nullable
   String get userId;
   @nullable
   String get name;
 
-
-
-  bool get staleRemoteConfig;
   String get currentSubscription; // TODO: subscription enum
 
   UserData._();
@@ -33,7 +29,6 @@ abstract class UserDataBuilder implements Builder<UserData, UserDataBuilder> {
   String userId;
   @nullable
   String name = "Mr. Goose";
-  bool staleRemoteConfig = false;
   String currentSubscription = "none";
 
   factory UserDataBuilder() = _$UserDataBuilder;
@@ -47,6 +42,14 @@ abstract class RemoteConfiguration implements Built<RemoteConfiguration, RemoteC
 
   RemoteConfiguration._();
   factory RemoteConfiguration([updates(RemoteConfigurationBuilder b)]) = _$RemoteConfiguration;
+}
+
+abstract class RemoteConfigurationBuilder implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {
+  bool defaultConfiguration = true;
+  int bonus = 0;
+
+  factory RemoteConfigurationBuilder() = _$RemoteConfigurationBuilder;
+  RemoteConfigurationBuilder._();
 }
 
 abstract class SettingsDocument {}

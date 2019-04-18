@@ -20,9 +20,6 @@ class _$UserDataSerializer implements StructuredSerializer<UserData> {
   Iterable serialize(Serializers serializers, UserData object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'staleRemoteConfig',
-      serializers.serialize(object.staleRemoteConfig,
-          specifiedType: const FullType(bool)),
       'currentSubscription',
       serializers.serialize(object.currentSubscription,
           specifiedType: const FullType(String)),
@@ -61,10 +58,6 @@ class _$UserDataSerializer implements StructuredSerializer<UserData> {
         case 'name':
           result.name = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
-          break;
-        case 'staleRemoteConfig':
-          result.staleRemoteConfig = serializers.deserialize(value,
-              specifiedType: const FullType(bool)) as bool;
           break;
         case 'currentSubscription':
           result.currentSubscription = serializers.deserialize(value,
@@ -216,22 +209,12 @@ class _$UserData extends UserData {
   @override
   final String name;
   @override
-  final bool staleRemoteConfig;
-  @override
   final String currentSubscription;
 
   factory _$UserData([void updates(UserDataBuilder b)]) =>
       (new UserDataBuilder()..update(updates)).build() as _$UserData;
 
-  _$UserData._(
-      {this.userId,
-      this.name,
-      this.staleRemoteConfig,
-      this.currentSubscription})
-      : super._() {
-    if (staleRemoteConfig == null) {
-      throw new BuiltValueNullFieldError('UserData', 'staleRemoteConfig');
-    }
+  _$UserData._({this.userId, this.name, this.currentSubscription}) : super._() {
     if (currentSubscription == null) {
       throw new BuiltValueNullFieldError('UserData', 'currentSubscription');
     }
@@ -250,15 +233,12 @@ class _$UserData extends UserData {
     return other is UserData &&
         userId == other.userId &&
         name == other.name &&
-        staleRemoteConfig == other.staleRemoteConfig &&
         currentSubscription == other.currentSubscription;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc($jc(0, userId.hashCode), name.hashCode),
-            staleRemoteConfig.hashCode),
+    return $jf($jc($jc($jc(0, userId.hashCode), name.hashCode),
         currentSubscription.hashCode));
   }
 
@@ -267,7 +247,6 @@ class _$UserData extends UserData {
     return (newBuiltValueToStringHelper('UserData')
           ..add('userId', userId)
           ..add('name', name)
-          ..add('staleRemoteConfig', staleRemoteConfig)
           ..add('currentSubscription', currentSubscription))
         .toString();
   }
@@ -301,18 +280,6 @@ class _$UserDataBuilder extends UserDataBuilder {
   }
 
   @override
-  bool get staleRemoteConfig {
-    _$this;
-    return super.staleRemoteConfig;
-  }
-
-  @override
-  set staleRemoteConfig(bool staleRemoteConfig) {
-    _$this;
-    super.staleRemoteConfig = staleRemoteConfig;
-  }
-
-  @override
   String get currentSubscription {
     _$this;
     return super.currentSubscription;
@@ -330,7 +297,6 @@ class _$UserDataBuilder extends UserDataBuilder {
     if (_$v != null) {
       super.userId = _$v.userId;
       super.name = _$v.name;
-      super.staleRemoteConfig = _$v.staleRemoteConfig;
       super.currentSubscription = _$v.currentSubscription;
       _$v = null;
     }
@@ -356,7 +322,6 @@ class _$UserDataBuilder extends UserDataBuilder {
         new _$UserData._(
             userId: userId,
             name: name,
-            staleRemoteConfig: staleRemoteConfig,
             currentSubscription: currentSubscription);
     replace(_$result);
     return _$result;
@@ -370,7 +335,8 @@ class _$RemoteConfiguration extends RemoteConfiguration {
   final int bonus;
 
   factory _$RemoteConfiguration([void updates(RemoteConfigurationBuilder b)]) =>
-      (new RemoteConfigurationBuilder()..update(updates)).build();
+      (new RemoteConfigurationBuilder()..update(updates)).build()
+          as _$RemoteConfiguration;
 
   _$RemoteConfiguration._({this.defaultConfiguration, this.bonus}) : super._() {
     if (defaultConfiguration == null) {
@@ -387,8 +353,8 @@ class _$RemoteConfiguration extends RemoteConfiguration {
       (toBuilder()..update(updates)).build();
 
   @override
-  RemoteConfigurationBuilder toBuilder() =>
-      new RemoteConfigurationBuilder()..replace(this);
+  _$RemoteConfigurationBuilder toBuilder() =>
+      new _$RemoteConfigurationBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -412,25 +378,39 @@ class _$RemoteConfiguration extends RemoteConfiguration {
   }
 }
 
-class RemoteConfigurationBuilder
-    implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {
+class _$RemoteConfigurationBuilder extends RemoteConfigurationBuilder {
   _$RemoteConfiguration _$v;
 
-  bool _defaultConfiguration;
-  bool get defaultConfiguration => _$this._defaultConfiguration;
-  set defaultConfiguration(bool defaultConfiguration) =>
-      _$this._defaultConfiguration = defaultConfiguration;
+  @override
+  bool get defaultConfiguration {
+    _$this;
+    return super.defaultConfiguration;
+  }
 
-  int _bonus;
-  int get bonus => _$this._bonus;
-  set bonus(int bonus) => _$this._bonus = bonus;
+  @override
+  set defaultConfiguration(bool defaultConfiguration) {
+    _$this;
+    super.defaultConfiguration = defaultConfiguration;
+  }
 
-  RemoteConfigurationBuilder();
+  @override
+  int get bonus {
+    _$this;
+    return super.bonus;
+  }
+
+  @override
+  set bonus(int bonus) {
+    _$this;
+    super.bonus = bonus;
+  }
+
+  _$RemoteConfigurationBuilder() : super._();
 
   RemoteConfigurationBuilder get _$this {
     if (_$v != null) {
-      _defaultConfiguration = _$v.defaultConfiguration;
-      _bonus = _$v.bonus;
+      super.defaultConfiguration = _$v.defaultConfiguration;
+      super.bonus = _$v.bonus;
       _$v = null;
     }
     return this;

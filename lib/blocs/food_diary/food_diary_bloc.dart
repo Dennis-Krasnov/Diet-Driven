@@ -14,27 +14,31 @@ import 'package:diet_driven/repositories/repositories.dart';
 // TODO: create foodDiaryDay blocs in UI as needed. pass foodDiaryBloc as argument
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   final Logger _log = new Logger("food diary bloc");
+  final DiaryRepository diaryRepository;
+//  final UserDataBloc userDataBloc;
 
-  final FoodRepository foodRepository;
-  final UserDataBloc userDataBloc;
+  final String userId;
+  final int daysSinceEpoch;
 
-  // User-specific stream of data streams of food diary days
-  Observable<ValueObservable<BuiltList<FoodDiaryDay>>> _foodDiaryDayStream;
-  StreamSubscription<ValueObservable<BuiltList<FoodDiaryDay>>> _foodDiaryDaySubscription;
+  // User-specific stream of data streams of a food diary day
+  Observable<ValueObservable<FoodDiaryDay>> _foodDiaryDayStream;
+  StreamSubscription<ValueObservable<FoodDiaryDay>> _foodDiaryDaySubscription;
 
-  FoodDiaryBloc({@required this.foodRepository, @required this.userDataBloc}) {
-    assert(foodRepository != null);
-    assert(userDataBloc != null);
+  FoodDiaryBloc({@required this.diaryRepository, @required this.userId, @required this.daysSinceEpoch}) {
+    assert(diaryRepository != null);
 
-    _foodDiaryDayStream = Observable<UserDataState>(userDataBloc.state)
-      .where((userDataState) => userDataState is UserDataLoaded)
-      .map<String>((userDataState) => (userDataState as UserDataLoaded).userData.userId)
-      .distinct()
-      .switchMap<ValueObservable<BuiltList<FoodDiaryDay>>>((userId) => Observable.just(foodRepository.streamDiary(userId))) // observable.just is a hack? // Combine latest here if needed
-      .distinct();
+    _foodDiaryDayStream = Observable.just(diaryRepository.streamDiaryDay(userId, daysSinceEpoch));
+//    _foodDiaryDayStream = Observable<UserDataState>(userDataBloc.state)
+//      .where((userDataState) => userDataState is UserDataLoaded)
+//      .map<String>((userDataState) => (userDataState as UserDataLoaded).userData.userId)
+//      .distinct()
+//      // Observable.just to create higher order observable
+//      // Combine latest here if needed
+//      .switchMap<ValueObservable<FoodDiaryDay>>((userId) => Observable.just(diaryRepository.streamDiaryDay(userId, 0)))
+//      .distinct();
 
-    _foodDiaryDaySubscription = _foodDiaryDayStream.listen((diaryDays) =>
-      dispatch(RemoteDiaryArrived((b) => b..diaryDays = diaryDays)),
+    _foodDiaryDaySubscription = _foodDiaryDayStream.listen((diaryDay) =>
+      dispatch(RemoteDiaryDayArrived((b) => b..diaryDay = diaryDay)),
 //      onError: (error, trace) => dispatch(FoodDiaryFailed((b) => b..error = error)); // TODO: failed event
     );
   }
@@ -63,32 +67,23 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
-    if (event is RemoteDiaryArrived) {
-      assert(event.diaryDays != null);
+    if (event is RemoteDiaryDayArrived) {
+      var diaryReadyBuilder = currentState is FoodDiaryReady
+        ? (currentState as FoodDiaryReady).toBuilder()
+        : FoodDiaryReadyBuilder();
 
-      // Updated food diary days
-      if (currentState is FoodDiaryReady) {
-        yield (currentState as FoodDiaryReady).rebuild((b) => b
-          ..diaryDays = event.diaryDays
-        );
-      }
-      // Initial load
-      else {
-        yield FoodDiaryReady((b) => b
-          ..diaryDays = event.diaryDays
-          ..currentDate = 0 // FIXME: current days since epoch
-        );
-      }
+      diaryReadyBuilder.diaryDay = event.diaryDay;
+      yield diaryReadyBuilder.build();
 
-      _log.info("${event.diaryDays.length} food diary days arrived");
+      _log.info("food diary day #${event.diaryDay.value.date} arrived");
     }
     if (event is SaveFoodDiaryDay) {
       assert(currentState is FoodDiaryReady);
       if (currentState is FoodDiaryReady) {
-        foodRepository.saveDiaryDay(event.userId, event.day);
+        diaryRepository.saveDiaryDay(userId, event.diaryDay);
         // TODO: use completer to show snack bar upon completion
 
-        _log.info("${event.day.date} day saved");
+        _log.info("${event.diaryDay.date} day saved");
       }
     }
   }

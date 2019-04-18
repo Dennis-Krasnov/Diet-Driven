@@ -10,48 +10,36 @@ import 'package:diet_driven/models/models.dart';
 
 class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   final Logger _log = new Logger("settings bloc");
-
   final SettingsRepository settingsRepository;
-  final AuthenticationBloc authenticationBloc;
+  final UserDataBloc userDataBloc;
 
   StreamSubscription<AuthenticationState> authenticationSubscription;
 
-  ValueObservable<Settings> settingStream;
-  StreamSubscription<Settings> settingsSubscription;
+  Observable<Settings> _settingStream;
+  StreamSubscription<Settings> _settingsSubscription;
 
-  SettingsBloc({this.settingsRepository, this.authenticationBloc}) {
+  SettingsBloc({this.settingsRepository, this.userDataBloc}) {
     assert(settingsRepository != null);
-    assert(authenticationBloc != null);
+    assert(userDataBloc != null);
 
-    // Subscribing to authentication changes
-    authenticationSubscription = authenticationBloc.state.listen((state) {
-      // Cancel old user settings subscriptions
-      settingsSubscription?.cancel();
+    _settingStream = Observable<UserDataState>(userDataBloc.state)
+      .where((userDataState) => userDataState is UserDataLoaded)
+      .map<String>((userDataState) => (userDataState as UserDataLoaded).userData.userId)
+      .distinct()
+      // Ensure user doesn't see settings from previous user => shows loading screen
+      .doOnData((userId) {
+        if (currentState is SettingsLoaded) {
+          dispatch(WipeSettings());
+        }
+      })
+      .switchMap<Settings>((userId) => settingsRepository.settingsDocumentsList(userId))
+      .distinct();
 
-      // Start new settings subscriptions
-      if (state is AuthAuthenticated) {
-        String id = state.user.uid;
-
-        // Ensure new user doesn't use settings from previous user
-        dispatch(WipeSettings());
-
-        // Settings documents
-        settingStream = settingsRepository.settingsDocumentsList(id);
-        settingsSubscription = settingStream.listen((settings) =>
-          // TODO: error state, add error screen in main
-          // Invalid settings are treated the same as a lack of settings (since onError only catches events in mapEventToState)
-          // settingsStream returns null if invalid
-          dispatch(settings == null
-            ? WipeSettings()
-            : SettingsArrived((b) => b
-                ..settings = settings.toBuilder()
-              )
-          )
-        );
-
-        _log.info("subscribed to $id's settings documents");
-      }
-    });
+    _settingsSubscription = _settingStream.listen((settings) =>
+      dispatch(RemoteSettingsArrived((b) => b..settings = settings.toBuilder())),
+      onError: (error, trace) => dispatch(SettingsError((b) => b..error = error)),
+      onDone: () => dispatch(WipeSettings()),
+    );
   }
 
   @override
@@ -60,22 +48,18 @@ class SettingsBloc extends Bloc<SettingsEvent, SettingsState> {
   @override
   void dispose() {
     authenticationSubscription?.cancel();
-    settingsSubscription?.cancel();
+    _settingsSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Stream<SettingsState> mapEventToState(SettingsEvent event) async* {
-    if (event is WipeSettings) {
-      if (currentState is SettingsLoaded) {
-        yield SettingsUninitialized();
+    if (event is SettingsError) {
+      yield SettingsFailed((b) => b..error = event.error);
 
-        _log.info("wiped settings");
-      }
+      _log.info("user data failed");
     }
-    if (event is SettingsArrived) {
-      assert(event.settings != null);
-
+    if (event is RemoteSettingsArrived) {
       yield SettingsLoaded((b) => b
         ..settings = event.settings.toBuilder()
       );

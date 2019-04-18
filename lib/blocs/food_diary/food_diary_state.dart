@@ -21,14 +21,24 @@ abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodD
 
 ///
 abstract class FoodDiaryReady with FoodDiaryState implements Built<FoodDiaryReady, FoodDiaryReadyBuilder> {
-//  BuiltList<FoodDiaryDay> get diaryDays;
-  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays;
-  int get currentDate;
+  ValueObservable<FoodDiaryDay> get diaryDay;
+
+  // TODO: create generic diary wrapper! (for pageview)
+//  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays;
+//  int get currentDate;
 //  String get timeFrame; // daily vs. weekly
 
   FoodDiaryReady._();
   factory FoodDiaryReady([updates(FoodDiaryReadyBuilder b)]) = _$FoodDiaryReady;
 }
+
+//abstract class FoodDiaryReadyBuilder implements Builder<FoodDiaryReady, FoodDiaryReadyBuilder> {
+////  ValueObservable<BuiltList<FoodDiaryDay>> diaryDays;
+////  int currentDate = 0; // TODO: today
+//
+//  factory FoodDiaryReadyBuilder() = _$FoodDiaryReadyBuilder;
+//  FoodDiaryReadyBuilder._();
+//}
 
 ///
 abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFailed, FoodDiaryFailedBuilder> {

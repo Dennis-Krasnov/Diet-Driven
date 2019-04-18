@@ -12,39 +12,27 @@ class SettingsRepository {
   final RemoteConfigProvider _remoteConfigProvider = RemoteConfigProvider();
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
 
+  // Throws FetchThrottledException or Exception if failed to fetch remote data
   Future<RemoteConfiguration> fetchRemoteConfig() async {
-    try {
-      RemoteConfig config = await _remoteConfigProvider.fetchRemoteConfig();
-      int bonus = config.getInt("bonus");
+    RemoteConfig config = await _remoteConfigProvider.fetchRemoteConfig();
+    int bonus = config.getInt("bonus");
 
-      print("bonus: $bonus");
+    print("bonus: $bonus");
 
-      var configSettings = RemoteConfiguration((b) => b
-        ..defaultConfiguration = false
-        ..bonus = bonus
-      );
+    var configSettings = RemoteConfiguration((b) => b
+      ..defaultConfiguration = false
+      ..bonus = bonus
+    );
 
-      log.info("successfully loaded config: $configSettings");
-      return configSettings;
-    } on FetchThrottledException catch (exception) {
-      log.warning('Fetch throttled!');
-      log.fine(exception);
-      return null;
-    } catch (exception) {
-      log.warning('Unable to fetch remote config. Cached or default values will be used');
-      log.fine(exception);
-      return null;
-    }
+    log.info("successfully loaded config: $configSettings");
+    return configSettings;
   }
 
   ValueObservable<UserData> userDataDocument(String userId) {
-//     _firestoreProvider.userDataDocument(userId).withLatestFrom(_firestoreProvider.otherThings(userId), (userData, other) {
-////      return Object(userData, other);
-//    });
-
     return _firestoreProvider.userDataDocument(userId).shareValue();
   }
 
+  // Throws Exception if improper data arrived
   ValueObservable<Settings> settingsDocumentsList(String userId) {
     return _firestoreProvider.settingsDocumentList(userId).map((settingsDocuments) =>
       Settings((b) => b

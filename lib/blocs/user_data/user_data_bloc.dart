@@ -9,12 +9,8 @@ import 'package:diet_driven/models/models.dart';
 
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final Logger _log = new Logger("user data bloc");
-
-  // TODO: make these private, or allow to access parent's repos and blocs? (to avoid passing down everything)
   final SettingsRepository settingsRepository;
   final AuthenticationBloc authenticationBloc;
-
-//  StreamSubscription<AuthenticationState> authenticationSubscription;
 
   Observable<UserData> _userDataStream;
   StreamSubscription<UserData> _userDataSubscription;
@@ -25,17 +21,28 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
     _userDataStream = Observable<AuthenticationState>(authenticationBloc.state)
       .where((authState) => authState is AuthAuthenticated)
-      .map<String>((authState) => (authState as AuthAuthenticated).user.uid) // TODO: save important bits of user, not just uid???
+      .map<String>((authState) => (authState as AuthAuthenticated).user.uid)
       .distinct()
-      .switchMap<UserData>((userId) => settingsRepository.userDataDocument(userId)
-        .map((userData) => userData.rebuild((b) => b..userId = userId)) // FIXME: had to make userId nullable
+      // Ensure user doesn't see data from previous user => shows loading screen
+      .doOnData((userId) { // TOTEST user switching wipes data
+        if (currentState is SettingsLoaded) {
+          dispatch(WipeUserData());
+        }
+      })
+      .switchMap<UserData>((userId) =>
+        settingsRepository.userDataDocument(userId)
+        // Adding authentication data into user data
+        .map((userData) => userData.rebuild((b) => b
+          ..userId = userId
+          // TODO: other fields through authBloc.currentState.field
+        ))
       )
       .distinct();
 
     _userDataSubscription = _userDataStream.listen((userData) =>
       dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
-      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())),
-      onDone: () => dispatch(WipeUserData())
+      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())), // TOTEST
+      onDone: () => dispatch(WipeUserData()) // TOTEST
     );
   }
 
@@ -50,14 +57,18 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
+    if (event is WipeUserData) { // TODO: create similar mapping for settings!
+      assert (currentState is UserDataLoaded);
+      if (currentState is UserDataLoaded) {
+        yield UserDataUninitialized();
+      }
+    }
     if (event is UserDataError) {
       yield UserDataFailed((b) => b..error = event.error);
 
       _log.info("user data failed");
     }
     if (event is RemoteUserDataArrived) {
-      assert(event.userData != null);
-
       yield UserDataLoaded((b) => b
         ..userData = event.userData.toBuilder()
       );

@@ -8,6 +8,8 @@ import 'package:diet_driven/blocs/blocs.dart';
 class DiaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // TODO: pass as parameter (inject)
+    // if nothing injected, create own instance of diary bloc!
     final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
 
     return BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
@@ -23,10 +25,10 @@ class DiaryPage extends StatelessWidget {
           return Scaffold(
             appBar: AppBar(title: Text("Diary")), // TODO: date!!
             body: Center(
-              child: StreamBuilder<BuiltList<FoodDiaryDay>>(
-                stream: state.diaryDays,
+              child: StreamBuilder<FoodDiaryDay>(
+                stream: state.diaryDay,
 //                initialData: BuiltList(), // would need to use if (snapshot.connectionState == ConnectionState.waiting) (no point)
-                builder: (BuildContext context, AsyncSnapshot<BuiltList<FoodDiaryDay>> snapshot) {
+                builder: (BuildContext context, AsyncSnapshot<FoodDiaryDay> snapshot) {
                   // For debugging
 //                  showSubscriptionErrorMessages(snapshot.connectionState, context);
 
@@ -34,14 +36,10 @@ class DiaryPage extends StatelessWidget {
                     return CircularProgressIndicator();
                   }
 
-                  return Column( // TODO: make component, pass on update
-                    children: snapshot.data.map((day) =>
-                      Column(
-                        children: day.foodRecords.map((foodRecord) =>
-                          FoodRecordTile(foodRecord) // TODO: pass on update
-                        ).toList(),
-                      )
-                    ).toList()
+                  return Column(
+                    children: state.diaryDay.value.foodRecords.map((foodRecord) =>
+                      FoodRecordTile(foodRecord) // TODO: pass on update callback
+                    ).toList(),
                   );
                 }
               )

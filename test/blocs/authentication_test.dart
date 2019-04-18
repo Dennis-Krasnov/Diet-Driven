@@ -16,16 +16,18 @@ void main() {
   AuthenticationBloc authenticationBloc;
 
   ///
-  void mockAuthenticationRepositoryStream(List<FirebaseUser> events) {
+  void mockAuthenticationRepositoryStream({
+    List<FirebaseUser> authStream: const []
+  }) {
     when(authRepository.onAuthStateChangedStream).thenAnswer((_) =>
-        Observable<FirebaseUser>.fromIterable(events).shareValue()
+      Observable<FirebaseUser>.fromIterable(authStream).shareValue()
     );
     authenticationBloc = AuthenticationBloc(authRepository: authRepository);
   }
 
   setUp(() {
     authRepository = MockAuthenticationRepository();
-    mockAuthenticationRepositoryStream([]); // No events by default
+    mockAuthenticationRepositoryStream(); // No events by default
   });
 
   test("Initial state is correct", () {
@@ -42,7 +44,10 @@ void main() {
           AuthUninitialized(),
           AuthAuthenticated((b) => b..user = user)
         ])
-      );
+      ).then((_) {
+        verifyNever(authRepository.signInWithEmail(any, any));
+        verifyNever(authRepository.signInAnonymously());
+      });
 
       authenticationBloc.dispatch(SignIn((b) => b..user = user));
     });
@@ -51,12 +56,12 @@ void main() {
       FirebaseUser user = FirebaseUserMock();
 
       expectLater(
-          authenticationBloc.state,
-          emitsInOrder([
-            AuthUninitialized(),
-            AuthAuthenticated((b) => b..user = user),
-            AuthUnauthenticated(),
-          ])
+        authenticationBloc.state,
+        emitsInOrder([
+          AuthUninitialized(),
+          AuthAuthenticated((b) => b..user = user),
+          AuthUnauthenticated(),
+        ])
       ).then((_) {
         verifyNever(authRepository.signOut());
       });
@@ -69,7 +74,9 @@ void main() {
   group("Auth stream event triggers", () {
     test("Persists current user", () {
       FirebaseUser user = FirebaseUserMock();
-      mockAuthenticationRepositoryStream([user]);
+      mockAuthenticationRepositoryStream(authStream: [
+        user
+      ]);
 
       expectLater(
         authenticationBloc.state,
@@ -81,7 +88,9 @@ void main() {
     });
 
     test("null user => unauthenticated", () {
-      mockAuthenticationRepositoryStream([null]);
+      mockAuthenticationRepositoryStream(authStream: [
+        null
+      ]);
 
       expectLater(
         authenticationBloc.state,
@@ -96,6 +105,11 @@ void main() {
       FirebaseUser userA = FirebaseUserMock();
       FirebaseUser userB = FirebaseUserMock();
 
+      mockAuthenticationRepositoryStream(authStream: [
+        userA,
+        userB
+      ]);
+
       expectLater(
         authenticationBloc.state,
         emitsInOrder([
@@ -104,22 +118,22 @@ void main() {
           AuthAuthenticated((b) => b..user = userB),
         ])
       );
-
-      authenticationBloc.dispatch(SignIn((b) => b..user = userA));
-      authenticationBloc.dispatch(SignIn((b) => b..user = userB));
     });
 
     test("Handles authentication termination", () {
       FirebaseUser user = FirebaseUserMock();
-      mockAuthenticationRepositoryStream([user, null]);
+      mockAuthenticationRepositoryStream(authStream: [
+        user,
+        null
+      ]);
 
       expectLater(
-          authenticationBloc.state,
-          emitsInOrder([
-            AuthUninitialized(),
-            AuthAuthenticated((b) => b..user = user),
-            AuthUnauthenticated(),
-          ])
+        authenticationBloc.state,
+        emitsInOrder([
+          AuthUninitialized(),
+          AuthAuthenticated((b) => b..user = user),
+          AuthUnauthenticated(),
+        ])
       ).then((_) {
         verifyNever(authRepository.signOut());
       });

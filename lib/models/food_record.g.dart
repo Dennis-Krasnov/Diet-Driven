@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of food_record;
+part of 'food_record.dart';
 
 // **************************************************************************
 // BuiltValueGenerator

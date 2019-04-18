@@ -7,6 +7,7 @@ part 'authentication_events.g.dart';
 
 abstract class AuthenticationEvent {}
 
+///
 abstract class SignIn with AuthenticationEvent implements Built<SignIn, SignInBuilder> {
   FirebaseUser get user;
 
@@ -14,15 +15,11 @@ abstract class SignIn with AuthenticationEvent implements Built<SignIn, SignInBu
   factory SignIn([updates(SignInBuilder b)]) = _$SignIn;
 }
 
+///
 abstract class SignOut with AuthenticationEvent implements Built<SignOut, SignOutBuilder> {
   SignOut._();
   factory SignOut([updates(SignOutBuilder b)]) = _$SignOut;
 
   @override
   String toString() => runtimeType.toString();
-}
-
-abstract class WipeAuthentication with AuthenticationEvent implements Built<WipeAuthentication, WipeAuthenticationBuilder> {
-  WipeAuthentication._();
-  factory WipeAuthentication([updates(WipeAuthenticationBuilder b)]) = _$WipeAuthentication;
 }

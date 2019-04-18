@@ -10,7 +10,6 @@ import 'package:diet_driven/repositories/repositories.dart';
 
 class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> {
   final Logger _log = new Logger("authentication bloc");
-
   final AuthenticationRepository authRepository;
 
   StreamSubscription<FirebaseUser> onAuthStateChangedSubscription;
@@ -23,12 +22,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       _log.fine("on auth state change trigger");
       _log.fine("user: $user");
 
+      // TODO: can write this as a ternary operator
+
       if (user != null) {
         // Switching to another user wipes authentication to prevent showing old user's data
-        if (currentState is AuthAuthenticated && (currentState as AuthAuthenticated).user.uid != user.uid) {
-          dispatch(WipeAuthentication()); // TOTEST
-          _log.info("wiped due to user switch");
-        }
+//        if (currentState is AuthAuthenticated && (currentState as AuthAuthenticated).user.uid != user.uid) {
+//          dispatch(WipeAuthentication()); // FIXME: this shows splash page for no reason
+//          _log.info("wiped due to user switch");
+//        }
+        // solution: set settings and user data wipe themselves!
 
         // Updates user, triggers settings reload
         dispatch(SignIn((b) => b.user = user));
@@ -40,7 +42,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
         _log.info("user logged out");
       }
     },
-    onDone: () => dispatch(WipeAuthentication())
     );
   }
 
@@ -55,18 +56,15 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
 
   @override
   Stream<AuthenticationState> mapEventToState(AuthenticationEvent event) async* {
-    if (event is WipeAuthentication) {
-      yield AuthUninitialized();
-      _log.info("wiped authentication");
-    }
     if (event is SignIn) {
       yield AuthAuthenticated((b) => b.user = event.user);
-      // TODO: log here!
-      _log.info("logged in");
+
+      _log.info("signed in");
     }
     if (event is SignOut) {
       yield AuthUnauthenticated();
-      _log.info("logged out");
+
+      _log.info("signed out");
     }
   }
 }

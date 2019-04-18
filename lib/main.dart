@@ -13,17 +13,15 @@ import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/screens/home_screen.dart';
 import 'package:diet_driven/screens/login.dart';
 import 'package:diet_driven/screens/splash_screen.dart';
-import 'package:diet_driven/screens/diary_page.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
 
 void main() {
   // Configure logger
   // const [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
-  Logger.root.level = Level.FINE; //Level.INFO
-  var format = new DateFormat("jms");
+  Logger.root.level = Level.FINE;
   Logger.root.onRecord.listen((LogRecord rec) {
-    print("${rec.loggerName} ~ ${rec.level.name} ~ ${format.format(rec.time)} ~ ${rec.message}");
+    print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
   });
 
   BlocSupervisor().delegate = SimpleBlocDelegate();
@@ -31,6 +29,7 @@ void main() {
   //
   runApp(App(
     userRepository: AuthenticationRepository(),
+    diaryRepository: DiaryRepository(),
     foodRepository: FoodRepository(),
     settingsRepository: SettingsRepository(),
     analyticsRepository: AnalyticsRepository(),
@@ -38,12 +37,12 @@ void main() {
 
   // TODO: create bloc to manage system preferences, orientation, overlays (eg. for maximizing screen) on per-page basis
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-//    statusBarColor:
+//  statusBarColor:
 //  systemNavigationBarColor:
-//    systemNavigationBarIconBrightness:
+//  systemNavigationBarIconBrightness:
   ));
 
-  //
+  // Lock to portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown
@@ -52,12 +51,12 @@ void main() {
 
 class App extends StatefulWidget {
   final AuthenticationRepository userRepository;
+  final DiaryRepository diaryRepository;
   final FoodRepository foodRepository;
   final SettingsRepository settingsRepository;
   final AnalyticsRepository analyticsRepository;
 
-
-  App({@required this.userRepository, @required this.foodRepository, @required this.settingsRepository, @required this.analyticsRepository});
+  App({@required this.userRepository, @required this.diaryRepository, @required this.foodRepository, @required this.settingsRepository, @required this.analyticsRepository});
 
   @override
   State<StatefulWidget> createState() => _AppState();
@@ -65,15 +64,15 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   AuthenticationRepository get userRepository => widget.userRepository;
+  DiaryRepository get diaryRepository => widget.diaryRepository;
   FoodRepository get foodRepository => widget.foodRepository;
   SettingsRepository get settingsRepository => widget.settingsRepository;
   AnalyticsRepository get analyticsRepository => widget.analyticsRepository;
 
-
+  ConfigurationBloc configurationBloc;
   AuthenticationBloc authenticationBloc;
   SettingsBloc settingsBloc;
   UserDataBloc userDataBloc;
-  ConfigurationBloc configurationBloc;
   final ThemeBloc themeBloc = ThemeBloc();
 
   @override
@@ -82,19 +81,18 @@ class _AppState extends State<App> {
 
     authenticationBloc = AuthenticationBloc(authRepository: userRepository);
 
-    settingsBloc = SettingsBloc(
-      settingsRepository: settingsRepository,
-      authenticationBloc: authenticationBloc
-    );
-
     userDataBloc = UserDataBloc(
       settingsRepository: settingsRepository,
       authenticationBloc: authenticationBloc
     );
 
-    configurationBloc = ConfigurationBloc(
+    settingsBloc = SettingsBloc(
       settingsRepository: settingsRepository,
       userDataBloc: userDataBloc
+    );
+
+    configurationBloc = ConfigurationBloc(
+      settingsRepository: settingsRepository,
     );
 
     // Initialize blocs
@@ -105,11 +103,11 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return BlocProviderTree(
       blocProviders: [
+        BlocProvider<ThemeBloc>(bloc: themeBloc),
+        BlocProvider<ConfigurationBloc>(bloc: configurationBloc),
         BlocProvider<AuthenticationBloc>(bloc: authenticationBloc),
         BlocProvider<SettingsBloc>(bloc: settingsBloc),
         BlocProvider<UserDataBloc>(bloc: userDataBloc),
-        BlocProvider<ConfigurationBloc>(bloc: configurationBloc),
-        BlocProvider<ThemeBloc>(bloc: themeBloc),
       ],
       // Theme
       child: BlocBuilder(
@@ -131,20 +129,26 @@ class _AppState extends State<App> {
               }
 
               // Authenticated from this point on
+              assert(authenticationState is AuthAuthenticated);
               if (authenticationState is AuthAuthenticated) {
-
                 // Load critical user settings
                 if (settingsState is SettingsUninitialized || userDataState is UserDataUninitialized) {
                   return LoadingIndicator();
                 }
 
-                // Loading user data failed // TODO: await settings as well? // settingsState is SettingsFailed ||
+                // Loading user data failed
                 if (userDataState is UserDataFailed) {
                   return ErrorPage(error: userDataState.error);
                 }
 
+                // Loading settings failed
+                if (settingsState is SettingsFailed) {
+                  return ErrorPage(error: settingsState.error);
+                }
+
                 // Show application
                 return HomePage(
+                  diaryRepository: diaryRepository,
                   foodRepository: foodRepository,
                   settingsRepository: settingsRepository,
                   analyticsRepository: analyticsRepository,
@@ -161,15 +165,14 @@ class _AppState extends State<App> {
 
   @override
   void dispose() {
+    configurationBloc.dispose();
     authenticationBloc.dispose();
     settingsBloc.dispose();
-    configurationBloc.dispose();
     themeBloc.dispose();
     super.dispose();
   }
 }
 
-// TODO: make animation loader
 class LoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
