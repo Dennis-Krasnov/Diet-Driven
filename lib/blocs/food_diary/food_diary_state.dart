@@ -21,7 +21,8 @@ abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodD
 
 ///
 abstract class FoodDiaryReady with FoodDiaryState implements Built<FoodDiaryReady, FoodDiaryReadyBuilder> {
-  ValueObservable<FoodDiaryDay> get diaryDay;
+//  ValueObservable<FoodDiaryDay> get diaryDay;
+  ValueObservable<FoodDiaryDay> get diaryDayStream;
 
   // TODO: create generic diary wrapper! (for pageview)
 //  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays;

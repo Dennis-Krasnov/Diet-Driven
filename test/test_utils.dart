@@ -9,12 +9,14 @@ import 'package:diet_driven/repositories/repositories.dart';
 final StreamMatcher doesNotEmit = emitsInOrder([]);
 
 // Mock repositories
+class MockDiaryRepository extends Mock implements DiaryRepository {}
 class MockAuthenticationRepository extends Mock implements AuthenticationRepository {}
 class MockFoodRepository extends Mock implements FoodRepository {}
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 // Mock blocs
 class MockAuthenticationBloc extends Mock implements AuthenticationBloc {}
+class MockUserDataBlock extends Mock implements UserDataBloc {}
 
 // Mock Firestore
 class FirebaseAuthMock extends Mock implements FirebaseAuth {}

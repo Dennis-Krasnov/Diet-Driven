@@ -16,6 +16,7 @@ class FirestoreProvider {
   /// FOOD DIARY
   String foodDiaryPath(userId, daysSinceEpoch) => "${userPath(userId)}/food_diary/$daysSinceEpoch";
   final fsDiary = FS<FoodDiaryDay>();
+  final fsFoodRecord = FS<FoodRecord>();
 
   ///
   Future<void> setFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
@@ -50,16 +51,38 @@ class FirestoreProvider {
   /// FOOD RECORD
   Future<void> addFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+
+    var fr = fsFoodRecord.serializeDocument(foodRecord);
+    print("FR IS $fr");
+
     return ref.updateData({
-      "foodRecords": FieldValue.arrayUnion([foodRecord])
+      "foodRecords": FieldValue.arrayUnion([fr.toString()]),
+//      "lastUpdated": FieldValueType.serverTimestamp
     });
   }
 
   /// Throws if day doesn't exist
   Future<void> deleteFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+
+    // FIXME: temporary solution can be to re-upload entire food diary day with edited food record
+    // Pros: Faster, don't need to deal with array serialization problems
+    // Cons: Error prone, limited to few people editing at once, redoing FS logic locally,
+
+    // Individual Food Record:
+    // {$: FoodRecord, foodName: yaaay}
+
+    // Built list of Food Records:
+    // {$: list, : [{$: FoodRecord, foodName: yaaay}]}
+
+    // What's stored in Firestore:
+    // foodName: yaaay
+
+    var fr = fsFoodRecord.serializeDocument(foodRecord);
+    print("FR IS $fr");
+
     return ref.updateData({
-      "foodRecords": FieldValue.arrayRemove([foodRecord])
+      "foodRecords": FieldValue.arrayRemove([fr])
     });
   }
 
@@ -67,6 +90,10 @@ class FirestoreProvider {
   Future<void> editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
     final WriteBatch batch = _firestore.batch();
+
+    // TODO:
+//    var fr = fsFoodRecord.serializeDocument(foodRecord);
+//    print("FR IS $fr");
 
     batch.updateData(ref, <String, dynamic>{
       "foodRecords": FieldValue.arrayRemove([oldRecord])
@@ -100,10 +127,10 @@ class FS<T> {
   ///
   Map<String, dynamic> _dataWithId(DocumentSnapshot doc) => doc.data..putIfAbsent("_id", () => doc.documentID);
 
-  ///
-  Future<void> updateDocument(DocumentReference doc, T obj, {bool merge: false}) {
-    return doc.setData(jsonSerializers.serialize(obj), merge: merge);
-  }
+  /// FIXME: not using this...
+//  Future<void> updateDocument(DocumentReference doc, T obj, {bool merge: false}) {
+//    return doc.setData(jsonSerializers.serialize(obj), merge: merge);
+//  }
 
   ///
   Object serializeDocument(T object) {

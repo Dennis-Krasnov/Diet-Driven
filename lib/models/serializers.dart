@@ -23,7 +23,7 @@ final Serializers serializers = _$serializers;
 
 // JSON serializer
 final Serializers jsonSerializers = (serializers.toBuilder()
-  // Supporting lists
+  // Supporting built collections with custom classes
   ..addBuilderFactory(const FullType(BuiltList, const [const FullType(FoodRecord)]), () => new ListBuilder<FoodRecord>())
   ..addBuilderFactory(const FullType(BuiltList, const [const FullType(FoodDiaryDay)]), () => new ListBuilder<FoodDiaryDay>())
   // Converting to JSON

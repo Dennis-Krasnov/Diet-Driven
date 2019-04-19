@@ -63,14 +63,14 @@ class FoodDiaryUninitializedBuilder
 
 class _$FoodDiaryReady extends FoodDiaryReady {
   @override
-  final ValueObservable<FoodDiaryDay> diaryDay;
+  final ValueObservable<FoodDiaryDay> diaryDayStream;
 
   factory _$FoodDiaryReady([void updates(FoodDiaryReadyBuilder b)]) =>
       (new FoodDiaryReadyBuilder()..update(updates)).build();
 
-  _$FoodDiaryReady._({this.diaryDay}) : super._() {
-    if (diaryDay == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryReady', 'diaryDay');
+  _$FoodDiaryReady._({this.diaryDayStream}) : super._() {
+    if (diaryDayStream == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryReady', 'diaryDayStream');
     }
   }
 
@@ -85,18 +85,18 @@ class _$FoodDiaryReady extends FoodDiaryReady {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryReady && diaryDay == other.diaryDay;
+    return other is FoodDiaryReady && diaryDayStream == other.diaryDayStream;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, diaryDay.hashCode));
+    return $jf($jc(0, diaryDayStream.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryReady')
-          ..add('diaryDay', diaryDay))
+          ..add('diaryDayStream', diaryDayStream))
         .toString();
   }
 }
@@ -105,16 +105,16 @@ class FoodDiaryReadyBuilder
     implements Builder<FoodDiaryReady, FoodDiaryReadyBuilder> {
   _$FoodDiaryReady _$v;
 
-  ValueObservable<FoodDiaryDay> _diaryDay;
-  ValueObservable<FoodDiaryDay> get diaryDay => _$this._diaryDay;
-  set diaryDay(ValueObservable<FoodDiaryDay> diaryDay) =>
-      _$this._diaryDay = diaryDay;
+  ValueObservable<FoodDiaryDay> _diaryDayStream;
+  ValueObservable<FoodDiaryDay> get diaryDayStream => _$this._diaryDayStream;
+  set diaryDayStream(ValueObservable<FoodDiaryDay> diaryDayStream) =>
+      _$this._diaryDayStream = diaryDayStream;
 
   FoodDiaryReadyBuilder();
 
   FoodDiaryReadyBuilder get _$this {
     if (_$v != null) {
-      _diaryDay = _$v.diaryDay;
+      _diaryDayStream = _$v.diaryDayStream;
       _$v = null;
     }
     return this;
@@ -135,7 +135,8 @@ class FoodDiaryReadyBuilder
 
   @override
   _$FoodDiaryReady build() {
-    final _$result = _$v ?? new _$FoodDiaryReady._(diaryDay: diaryDay);
+    final _$result =
+        _$v ?? new _$FoodDiaryReady._(diaryDayStream: diaryDayStream);
     replace(_$result);
     return _$result;
   }

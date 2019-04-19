@@ -21,26 +21,31 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   final int daysSinceEpoch;
 
   // User-specific stream of data streams of a food diary day
-  Observable<ValueObservable<FoodDiaryDay>> _foodDiaryDayStream;
-  StreamSubscription<ValueObservable<FoodDiaryDay>> _foodDiaryDaySubscription;
+//  Observable<ValueObservable<FoodDiaryDay>> _foodDiaryDayStream;
+//  StreamSubscription<ValueObservable<FoodDiaryDay>> _foodDiaryDaySubscription;
+  ValueObservable<FoodDiaryDay> _foodDiaryDayStream;
+//  StreamSubscription<FoodDiaryDay> _foodDiaryDaySubscription;
 
   FoodDiaryBloc({@required this.diaryRepository, @required this.userId, @required this.daysSinceEpoch}) {
     assert(diaryRepository != null);
+    assert(userId.isNotEmpty);
 
-    _foodDiaryDayStream = Observable.just(diaryRepository.streamDiaryDay(userId, daysSinceEpoch));
-//    _foodDiaryDayStream = Observable<UserDataState>(userDataBloc.state)
-//      .where((userDataState) => userDataState is UserDataLoaded)
-//      .map<String>((userDataState) => (userDataState as UserDataLoaded).userData.userId)
-//      .distinct()
-//      // Observable.just to create higher order observable
-//      // Combine latest here if needed
-//      .switchMap<ValueObservable<FoodDiaryDay>>((userId) => Observable.just(diaryRepository.streamDiaryDay(userId, 0)))
-//      .distinct();
+    try {
+      _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch);
 
-    _foodDiaryDaySubscription = _foodDiaryDayStream.listen((diaryDay) =>
-      dispatch(RemoteDiaryDayArrived((b) => b..diaryDay = diaryDay)),
-//      onError: (error, trace) => dispatch(FoodDiaryFailed((b) => b..error = error)); // TODO: failed event
-    );
+      // FIXME: I don't need a subscription, I just dispatch as loaded!!!
+      dispatch(RemoteDiaryDayArrived((b) => b..diaryDayStream = _foodDiaryDayStream));
+
+//      _foodDiaryDaySubscription = _foodDiaryDayStream.listen((diaryDayStream) =>
+//        dispatch(RemoteDiaryDayArrived((b) => b..diaryDayStream = diaryDayStream)),
+////      onError: (error, trace) => dispatch(FoodDiaryFailed((b) => b..error = error)); // TODO: failed event
+//      );
+
+    } on Exception catch (e) {
+//      dispatch(Error!!!)
+    // TOTEST: diaryRepository.streamDiaryDay(userId, daysSinceEpoch) returns invalid path
+      // TODO: similar constructor exception handling in other blocs
+    }
   }
 
   @override
@@ -61,7 +66,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
   @override
   void dispose() {
-    _foodDiaryDaySubscription?.cancel();
+//    _foodDiaryDaySubscription?.cancel();
     super.dispose();
   }
 
@@ -72,10 +77,10 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         ? (currentState as FoodDiaryReady).toBuilder()
         : FoodDiaryReadyBuilder();
 
-      diaryReadyBuilder.diaryDay = event.diaryDay;
+      diaryReadyBuilder.diaryDayStream = event.diaryDayStream;
       yield diaryReadyBuilder.build();
 
-      _log.info("food diary day #${event.diaryDay.value.date} arrived");
+      _log.info("food diary day #${event.diaryDayStream.value.date} arrived");
     }
     if (event is SaveFoodDiaryDay) {
       assert(currentState is FoodDiaryReady);
@@ -84,6 +89,22 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         // TODO: use completer to show snack bar upon completion
 
         _log.info("${event.diaryDay.date} day saved");
+      }
+    }
+    if (event is DeleteFoodRecord) {
+      assert(currentState is FoodDiaryReady);
+      if (currentState is FoodDiaryReady) {
+        // TODO: completer (undo), + try/catch
+//        diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, event.foodRecord);
+
+        // Doesn't produce duplicates!
+//        diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord.rebuild((b) => b..foodName = "NEW!!!"));
+        diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord.rebuild((b) => b
+          ..foodName = "NEW!!!"
+          ..userData = UserData((b) => b..userId = "person").toBuilder()
+        ));
+
+        _log.info("${event.foodRecord} deleted");
       }
     }
   }

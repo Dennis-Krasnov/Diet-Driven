@@ -28,7 +28,7 @@ abstract class FoodDiaryEvent {}
 
 ///
 abstract class RemoteDiaryDayArrived with FoodDiaryEvent implements Built<RemoteDiaryDayArrived, RemoteDiaryDayArrivedBuilder> {
-  ValueObservable<FoodDiaryDay> get diaryDay;
+  ValueObservable<FoodDiaryDay> get diaryDayStream;
 
   RemoteDiaryDayArrived._();
   factory RemoteDiaryDayArrived([updates(RemoteDiaryDayArrivedBuilder b)]) = _$RemoteDiaryDayArrived;
@@ -40,4 +40,12 @@ abstract class SaveFoodDiaryDay with FoodDiaryEvent implements Built<SaveFoodDia
 
   SaveFoodDiaryDay._();
   factory SaveFoodDiaryDay([updates(SaveFoodDiaryDayBuilder b)]) = _$SaveFoodDiaryDay;
+}
+
+///
+abstract class DeleteFoodRecord with FoodDiaryEvent implements Built<DeleteFoodRecord, DeleteFoodRecordBuilder> {
+  FoodRecord get foodRecord;
+
+  DeleteFoodRecord._();
+  factory DeleteFoodRecord([updates(DeleteFoodRecordBuilder b)]) = _$DeleteFoodRecord;
 }

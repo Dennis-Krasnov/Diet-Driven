@@ -8,15 +8,16 @@ part of 'food_diary_events.dart';
 
 class _$RemoteDiaryDayArrived extends RemoteDiaryDayArrived {
   @override
-  final ValueObservable<FoodDiaryDay> diaryDay;
+  final ValueObservable<FoodDiaryDay> diaryDayStream;
 
   factory _$RemoteDiaryDayArrived(
           [void updates(RemoteDiaryDayArrivedBuilder b)]) =>
       (new RemoteDiaryDayArrivedBuilder()..update(updates)).build();
 
-  _$RemoteDiaryDayArrived._({this.diaryDay}) : super._() {
-    if (diaryDay == null) {
-      throw new BuiltValueNullFieldError('RemoteDiaryDayArrived', 'diaryDay');
+  _$RemoteDiaryDayArrived._({this.diaryDayStream}) : super._() {
+    if (diaryDayStream == null) {
+      throw new BuiltValueNullFieldError(
+          'RemoteDiaryDayArrived', 'diaryDayStream');
     }
   }
 
@@ -31,18 +32,19 @@ class _$RemoteDiaryDayArrived extends RemoteDiaryDayArrived {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is RemoteDiaryDayArrived && diaryDay == other.diaryDay;
+    return other is RemoteDiaryDayArrived &&
+        diaryDayStream == other.diaryDayStream;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, diaryDay.hashCode));
+    return $jf($jc(0, diaryDayStream.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('RemoteDiaryDayArrived')
-          ..add('diaryDay', diaryDay))
+          ..add('diaryDayStream', diaryDayStream))
         .toString();
   }
 }
@@ -51,16 +53,16 @@ class RemoteDiaryDayArrivedBuilder
     implements Builder<RemoteDiaryDayArrived, RemoteDiaryDayArrivedBuilder> {
   _$RemoteDiaryDayArrived _$v;
 
-  ValueObservable<FoodDiaryDay> _diaryDay;
-  ValueObservable<FoodDiaryDay> get diaryDay => _$this._diaryDay;
-  set diaryDay(ValueObservable<FoodDiaryDay> diaryDay) =>
-      _$this._diaryDay = diaryDay;
+  ValueObservable<FoodDiaryDay> _diaryDayStream;
+  ValueObservable<FoodDiaryDay> get diaryDayStream => _$this._diaryDayStream;
+  set diaryDayStream(ValueObservable<FoodDiaryDay> diaryDayStream) =>
+      _$this._diaryDayStream = diaryDayStream;
 
   RemoteDiaryDayArrivedBuilder();
 
   RemoteDiaryDayArrivedBuilder get _$this {
     if (_$v != null) {
-      _diaryDay = _$v.diaryDay;
+      _diaryDayStream = _$v.diaryDayStream;
       _$v = null;
     }
     return this;
@@ -81,7 +83,8 @@ class RemoteDiaryDayArrivedBuilder
 
   @override
   _$RemoteDiaryDayArrived build() {
-    final _$result = _$v ?? new _$RemoteDiaryDayArrived._(diaryDay: diaryDay);
+    final _$result =
+        _$v ?? new _$RemoteDiaryDayArrived._(diaryDayStream: diaryDayStream);
     replace(_$result);
     return _$result;
   }
@@ -172,6 +175,101 @@ class SaveFoodDiaryDayBuilder
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'SaveFoodDiaryDay', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$DeleteFoodRecord extends DeleteFoodRecord {
+  @override
+  final FoodRecord foodRecord;
+
+  factory _$DeleteFoodRecord([void updates(DeleteFoodRecordBuilder b)]) =>
+      (new DeleteFoodRecordBuilder()..update(updates)).build();
+
+  _$DeleteFoodRecord._({this.foodRecord}) : super._() {
+    if (foodRecord == null) {
+      throw new BuiltValueNullFieldError('DeleteFoodRecord', 'foodRecord');
+    }
+  }
+
+  @override
+  DeleteFoodRecord rebuild(void updates(DeleteFoodRecordBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DeleteFoodRecordBuilder toBuilder() =>
+      new DeleteFoodRecordBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DeleteFoodRecord && foodRecord == other.foodRecord;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, foodRecord.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('DeleteFoodRecord')
+          ..add('foodRecord', foodRecord))
+        .toString();
+  }
+}
+
+class DeleteFoodRecordBuilder
+    implements Builder<DeleteFoodRecord, DeleteFoodRecordBuilder> {
+  _$DeleteFoodRecord _$v;
+
+  FoodRecordBuilder _foodRecord;
+  FoodRecordBuilder get foodRecord =>
+      _$this._foodRecord ??= new FoodRecordBuilder();
+  set foodRecord(FoodRecordBuilder foodRecord) =>
+      _$this._foodRecord = foodRecord;
+
+  DeleteFoodRecordBuilder();
+
+  DeleteFoodRecordBuilder get _$this {
+    if (_$v != null) {
+      _foodRecord = _$v.foodRecord?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(DeleteFoodRecord other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DeleteFoodRecord;
+  }
+
+  @override
+  void update(void updates(DeleteFoodRecordBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DeleteFoodRecord build() {
+    _$DeleteFoodRecord _$result;
+    try {
+      _$result =
+          _$v ?? new _$DeleteFoodRecord._(foodRecord: foodRecord.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'foodRecord';
+        foodRecord.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'DeleteFoodRecord', _$failedField, e.toString());
       }
       rethrow;
     }

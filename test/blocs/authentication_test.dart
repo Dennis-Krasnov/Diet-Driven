@@ -15,7 +15,7 @@ void main() {
 
   AuthenticationBloc authenticationBloc;
 
-  ///
+  /// Mocks onAuthStateChangedStream FirebaseUser stream, initializes authBloc
   void mockAuthenticationRepositoryStream({
     List<FirebaseUser> authStream: const []
   }) {
@@ -117,7 +117,9 @@ void main() {
           AuthAuthenticated((b) => b..user = userA),
           AuthAuthenticated((b) => b..user = userB),
         ])
-      );
+      ).then((_) {
+        verifyNever(authRepository.signOut());
+      });
     });
 
     test("Handles authentication termination", () {

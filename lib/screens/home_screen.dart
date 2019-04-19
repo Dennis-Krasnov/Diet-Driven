@@ -37,7 +37,6 @@ class _HomePageState extends State<HomePage> {
   SettingsRepository get settingsRepository => widget.settingsRepository;
   AnalyticsRepository get analyticsRepository => widget.analyticsRepository;
 
-  FoodDiaryBloc foodDiaryBloc;
   // TODO: tracking, profile, recipes, exercise blocs
   NavigationBloc navigationBloc;
 
@@ -48,7 +47,7 @@ class _HomePageState extends State<HomePage> {
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
 
 //    foodDiaryBloc = FoodDiaryBloc(userDataBloc: _userDataBloc, foodRepository: foodRepository);
-    foodDiaryBloc = FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124); // FIXME: wrapper should switchmap on user data
+//    foodDiaryBloc = FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124); // FIXME: wrapper should switchmap on user data
     navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository);
 
     // Initialize blocs
@@ -58,7 +57,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    foodDiaryBloc.dispose();
+//    foodDiaryBloc.dispose();
     navigationBloc.dispose();
     super.dispose();
   }
@@ -67,7 +66,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return BlocProviderTree(
       blocProviders: [
-        BlocProvider<FoodDiaryBloc>(bloc: foodDiaryBloc),
+//        BlocProvider<FoodDiaryBloc>(bloc: foodDiaryBloc),
         BlocProvider<NavigationBloc>(bloc: navigationBloc),
       ],
       child: BlocBuilder(
@@ -100,26 +99,28 @@ class _HomePageState extends State<HomePage> {
       )
     );
   }
+
+  Widget generatePage(String page) {
+    if (page == "diary") {
+      // FIXME: diary page wrapper that manages current date, listens to userData bloc for updates!
+      return DiaryPage(foodDiaryBloc: FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),);
+    }
+    if (page == "track") {
+      return TestPage(page);
+    }
+    if (page == "diet") {
+      return TestPage(page);
+    }
+    if (page == "profile") {
+      // TODO: checks hasDietDrivenAccess in its bloc (nest subscription bloc)
+      // also check autentication bloc to display correct content
+      return TestPage(page);
+    }
+    // TODO: if (page == "recipes")
+    return TestPage("FAILURE");
+  }
 }
 
-Widget generatePage(String page) {
-  if (page == "diary") {
-    return DiaryPage();
-  }
-  if (page == "track") {
-    return TestPage(page);
-  }
-  if (page == "diet") {
-    return TestPage(page);
-  }
-  if (page == "profile") {
-    // TODO: checks hasDietDrivenAccess in its bloc (nest subscription bloc)
-    // also check autentication bloc to display correct content
-    return TestPage(page);
-  }
-  // TODO: if (page == "recipes")
-  return TestPage("FAILURE");
-}
 
 class TestPage extends StatelessWidget {
   final String title;
