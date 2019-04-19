@@ -1,4 +1,3 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
 import 'package:diet_driven/models/models.dart';
@@ -24,7 +23,19 @@ abstract class UserDataError with UserDataEvent implements Built<UserDataError, 
 }
 
 ///
-abstract class WipeUserData with UserDataEvent implements Built<WipeUserData, WipeUserDataBuilder> {
-  WipeUserData._();
-  factory WipeUserData([updates(WipeUserDataBuilder b)]) = _$WipeUserData;
+abstract class OnboardUser with UserDataEvent implements Built<OnboardUser, OnboardUserBuilder> {
+  OnboardUser._();
+  factory OnboardUser([updates(OnboardUserBuilder b)]) = _$OnboardUser;
+
+  @override
+  String toString() => runtimeType.toString();
+}
+
+///
+abstract class LoadUserData with UserDataEvent implements Built<LoadUserData, LoadUserDataBuilder> {
+  LoadUserData._();
+  factory LoadUserData([updates(LoadUserDataBuilder b)]) = _$LoadUserData;
+
+  @override
+  String toString() => runtimeType.toString();
 }

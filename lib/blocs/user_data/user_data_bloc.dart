@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
@@ -10,39 +11,43 @@ import 'package:diet_driven/models/models.dart';
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final Logger _log = new Logger("user data bloc");
   final SettingsRepository settingsRepository;
-  final AuthenticationBloc authenticationBloc;
+  final UserRepository userRepository;
 
   Observable<UserData> _userDataStream;
   StreamSubscription<UserData> _userDataSubscription;
 
-  UserDataBloc({this.settingsRepository, this.authenticationBloc}) {
+  UserDataBloc({@required this.settingsRepository, @required this.userRepository}) {
     assert(settingsRepository != null);
-    assert(authenticationBloc != null);
+    assert(userRepository != null);
 
-    _userDataStream = Observable<AuthenticationState>(authenticationBloc.state)
-      .where((authState) => authState is AuthAuthenticated)
-      .map<String>((authState) => (authState as AuthAuthenticated).user.uid)
-      .distinct()
-      // Ensure user doesn't see data from previous user => shows loading screen
-      .doOnData((userId) { // TOTEST user switching wipes data
-        if (currentState is SettingsLoaded) {
-          dispatch(WipeUserData());
-        }
-      })
-      .switchMap<UserData>((userId) =>
-        settingsRepository.userDataDocument(userId)
-        // Adding authentication data into user data
-        .map((userData) => userData.rebuild((b) => b
-          ..userId = userId
-          // TODO: other fields through authBloc.currentState.field
-        ))
+    _userDataStream = userRepository.onAuthStateChangedStream
+      // Ensures user is authenticated and new user doesn't see userData from previous user
+      .doOnData((user) => dispatch(user == null ? OnboardUser() : LoadUserData()))
+      // Load user data only if user exists
+      .where((user) => user != null)
+      .switchMap<UserData>((user) =>
+        CombineLatestStream.combine2(
+          // Admin information
+          settingsRepository.userDocument(user.uid),
+          // User's settings
+          settingsRepository.settingsDocumentsList(user.uid),
+          (UserDocument userDocument, Settings settings) => UserData((b) => b
+            ..userId = user.uid
+            ..email = user.email
+            ..name = user.displayName
+
+            ..currentSubscription = userDocument.currentSubscription
+
+            ..settings = settings
+          ),
+        )
       )
       .distinct();
 
     _userDataSubscription = _userDataStream.listen((userData) =>
       dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
       onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())), // TOTEST
-      onDone: () => dispatch(WipeUserData()) // TOTEST
+//      onDone: () => dispatch(WipeUserData()) // TOTEST
     );
   }
 
@@ -57,17 +62,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
-    if (event is WipeUserData) { // TODO: create similar mapping for settings!
-      assert (currentState is UserDataLoaded);
-      if (currentState is UserDataLoaded) {
-        yield UserDataUninitialized();
-      }
-    }
-    if (event is UserDataError) {
-      yield UserDataFailed((b) => b..error = event.error);
-
-      _log.info("user data failed");
-    }
     if (event is RemoteUserDataArrived) {
       yield UserDataLoaded((b) => b
         ..userData = event.userData.toBuilder()
@@ -75,6 +69,22 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
       _log.info("loaded user data");
       _log.fine("data: ${event.userData}");
+    }
+    if (event is LoadUserData) {
+      yield UserDataLoading();
+      // TODO: add throttle-based timeout => error
+      
+      _log.info("loading user data");
+    }
+    if (event is OnboardUser) {
+      yield UserDataOnboarding();
+
+      _log.info("onboarding user");
+    }
+    if (event is UserDataError) {
+      yield UserDataFailed((b) => b..error = event.error);
+
+      _log.info("user data failed");
     }
   }
 }

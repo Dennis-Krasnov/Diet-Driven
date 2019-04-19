@@ -6,10 +6,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 
-// TODO: rename userData to UserState, should aggregate all data needed
-// main should build only based on userState
-// TODO: trace through logs! - draw on paper!
-
 class HomePage extends StatefulWidget {
   final DiaryRepository diaryRepository;
   final FoodRepository foodRepository;
@@ -32,12 +28,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  DiaryRepository get diaryRepository => widget.diaryRepository;
-  FoodRepository get foodRepository => widget.foodRepository;
-  SettingsRepository get settingsRepository => widget.settingsRepository;
-  AnalyticsRepository get analyticsRepository => widget.analyticsRepository;
-
-  // TODO: tracking, profile, recipes, exercise blocs
   NavigationBloc navigationBloc;
 
   @override
@@ -48,7 +38,7 @@ class _HomePageState extends State<HomePage> {
 
 //    foodDiaryBloc = FoodDiaryBloc(userDataBloc: _userDataBloc, foodRepository: foodRepository);
 //    foodDiaryBloc = FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124); // FIXME: wrapper should switchmap on user data
-    navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository);
+    navigationBloc = NavigationBloc(analyticsRepository: widget.analyticsRepository);
 
     // Initialize blocs
 //    foodDiaryBloc.dispatch(LoadFoodRecordDays());
@@ -103,7 +93,7 @@ class _HomePageState extends State<HomePage> {
   Widget generatePage(String page) {
     if (page == "diary") {
       // FIXME: diary page wrapper that manages current date, listens to userData bloc for updates!
-      return DiaryPage(foodDiaryBloc: FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),);
+      return DiaryPage(foodDiaryBloc: FoodDiaryBloc(diaryRepository: widget.diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),);
     }
     if (page == "track") {
       return TestPage(page);
@@ -128,7 +118,7 @@ class TestPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+//    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(title),

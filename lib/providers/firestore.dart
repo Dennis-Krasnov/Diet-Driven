@@ -115,10 +115,10 @@ class FirestoreProvider {
     return FS<SettingsDocument>().deserializeCollection(ref.snapshots());
   }
 
-  Observable<UserData> userDataDocument(String userId) {
+  Observable<UserDocument> userDocument(String userId) {
     DocumentReference ref = _firestore.document("${userPath(userId)}");
-    print("USER DATA DOCUMENT REFERENCE ${ref.path}");
-    return FS<UserData>().deserializeDocument(ref.snapshots());
+    print("USER DOCUMENT REFERENCE ${ref.path}");
+    return FS<UserDocument>().deserializeDocument(ref.snapshots());
   }
 }
 

@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:diet_driven/blocs/authentication/authentication.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 import 'package:meta/meta.dart';
 
@@ -10,13 +9,13 @@ import 'package:rxdart/rxdart.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   // TODO: log
 
-  final AuthenticationRepository authenticationRepository;
-  final AuthenticationBloc authenticationBloc;
+  final UserRepository authenticationRepository;
+//  final AuthenticationBloc authenticationBloc;
 
   LoginBloc({
     @required this.authenticationRepository,
-    @required this.authenticationBloc,
-  }) : assert(authenticationRepository != null), assert(authenticationBloc != null);
+//    @required this.authenticationBloc,
+  }) : assert(authenticationRepository != null);//, assert(authenticationBloc != null);
 
   @override
   LoginState get initialState => LoginInitial();

@@ -7,7 +7,7 @@ import '../test_utils.dart';
 
 
 void main() {
-  AuthenticationRepository authRepository;
+  UserRepository authRepository;
   FoodRepository foodRepository;
   SettingsRepository settingsRepository;
 //  AnalyticsRepository analyticsRepository;

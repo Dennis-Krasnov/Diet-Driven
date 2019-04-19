@@ -11,6 +11,7 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(FoodRecord.serializer)
       ..add(NavigationSettings.serializer)
       ..add(UserData.serializer)
+      ..add(UserDocument.serializer)
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FoodRecord)]),
           () => new ListBuilder<FoodRecord>()))

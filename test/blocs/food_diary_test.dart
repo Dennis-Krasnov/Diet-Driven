@@ -36,13 +36,13 @@ void main() {
         emitsInOrder([
           FoodDiaryUninitialized(),
           FoodDiaryReady((b) => b
-            ..diaryDayStream = ...
+//            ..diaryDayStream = ...
           ),
         ])
       );
 
       foodDiaryBloc.dispatch(RemoteDiaryDayArrived((b) => b
-        ..diaryDayStream = ...
+//        ..diaryDayStream = ...
       ));
     });
   });

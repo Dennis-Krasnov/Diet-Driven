@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:rxdart/rxdart.dart';
 
-class AuthenticationRepository {
+class UserRepository {
   // FIREBASE AUTH PROVIDER IS REDUNDANT?
 //  final FirebaseAuthProvider _firebaseAuthProvider = FirebaseAuthProvider();
 

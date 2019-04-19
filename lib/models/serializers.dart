@@ -13,6 +13,7 @@ part 'serializers.g.dart';
   FoodDiaryDay,
 
   UserData,
+  UserDocument,
   NavigationSettings,
 
 //  Uncertainty,

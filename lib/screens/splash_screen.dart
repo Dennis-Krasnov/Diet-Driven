@@ -6,7 +6,7 @@ import 'package:diet_driven/blocs/blocs.dart';
 class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
     final ConfigurationBloc _configurationBloc = BlocProvider.of<ConfigurationBloc>(context);
 
     return Scaffold(
@@ -14,7 +14,7 @@ class SplashPage extends StatelessWidget {
         child: Column(
           children: <Widget>[
             Text('Splash Screen'),
-            Text('Authentication: ${_authenticationBloc.currentState}'),
+            Text('User data: ${_userDataBloc.currentState}'),
             Text('Configuration: ${_configurationBloc.currentState}'),
           ],
         )

@@ -10,18 +10,20 @@ class ErrorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
+    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
 
-    String name = _authenticationBloc.currentState is AuthAuthenticated
-        ? (_authenticationBloc.currentState as AuthAuthenticated).user.uid
-        : "mr. nobody";
+    String name = _userDataBloc.currentState is UserDataLoaded
+        ? (_userDataBloc.currentState as UserDataLoaded).userData.userId
+        : "mr. anonymous";
 
     return Scaffold(
       body: Center(
         child: Column(
           children: <Widget>[
             Text('Sorry, $name'),
+            SizedBox(height: 50,),
             Text('$error'),
+            SizedBox(height: 50,),
             Text('Try again later or contact customer support'),
           ],
         )

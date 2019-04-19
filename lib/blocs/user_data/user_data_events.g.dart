@@ -177,58 +177,104 @@ class UserDataErrorBuilder
   }
 }
 
-class _$WipeUserData extends WipeUserData {
-  factory _$WipeUserData([void updates(WipeUserDataBuilder b)]) =>
-      (new WipeUserDataBuilder()..update(updates)).build();
+class _$OnboardUser extends OnboardUser {
+  factory _$OnboardUser([void updates(OnboardUserBuilder b)]) =>
+      (new OnboardUserBuilder()..update(updates)).build();
 
-  _$WipeUserData._() : super._();
+  _$OnboardUser._() : super._();
 
   @override
-  WipeUserData rebuild(void updates(WipeUserDataBuilder b)) =>
+  OnboardUser rebuild(void updates(OnboardUserBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  WipeUserDataBuilder toBuilder() => new WipeUserDataBuilder()..replace(this);
+  OnboardUserBuilder toBuilder() => new OnboardUserBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is WipeUserData;
+    return other is OnboardUser;
   }
 
   @override
   int get hashCode {
-    return 711102098;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('WipeUserData').toString();
+    return 509793739;
   }
 }
 
-class WipeUserDataBuilder
-    implements Builder<WipeUserData, WipeUserDataBuilder> {
-  _$WipeUserData _$v;
+class OnboardUserBuilder implements Builder<OnboardUser, OnboardUserBuilder> {
+  _$OnboardUser _$v;
 
-  WipeUserDataBuilder();
+  OnboardUserBuilder();
 
   @override
-  void replace(WipeUserData other) {
+  void replace(OnboardUser other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$WipeUserData;
+    _$v = other as _$OnboardUser;
   }
 
   @override
-  void update(void updates(WipeUserDataBuilder b)) {
+  void update(void updates(OnboardUserBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$WipeUserData build() {
-    final _$result = _$v ?? new _$WipeUserData._();
+  _$OnboardUser build() {
+    final _$result = _$v ?? new _$OnboardUser._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$LoadUserData extends LoadUserData {
+  factory _$LoadUserData([void updates(LoadUserDataBuilder b)]) =>
+      (new LoadUserDataBuilder()..update(updates)).build();
+
+  _$LoadUserData._() : super._();
+
+  @override
+  LoadUserData rebuild(void updates(LoadUserDataBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  LoadUserDataBuilder toBuilder() => new LoadUserDataBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is LoadUserData;
+  }
+
+  @override
+  int get hashCode {
+    return 112846452;
+  }
+}
+
+class LoadUserDataBuilder
+    implements Builder<LoadUserData, LoadUserDataBuilder> {
+  _$LoadUserData _$v;
+
+  LoadUserDataBuilder();
+
+  @override
+  void replace(LoadUserData other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$LoadUserData;
+  }
+
+  @override
+  void update(void updates(LoadUserDataBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$LoadUserData build() {
+    final _$result = _$v ?? new _$LoadUserData._();
     replace(_$result);
     return _$result;
   }

@@ -28,8 +28,8 @@ class SettingsRepository {
     return configSettings;
   }
 
-  ValueObservable<UserData> userDataDocument(String userId) {
-    return _firestoreProvider.userDataDocument(userId).shareValue();
+  ValueObservable<UserDocument> userDocument(String userId) {
+    return _firestoreProvider.userDocument(userId).shareValue();
   }
 
   // Throws Exception if improper data arrived

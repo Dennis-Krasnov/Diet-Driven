@@ -138,6 +138,112 @@ class UserDataFailedBuilder
   }
 }
 
+class _$UserDataLoading extends UserDataLoading {
+  factory _$UserDataLoading([void updates(UserDataLoadingBuilder b)]) =>
+      (new UserDataLoadingBuilder()..update(updates)).build();
+
+  _$UserDataLoading._() : super._();
+
+  @override
+  UserDataLoading rebuild(void updates(UserDataLoadingBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  UserDataLoadingBuilder toBuilder() =>
+      new UserDataLoadingBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is UserDataLoading;
+  }
+
+  @override
+  int get hashCode {
+    return 780040618;
+  }
+}
+
+class UserDataLoadingBuilder
+    implements Builder<UserDataLoading, UserDataLoadingBuilder> {
+  _$UserDataLoading _$v;
+
+  UserDataLoadingBuilder();
+
+  @override
+  void replace(UserDataLoading other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$UserDataLoading;
+  }
+
+  @override
+  void update(void updates(UserDataLoadingBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$UserDataLoading build() {
+    final _$result = _$v ?? new _$UserDataLoading._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$UserDataOnboarding extends UserDataOnboarding {
+  factory _$UserDataOnboarding([void updates(UserDataOnboardingBuilder b)]) =>
+      (new UserDataOnboardingBuilder()..update(updates)).build();
+
+  _$UserDataOnboarding._() : super._();
+
+  @override
+  UserDataOnboarding rebuild(void updates(UserDataOnboardingBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  UserDataOnboardingBuilder toBuilder() =>
+      new UserDataOnboardingBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is UserDataOnboarding;
+  }
+
+  @override
+  int get hashCode {
+    return 581968459;
+  }
+}
+
+class UserDataOnboardingBuilder
+    implements Builder<UserDataOnboarding, UserDataOnboardingBuilder> {
+  _$UserDataOnboarding _$v;
+
+  UserDataOnboardingBuilder();
+
+  @override
+  void replace(UserDataOnboarding other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$UserDataOnboarding;
+  }
+
+  @override
+  void update(void updates(UserDataOnboardingBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$UserDataOnboarding build() {
+    final _$result = _$v ?? new _$UserDataOnboarding._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$UserDataLoaded extends UserDataLoaded {
   @override
   final UserData userData;

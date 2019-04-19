@@ -23,6 +23,24 @@ abstract class UserDataFailed with UserDataState implements Built<UserDataFailed
 }
 
 ///
+abstract class UserDataLoading with UserDataState implements Built<UserDataLoading, UserDataLoadingBuilder> {
+  UserDataLoading._();
+  factory UserDataLoading([updates(UserDataLoadingBuilder b)]) = _$UserDataLoading;
+
+  @override
+  String toString() => runtimeType.toString();
+}
+
+///
+abstract class UserDataOnboarding with UserDataState implements Built<UserDataOnboarding, UserDataOnboardingBuilder> {
+  UserDataOnboarding._();
+  factory UserDataOnboarding([updates(UserDataOnboardingBuilder b)]) = _$UserDataOnboarding;
+
+  @override
+  String toString() => runtimeType.toString();
+}
+
+///
 abstract class UserDataLoaded with UserDataState implements Built<UserDataLoaded, UserDataLoadedBuilder> {
   UserData get userData;
 

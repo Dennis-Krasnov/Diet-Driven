@@ -1,24 +1,21 @@
-import 'dart:async';
-
-import 'package:diet_driven/screens/error_screen.dart';
-import 'package:diet_driven/screens/penguin_animation.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
-import 'package:logging/logging.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:bloc/bloc.dart';
+import 'package:logging/logging.dart';
+import 'package:intl/intl.dart';
+import 'package:flutter/services.dart';
 
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/screens/home_screen.dart';
 import 'package:diet_driven/screens/login.dart';
 import 'package:diet_driven/screens/splash_screen.dart';
-import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/screens/loading_indicator.dart';
 
 
 void main() {
-  // Configure logger
-  // const [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
+  // Configure logger [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
   Logger.root.level = Level.FINE;
   Logger.root.onRecord.listen((LogRecord rec) {
     print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
@@ -26,16 +23,16 @@ void main() {
 
   BlocSupervisor().delegate = SimpleBlocDelegate();
 
-  //
+  // Inject repository (DAO) dependencies
   runApp(App(
-    userRepository: AuthenticationRepository(),
+    userRepository: UserRepository(),
     diaryRepository: DiaryRepository(),
     foodRepository: FoodRepository(),
     settingsRepository: SettingsRepository(),
     analyticsRepository: AnalyticsRepository(),
   ));
 
-  // TODO: create bloc to manage system preferences, orientation, overlays (eg. for maximizing screen) on per-page basis
+  // TODO: create repository to manage system preferences, orientation, overlays (eg. for maximizing screen) on per-page basis
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
 //  statusBarColor:
 //  systemNavigationBarColor:
@@ -50,28 +47,26 @@ void main() {
 }
 
 class App extends StatefulWidget {
-  final AuthenticationRepository userRepository;
+  final UserRepository userRepository;
   final DiaryRepository diaryRepository;
   final FoodRepository foodRepository;
   final SettingsRepository settingsRepository;
   final AnalyticsRepository analyticsRepository;
 
-  App({@required this.userRepository, @required this.diaryRepository, @required this.foodRepository, @required this.settingsRepository, @required this.analyticsRepository});
+  App({
+    @required this.userRepository,
+    @required this.diaryRepository,
+    @required this.foodRepository,
+    @required this.settingsRepository,
+    @required this.analyticsRepository
+  });
 
   @override
   State<StatefulWidget> createState() => _AppState();
 }
 
 class _AppState extends State<App> {
-  AuthenticationRepository get userRepository => widget.userRepository;
-  DiaryRepository get diaryRepository => widget.diaryRepository;
-  FoodRepository get foodRepository => widget.foodRepository;
-  SettingsRepository get settingsRepository => widget.settingsRepository;
-  AnalyticsRepository get analyticsRepository => widget.analyticsRepository;
-
   ConfigurationBloc configurationBloc;
-  AuthenticationBloc authenticationBloc;
-  SettingsBloc settingsBloc;
   UserDataBloc userDataBloc;
   final ThemeBloc themeBloc = ThemeBloc();
 
@@ -79,23 +74,16 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
 
-    authenticationBloc = AuthenticationBloc(authRepository: userRepository);
-
     userDataBloc = UserDataBloc(
-      settingsRepository: settingsRepository,
-      authenticationBloc: authenticationBloc
-    );
-
-    settingsBloc = SettingsBloc(
-      settingsRepository: settingsRepository,
-      userDataBloc: userDataBloc
+      settingsRepository: widget.settingsRepository,
+      userRepository: widget.userRepository,
     );
 
     configurationBloc = ConfigurationBloc(
-      settingsRepository: settingsRepository,
+      settingsRepository: widget.settingsRepository,
     );
 
-    // Initialize blocs
+    // Run initial configuration, shows splash page until completed
     configurationBloc.dispatch(FetchConfiguration());
   }
 
@@ -105,8 +93,6 @@ class _AppState extends State<App> {
       blocProviders: [
         BlocProvider<ThemeBloc>(bloc: themeBloc),
         BlocProvider<ConfigurationBloc>(bloc: configurationBloc),
-        BlocProvider<AuthenticationBloc>(bloc: authenticationBloc),
-        BlocProvider<SettingsBloc>(bloc: settingsBloc),
         BlocProvider<UserDataBloc>(bloc: userDataBloc),
       ],
       // Theme
@@ -115,43 +101,37 @@ class _AppState extends State<App> {
         builder: (_, ThemeData theme) {
           return MaterialApp(
             title: "Diet Driven",
-            home: AppBlocBuilders(builder: (context, configurationState, authenticationState, settingsState, userDataState) {
-              // Loading
+            home: AppBlocBuilders(builder: (context, configurationState, userDataState) {
+              // Initial splash screen
               if (configurationState is ConfigurationUninitialized ||
                   configurationState is ConfigurationLoading ||
-                  authenticationState is AuthUninitialized) {
+                  userDataState is UserDataUninitialized) {
                 return SplashPage();
               }
 
-              // First time user
-              if (authenticationState is AuthUnauthenticated) {
-                return LoginPage(userRepository: userRepository);
+              // No user was persisted
+              if (userDataState is UserDataOnboarding) {
+                return LoginPage(userRepository: widget.userRepository);
               }
 
-              // Authenticated from this point on
-              assert(authenticationState is AuthAuthenticated);
-              if (authenticationState is AuthAuthenticated) {
-                // Load critical user settings
-                if (settingsState is SettingsUninitialized || userDataState is UserDataUninitialized) {
-                  return LoadingIndicator();
-                }
+              // Loading critical user settings
+              if (userDataState is UserDataLoading) {
+                return LoadingIndicator();
+              }
 
-                // Loading user data failed
-                if (userDataState is UserDataFailed) {
-                  return ErrorPage(error: userDataState.error);
-                }
+              // Loading user data failed
+              if (userDataState is UserDataFailed) {
+                return ErrorPage(error: userDataState.error);
+              }
 
-                // Loading settings failed
-                if (settingsState is SettingsFailed) {
-                  return ErrorPage(error: settingsState.error);
-                }
-
-                // Show application
+              // Start application when user is loaded
+              assert(userDataState is UserDataLoaded);
+              if (userDataState is UserDataLoaded) {
                 return HomePage(
-                  diaryRepository: diaryRepository,
-                  foodRepository: foodRepository,
-                  settingsRepository: settingsRepository,
-                  analyticsRepository: analyticsRepository,
+                  diaryRepository: widget.diaryRepository,
+                  foodRepository: widget.foodRepository,
+                  settingsRepository: widget.settingsRepository,
+                  analyticsRepository: widget.analyticsRepository,
                 );
               }
             }),
@@ -166,49 +146,16 @@ class _AppState extends State<App> {
   @override
   void dispose() {
     configurationBloc.dispose();
-    authenticationBloc.dispose();
-    settingsBloc.dispose();
     themeBloc.dispose();
     super.dispose();
   }
 }
 
-class LoadingIndicator extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
-      body: Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.center,
-            child: SizedBox(child: PenguinAnimation(), height: 200, width: 200,),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "loading...",
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold
-                ),
-              ),
-            ),
-          )
-        ],
-        fit: StackFit.expand,
-      )
-    );
-  }
-}
-
+/// Higher order builder to hide bloc builder boilerplate
 class AppBlocBuilders extends StatelessWidget {
   final Widget Function(
     BuildContext context,
     ConfigurationState configurationState,
-    AuthenticationState authenticationState,
-    SettingsState settingsState,
     UserDataState userDataState,
   ) builder;
 
@@ -217,31 +164,17 @@ class AppBlocBuilders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ConfigurationBloc _configurationBloc = BlocProvider.of<ConfigurationBloc>(context);
-    final AuthenticationBloc _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
-    final SettingsBloc _settingsBloc = BlocProvider.of<SettingsBloc>(context);
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
 
     // Configuration
     return BlocBuilder<ConfigurationEvent, ConfigurationState>(
       bloc: _configurationBloc,
       builder: (BuildContext context, ConfigurationState configurationState) {
-        // Authentication
-        return BlocBuilder<AuthenticationEvent, AuthenticationState>(
-          bloc: _authenticationBloc,
-          builder: (BuildContext context, AuthenticationState authenticationState) {
-            // Settings
-            return BlocBuilder<SettingsEvent, SettingsState>(
-              bloc: _settingsBloc,
-              builder: (BuildContext context, SettingsState settingsState) {
-                // User data
-                return BlocBuilder<UserDataEvent, UserDataState>(
-                  bloc: _userDataBloc,
-                  builder: (BuildContext context, UserDataState userDataState) {
-                    return builder(context, configurationState, authenticationState, settingsState, userDataState);
-                  }
-                );
-              }
-            );
+        // User data
+        return BlocBuilder<UserDataEvent, UserDataState>(
+          bloc: _userDataBloc,
+          builder: (BuildContext context, UserDataState userDataState) {
+            return builder(context, configurationState, userDataState);
           }
         );
       }
