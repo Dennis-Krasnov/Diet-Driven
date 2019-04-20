@@ -13,7 +13,7 @@ void main() {
 //  AnalyticsRepository analyticsRepository;
 
   setUp(() {
-    authRepository = MockAuthenticationRepository();
+    authRepository = MockUserRepository();
     foodRepository = MockFoodRepository();
     settingsRepository = MockSettingsRepository();
   });

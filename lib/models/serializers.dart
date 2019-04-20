@@ -14,6 +14,7 @@ part 'serializers.g.dart';
 
   UserData,
   UserDocument,
+  Settings,
   NavigationSettings,
 
 //  Uncertainty,

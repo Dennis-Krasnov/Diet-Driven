@@ -6,8 +6,52 @@ part of 'settings.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+Serializer<Settings> _$settingsSerializer = new _$SettingsSerializer();
 Serializer<NavigationSettings> _$navigationSettingsSerializer =
     new _$NavigationSettingsSerializer();
+
+class _$SettingsSerializer implements StructuredSerializer<Settings> {
+  @override
+  final Iterable<Type> types = const [Settings, _$Settings];
+  @override
+  final String wireName = 'Settings';
+
+  @override
+  Iterable serialize(Serializers serializers, Settings object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[];
+    if (object.navigationSettings != null) {
+      result
+        ..add('navigationSettings')
+        ..add(serializers.serialize(object.navigationSettings,
+            specifiedType: const FullType(NavigationSettings)));
+    }
+
+    return result;
+  }
+
+  @override
+  Settings deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new SettingsBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'navigationSettings':
+          result.navigationSettings.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(NavigationSettings))
+              as NavigationSettings);
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
 
 class _$NavigationSettingsSerializer
     implements StructuredSerializer<NavigationSettings> {
@@ -19,11 +63,20 @@ class _$NavigationSettingsSerializer
   @override
   Iterable serialize(Serializers serializers, NavigationSettings object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'defaultPage',
-      serializers.serialize(object.defaultPage,
-          specifiedType: const FullType(String)),
-    ];
+    final result = <Object>[];
+    if (object.defaultPage != null) {
+      result
+        ..add('defaultPage')
+        ..add(serializers.serialize(object.defaultPage,
+            specifiedType: const FullType(String)));
+    }
+    if (object.bottomNavigationPages != null) {
+      result
+        ..add('bottomNavigationPages')
+        ..add(serializers.serialize(object.bottomNavigationPages,
+            specifiedType:
+                const FullType(BuiltList, const [const FullType(String)])));
+    }
 
     return result;
   }
@@ -43,6 +96,12 @@ class _$NavigationSettingsSerializer
           result.defaultPage = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'bottomNavigationPages':
+          result.bottomNavigationPages.replace(serializers.deserialize(value,
+                  specifiedType:
+                      const FullType(BuiltList, const [const FullType(String)]))
+              as BuiltList);
+          break;
       }
     }
 
@@ -57,11 +116,7 @@ class _$Settings extends Settings {
   factory _$Settings([void updates(SettingsBuilder b)]) =>
       (new SettingsBuilder()..update(updates)).build();
 
-  _$Settings._({this.navigationSettings}) : super._() {
-    if (navigationSettings == null) {
-      throw new BuiltValueNullFieldError('Settings', 'navigationSettings');
-    }
-  }
+  _$Settings._({this.navigationSettings}) : super._();
 
   @override
   Settings rebuild(void updates(SettingsBuilder b)) =>
@@ -126,12 +181,12 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
     _$Settings _$result;
     try {
       _$result = _$v ??
-          new _$Settings._(navigationSettings: navigationSettings.build());
+          new _$Settings._(navigationSettings: _navigationSettings?.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'navigationSettings';
-        navigationSettings.build();
+        _navigationSettings?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'Settings', _$failedField, e.toString());
@@ -146,64 +201,66 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
 class _$NavigationSettings extends NavigationSettings {
   @override
   final String defaultPage;
+  @override
+  final BuiltList<String> bottomNavigationPages;
 
   factory _$NavigationSettings([void updates(NavigationSettingsBuilder b)]) =>
-      (new NavigationSettingsBuilder()..update(updates)).build()
-          as _$NavigationSettings;
+      (new NavigationSettingsBuilder()..update(updates)).build();
 
-  _$NavigationSettings._({this.defaultPage}) : super._() {
-    if (defaultPage == null) {
-      throw new BuiltValueNullFieldError('NavigationSettings', 'defaultPage');
-    }
-  }
+  _$NavigationSettings._({this.defaultPage, this.bottomNavigationPages})
+      : super._();
 
   @override
   NavigationSettings rebuild(void updates(NavigationSettingsBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigationSettingsBuilder toBuilder() =>
-      new _$NavigationSettingsBuilder()..replace(this);
+  NavigationSettingsBuilder toBuilder() =>
+      new NavigationSettingsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigationSettings && defaultPage == other.defaultPage;
+    return other is NavigationSettings &&
+        defaultPage == other.defaultPage &&
+        bottomNavigationPages == other.bottomNavigationPages;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, defaultPage.hashCode));
+    return $jf(
+        $jc($jc(0, defaultPage.hashCode), bottomNavigationPages.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('NavigationSettings')
-          ..add('defaultPage', defaultPage))
+          ..add('defaultPage', defaultPage)
+          ..add('bottomNavigationPages', bottomNavigationPages))
         .toString();
   }
 }
 
-class _$NavigationSettingsBuilder extends NavigationSettingsBuilder {
+class NavigationSettingsBuilder
+    implements Builder<NavigationSettings, NavigationSettingsBuilder> {
   _$NavigationSettings _$v;
 
-  @override
-  String get defaultPage {
-    _$this;
-    return super.defaultPage;
-  }
+  String _defaultPage;
+  String get defaultPage => _$this._defaultPage;
+  set defaultPage(String defaultPage) => _$this._defaultPage = defaultPage;
 
-  @override
-  set defaultPage(String defaultPage) {
-    _$this;
-    super.defaultPage = defaultPage;
-  }
+  ListBuilder<String> _bottomNavigationPages;
+  ListBuilder<String> get bottomNavigationPages =>
+      _$this._bottomNavigationPages ??= new ListBuilder<String>();
+  set bottomNavigationPages(ListBuilder<String> bottomNavigationPages) =>
+      _$this._bottomNavigationPages = bottomNavigationPages;
 
-  _$NavigationSettingsBuilder() : super._();
+  NavigationSettingsBuilder();
 
   NavigationSettingsBuilder get _$this {
     if (_$v != null) {
-      super.defaultPage = _$v.defaultPage;
+      _defaultPage = _$v.defaultPage;
+      _bottomNavigationPages = _$v.bottomNavigationPages?.toBuilder();
       _$v = null;
     }
     return this;
@@ -224,8 +281,23 @@ class _$NavigationSettingsBuilder extends NavigationSettingsBuilder {
 
   @override
   _$NavigationSettings build() {
-    final _$result =
-        _$v ?? new _$NavigationSettings._(defaultPage: defaultPage);
+    _$NavigationSettings _$result;
+    try {
+      _$result = _$v ??
+          new _$NavigationSettings._(
+              defaultPage: defaultPage,
+              bottomNavigationPages: _bottomNavigationPages?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'bottomNavigationPages';
+        _bottomNavigationPages?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'NavigationSettings', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

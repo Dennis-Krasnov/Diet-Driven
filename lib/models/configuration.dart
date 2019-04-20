@@ -10,11 +10,3 @@ abstract class RemoteConfiguration implements Built<RemoteConfiguration, RemoteC
   RemoteConfiguration._();
   factory RemoteConfiguration([updates(RemoteConfigurationBuilder b)]) = _$RemoteConfiguration;
 }
-
-abstract class RemoteConfigurationBuilder implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {
-  bool defaultConfiguration = true;
-  int bonus = 0;
-
-  factory RemoteConfigurationBuilder() = _$RemoteConfigurationBuilder;
-  RemoteConfigurationBuilder._();
-}

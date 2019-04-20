@@ -8,13 +8,17 @@ void main() {
   NavigationBloc navigationBloc;
 
   setUp(() {
-    navigationBloc = NavigationBloc();
+    navigationBloc = NavigationBloc(analyticsRepository: null, defaultPage: null); // FIXME, test default page things!
   });
 
-  test("Initial state is correct", () {
-    expect(navigationBloc.initialState, NavigationState((b) => b
-//      TODO
-    ));
+  group("Initial state", () {
+    navigationBloc = NavigationBloc(analyticsRepository: null);
+
+    test("Default is diary", () {
+      expect(navigationBloc.initialState., NavigationState((b) => b
+        ..bottomNavigationPages
+      ));
+    });
   });
 
   test("Dispose doesn't emit new state", () {

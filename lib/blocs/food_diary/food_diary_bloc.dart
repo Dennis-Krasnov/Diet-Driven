@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
@@ -23,7 +22,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   // User-specific stream of data streams of a food diary day
 //  Observable<ValueObservable<FoodDiaryDay>> _foodDiaryDayStream;
 //  StreamSubscription<ValueObservable<FoodDiaryDay>> _foodDiaryDaySubscription;
-  ValueObservable<FoodDiaryDay> _foodDiaryDayStream;
+  ValueObservable<FoodDiaryDay> _foodDiaryDayStream; // FIXME: BRING BACK SUBSCRIPTION - or don't need to...
 //  StreamSubscription<FoodDiaryDay> _foodDiaryDaySubscription;
 
   FoodDiaryBloc({@required this.diaryRepository, @required this.userId, @required this.daysSinceEpoch}) {
@@ -73,6 +72,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
     if (event is RemoteDiaryDayArrived) {
+      // Builder based on top of existing state
       var diaryReadyBuilder = currentState is FoodDiaryReady
         ? (currentState as FoodDiaryReady).toBuilder()
         : FoodDiaryReadyBuilder();
@@ -109,3 +109,5 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     }
   }
 }
+
+  // TODO .switchIfEmpty(fallbackStream) for caching and loading historical configs

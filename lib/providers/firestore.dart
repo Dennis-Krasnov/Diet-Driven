@@ -107,17 +107,20 @@ class FirestoreProvider {
   }
 
   /// SETTINGS
-  String settingsDocumentPath(userId, setting) => "${userPath(userId)}/settings/$setting";
+  String _metadataDocumentPath(userId, subpath) => "${userPath(userId)}/metadata/$subpath";
 
-  Observable<BuiltList<SettingsDocument>> settingsDocumentList(String userId) {
-    CollectionReference ref = _firestore.collection("${userPath(userId)}/settings");
-    print("SETTINGS COLLECTION REFERENCE ${ref.path}");
-    return FS<SettingsDocument>().deserializeCollection(ref.snapshots());
+  Observable<Settings> defaultSettings() {
+    DocumentReference ref = _firestore.document("config/default_settings");
+    return FS<Settings>().deserializeDocument(ref.snapshots());
+  }
+
+  Observable<Settings> settingsStream(String userId) {
+    DocumentReference ref = _firestore.document("${_metadataDocumentPath(userId, "settings")}");
+    return FS<Settings>().deserializeDocument(ref.snapshots());
   }
 
   Observable<UserDocument> userDocument(String userId) {
     DocumentReference ref = _firestore.document("${userPath(userId)}");
-    print("USER DOCUMENT REFERENCE ${ref.path}");
     return FS<UserDocument>().deserializeDocument(ref.snapshots());
   }
 }

@@ -1,6 +1,6 @@
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/screens/diary_page.dart';
-import 'package:diet_driven/screens/penguin_animation.dart';
+import 'package:diet_driven/screens/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -35,55 +35,61 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
-
-//    foodDiaryBloc = FoodDiaryBloc(userDataBloc: _userDataBloc, foodRepository: foodRepository);
-//    foodDiaryBloc = FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124); // FIXME: wrapper should switchmap on user data
-    navigationBloc = NavigationBloc(analyticsRepository: widget.analyticsRepository);
-
-    // Initialize blocs
-//    foodDiaryBloc.dispatch(LoadFoodRecordDays());
-    navigationBloc.dispatch(NavigateToPage((b) => b..page = "track")); // TODO: default page via. settings bloc
+    assert(_userDataBloc.currentState is UserDataLoaded);
+    navigationBloc = NavigationBloc(analyticsRepository: widget.analyticsRepository, userDataBloc: _userDataBloc);
   }
 
   @override
   void dispose() {
-//    foodDiaryBloc.dispose();
     navigationBloc.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
+
     return BlocProviderTree(
       blocProviders: [
-//        BlocProvider<FoodDiaryBloc>(bloc: foodDiaryBloc),
         BlocProvider<NavigationBloc>(bloc: navigationBloc),
       ],
       child: BlocBuilder(
         bloc: navigationBloc,
         builder: (BuildContext context, NavigationState state) {
-          return Scaffold(
-            body: Stack(
-              children: state.bottomNavigationPages.map((page) =>
-                Offstage(
-                  offstage: state.currentPage != page,
-                  child: generatePage(page)
-                )
-              ).toList(),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: state.bottomNavigationPages.map((page) =>
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.add),
-                  title: Text(page),
-                )
-              ).toList(),
-              currentIndex: state.bottomNavigationPages.indexOf(state.currentPage),
-              onTap: (index) {
-                navigationBloc.dispatch(NavigateToPage((b) => b..page = state.bottomNavigationPages[index]));
-              },
-            ),
+          return BlocBuilder<UserDataEvent, UserDataState>(
+            bloc: _userDataBloc,
+            builder: (BuildContext context, UserDataState userDataState) {
+              if (state is NavigationUninitialized) {
+                return ErrorPage(error: "navigation is uninitialized!");
+              }
+
+              assert(state is NavigationLoaded);
+              if (state is NavigationLoaded && userDataState is UserDataLoaded) {
+                return Scaffold(
+                  body: Stack(
+                    children: userDataState.userData.settings.navigationSettings.bottomNavigationPages.map((page) =>
+                      Offstage(
+                        offstage: state.currentPage != page,
+                        child: generatePage(page)
+                      )
+                    ).toList(),
+                  ),
+                  bottomNavigationBar: BottomNavigationBar(
+                    type: BottomNavigationBarType.fixed,
+                    items: userDataState.userData.settings.navigationSettings.bottomNavigationPages.map((page) =>
+                      BottomNavigationBarItem(
+                        icon: Icon(Icons.add),
+                        title: Text(page),
+                      )
+                    ).toList(),
+                    currentIndex: userDataState.userData.settings.navigationSettings.bottomNavigationPages.indexOf(state.currentPage),
+                    onTap: (index) {
+                      navigationBloc.dispatch(NavigateToPage((b) => b..page = userDataState.userData.settings.navigationSettings.bottomNavigationPages[index]));
+                    },
+                  ),
+                );
+              }
+            }
           );
         }
       )
@@ -92,7 +98,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget generatePage(String page) {
     if (page == "diary") {
-      // FIXME: diary page wrapper that manages current date, listens to userData bloc for updates!
+      // FIXME: diary page wrapper that creates foodDiaryBloc, manages current date, listens to userData bloc for updates!
       return DiaryPage(foodDiaryBloc: FoodDiaryBloc(diaryRepository: widget.diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),);
     }
     if (page == "track") {

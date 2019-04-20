@@ -6,76 +6,114 @@ part of 'navigation_state.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$NavigationState extends NavigationState {
-  @override
-  final BuiltList<String> bottomNavigationPages;
-  @override
-  final String currentPage;
+class _$NavigationUninitialized extends NavigationUninitialized {
+  factory _$NavigationUninitialized(
+          [void updates(NavigationUninitializedBuilder b)]) =>
+      (new NavigationUninitializedBuilder()..update(updates)).build();
 
-  factory _$NavigationState([void updates(NavigationStateBuilder b)]) =>
-      (new NavigationStateBuilder()..update(updates)).build();
-
-  _$NavigationState._({this.bottomNavigationPages, this.currentPage})
-      : super._() {
-    if (bottomNavigationPages == null) {
-      throw new BuiltValueNullFieldError(
-          'NavigationState', 'bottomNavigationPages');
-    }
-    if (currentPage == null) {
-      throw new BuiltValueNullFieldError('NavigationState', 'currentPage');
-    }
-  }
+  _$NavigationUninitialized._() : super._();
 
   @override
-  NavigationState rebuild(void updates(NavigationStateBuilder b)) =>
+  NavigationUninitialized rebuild(
+          void updates(NavigationUninitializedBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigationStateBuilder toBuilder() =>
-      new NavigationStateBuilder()..replace(this);
+  NavigationUninitializedBuilder toBuilder() =>
+      new NavigationUninitializedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigationState &&
-        bottomNavigationPages == other.bottomNavigationPages &&
-        currentPage == other.currentPage;
+    return other is NavigationUninitialized;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc(0, bottomNavigationPages.hashCode), currentPage.hashCode));
+    return 70461045;
+  }
+}
+
+class NavigationUninitializedBuilder
+    implements
+        Builder<NavigationUninitialized, NavigationUninitializedBuilder> {
+  _$NavigationUninitialized _$v;
+
+  NavigationUninitializedBuilder();
+
+  @override
+  void replace(NavigationUninitialized other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$NavigationUninitialized;
+  }
+
+  @override
+  void update(void updates(NavigationUninitializedBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$NavigationUninitialized build() {
+    final _$result = _$v ?? new _$NavigationUninitialized._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$NavigationLoaded extends NavigationLoaded {
+  @override
+  final String currentPage;
+
+  factory _$NavigationLoaded([void updates(NavigationLoadedBuilder b)]) =>
+      (new NavigationLoadedBuilder()..update(updates)).build();
+
+  _$NavigationLoaded._({this.currentPage}) : super._() {
+    if (currentPage == null) {
+      throw new BuiltValueNullFieldError('NavigationLoaded', 'currentPage');
+    }
+  }
+
+  @override
+  NavigationLoaded rebuild(void updates(NavigationLoadedBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  NavigationLoadedBuilder toBuilder() =>
+      new NavigationLoadedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is NavigationLoaded && currentPage == other.currentPage;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, currentPage.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigationState')
-          ..add('bottomNavigationPages', bottomNavigationPages)
+    return (newBuiltValueToStringHelper('NavigationLoaded')
           ..add('currentPage', currentPage))
         .toString();
   }
 }
 
-class NavigationStateBuilder
-    implements Builder<NavigationState, NavigationStateBuilder> {
-  _$NavigationState _$v;
-
-  ListBuilder<String> _bottomNavigationPages;
-  ListBuilder<String> get bottomNavigationPages =>
-      _$this._bottomNavigationPages ??= new ListBuilder<String>();
-  set bottomNavigationPages(ListBuilder<String> bottomNavigationPages) =>
-      _$this._bottomNavigationPages = bottomNavigationPages;
+class NavigationLoadedBuilder
+    implements Builder<NavigationLoaded, NavigationLoadedBuilder> {
+  _$NavigationLoaded _$v;
 
   String _currentPage;
   String get currentPage => _$this._currentPage;
   set currentPage(String currentPage) => _$this._currentPage = currentPage;
 
-  NavigationStateBuilder();
+  NavigationLoadedBuilder();
 
-  NavigationStateBuilder get _$this {
+  NavigationLoadedBuilder get _$this {
     if (_$v != null) {
-      _bottomNavigationPages = _$v.bottomNavigationPages?.toBuilder();
       _currentPage = _$v.currentPage;
       _$v = null;
     }
@@ -83,37 +121,21 @@ class NavigationStateBuilder
   }
 
   @override
-  void replace(NavigationState other) {
+  void replace(NavigationLoaded other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$NavigationState;
+    _$v = other as _$NavigationLoaded;
   }
 
   @override
-  void update(void updates(NavigationStateBuilder b)) {
+  void update(void updates(NavigationLoadedBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$NavigationState build() {
-    _$NavigationState _$result;
-    try {
-      _$result = _$v ??
-          new _$NavigationState._(
-              bottomNavigationPages: bottomNavigationPages.build(),
-              currentPage: currentPage);
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'bottomNavigationPages';
-        bottomNavigationPages.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'NavigationState', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+  _$NavigationLoaded build() {
+    final _$result = _$v ?? new _$NavigationLoaded._(currentPage: currentPage);
     replace(_$result);
     return _$result;
   }

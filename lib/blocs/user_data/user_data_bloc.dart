@@ -30,7 +30,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           // Admin information
           settingsRepository.userDocument(user.uid),
           // User's settings
-          settingsRepository.settingsDocumentsList(user.uid),
+          settingsRepository.settingsStream(user.uid),
           (UserDocument userDocument, Settings settings) => UserData((b) => b
             ..userId = user.uid
             ..email = user.email
@@ -47,7 +47,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     _userDataSubscription = _userDataStream.listen((userData) =>
       dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
       onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())), // TOTEST
-//      onDone: () => dispatch(WipeUserData()) // TOTEST
     );
   }
 
