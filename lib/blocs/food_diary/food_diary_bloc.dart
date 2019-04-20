@@ -101,7 +101,6 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 //        diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord.rebuild((b) => b..foodName = "NEW!!!"));
         diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord.rebuild((b) => b
           ..foodName = "NEW!!!"
-          ..userData = UserData((b) => b..userId = "person").toBuilder()
         ));
 
         _log.info("${event.foodRecord} deleted");

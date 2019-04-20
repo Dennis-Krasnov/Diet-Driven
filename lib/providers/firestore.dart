@@ -5,23 +5,30 @@ import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/models/serializers.dart';
 import 'package:rxdart/rxdart.dart';
 
+///
 class FirestoreProvider {
   Firestore _firestore = Firestore.instance;
 
   ///
   String userPath(String userId) => "users/$userId";
 
-  // can specify set vs update, merge, etc. on case by case basis
+  ///   ########  #######   #######  ########     ########  ####    ###    ########  ##    ##
+  ///   ##       ##     ## ##     ## ##     ##    ##     ##  ##    ## ##   ##     ##  ##  ##
+  ///   ##       ##     ## ##     ## ##     ##    ##     ##  ##   ##   ##  ##     ##   ####
+  ///   ######   ##     ## ##     ## ##     ##    ##     ##  ##  ##     ## ########     ##
+  ///   ##       ##     ## ##     ## ##     ##    ##     ##  ##  ######### ##   ##      ##
+  ///   ##       ##     ## ##     ## ##     ##    ##     ##  ##  ##     ## ##    ##     ##
+  ///   ##        #######   #######  ########     ########  #### ##     ## ##     ##    ##
 
-  /// FOOD DIARY
+  ///
   String foodDiaryPath(userId, daysSinceEpoch) => "${userPath(userId)}/food_diary/$daysSinceEpoch";
-  final fsDiary = FS<FoodDiaryDay>();
+  final fsDiaryDay = FS<FoodDiaryDay>();
   final fsFoodRecord = FS<FoodRecord>();
 
   ///
   Future<void> setFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, foodDiaryDay.date));
-    return ref.setData(fsDiary.serializeDocument(foodDiaryDay));
+    return ref.setData(fsDiaryDay.serializeDocument(foodDiaryDay));
   }
 
   /// Throws if day doesn't exist
@@ -33,22 +40,30 @@ class FirestoreProvider {
   ///
   Observable<FoodDiaryDay> streamFoodDiaryDay(String userId, int daysSinceEpoch) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
-    return fsDiary.deserializeDocument(ref.snapshots());
+    return fsDiaryDay.deserializeDocument(ref.snapshots());
   }
 
   /// TODO: provide start date
   Observable<BuiltList<FoodDiaryDay>> streamFullFoodDiary(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
-    return fsDiary.deserializeCollection(ref.snapshots());
+    return fsDiaryDay.deserializeCollection(ref.snapshots());
   }
 
   ///
   Future<BuiltList<FoodDiaryDay>> getFullFoodDiary(String userId) {
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
-    return fsDiary.deserializeSingleCollection(ref.getDocuments());
+    return fsDiaryDay.deserializeSingleCollection(ref.getDocuments());
   }
 
-  /// FOOD RECORD
+  ///   ########  #######   #######  ########     ########  ########  ######   #######  ########  ########
+  ///   ##       ##     ## ##     ## ##     ##    ##     ## ##       ##    ## ##     ## ##     ## ##     ##
+  ///   ##       ##     ## ##     ## ##     ##    ##     ## ##       ##       ##     ## ##     ## ##     ##
+  ///   ######   ##     ## ##     ## ##     ##    ########  ######   ##       ##     ## ########  ##     ##
+  ///   ##       ##     ## ##     ## ##     ##    ##   ##   ##       ##       ##     ## ##   ##   ##     ##
+  ///   ##       ##     ## ##     ## ##     ##    ##    ##  ##       ##    ## ##     ## ##    ##  ##     ##
+  ///   ##        #######   #######  ########     ##     ## ########  ######   #######  ##     ## ########
+
+  ///
   Future<void> addFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
 
@@ -106,24 +121,58 @@ class FirestoreProvider {
     return batch.commit();
   }
 
-  /// SETTINGS
-  String _metadataDocumentPath(userId, subpath) => "${userPath(userId)}/metadata/$subpath";
+  ///    ######  ######## ######## ######## #### ##    ##  ######    ######
+  ///   ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
+  ///   ##       ##          ##       ##     ##  ####  ## ##        ##
+  ///    ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
+  ///         ## ##          ##       ##     ##  ##  #### ##    ##        ##
+  ///   ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
+  ///    ######  ########    ##       ##    #### ##    ##  ######    ######
 
+  /// Fetches [Observable] of default [Settings] from Firestore.
+  /// [Settings] stored at /config/default_settings, read-only document.
+  ///
+  /// Returns [null] if Firestore document doesn't exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
   Observable<Settings> defaultSettings() {
     DocumentReference ref = _firestore.document("config/default_settings");
     return FS<Settings>().deserializeDocument(ref.snapshots());
   }
 
+  /// Fetches [Observable] of [userId]'s [Settings] from Firestore.
+  /// [Settings] stored at /users/{userId}/metadata/settings.
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  /// Returns [null] if Firestore document doesn't exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
   Observable<Settings> settingsStream(String userId) {
-    DocumentReference ref = _firestore.document("${_metadataDocumentPath(userId, "settings")}");
+    assert(userId != null && userId.isNotEmpty);
+
+    DocumentReference ref = _firestore.document("${userPath(userId)}/metadata/settings");
     return FS<Settings>().deserializeDocument(ref.snapshots());
   }
 
+  /// Fetches [Observable] of [userId]'s [UserDocument] from Firestore.
+  /// [UserDocument] stored at /users/{userId}, read-only document.
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  /// Returns [null] if Firestore document doesn't exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
   Observable<UserDocument> userDocument(String userId) {
+    assert(userId != null && userId.isNotEmpty);
+
     DocumentReference ref = _firestore.document("${userPath(userId)}");
     return FS<UserDocument>().deserializeDocument(ref.snapshots());
   }
 }
+
+///   ######## #### ########  ########  ######  ########  #######  ########  ########
+///   ##        ##  ##     ## ##       ##    ##    ##    ##     ## ##     ## ##
+///   ##        ##  ##     ## ##       ##          ##    ##     ## ##     ## ##
+///   ######    ##  ########  ######    ######     ##    ##     ## ########  ######
+///   ##        ##  ##   ##   ##             ##    ##    ##     ## ##   ##   ##
+///   ##        ##  ##    ##  ##       ##    ##    ##    ##     ## ##    ##  ##
+///   ##       #### ##     ## ########  ######     ##     #######  ##     ## ########
 
 ///
 class FS<T> {

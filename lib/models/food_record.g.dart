@@ -22,12 +22,6 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       serializers.serialize(object.foodName,
           specifiedType: const FullType(String)),
     ];
-    if (object.userData != null) {
-      result
-        ..add('userData')
-        ..add(serializers.serialize(object.userData,
-            specifiedType: const FullType(UserData)));
-    }
 
     return result;
   }
@@ -47,10 +41,6 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
           result.foodName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
-        case 'userData':
-          result.userData.replace(serializers.deserialize(value,
-              specifiedType: const FullType(UserData)) as UserData);
-          break;
       }
     }
 
@@ -61,13 +51,11 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
 class _$FoodRecord extends FoodRecord {
   @override
   final String foodName;
-  @override
-  final UserData userData;
 
   factory _$FoodRecord([void updates(FoodRecordBuilder b)]) =>
       (new FoodRecordBuilder()..update(updates)).build();
 
-  _$FoodRecord._({this.foodName, this.userData}) : super._() {
+  _$FoodRecord._({this.foodName}) : super._() {
     if (foodName == null) {
       throw new BuiltValueNullFieldError('FoodRecord', 'foodName');
     }
@@ -83,21 +71,18 @@ class _$FoodRecord extends FoodRecord {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodRecord &&
-        foodName == other.foodName &&
-        userData == other.userData;
+    return other is FoodRecord && foodName == other.foodName;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, foodName.hashCode), userData.hashCode));
+    return $jf($jc(0, foodName.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodRecord')
-          ..add('foodName', foodName)
-          ..add('userData', userData))
+          ..add('foodName', foodName))
         .toString();
   }
 }
@@ -109,16 +94,11 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   String get foodName => _$this._foodName;
   set foodName(String foodName) => _$this._foodName = foodName;
 
-  UserDataBuilder _userData;
-  UserDataBuilder get userData => _$this._userData ??= new UserDataBuilder();
-  set userData(UserDataBuilder userData) => _$this._userData = userData;
-
   FoodRecordBuilder();
 
   FoodRecordBuilder get _$this {
     if (_$v != null) {
       _foodName = _$v.foodName;
-      _userData = _$v.userData?.toBuilder();
       _$v = null;
     }
     return this;
@@ -139,21 +119,7 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
 
   @override
   _$FoodRecord build() {
-    _$FoodRecord _$result;
-    try {
-      _$result = _$v ??
-          new _$FoodRecord._(foodName: foodName, userData: _userData?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'userData';
-        _userData?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'FoodRecord', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ?? new _$FoodRecord._(foodName: foodName);
     replace(_$result);
     return _$result;
   }

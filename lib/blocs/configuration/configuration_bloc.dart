@@ -16,6 +16,9 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   @override
   ConfigurationState get initialState => ConfigurationUninitialized();
 
+  // TODO: transform, take only distinct states?
+  // TODO: timer that fetches config on a timer?
+
   @override
   Stream<ConfigurationState> mapEventToState(ConfigurationEvent event) async* {
     if (event is FetchConfiguration) {
@@ -24,23 +27,24 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         yield ConfigurationLoading();
       }
 
+      // TODO: Consider changing this to RemoteConfigurationBuilder
       RemoteConfiguration config;
 
-      // Load remote configuration
       try {
+        // Load remote configuration
         config = await settingsRepository.fetchRemoteConfig();
       }
-      // Default to existing or default configuration
       catch (exception) {
         _log.warning('Unable to fetch remote config. Cached or default values will be used');
         _log.fine(exception);
 
+        // Default to existing or default configuration
         config = currentState is ConfigurationLoaded
         ? (currentState as ConfigurationLoaded).configuration
         : RemoteConfiguration();
       }
-      // Update current configuration
       finally {
+        // Update current configuration
         yield ConfigurationLoaded((b) => b
           ..configuration = config.toBuilder()
         );

@@ -13,7 +13,8 @@ class _$RemoteConfiguration extends RemoteConfiguration {
   final int bonus;
 
   factory _$RemoteConfiguration([void updates(RemoteConfigurationBuilder b)]) =>
-      (new RemoteConfigurationBuilder()..update(updates)).build();
+      (new RemoteConfigurationBuilder()..update(updates)).build()
+          as _$RemoteConfiguration;
 
   _$RemoteConfiguration._({this.defaultConfiguration, this.bonus}) : super._() {
     if (defaultConfiguration == null) {
@@ -30,8 +31,8 @@ class _$RemoteConfiguration extends RemoteConfiguration {
       (toBuilder()..update(updates)).build();
 
   @override
-  RemoteConfigurationBuilder toBuilder() =>
-      new RemoteConfigurationBuilder()..replace(this);
+  _$RemoteConfigurationBuilder toBuilder() =>
+      new _$RemoteConfigurationBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -55,25 +56,39 @@ class _$RemoteConfiguration extends RemoteConfiguration {
   }
 }
 
-class RemoteConfigurationBuilder
-    implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {
+class _$RemoteConfigurationBuilder extends RemoteConfigurationBuilder {
   _$RemoteConfiguration _$v;
 
-  bool _defaultConfiguration;
-  bool get defaultConfiguration => _$this._defaultConfiguration;
-  set defaultConfiguration(bool defaultConfiguration) =>
-      _$this._defaultConfiguration = defaultConfiguration;
+  @override
+  bool get defaultConfiguration {
+    _$this;
+    return super.defaultConfiguration;
+  }
 
-  int _bonus;
-  int get bonus => _$this._bonus;
-  set bonus(int bonus) => _$this._bonus = bonus;
+  @override
+  set defaultConfiguration(bool defaultConfiguration) {
+    _$this;
+    super.defaultConfiguration = defaultConfiguration;
+  }
 
-  RemoteConfigurationBuilder();
+  @override
+  int get bonus {
+    _$this;
+    return super.bonus;
+  }
+
+  @override
+  set bonus(int bonus) {
+    _$this;
+    super.bonus = bonus;
+  }
+
+  _$RemoteConfigurationBuilder() : super._();
 
   RemoteConfigurationBuilder get _$this {
     if (_$v != null) {
-      _defaultConfiguration = _$v.defaultConfiguration;
-      _bonus = _$v.bonus;
+      super.defaultConfiguration = _$v.defaultConfiguration;
+      super.bonus = _$v.bonus;
       _$v = null;
     }
     return this;
