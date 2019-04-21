@@ -23,7 +23,7 @@ class SettingsRepository {
 
     // Intentionally throws if Firebase Remote Config is invalid
     var configSettings = RemoteConfiguration((b) => b
-      ..defaultConfiguration = false
+      ..liveConfiguration = true
       ..bonus = config.getInt("bonus")
     );
 

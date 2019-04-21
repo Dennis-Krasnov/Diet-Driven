@@ -4,7 +4,7 @@ part 'configuration.g.dart';
 
 /// Remote config
 abstract class RemoteConfiguration implements Built<RemoteConfiguration, RemoteConfigurationBuilder> {
-  bool get defaultConfiguration;
+  bool get liveConfiguration;
   int get bonus;
 
   RemoteConfiguration._();
@@ -12,7 +12,7 @@ abstract class RemoteConfiguration implements Built<RemoteConfiguration, RemoteC
 }
 
 abstract class RemoteConfigurationBuilder implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {
-  bool defaultConfiguration = true;
+  bool liveConfiguration = false;
   int bonus = 0;
 
   factory RemoteConfigurationBuilder() = _$RemoteConfigurationBuilder;

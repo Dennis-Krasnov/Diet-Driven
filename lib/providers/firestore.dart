@@ -93,11 +93,15 @@ class FirestoreProvider {
     // What's stored in Firestore:
     // foodName: yaaay
 
-    var fr = fsFoodRecord.serializeDocument(foodRecord);
-    print("FR IS $fr");
+    var foodRecordSerialized = fsFoodRecord.serializeDocument(foodRecord);
+    print("FR IS: $foodRecordSerialized");
+    print("FR AS Map<String, dynamic> ${foodRecordSerialized as Map<String, dynamic>}");
+    // TODO: can remove element from map!
+
+    // use reflection to set `$` field to null, hope it doesn't show up in firestore
 
     return ref.updateData({
-      "foodRecords": FieldValue.arrayRemove([fr])
+      "foodRecords": FieldValue.arrayRemove([foodRecordSerialized])
     });
   }
 
@@ -174,38 +178,45 @@ class FirestoreProvider {
 ///   ##        ##  ##    ##  ##       ##    ##    ##    ##     ## ##    ##  ##
 ///   ##       #### ##     ## ########  ######     ##     #######  ##     ## ########
 
+/// Use a [FS] to serialize and deserialize generic [T] objects.
 ///
+/// Repeated [FS]s are initialized before use to improve readability.
 class FS<T> {
-  ///
+  /// Inserts Firestore document id into [doc] as `_id` field.
   Map<String, dynamic> _dataWithId(DocumentSnapshot doc) => doc.data..putIfAbsent("_id", () => doc.documentID);
 
-  /// FIXME: not using this...
-//  Future<void> updateDocument(DocumentReference doc, T obj, {bool merge: false}) {
-//    return doc.setData(jsonSerializers.serialize(obj), merge: merge);
-//  }
-
+  /// Serializes a single [T] into Firestore-readable JSON.
   ///
+  /// TODO: check possible errors with null, etc
   Object serializeDocument(T object) {
+    assert(object != null);
+
     return jsonSerializers.serialize(object);
   }
 
+  /// Deserializes [stream] of [DocumentSnapshot] into stream of [T].
   ///
+  /// Throws [DeserializationError] if Firestore data is corrupt.
   Observable<T> deserializeDocument(Stream<DocumentSnapshot> stream) {
     return Observable(stream).map<T>((doc) =>
       jsonSerializers.deserialize(_dataWithId(doc))
     );
   }
 
+  /// Deserializes [stream] of [QuerySnapshot] into stream of [BuiltList] of [T].
   ///
+  /// Throws [DeserializationError] if Firestore data is corrupt.
   Observable<BuiltList<T>> deserializeCollection(Stream<QuerySnapshot> stream) {
     return Observable(stream).map<BuiltList<T>>((qs) =>
       BuiltList<T>.from(qs.documents.map((doc) => jsonSerializers.deserialize(_dataWithId(doc))))
     );
   }
 
+  /// Deserializes a single [snapshot] into [T].
   ///
+  /// Throws [DeserializationError] if Firestore data is corrupt.
   Future<BuiltList<T>> deserializeSingleCollection(Future<QuerySnapshot> snapshot) async {
-    var diary = await snapshot;
-    return BuiltList<T>.from(diary.documents.map((doc) => jsonSerializers.deserialize(_dataWithId(doc))));
+    var snapshotResult = await snapshot;
+    return BuiltList<T>.from(snapshotResult.documents.map((doc) => jsonSerializers.deserialize(_dataWithId(doc))));
   }
 }

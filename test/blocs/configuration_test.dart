@@ -1,8 +1,8 @@
 import 'package:built_value/built_value.dart';
-import 'package:diet_driven/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
@@ -14,12 +14,15 @@ void main() {
   // Mocks
   SettingsRepository settingsRepository;
 
+  // Data
   final RemoteConfiguration defaultConfig = RemoteConfiguration();
+  final RemoteConfiguration remoteConfig = RemoteConfiguration((b) => b
+    ..bonus = 2
+    ..liveConfiguration = true
+  );
 
   setUp(() {
     settingsRepository = MockSettingsRepository();
-
-//    userDataBloc = new UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
     configurationBloc = ConfigurationBloc(settingsRepository: settingsRepository);
   });
   
@@ -28,11 +31,6 @@ void main() {
   });
   
   test("Fetch remote configuration on success", () {
-    RemoteConfiguration remoteConfig = RemoteConfiguration((b) => b
-      ..bonus = 2
-      ..defaultConfiguration = false
-    );
-    
     when(settingsRepository.fetchRemoteConfig()).thenAnswer((_) =>
       Future.value(remoteConfig)
     );
@@ -65,16 +63,16 @@ void main() {
   });
 
   test("Fetch existing configuration on success then failure", () {
-    logInvocations([settingsRepository as MockSettingsRepository]);
+    // fetchRemoteConfig first returning a value, then failing.
+    bool firstTime = true;
+    when(settingsRepository.fetchRemoteConfig()).thenAnswer((_) {
+      if (firstTime) {
+        firstTime = false;
+        return Future.value(remoteConfig);
+      }
 
-    RemoteConfiguration remoteConfig = RemoteConfiguration((b) => b
-      ..bonus = 2
-      ..defaultConfiguration = false
-    );
-
-    when(settingsRepository.fetchRemoteConfig()).thenAnswer((_) =>
-      Future.value(remoteConfig)
-    );
+      return Future.error("fail :(");
+    });
 
     expectLater(
       configurationBloc.state,
@@ -82,16 +80,11 @@ void main() {
         ConfigurationUninitialized(),
         ConfigurationLoading(),
         ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()),
-        ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()),
-//        emitsDone
+        ConfigurationLoaded((b) => b..configuration = remoteConfig.rebuild((b) => b..liveConfiguration = false).toBuilder()),
       ])
     );
 
     configurationBloc.dispatch(FetchConfiguration());
-
-//    reset(settingsRepository);
-//    when(settingsRepository.fetchRemoteConfig()).thenThrow(BuiltValueNullFieldError('RemoteConfiguration', 'bonus'));
-
     configurationBloc.dispatch(FetchConfiguration());
   });
 }

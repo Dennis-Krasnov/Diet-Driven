@@ -15,12 +15,14 @@ import 'package:diet_driven/screens/loading_indicator.dart';
 
 
 void main() {
-  // Configure logger [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
+  // Configure logger
+  // [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
   Logger.root.level = Level.FINE;
   Logger.root.onRecord.listen((LogRecord rec) {
     print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
   });
 
+  // ...
   BlocSupervisor().delegate = SimpleBlocDelegate();
 
   // Inject repository (DAO) dependencies
@@ -83,19 +85,19 @@ class _AppState extends State<App> {
       settingsRepository: widget.settingsRepository,
     );
 
-    // Run initial configuration, shows splash page until completed
+    // Run initial configuration, shows splash page until fetched
     configurationBloc.dispatch(FetchConfiguration());
   }
 
   @override
   Widget build(BuildContext context) {
+    // ...
     return BlocProviderTree(
       blocProviders: [
         BlocProvider<ThemeBloc>(bloc: themeBloc),
         BlocProvider<ConfigurationBloc>(bloc: configurationBloc),
         BlocProvider<UserDataBloc>(bloc: userDataBloc),
       ],
-      // Theme
       child: BlocBuilder(
         bloc: themeBloc,
         builder: (_, ThemeData theme) {
@@ -108,6 +110,7 @@ class _AppState extends State<App> {
                   userDataState is UserDataUninitialized) {
                 return SplashPage();
               }
+              assert(configurationState is ConfigurationLoaded);
 
               // No user was persisted
               if (userDataState is UserDataOnboarding) {
@@ -125,7 +128,6 @@ class _AppState extends State<App> {
               }
 
               // Start application when user is loaded
-              assert(userDataState is UserDataLoaded);
               if (userDataState is UserDataLoaded) {
                 return HomePage(
                   diaryRepository: widget.diaryRepository,
@@ -134,6 +136,8 @@ class _AppState extends State<App> {
                   analyticsRepository: widget.analyticsRepository,
                 );
               }
+
+              return ErrorPage(error: "Invalid user data state: $userDataState}");
             }),
             theme: theme,
             initialRoute: "/", // TODO: replace with fluro

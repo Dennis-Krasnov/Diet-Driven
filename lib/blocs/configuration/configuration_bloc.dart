@@ -40,8 +40,8 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
 
         // Default to existing or default configuration
         config = currentState is ConfigurationLoaded
-        ? (currentState as ConfigurationLoaded).configuration
-        : RemoteConfiguration();
+          ? (currentState as ConfigurationLoaded).configuration.rebuild((b) => b..liveConfiguration = false)
+          : RemoteConfiguration();
       }
       finally {
         // Update current configuration
@@ -50,7 +50,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         );
       }
 
-      _log.info("${config == null || config.defaultConfiguration ? "default": "remote"} config loaded");
+      _log.info("${config == null || config.liveConfiguration ? "default": "live"} config loaded");
       _log.fine("data: $config");
     }
   }

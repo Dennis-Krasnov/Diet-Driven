@@ -8,7 +8,7 @@ part of 'configuration.dart';
 
 class _$RemoteConfiguration extends RemoteConfiguration {
   @override
-  final bool defaultConfiguration;
+  final bool liveConfiguration;
   @override
   final int bonus;
 
@@ -16,10 +16,10 @@ class _$RemoteConfiguration extends RemoteConfiguration {
       (new RemoteConfigurationBuilder()..update(updates)).build()
           as _$RemoteConfiguration;
 
-  _$RemoteConfiguration._({this.defaultConfiguration, this.bonus}) : super._() {
-    if (defaultConfiguration == null) {
+  _$RemoteConfiguration._({this.liveConfiguration, this.bonus}) : super._() {
+    if (liveConfiguration == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteConfiguration', 'defaultConfiguration');
+          'RemoteConfiguration', 'liveConfiguration');
     }
     if (bonus == null) {
       throw new BuiltValueNullFieldError('RemoteConfiguration', 'bonus');
@@ -38,19 +38,19 @@ class _$RemoteConfiguration extends RemoteConfiguration {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is RemoteConfiguration &&
-        defaultConfiguration == other.defaultConfiguration &&
+        liveConfiguration == other.liveConfiguration &&
         bonus == other.bonus;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, defaultConfiguration.hashCode), bonus.hashCode));
+    return $jf($jc($jc(0, liveConfiguration.hashCode), bonus.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('RemoteConfiguration')
-          ..add('defaultConfiguration', defaultConfiguration)
+          ..add('liveConfiguration', liveConfiguration)
           ..add('bonus', bonus))
         .toString();
   }
@@ -60,15 +60,15 @@ class _$RemoteConfigurationBuilder extends RemoteConfigurationBuilder {
   _$RemoteConfiguration _$v;
 
   @override
-  bool get defaultConfiguration {
+  bool get liveConfiguration {
     _$this;
-    return super.defaultConfiguration;
+    return super.liveConfiguration;
   }
 
   @override
-  set defaultConfiguration(bool defaultConfiguration) {
+  set liveConfiguration(bool liveConfiguration) {
     _$this;
-    super.defaultConfiguration = defaultConfiguration;
+    super.liveConfiguration = liveConfiguration;
   }
 
   @override
@@ -87,7 +87,7 @@ class _$RemoteConfigurationBuilder extends RemoteConfigurationBuilder {
 
   RemoteConfigurationBuilder get _$this {
     if (_$v != null) {
-      super.defaultConfiguration = _$v.defaultConfiguration;
+      super.liveConfiguration = _$v.liveConfiguration;
       super.bonus = _$v.bonus;
       _$v = null;
     }
@@ -111,7 +111,7 @@ class _$RemoteConfigurationBuilder extends RemoteConfigurationBuilder {
   _$RemoteConfiguration build() {
     final _$result = _$v ??
         new _$RemoteConfiguration._(
-            defaultConfiguration: defaultConfiguration, bonus: bonus);
+            liveConfiguration: liveConfiguration, bonus: bonus);
     replace(_$result);
     return _$result;
   }

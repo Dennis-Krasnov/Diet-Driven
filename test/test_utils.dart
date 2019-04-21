@@ -22,3 +22,10 @@ class FirebaseAuthMock extends Mock implements FirebaseAuth {}
 class FirebaseUserMock extends Mock implements FirebaseUser {}
 class GoogleSignInMock extends Mock implements GoogleSignIn {}
 class GoogleSignInAccountMock extends Mock implements GoogleSignInAccount {}
+
+// .then((_) {
+  // Due to an unknown issue - emitsInOrder views consecutive identical built values (value-wise) as a single emission,
+  // Instead of two identical entries in emitsInOrder, we must test that the final state is the same.
+  // can transform to take distinct values only if needed to achieve a similar behaviour.
+  // example: expect(configurationBloc.currentState, ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()));
+// });
