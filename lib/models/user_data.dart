@@ -36,7 +36,7 @@ abstract class UserDataBuilder implements Builder<UserData, UserDataBuilder> {
   @nullable
   String email;
   @nullable
-  String name = "Mr. Goose";
+  String name;
 
   String currentSubscription = "none";
 

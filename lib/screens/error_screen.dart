@@ -13,7 +13,7 @@ class ErrorPage extends StatelessWidget {
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
 
     String name = _userDataBloc.currentState is UserDataLoaded
-        ? (_userDataBloc.currentState as UserDataLoaded).userData.userId
+        ? (_userDataBloc.currentState as UserDataLoaded).userData?.name ?? (_userDataBloc.currentState as UserDataLoaded).userData.userId
         : "mr. anonymous";
 
     return Scaffold(

@@ -34,7 +34,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       if (currentState is NavigationUninitialized) {
         dispatch(NavigateToPage((b) => b..page = navSettings.defaultPage));
 
-        _log.info("going to default page ${navSettings.defaultPage}");
+        _log.info("going to default page: ${navSettings.defaultPage}");
       }
     });
   }
@@ -59,16 +59,9 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
     if (event is NavigateToPage) {
-      assert(currentState is NavigationLoaded);
-      if (currentState is NavigationLoaded) {
-        var navLoaded = currentState as NavigationLoaded;
+      yield NavigationLoaded((b) => b..currentPage = event.page);
 
-        yield navLoaded.rebuild((b) => b
-          ..currentPage = event.page
-        );
-
-        _log.info("navigated to page ${event.page}");
-      }
+      _log.info("navigated to page ${event.page}");
     }
   }
 }

@@ -52,7 +52,7 @@ class SettingsRepository {
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns [null] if both Firestore documents doesn't exist.
   Observable<Settings> settingsStream(String userId) {
-    Observable<Settings> defaultSettingsStream = _firestoreProvider.defaultSettings().doOnData((settings) => print("default: $settings"));
+    Observable<Settings> defaultSettingsStream = _firestoreProvider.defaultSettings();
 
     return Observable<Settings>(
       CombineLatestStream.combine2(
@@ -66,7 +66,7 @@ class SettingsRepository {
           ).toBuilder()
         )
       )
-    ).doOnData((settings) => print("combined: $settings"));
+    );
 
     // TODO: fork built value and a create a generated 'mergeInto'/'T replaceNullFieldsWith(T)' method
     // that copies values from src to dest (where null), can also define it as a custom operator.

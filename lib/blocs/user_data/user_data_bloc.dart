@@ -23,7 +23,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     assert(userRepository != null);
 
     _userDataStream = userRepository.authStateChangedStream
-      .doOnData(print) // FIXME
+      .doOnData(_log.fine)
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user
       .doOnData((user) => dispatch(user == null ? OnboardUser() : StartLoadingUserData()))
       // Load user data only if user exists
@@ -49,8 +49,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       .distinct();
 
     _userDataSubscription = _userDataStream.listen((userData) =>
-      dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())), // TOTEST
-      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())), // TOTEST
+      dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
+      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())),
     );
   }
 
