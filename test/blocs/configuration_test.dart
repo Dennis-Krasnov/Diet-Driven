@@ -11,10 +11,10 @@ import '../test_utils.dart';
 void main() {
   ConfigurationBloc configurationBloc;
   
-  // Mocks
+  /// Mocks
   SettingsRepository settingsRepository;
 
-  // Data
+  /// Data
   final RemoteConfiguration defaultConfig = RemoteConfiguration();
   final RemoteConfiguration remoteConfig = RemoteConfiguration((b) => b
     ..bonus = 2

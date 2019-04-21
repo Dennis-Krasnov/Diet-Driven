@@ -168,11 +168,11 @@ class AppBlocBuilders extends StatelessWidget {
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
 
     // Configuration
-    return BlocBuilder<ConfigurationEvent, ConfigurationState>(
+    return BlocBuilder<ConfigurationEvent, ConfigurationState>( // TODO: remove this HOC, move configuration before theme
       bloc: _configurationBloc,
       builder: (BuildContext context, ConfigurationState configurationState) {
         // User data
-        return BlocBuilder<UserDataEvent, UserDataState>(
+        return BlocBuilder<UserDataEvent, UserDataState>( // TODO: place user data before theme (config => userData => theme) so that theme change doesn't trigger user data fetch
           bloc: _userDataBloc,
           builder: (BuildContext context, UserDataState userDataState) {
             return builder(context, configurationState, userDataState);

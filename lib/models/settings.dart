@@ -2,6 +2,8 @@ import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 
+import 'package:diet_driven/models/models.dart';
+
 part 'settings.g.dart';
 
 /// Everything must be nullable due implicit settings storing
@@ -20,10 +22,10 @@ abstract class NavigationSettings implements Built<NavigationSettings, Navigatio
   static Serializer<NavigationSettings> get serializer => _$navigationSettingsSerializer;
 
   @nullable
-  String get defaultPage;
+  Page get defaultPage;
 
   @nullable
-  BuiltList<String> get bottomNavigationPages;
+  BuiltList<Page> get bottomNavigationPages;
 
   NavigationSettings._();
   factory NavigationSettings([updates(NavigationSettingsBuilder b)]) = _$NavigationSettings;

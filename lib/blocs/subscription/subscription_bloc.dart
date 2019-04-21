@@ -8,13 +8,15 @@ class SubscriptionBloc extends Bloc<SubscriptionEvent, SubscriptionState> {
   @override
   SubscriptionState get initialState => SubscriptionUninitialized();
 
+  // FIXME: listen to UserDataBloc state, use this bloc only to manage subscriptions!
+
   @override
   Stream<SubscriptionState> mapEventToState(SubscriptionEvent event) async* {
     if (event is LoadExistingSubscription) {
 //      final FirebaseUser user = await authRepository.currentUser; // TODO: await repository.currentSubscription...
       final SubscriptionType subscriptionType = SubscriptionType.all_access;
 
-      if (subscriptionType != null) {
+      if (subscriptionType != null) { // FIXME: none of this!
         yield HasSubscription((b) => b..subscriptionType = subscriptionType);
       }
       else {

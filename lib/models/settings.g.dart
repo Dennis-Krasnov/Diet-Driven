@@ -68,14 +68,14 @@ class _$NavigationSettingsSerializer
       result
         ..add('defaultPage')
         ..add(serializers.serialize(object.defaultPage,
-            specifiedType: const FullType(String)));
+            specifiedType: const FullType(Page)));
     }
     if (object.bottomNavigationPages != null) {
       result
         ..add('bottomNavigationPages')
         ..add(serializers.serialize(object.bottomNavigationPages,
             specifiedType:
-                const FullType(BuiltList, const [const FullType(String)])));
+                const FullType(BuiltList, const [const FullType(Page)])));
     }
 
     return result;
@@ -94,12 +94,12 @@ class _$NavigationSettingsSerializer
       switch (key) {
         case 'defaultPage':
           result.defaultPage = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+              specifiedType: const FullType(Page)) as Page;
           break;
         case 'bottomNavigationPages':
           result.bottomNavigationPages.replace(serializers.deserialize(value,
                   specifiedType:
-                      const FullType(BuiltList, const [const FullType(String)]))
+                      const FullType(BuiltList, const [const FullType(Page)]))
               as BuiltList);
           break;
       }
@@ -200,9 +200,9 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
 
 class _$NavigationSettings extends NavigationSettings {
   @override
-  final String defaultPage;
+  final Page defaultPage;
   @override
-  final BuiltList<String> bottomNavigationPages;
+  final BuiltList<Page> bottomNavigationPages;
 
   factory _$NavigationSettings([void updates(NavigationSettingsBuilder b)]) =>
       (new NavigationSettingsBuilder()..update(updates)).build();
@@ -245,14 +245,14 @@ class NavigationSettingsBuilder
     implements Builder<NavigationSettings, NavigationSettingsBuilder> {
   _$NavigationSettings _$v;
 
-  String _defaultPage;
-  String get defaultPage => _$this._defaultPage;
-  set defaultPage(String defaultPage) => _$this._defaultPage = defaultPage;
+  Page _defaultPage;
+  Page get defaultPage => _$this._defaultPage;
+  set defaultPage(Page defaultPage) => _$this._defaultPage = defaultPage;
 
-  ListBuilder<String> _bottomNavigationPages;
-  ListBuilder<String> get bottomNavigationPages =>
-      _$this._bottomNavigationPages ??= new ListBuilder<String>();
-  set bottomNavigationPages(ListBuilder<String> bottomNavigationPages) =>
+  ListBuilder<Page> _bottomNavigationPages;
+  ListBuilder<Page> get bottomNavigationPages =>
+      _$this._bottomNavigationPages ??= new ListBuilder<Page>();
+  set bottomNavigationPages(ListBuilder<Page> bottomNavigationPages) =>
       _$this._bottomNavigationPages = bottomNavigationPages;
 
   NavigationSettingsBuilder();

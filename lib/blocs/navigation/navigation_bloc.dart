@@ -1,16 +1,17 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/models/models.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
+import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/navigation/navigation.dart';
 
+/// Manages bottom navigation current page.
+/// [NavigationBloc] causes app to show white page and skeleton bottom menu and app bar until loaded.
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   final Logger _log = new Logger("navigation bloc");
   final AnalyticsRepository analyticsRepository;
@@ -30,12 +31,9 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       .distinct();
 
     _navigationSettingsSubscription = _navigationSettingsStream.listen((navSettings) {
-      // Go to default page if navigation used to be uninitialized
-      if (currentState is NavigationUninitialized) {
-        dispatch(NavigateToPage((b) => b..page = navSettings.defaultPage));
-
-        _log.info("going to default page: ${navSettings.defaultPage}");
-      }
+      // Go to default page if navigation bloc hasn't been initialized
+      // if statement must be in `mapEventToState(event)` since currentState is always uninitialized in constructor
+      dispatch(InitialNavigateToPage((b) => b..page = navSettings.defaultPage));
     });
   }
 
@@ -50,14 +48,20 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
   @override
   void onTransition(Transition<NavigationEvent, NavigationState> transition) {
-    if (transition.event is NavigateToPage) {
-      // Log visited pages in Firebase analytics
-      analyticsRepository.navigatePage((transition.event as NavigateToPage).page);
-    }
+    // Log visited pages in Firebase analytics
+    analyticsRepository.navigatePage(transition.event.page.name);
   }
 
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
+    if (event is InitialNavigateToPage) {
+      // Switching users re-instantiates navigation bloc, thus checking navigation uninitialized is sufficient
+      // Don't assert currentState is NavigationUninitialized since this is called for every userDataState
+      if (currentState is NavigationUninitialized) {
+        yield NavigationLoaded((b) => b..currentPage = event.page);
+        _log.info("going to default page: ${event.page}");
+      }
+    }
     if (event is NavigateToPage) {
       yield NavigationLoaded((b) => b..currentPage = event.page);
 

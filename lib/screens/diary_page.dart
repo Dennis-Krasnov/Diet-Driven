@@ -147,7 +147,7 @@ class FAB extends StatelessWidget {
           child: FloatingActionButton(
             child: Icon(Icons.update),
             onPressed: () {
-              _themeBloc.dispatch(ThemeEvent.toggle);
+              _themeBloc.dispatch(ThemeEvent.toggleDarkTheme);
             },
           ),
         ),

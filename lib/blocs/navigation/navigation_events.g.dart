@@ -6,9 +6,89 @@ part of 'navigation_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+class _$InitialNavigateToPage extends InitialNavigateToPage {
+  @override
+  final Page page;
+
+  factory _$InitialNavigateToPage(
+          [void updates(InitialNavigateToPageBuilder b)]) =>
+      (new InitialNavigateToPageBuilder()..update(updates)).build();
+
+  _$InitialNavigateToPage._({this.page}) : super._() {
+    if (page == null) {
+      throw new BuiltValueNullFieldError('InitialNavigateToPage', 'page');
+    }
+  }
+
+  @override
+  InitialNavigateToPage rebuild(void updates(InitialNavigateToPageBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  InitialNavigateToPageBuilder toBuilder() =>
+      new InitialNavigateToPageBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is InitialNavigateToPage && page == other.page;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, page.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('InitialNavigateToPage')
+          ..add('page', page))
+        .toString();
+  }
+}
+
+class InitialNavigateToPageBuilder
+    implements Builder<InitialNavigateToPage, InitialNavigateToPageBuilder> {
+  _$InitialNavigateToPage _$v;
+
+  Page _page;
+  Page get page => _$this._page;
+  set page(Page page) => _$this._page = page;
+
+  InitialNavigateToPageBuilder();
+
+  InitialNavigateToPageBuilder get _$this {
+    if (_$v != null) {
+      _page = _$v.page;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(InitialNavigateToPage other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$InitialNavigateToPage;
+  }
+
+  @override
+  void update(void updates(InitialNavigateToPageBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$InitialNavigateToPage build() {
+    final _$result = _$v ?? new _$InitialNavigateToPage._(page: page);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$NavigateToPage extends NavigateToPage {
   @override
-  final String page;
+  final Page page;
 
   factory _$NavigateToPage([void updates(NavigateToPageBuilder b)]) =>
       (new NavigateToPageBuilder()..update(updates)).build();
@@ -49,9 +129,9 @@ class NavigateToPageBuilder
     implements Builder<NavigateToPage, NavigateToPageBuilder> {
   _$NavigateToPage _$v;
 
-  String _page;
-  String get page => _$this._page;
-  set page(String page) => _$this._page = page;
+  Page _page;
+  Page get page => _$this._page;
+  set page(Page page) => _$this._page = page;
 
   NavigateToPageBuilder();
 

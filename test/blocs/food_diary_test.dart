@@ -6,7 +6,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 import '../test_utils.dart';
 
 void main() {
-  // Mocks
+  /// Mocks
   DiaryRepository diaryRepository;
 
   FoodDiaryBloc foodDiaryBloc;

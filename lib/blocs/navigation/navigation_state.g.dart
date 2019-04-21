@@ -64,7 +64,7 @@ class NavigationUninitializedBuilder
 
 class _$NavigationLoaded extends NavigationLoaded {
   @override
-  final String currentPage;
+  final Page currentPage;
 
   factory _$NavigationLoaded([void updates(NavigationLoadedBuilder b)]) =>
       (new NavigationLoadedBuilder()..update(updates)).build();
@@ -106,9 +106,9 @@ class NavigationLoadedBuilder
     implements Builder<NavigationLoaded, NavigationLoadedBuilder> {
   _$NavigationLoaded _$v;
 
-  String _currentPage;
-  String get currentPage => _$this._currentPage;
-  set currentPage(String currentPage) => _$this._currentPage = currentPage;
+  Page _currentPage;
+  Page get currentPage => _$this._currentPage;
+  set currentPage(Page currentPage) => _$this._currentPage = currentPage;
 
   NavigationLoadedBuilder();
 

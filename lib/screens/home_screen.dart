@@ -1,3 +1,4 @@
+import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/screens/diary_page.dart';
 import 'package:diet_driven/screens/error_screen.dart';
@@ -59,6 +60,7 @@ class _HomePageState extends State<HomePage> {
           return BlocBuilder<UserDataEvent, UserDataState>(
             bloc: _userDataBloc,
             builder: (BuildContext context, UserDataState userDataState) {
+              // White screen with skeleton menu and app bar TODO
               if (state is NavigationUninitialized) {
                 return ErrorPage(error: "navigation is uninitialized!");
               }
@@ -79,7 +81,7 @@ class _HomePageState extends State<HomePage> {
                     items: userDataState.userData.settings.navigationSettings.bottomNavigationPages.map((page) =>
                       BottomNavigationBarItem(
                         icon: Icon(Icons.add),
-                        title: Text(page),
+                        title: Text(page.name),
                       )
                     ).toList(),
                     currentIndex: userDataState.userData.settings.navigationSettings.bottomNavigationPages.indexOf(state.currentPage),
@@ -96,30 +98,35 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget generatePage(String page) {
-    if (page == "diary") {
-      // FIXME: diary page wrapper that creates foodDiaryBloc, manages current date, listens to userData bloc for updates!
-      return DiaryPage(foodDiaryBloc: FoodDiaryBloc(diaryRepository: widget.diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),);
+  Widget generatePage(Page page) {
+    switch (page) {
+      case Page.diary:
+        // FIXME: diary page wrapper that creates foodDiaryBloc, manages current date, listens to userData bloc for updates!
+        return DiaryPage(foodDiaryBloc: FoodDiaryBloc(diaryRepository: widget.diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),);
+        break;
+      case Page.track:
+        return TestPage(page);
+        break;
+      case Page.diet:
+        return TestPage(page);
+        break;
+      case Page.profile:
+        // TODO: checks hasDietDrivenAccess in its bloc (nest subscription bloc)
+        // also check authentication bloc to display correct content
+        return TestPage(page);
+        break;
+      case Page.recipes:
+        return ErrorPage(error: "Recipes aren't ready yet",);
+        break;
+      default:
+        return ErrorPage(error: "FAILURE");
     }
-    if (page == "track") {
-      return TestPage(page);
-    }
-    if (page == "diet") {
-      return TestPage(page);
-    }
-    if (page == "profile") {
-      // TODO: checks hasDietDrivenAccess in its bloc (nest subscription bloc)
-      // also check autentication bloc to display correct content
-      return TestPage(page);
-    }
-    // TODO: if (page == "recipes")
-    return TestPage("FAILURE");
   }
 }
 
 
 class TestPage extends StatelessWidget {
-  final String title;
+  final Page title;
   TestPage(this.title);
 
   @override
@@ -127,7 +134,7 @@ class TestPage extends StatelessWidget {
 //    final AuthenticationBloc authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(title.name),
       ),
       body: Container(
         child: Center(

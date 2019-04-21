@@ -12,6 +12,8 @@ part 'serializers.g.dart';
   FoodRecord,
   FoodDiaryDay,
 
+  Page,
+
   UserData,
   UserDocument,
   Settings,

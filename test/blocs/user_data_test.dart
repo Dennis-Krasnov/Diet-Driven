@@ -13,12 +13,11 @@ import '../test_utils.dart';
 void main() {
   UserDataBloc userDataBloc;
 
-  // Mocks
+  /// Mocks
   SettingsRepository settingsRepository;
   UserRepository userRepository;
 
-
-  // Data
+  /// Data
   final Settings settings = Settings();
 
   /// Signed in user
@@ -65,10 +64,10 @@ void main() {
     List<Settings> settingsStream: const []
   }) {
     when(settingsRepository.userDocumentStream(userId)).thenAnswer((_) =>
-    Observable<UserDocument>.fromIterable(userDocumentStream)
+      Observable<UserDocument>.fromIterable(userDocumentStream)
     );
     when(settingsRepository.settingsStream(userId)).thenAnswer((_) =>
-    Observable<Settings>.fromIterable(settingsStream)
+      Observable<Settings>.fromIterable(settingsStream)
     );
   }
 
@@ -91,12 +90,12 @@ void main() {
     userDataBloc = new UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
   });
 
-  test("Initial state is correct", () {
+  test("Initialize properly", () {
     expect(userDataBloc.initialState, UserDataUninitialized());
   });
 
   group("Manual", () {
-    test("Loads user data", () {
+    test("Load user data", () {
       expectLater(
         userDataBloc.state,
         emitsInOrder([
@@ -108,7 +107,7 @@ void main() {
       userDataBloc.dispatch(RemoteUserDataArrived((b) => b..userData = userDataA.toBuilder()));
     });
 
-    test("Fails on error", () {
+    test("Fail on error", () {
       expectLater(
         userDataBloc.state,
         emitsInOrder([
@@ -122,7 +121,7 @@ void main() {
   });
 
   group("Reactive auth state changed triggers", () {
-    test("Onboards unauthenticated user", () {
+    test("Onboard unauthenticated user", () {
       mockAuthenticationRepositoryStream(authStream: [null, userA, null]);
       mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA]);
       userDataBloc = UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
@@ -139,7 +138,7 @@ void main() {
       );
     });
 
-    test("Resubscribes on user change", () {
+    test("Resubscribe on user change", () {
       mockAuthenticationRepositoryStream(authStream: [userA, userB]);
       mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA]);
       mockUserRepositoryStream(userId: userB.uid, settingsStream: [settings], userDocumentStream: [userDocumentB]);
@@ -159,7 +158,7 @@ void main() {
   });
 
   group("Reactive userDocument and settings triggers", () {
-    test("Updates user document", () {
+    test("Update user document", () {
       mockAuthenticationRepositoryStream(authStream: [userA]);
       mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA, userDocumentB]);
       userDataBloc = UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
@@ -175,9 +174,9 @@ void main() {
       );
     });
 
-    test("Updates settings", () {
+    test("Update settings", () {
       Settings settingsB = Settings((b) => b
-        ..navigationSettings = NavigationSettings((b) => b..defaultPage = "profile").toBuilder()
+        ..navigationSettings = NavigationSettings((b) => b..defaultPage = Page.profile).toBuilder()
       );
 
       mockAuthenticationRepositoryStream(authStream: [userA]);
@@ -195,7 +194,8 @@ void main() {
       );
     });
 
-//    test("Fails on error", () {
+    // FIXME
+//    test("Fail on error", () {
 //      mockAuthenticationRepositoryStream(authStream: [userA]);
 //      when(settingsRepository.userDocumentStream(userA.uid)).thenThrow(Exception("oops"));
 //      when(settingsRepository.settingsStream(userA.uid)).thenThrow(Exception("oops 2"));
