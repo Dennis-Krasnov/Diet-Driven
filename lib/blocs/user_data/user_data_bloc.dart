@@ -8,6 +8,8 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/models/models.dart';
 
+/// Aggregates and manages authentication and settings.
+/// [UserDataBloc] causes app to show loading or onboarding until loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final Logger _log = new Logger("user data bloc");
   final SettingsRepository settingsRepository;

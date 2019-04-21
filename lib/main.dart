@@ -84,9 +84,6 @@ class _AppState extends State<App> {
     configurationBloc = ConfigurationBloc(
       settingsRepository: widget.settingsRepository,
     );
-
-    // Run initial configuration, shows splash page until fetched
-    configurationBloc.dispatch(FetchConfiguration());
   }
 
   @override

@@ -7,17 +7,28 @@ import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:logging/logging.dart';
 
+/// Fetches and manages app-wide configuration.
+/// [ConfigurationBloc] causes app to show splash page until loaded.
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   final Logger _log = new Logger("configuration bloc");
   final SettingsRepository settingsRepository;
 
-  ConfigurationBloc({this.settingsRepository}) : assert(settingsRepository != null);
+  ConfigurationBloc({this.settingsRepository}) {
+    assert(settingsRepository != null);
+
+    // Fetch initial configuration
+    dispatch(FetchConfiguration());
+
+    // TODO: timer that fetches config on a timer?
+  }
 
   @override
   ConfigurationState get initialState => ConfigurationUninitialized();
 
-  // TODO: transform, take only distinct states?
-  // TODO: timer that fetches config on a timer?
+  @override
+  Stream<ConfigurationEvent> transform(Stream<ConfigurationEvent> events) {
+    return events.distinct();
+  }
 
   @override
   Stream<ConfigurationState> mapEventToState(ConfigurationEvent event) async* {
@@ -27,7 +38,6 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         yield ConfigurationLoading();
       }
 
-      // TODO: Consider changing this to RemoteConfigurationBuilder
       RemoteConfiguration config;
 
       try {
@@ -55,5 +65,3 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
     }
   }
 }
-
-
