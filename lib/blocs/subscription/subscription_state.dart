@@ -11,8 +11,7 @@ abstract class SubscriptionUninitialized with SubscriptionState implements Built
   SubscriptionUninitialized._();
   factory SubscriptionUninitialized([updates(SubscriptionUninitializedBuilder b)]) = _$SubscriptionUninitialized;
 
-  @override
-  String toString() => runtimeType.toString();
+  @override String toString() => runtimeType.toString();
 }
 
 ///
@@ -20,8 +19,7 @@ abstract class NoSubscription with SubscriptionState implements Built<NoSubscrip
   NoSubscription._();
   factory NoSubscription([updates(NoSubscriptionBuilder b)]) = _$NoSubscription;
 
-  @override
-  String toString() => runtimeType.toString();
+  @override String toString() => runtimeType.toString();
 }
 
 ///

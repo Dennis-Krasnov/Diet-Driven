@@ -35,7 +35,7 @@ void main() {
       expectLater(
           navigationBloc.state,
           emitsInOrder([
-            NavigationState((b) => b), // TODO: create default builder!
+//            NavigationState((b) => b), // TODO: create default builder!
             LoginLoading(),
             LoginInitial(),
           ])

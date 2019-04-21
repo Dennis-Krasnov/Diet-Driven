@@ -15,11 +15,10 @@ abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodD
   FoodDiaryUninitialized._();
   factory FoodDiaryUninitialized([updates(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
 
-  @override
-  String toString() => runtimeType.toString();
+  @override String toString() => runtimeType.toString();
 }
 
-///
+/// Shows food diary, temporary skeleton widgets until stream data arrives, stores current [FoodDiaryDay] stream.
 abstract class FoodDiaryReady with FoodDiaryState implements Built<FoodDiaryReady, FoodDiaryReadyBuilder> {
 //  ValueObservable<FoodDiaryDay> get diaryDay;
   ValueObservable<FoodDiaryDay> get diaryDayStream;

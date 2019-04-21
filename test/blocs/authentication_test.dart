@@ -31,7 +31,7 @@ void main() {
     userRepository = MockUserRepository();
 
     // No events by default
-    when(userRepository.onAuthStateChangedStream).thenAnswer((_) =>
+    when(userRepository.authStateChangedStream).thenAnswer((_) =>
       Observable<FirebaseUser>.fromIterable([]).shareValue()
     );
 
@@ -96,12 +96,12 @@ void main() {
       when(user.email).thenReturn("example@gmail.com");
       when(user.displayName).thenReturn("Bob Smith");
 
-      when(userRepository.onAuthStateChangedStream).thenAnswer((_) =>
+      when(userRepository.authStateChangedStream).thenAnswer((_) =>
         Observable<FirebaseUser>.fromIterable([user]).shareValue()
       );
 
       UserDocument userDocument = UserDocument((b) => b..currentSubscription = "all");
-      when(settingsRepository.userDocument(user.uid)).thenAnswer((_) =>
+      when(settingsRepository.userDocumentStream(user.uid)).thenAnswer((_) =>
         Observable<UserDocument>.fromIterable([userDocument]).shareValue()
       );
 

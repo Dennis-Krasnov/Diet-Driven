@@ -153,7 +153,9 @@ class FirestoreProvider {
     assert(userId != null && userId.isNotEmpty);
 
     DocumentReference ref = _firestore.document("${userPath(userId)}/metadata/settings");
-    return FS<Settings>().deserializeDocument(ref.snapshots());
+    ref.snapshots().listen((DocumentSnapshot ds) => print("------ ${ds.data}"));
+
+    return FS<Settings>().deserializeDocument(ref.snapshots()).doOnData(print);
   }
 
   /// Fetches [Observable] of [userId]'s [UserDocument] from Firestore.

@@ -10,6 +10,5 @@ abstract class FetchConfiguration with ConfigurationEvent implements Built<Fetch
   FetchConfiguration._();
   factory FetchConfiguration([updates(FetchConfigurationBuilder b)]) = _$FetchConfiguration;
 
-  @override
-  String toString() => runtimeType.toString();
+  @override String toString() => runtimeType.toString();
 }

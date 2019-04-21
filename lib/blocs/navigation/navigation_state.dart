@@ -8,8 +8,7 @@ abstract class NavigationUninitialized with NavigationState implements Built<Nav
   NavigationUninitialized._();
   factory NavigationUninitialized([updates(NavigationUninitializedBuilder b)]) = _$NavigationUninitialized;
 
-  @override
-  String toString() => runtimeType.toString();
+  @override String toString() => runtimeType.toString();
 }
 
 abstract class NavigationLoaded with NavigationState implements Built<NavigationLoaded, NavigationLoadedBuilder> {

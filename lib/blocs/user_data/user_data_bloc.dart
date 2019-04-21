@@ -22,24 +22,26 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     assert(settingsRepository != null);
     assert(userRepository != null);
 
-    _userDataStream = userRepository.onAuthStateChangedStream
-      // Ensures user is authenticated and new user doesn't see userData from previous user
-      .doOnData((user) => dispatch(user == null ? OnboardUser() : LoadUserData()))
+    _userDataStream = userRepository.authStateChangedStream
+      .doOnData(print) // FIXME
+      // Side effect ensures user is authenticated and new user doesn't see userData from previous user
+      .doOnData((user) => dispatch(user == null ? OnboardUser() : StartLoadingUserData()))
       // Load user data only if user exists
       .where((user) => user != null)
       .switchMap<UserData>((user) =>
         CombineLatestStream.combine2(
-          // Admin information
-          settingsRepository.userDocument(user.uid),
-          // User's settings
+          settingsRepository.userDocumentStream(user.uid),
           settingsRepository.settingsStream(user.uid),
           (UserDocument userDocument, Settings settings) => UserData((b) => b
+            // Authentication information
             ..userId = user.uid
             ..email = user.email
             ..name = user.displayName
 
+            // Admin information
             ..currentSubscription = userDocument.currentSubscription
 
+            // User's settings
             ..settings = settings
           ),
         )
@@ -47,7 +49,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       .distinct();
 
     _userDataSubscription = _userDataStream.listen((userData) =>
-      dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
+      dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())), // TOTEST
       onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())), // TOTEST
     );
   }
@@ -71,14 +73,14 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       _log.info("loaded user data");
       _log.fine("data: ${event.userData}");
     }
-    if (event is LoadUserData) {
+    if (event is StartLoadingUserData) {
       yield UserDataLoading();
-      // TODO: add throttle-based timeout => error
+      // TODO: add throttle-based timeout => retry / error
       
       _log.info("loading user data");
     }
     if (event is OnboardUser) {
-      yield UserDataOnboarding();
+      yield UserDataUnauthenticated();
 
       _log.info("onboarding user");
     }

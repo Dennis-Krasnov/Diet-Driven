@@ -11,8 +11,7 @@ abstract class LoadExistingSubscription with SubscriptionEvent implements Built<
   LoadExistingSubscription._();
   factory LoadExistingSubscription([updates(LoadExistingSubscriptionBuilder b)]) = _$LoadExistingSubscription;
 
-  @override
-  String toString() => runtimeType.toString();
+  @override String toString() => runtimeType.toString();
 }
 
 // TODO: rename auth appstarted event as well (can't have duplicates)
@@ -36,6 +35,5 @@ abstract class Unsubscribe with SubscriptionEvent implements Built<Unsubscribe, 
   Unsubscribe._();
   factory Unsubscribe([updates(UnsubscribeBuilder b)]) = _$Unsubscribe;
 
-  @override
-  String toString() => runtimeType.toString();
+  @override String toString() => runtimeType.toString();
 }

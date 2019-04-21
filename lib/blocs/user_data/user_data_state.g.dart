@@ -191,54 +191,57 @@ class UserDataLoadingBuilder
   }
 }
 
-class _$UserDataOnboarding extends UserDataOnboarding {
-  factory _$UserDataOnboarding([void updates(UserDataOnboardingBuilder b)]) =>
-      (new UserDataOnboardingBuilder()..update(updates)).build();
+class _$UserDataUnauthenticated extends UserDataUnauthenticated {
+  factory _$UserDataUnauthenticated(
+          [void updates(UserDataUnauthenticatedBuilder b)]) =>
+      (new UserDataUnauthenticatedBuilder()..update(updates)).build();
 
-  _$UserDataOnboarding._() : super._();
+  _$UserDataUnauthenticated._() : super._();
 
   @override
-  UserDataOnboarding rebuild(void updates(UserDataOnboardingBuilder b)) =>
+  UserDataUnauthenticated rebuild(
+          void updates(UserDataUnauthenticatedBuilder b)) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  UserDataOnboardingBuilder toBuilder() =>
-      new UserDataOnboardingBuilder()..replace(this);
+  UserDataUnauthenticatedBuilder toBuilder() =>
+      new UserDataUnauthenticatedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UserDataOnboarding;
+    return other is UserDataUnauthenticated;
   }
 
   @override
   int get hashCode {
-    return 581968459;
+    return 938140426;
   }
 }
 
-class UserDataOnboardingBuilder
-    implements Builder<UserDataOnboarding, UserDataOnboardingBuilder> {
-  _$UserDataOnboarding _$v;
+class UserDataUnauthenticatedBuilder
+    implements
+        Builder<UserDataUnauthenticated, UserDataUnauthenticatedBuilder> {
+  _$UserDataUnauthenticated _$v;
 
-  UserDataOnboardingBuilder();
+  UserDataUnauthenticatedBuilder();
 
   @override
-  void replace(UserDataOnboarding other) {
+  void replace(UserDataUnauthenticated other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$UserDataOnboarding;
+    _$v = other as _$UserDataUnauthenticated;
   }
 
   @override
-  void update(void updates(UserDataOnboardingBuilder b)) {
+  void update(void updates(UserDataUnauthenticatedBuilder b)) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$UserDataOnboarding build() {
-    final _$result = _$v ?? new _$UserDataOnboarding._();
+  _$UserDataUnauthenticated build() {
+    final _$result = _$v ?? new _$UserDataUnauthenticated._();
     replace(_$result);
     return _$result;
   }

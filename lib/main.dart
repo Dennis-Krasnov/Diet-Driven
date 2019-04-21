@@ -109,8 +109,8 @@ class _AppState extends State<App> {
               }
               assert(configurationState is ConfigurationLoaded);
 
-              // No user was persisted
-              if (userDataState is UserDataOnboarding) {
+              // Onboarding / sign in / sign up
+              if (userDataState is UserDataUnauthenticated) {
                 return LoginPage(userRepository: widget.userRepository);
               }
 

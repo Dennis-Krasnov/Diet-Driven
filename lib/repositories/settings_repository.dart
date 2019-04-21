@@ -31,19 +31,19 @@ class SettingsRepository {
     return configSettings;
   }
 
-  /// Fetches [ValueObservable] of [userId]'s [UserDocument].
-  /// 'userDocument(userId)` is called for every user from [UserDataBloc].
+  /// Fetches [Observable] of [userId]'s [UserDocument].
+  /// 'userDocumentStream(userId)` is called for every user from [UserDataBloc].
   ///
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns [null] if Firestore document doesn't exist.
   /// Throws [DeserializationError] if Firestore data is corrupt.
-  ValueObservable<UserDocument> userDocument(String userId) {
+  Observable<UserDocument> userDocumentStream(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    return _firestoreProvider.userDocument(userId).shareValue();
+    return _firestoreProvider.userDocument(userId);//.shareValue();
   }
 
-  /// Fetches [ValueObservable] of [userId]'s [Settings].
+  /// Fetches [Observable] of [userId]'s [Settings].
   /// 'settingsStream(userId)` is called for every user from [UserDataBloc].
   ///
   /// Default user settings are used unless explicitly overwritten the user's settings document.
@@ -51,20 +51,22 @@ class SettingsRepository {
   ///
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns [null] if both Firestore documents doesn't exist.
-  ValueObservable<Settings> settingsStream(String userId) {
-    Observable<Settings> defaultSettingsStream = _firestoreProvider.defaultSettings();
+  Observable<Settings> settingsStream(String userId) {
+    Observable<Settings> defaultSettingsStream = _firestoreProvider.defaultSettings().doOnData((settings) => print("default: $settings"));
 
-    return _firestoreProvider.settingsStream(userId)
-      // Combine with latest default settings
-      .withLatestFrom(defaultSettingsStream, (Settings settings, Settings defaultSettings) =>
-        // Use default settings for every respective null field of settings.
-        settings.rebuild((b) => b
-          ..navigationSettings.update((b) => b
-            ..defaultPage ??= defaultSettings.navigationSettings.defaultPage
-            ..bottomNavigationPages ??= defaultSettings.navigationSettings.bottomNavigationPages.toBuilder()
-          )
+    return Observable<Settings>(
+      CombineLatestStream.combine2(
+        // Combine user settings with latest default settings
+        _firestoreProvider.settingsStream(userId),
+        defaultSettingsStream,
+        (Settings settings, Settings defaultSettings) => Settings((b) => b
+          ..navigationSettings = NavigationSettings((b) => b
+            ..defaultPage = settings.navigationSettings?.defaultPage ?? defaultSettings.navigationSettings.defaultPage
+            ..bottomNavigationPages = settings.navigationSettings.bottomNavigationPages?.toBuilder() ?? defaultSettings.navigationSettings.bottomNavigationPages.toBuilder()
+          ).toBuilder()
         )
-      ).shareValue();
+      )
+    ).doOnData((settings) => print("combined: $settings"));
 
     // TODO: fork built value and a create a generated 'mergeInto'/'T replaceNullFieldsWith(T)' method
     // that copies values from src to dest (where null), can also define it as a custom operator.

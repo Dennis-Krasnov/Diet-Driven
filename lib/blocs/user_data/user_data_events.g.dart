@@ -100,6 +100,60 @@ class RemoteUserDataArrivedBuilder
   }
 }
 
+class _$StartLoadingUserData extends StartLoadingUserData {
+  factory _$StartLoadingUserData(
+          [void updates(StartLoadingUserDataBuilder b)]) =>
+      (new StartLoadingUserDataBuilder()..update(updates)).build();
+
+  _$StartLoadingUserData._() : super._();
+
+  @override
+  StartLoadingUserData rebuild(void updates(StartLoadingUserDataBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  StartLoadingUserDataBuilder toBuilder() =>
+      new StartLoadingUserDataBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is StartLoadingUserData;
+  }
+
+  @override
+  int get hashCode {
+    return 184832232;
+  }
+}
+
+class StartLoadingUserDataBuilder
+    implements Builder<StartLoadingUserData, StartLoadingUserDataBuilder> {
+  _$StartLoadingUserData _$v;
+
+  StartLoadingUserDataBuilder();
+
+  @override
+  void replace(StartLoadingUserData other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$StartLoadingUserData;
+  }
+
+  @override
+  void update(void updates(StartLoadingUserDataBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$StartLoadingUserData build() {
+    final _$result = _$v ?? new _$StartLoadingUserData._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$UserDataError extends UserDataError {
   @override
   final String error;
@@ -223,58 +277,6 @@ class OnboardUserBuilder implements Builder<OnboardUser, OnboardUserBuilder> {
   @override
   _$OnboardUser build() {
     final _$result = _$v ?? new _$OnboardUser._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$LoadUserData extends LoadUserData {
-  factory _$LoadUserData([void updates(LoadUserDataBuilder b)]) =>
-      (new LoadUserDataBuilder()..update(updates)).build();
-
-  _$LoadUserData._() : super._();
-
-  @override
-  LoadUserData rebuild(void updates(LoadUserDataBuilder b)) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  LoadUserDataBuilder toBuilder() => new LoadUserDataBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is LoadUserData;
-  }
-
-  @override
-  int get hashCode {
-    return 112846452;
-  }
-}
-
-class LoadUserDataBuilder
-    implements Builder<LoadUserData, LoadUserDataBuilder> {
-  _$LoadUserData _$v;
-
-  LoadUserDataBuilder();
-
-  @override
-  void replace(LoadUserData other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$LoadUserData;
-  }
-
-  @override
-  void update(void updates(LoadUserDataBuilder b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$LoadUserData build() {
-    final _$result = _$v ?? new _$LoadUserData._();
     replace(_$result);
     return _$result;
   }
