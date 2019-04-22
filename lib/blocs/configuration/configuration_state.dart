@@ -13,7 +13,7 @@ abstract class ConfigurationUninitialized with ConfigurationState implements Bui
   @override String toString() => runtimeType.toString();
 }
 
-/// Stores current [RemoteConfiguration].
+/// Application, stores current [RemoteConfiguration].
 abstract class ConfigurationLoaded with ConfigurationState implements Built<ConfigurationLoaded, ConfigurationLoadedBuilder> {
   RemoteConfiguration get configuration;
 

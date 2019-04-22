@@ -10,18 +10,15 @@ import 'package:diet_driven/blocs/blocs.dart';
 class HomePage extends StatefulWidget {
   final DiaryRepository diaryRepository;
   final FoodRepository foodRepository;
-  final SettingsRepository settingsRepository;
   final AnalyticsRepository analyticsRepository;
 
   HomePage({
     @required this.diaryRepository,
     @required this.foodRepository,
-    @required this.settingsRepository,
     @required this.analyticsRepository
   }) :
     assert(diaryRepository != null),
     assert(foodRepository != null),
-    assert(settingsRepository != null),
     assert(analyticsRepository != null);
 
   @override

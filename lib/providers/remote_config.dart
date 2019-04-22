@@ -1,6 +1,7 @@
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 
-///
+/// Firebase Remote Config provider.
+/// https://firebase.google.com/products/remote-config/
 class RemoteConfigProvider {
 
   /// Fetches [RemoteConfiguration] from Firebase Remote Config.

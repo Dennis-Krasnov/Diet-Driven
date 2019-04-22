@@ -8,13 +8,13 @@ import 'package:diet_driven/repositories/repositories.dart';
 import 'package:logging/logging.dart';
 
 /// Fetches and manages app-wide configuration.
-/// [ConfigurationBloc] causes app to show splash page until loaded.
+/// [ConfigurationBloc] shows splash page until loaded.
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   final Logger _log = new Logger("configuration bloc");
-  final SettingsRepository settingsRepository;
+  final UserRepository userRepository;
 
-  ConfigurationBloc({this.settingsRepository}) {
-    assert(settingsRepository != null);
+  ConfigurationBloc({this.userRepository}) {
+    assert(userRepository != null);
 
     // Fetch initial configuration
     dispatch(FetchConfiguration());
@@ -42,7 +42,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
 
       try {
         // Load remote configuration
-        config = await settingsRepository.fetchRemoteConfig();
+        config = await userRepository.fetchRemoteConfig();
       }
       catch (exception) {
         _log.warning('Unable to fetch remote config. Cached or default values will be used');

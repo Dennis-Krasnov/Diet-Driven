@@ -9,17 +9,15 @@ import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/models/models.dart';
 
 /// Aggregates and manages authentication and settings.
-/// [UserDataBloc] causes app to show loading or onboarding until loaded.
+/// [UserDataBloc] shows loading or onboarding until loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final Logger _log = new Logger("user data bloc");
-  final SettingsRepository settingsRepository;
   final UserRepository userRepository;
 
   Observable<UserData> _userDataStream;
   StreamSubscription<UserData> _userDataSubscription;
 
-  UserDataBloc({@required this.settingsRepository, @required this.userRepository}) {
-    assert(settingsRepository != null);
+  UserDataBloc({@required this.userRepository}) {
     assert(userRepository != null);
 
     _userDataStream = userRepository.authStateChangedStream
@@ -30,8 +28,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       .where((user) => user != null)
       .switchMap<UserData>((user) =>
         CombineLatestStream.combine2(
-          settingsRepository.userDocumentStream(user.uid),
-          settingsRepository.settingsStream(user.uid),
+          userRepository.userDocumentStream(user.uid),
+          userRepository.settingsStream(user.uid),
           (UserDocument userDocument, Settings settings) => UserData((b) => b
             // Authentication information
             ..userId = user.uid

@@ -30,7 +30,6 @@ void main() {
     userRepository: UserRepository(),
     diaryRepository: DiaryRepository(),
     foodRepository: FoodRepository(),
-    settingsRepository: SettingsRepository(),
     analyticsRepository: AnalyticsRepository(),
   ));
 
@@ -52,14 +51,12 @@ class App extends StatefulWidget {
   final UserRepository userRepository;
   final DiaryRepository diaryRepository;
   final FoodRepository foodRepository;
-  final SettingsRepository settingsRepository;
   final AnalyticsRepository analyticsRepository;
 
   App({
     @required this.userRepository,
     @required this.diaryRepository,
     @required this.foodRepository,
-    @required this.settingsRepository,
     @required this.analyticsRepository
   });
 
@@ -77,12 +74,11 @@ class _AppState extends State<App> {
     super.initState();
 
     userDataBloc = UserDataBloc(
-      settingsRepository: widget.settingsRepository,
       userRepository: widget.userRepository,
     );
 
     configurationBloc = ConfigurationBloc(
-      settingsRepository: widget.settingsRepository,
+      userRepository: widget.userRepository,
     );
   }
 
@@ -129,7 +125,6 @@ class _AppState extends State<App> {
                 return HomePage(
                   diaryRepository: widget.diaryRepository,
                   foodRepository: widget.foodRepository,
-                  settingsRepository: widget.settingsRepository,
                   analyticsRepository: widget.analyticsRepository,
                 );
               }

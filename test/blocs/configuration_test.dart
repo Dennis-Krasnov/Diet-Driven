@@ -12,7 +12,7 @@ void main() {
   ConfigurationBloc configurationBloc;
   
   /// Mocks
-  SettingsRepository settingsRepository;
+  UserRepository userRepository;
 
   /// Data
   final RemoteConfiguration defaultConfig = RemoteConfiguration();
@@ -22,8 +22,8 @@ void main() {
   );
 
   setUp(() {
-    settingsRepository = MockSettingsRepository();
-    configurationBloc = ConfigurationBloc(settingsRepository: settingsRepository);
+    userRepository = MockUserRepository();
+    configurationBloc = ConfigurationBloc(userRepository: userRepository);
   });
   
   test("Initialize properly", () {
@@ -31,7 +31,7 @@ void main() {
   });
   
   test("Fetch remote configuration on success", () {
-    when(settingsRepository.fetchRemoteConfig()).thenAnswer((_) =>
+    when(userRepository.fetchRemoteConfig()).thenAnswer((_) =>
       Future.value(remoteConfig)
     );
 
@@ -48,7 +48,7 @@ void main() {
   });
   
   test("Fetch default configuration on failure", () {
-    when(settingsRepository.fetchRemoteConfig()).thenThrow(BuiltValueNullFieldError('RemoteConfiguration', 'bonus'));
+    when(userRepository.fetchRemoteConfig()).thenThrow(BuiltValueNullFieldError('RemoteConfiguration', 'bonus'));
 
     expectLater(
       configurationBloc.state,
@@ -62,10 +62,10 @@ void main() {
     configurationBloc.dispatch(FetchConfiguration());  
   });
 
-  test("Fetch existing configuration on success then failure", () {
+  test("Fetch existing configuration on success then failure", () async {
     // fetchRemoteConfig first returning a value, then failing.
     bool firstTime = true;
-    when(settingsRepository.fetchRemoteConfig()).thenAnswer((_) {
+    when(userRepository.fetchRemoteConfig()).thenAnswer((_) {
       if (firstTime) {
         firstTime = false;
         return Future.value(remoteConfig);
@@ -79,12 +79,14 @@ void main() {
       emitsInOrder([
         ConfigurationUninitialized(),
         ConfigurationLoading(),
-        ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()),
+        ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()), // initial configuration
         ConfigurationLoaded((b) => b..configuration = remoteConfig.rebuild((b) => b..liveConfiguration = false).toBuilder()),
       ])
     );
 
+    // Need time for asynchronous default page event to run
+    await Future.delayed(Duration(milliseconds: 10)); // FIXME: this broke because I moved initial fetch to constructor instead of main.
     configurationBloc.dispatch(FetchConfiguration());
-    configurationBloc.dispatch(FetchConfiguration());
+//    configurationBloc.dispatch(FetchConfiguration());
   });
 }

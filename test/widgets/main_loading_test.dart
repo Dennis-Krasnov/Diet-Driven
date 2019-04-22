@@ -4,28 +4,26 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../test_utils.dart';
 
-
-
 void main() {
-  UserRepository authRepository;
+  UserRepository userRepository;
+  DiaryRepository diaryRepository;
   FoodRepository foodRepository;
-  SettingsRepository settingsRepository;
 //  AnalyticsRepository analyticsRepository;
 
   setUp(() {
-    authRepository = MockUserRepository();
+    userRepository = MockUserRepository();
     foodRepository = MockFoodRepository();
-    settingsRepository = MockSettingsRepository();
+    diaryRepository = MockDiaryRepository();
   });
 
   group("Splash page", () {
     testWidgets("Starts off on splash screen", (WidgetTester tester) async {
-      await tester.pumpWidget(App(
-        userRepository: authRepository,
-        foodRepository: foodRepository,
-        settingsRepository: settingsRepository,
-        analyticsRepository: AnalyticsRepository(),
-      ));
+//      await tester.pumpWidget(App(
+//        userRepository: userRepository,
+//        diaryRepository: diaryRepository,
+//        foodRepository: foodRepository,
+//        analyticsRepository: AnalyticsRepository(),
+//      ));
 
 //      final messageFinder = find.text('M');
 //      expect(find.text('T'), findsOneWidget);

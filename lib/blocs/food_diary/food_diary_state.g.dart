@@ -61,87 +61,6 @@ class FoodDiaryUninitializedBuilder
   }
 }
 
-class _$FoodDiaryReady extends FoodDiaryReady {
-  @override
-  final ValueObservable<FoodDiaryDay> diaryDayStream;
-
-  factory _$FoodDiaryReady([void updates(FoodDiaryReadyBuilder b)]) =>
-      (new FoodDiaryReadyBuilder()..update(updates)).build();
-
-  _$FoodDiaryReady._({this.diaryDayStream}) : super._() {
-    if (diaryDayStream == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryReady', 'diaryDayStream');
-    }
-  }
-
-  @override
-  FoodDiaryReady rebuild(void updates(FoodDiaryReadyBuilder b)) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  FoodDiaryReadyBuilder toBuilder() =>
-      new FoodDiaryReadyBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is FoodDiaryReady && diaryDayStream == other.diaryDayStream;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, diaryDayStream.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('FoodDiaryReady')
-          ..add('diaryDayStream', diaryDayStream))
-        .toString();
-  }
-}
-
-class FoodDiaryReadyBuilder
-    implements Builder<FoodDiaryReady, FoodDiaryReadyBuilder> {
-  _$FoodDiaryReady _$v;
-
-  ValueObservable<FoodDiaryDay> _diaryDayStream;
-  ValueObservable<FoodDiaryDay> get diaryDayStream => _$this._diaryDayStream;
-  set diaryDayStream(ValueObservable<FoodDiaryDay> diaryDayStream) =>
-      _$this._diaryDayStream = diaryDayStream;
-
-  FoodDiaryReadyBuilder();
-
-  FoodDiaryReadyBuilder get _$this {
-    if (_$v != null) {
-      _diaryDayStream = _$v.diaryDayStream;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(FoodDiaryReady other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$FoodDiaryReady;
-  }
-
-  @override
-  void update(void updates(FoodDiaryReadyBuilder b)) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$FoodDiaryReady build() {
-    final _$result =
-        _$v ?? new _$FoodDiaryReady._(diaryDayStream: diaryDayStream);
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$FoodDiaryFailed extends FoodDiaryFailed {
   @override
   final String error;
@@ -215,6 +134,101 @@ class FoodDiaryFailedBuilder
   @override
   _$FoodDiaryFailed build() {
     final _$result = _$v ?? new _$FoodDiaryFailed._(error: error);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$FoodDiaryLoaded extends FoodDiaryLoaded {
+  @override
+  final FoodDiaryDay foodDiaryDay;
+
+  factory _$FoodDiaryLoaded([void updates(FoodDiaryLoadedBuilder b)]) =>
+      (new FoodDiaryLoadedBuilder()..update(updates)).build();
+
+  _$FoodDiaryLoaded._({this.foodDiaryDay}) : super._() {
+    if (foodDiaryDay == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryLoaded', 'foodDiaryDay');
+    }
+  }
+
+  @override
+  FoodDiaryLoaded rebuild(void updates(FoodDiaryLoadedBuilder b)) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  FoodDiaryLoadedBuilder toBuilder() =>
+      new FoodDiaryLoadedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is FoodDiaryLoaded && foodDiaryDay == other.foodDiaryDay;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, foodDiaryDay.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('FoodDiaryLoaded')
+          ..add('foodDiaryDay', foodDiaryDay))
+        .toString();
+  }
+}
+
+class FoodDiaryLoadedBuilder
+    implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
+  _$FoodDiaryLoaded _$v;
+
+  FoodDiaryDayBuilder _foodDiaryDay;
+  FoodDiaryDayBuilder get foodDiaryDay =>
+      _$this._foodDiaryDay ??= new FoodDiaryDayBuilder();
+  set foodDiaryDay(FoodDiaryDayBuilder foodDiaryDay) =>
+      _$this._foodDiaryDay = foodDiaryDay;
+
+  FoodDiaryLoadedBuilder();
+
+  FoodDiaryLoadedBuilder get _$this {
+    if (_$v != null) {
+      _foodDiaryDay = _$v.foodDiaryDay?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(FoodDiaryLoaded other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$FoodDiaryLoaded;
+  }
+
+  @override
+  void update(void updates(FoodDiaryLoadedBuilder b)) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$FoodDiaryLoaded build() {
+    _$FoodDiaryLoaded _$result;
+    try {
+      _$result =
+          _$v ?? new _$FoodDiaryLoaded._(foodDiaryDay: foodDiaryDay.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'foodDiaryDay';
+        foodDiaryDay.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'FoodDiaryLoaded', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

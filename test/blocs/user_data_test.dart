@@ -14,7 +14,6 @@ void main() {
   UserDataBloc userDataBloc;
 
   /// Mocks
-  SettingsRepository settingsRepository;
   UserRepository userRepository;
 
   /// Data
@@ -53,7 +52,7 @@ void main() {
     List<FirebaseUser> authStream: const []
   }) {
     when(userRepository.authStateChangedStream).thenAnswer((_) =>
-      Observable<FirebaseUser>.fromIterable(authStream).shareValue() // TODO: remove share value from repository
+      Observable<FirebaseUser>.fromIterable(authStream)
     );
   }
 
@@ -63,16 +62,15 @@ void main() {
     List<UserDocument> userDocumentStream: const [],
     List<Settings> settingsStream: const []
   }) {
-    when(settingsRepository.userDocumentStream(userId)).thenAnswer((_) =>
+    when(userRepository.userDocumentStream(userId)).thenAnswer((_) =>
       Observable<UserDocument>.fromIterable(userDocumentStream)
     );
-    when(settingsRepository.settingsStream(userId)).thenAnswer((_) =>
+    when(userRepository.settingsStream(userId)).thenAnswer((_) =>
       Observable<Settings>.fromIterable(settingsStream)
     );
   }
 
   setUp(() {
-    settingsRepository = MockSettingsRepository();
     userRepository = MockUserRepository();
 
     // User stubs
@@ -87,7 +85,7 @@ void main() {
     // No authentication state changes by default
     mockAuthenticationRepositoryStream();
 
-    userDataBloc = new UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
+    userDataBloc = new UserDataBloc(userRepository: userRepository);
   });
 
   test("Initialize properly", () {
@@ -107,7 +105,7 @@ void main() {
       userDataBloc.dispatch(RemoteUserDataArrived((b) => b..userData = userDataA.toBuilder()));
     });
 
-    test("Fail on error", () {
+    test("Fail on loading error", () {
       expectLater(
         userDataBloc.state,
         emitsInOrder([
@@ -124,7 +122,7 @@ void main() {
     test("Onboard unauthenticated user", () {
       mockAuthenticationRepositoryStream(authStream: [null, userA, null]);
       mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA]);
-      userDataBloc = UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
+      userDataBloc = UserDataBloc(userRepository: userRepository);
 
       expectLater(
         userDataBloc.state,
@@ -142,7 +140,7 @@ void main() {
       mockAuthenticationRepositoryStream(authStream: [userA, userB]);
       mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA]);
       mockUserRepositoryStream(userId: userB.uid, settingsStream: [settings], userDocumentStream: [userDocumentB]);
-      userDataBloc = UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
+      userDataBloc = UserDataBloc(userRepository: userRepository);
 
       expectLater(
         userDataBloc.state,
@@ -161,7 +159,7 @@ void main() {
     test("Update user document", () {
       mockAuthenticationRepositoryStream(authStream: [userA]);
       mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA, userDocumentB]);
-      userDataBloc = UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
+      userDataBloc = UserDataBloc(userRepository: userRepository);
 
       expectLater(
         userDataBloc.state,
@@ -181,7 +179,7 @@ void main() {
 
       mockAuthenticationRepositoryStream(authStream: [userA]);
       mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings, settingsB], userDocumentStream: [userDocumentA]);
-      userDataBloc = UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
+      userDataBloc = UserDataBloc(userRepository: userRepository);
 
       expectLater(
         userDataBloc.state,
@@ -199,7 +197,7 @@ void main() {
 //      mockAuthenticationRepositoryStream(authStream: [userA]);
 //      when(settingsRepository.userDocumentStream(userA.uid)).thenThrow(Exception("oops"));
 //      when(settingsRepository.settingsStream(userA.uid)).thenThrow(Exception("oops 2"));
-//      userDataBloc = UserDataBloc(settingsRepository: settingsRepository, userRepository: userRepository);
+//      userDataBloc = UserDataBloc(userRepository: userRepository);
 //
 //      expectLater(
 //        userDataBloc.state,

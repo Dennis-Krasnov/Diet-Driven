@@ -1,10 +1,14 @@
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:logging/logging.dart';
 
+/// Wrapper for Firebase Analytics tracking.
 class AnalyticsRepository {
   final Logger _log = new Logger("authentication bloc");
   FirebaseAnalytics _analytics = FirebaseAnalytics();
 
+  // TODO: call analytics from user data bloc/login bloc (doOnAction side effects)
+
+  /// Logs start of anonymous user session.
   void anonymousSession(String userId) {
     _analytics.setUserId(userId);
     _analytics.logEvent(
@@ -12,28 +16,35 @@ class AnalyticsRepository {
     );
     _log.finest("anonymous session $userId");
   }
-  
+
+  /// Logs sign up event with [signUpMethod].
   void signUp(String signUpMethod) {
     _analytics.logSignUp(signUpMethod: signUpMethod);
     _log.finest("user signed up with $signUpMethod");
   }
 
+  /// Logs sign in event and updates [userId].
   void signIn(String userId) {
     _analytics.setUserId(userId);
     _analytics.logLogin();
     _log.finest("login $userId");
   }
 
+  /// Logs sign out event.
   void signOut() {
+    // FIXME
     _log.finest("sign out");
   }
 
-  void navigatePage(String screenName) {
+  /// Logs navigation to [screenName].
+  void navigateToScreen(String screenName) {
     _analytics.setCurrentScreen(screenName: screenName);
     _log.finest("navigated to $screenName");
   }
 
 }
+
+// TODO:
 //view_search_results
 
 //Future<void> setCurrentScreen ({
@@ -83,40 +94,3 @@ class AnalyticsRepository {
 
 // weight_goal: gain/lose/maintain
 //
-
-
-  // TODO: call these from login bloc/account switcher! (at explicit action)
-//  @override // TODO: verify events are dispatched!
-//  void onTransition(Transition<AuthenticationEvent, AuthenticationState> transition) {
-//    // Login
-//    if ((transition.currentState is AuthUninitialized ||
-//         transition.currentState is AuthAuthenticated) &&
-//         transition.nextState is AuthAuthenticated) {
-//      FirebaseUser user = (transition.nextState as AuthAuthenticated).user;
-//
-//      if (user.isAnonymous) {
-//        analyticsRepository.signUp("anonymous");
-//      }
-//      else {
-//        analyticsRepository.signIn("email"); // TODO: call from login bloc!
-//      }
-//    }
-//    // Sign out
-//    else if (transition.nextState is AuthUnauthenticated) {
-//      analyticsRepository.signOut();
-//    }
-//    //
-//    else if (transition.nextState is AuthAuthenticated) {
-//      FirebaseUser pastUser = (transition.currentState as AuthAuthenticated).user;
-//      FirebaseUser futureUser = (transition.nextState as AuthAuthenticated).user;
-//
-//      // User switch
-//      if (pastUser.uid != futureUser.uid) {
-//        analyticsRepository.signIn(futureUser.uid);
-//      }
-//      // Anonymous => signed in
-//      else if (pastUser.isAnonymous && !futureUser.isAnonymous) {
-//        analyticsRepository.signUp("email"); // TODO: call from login bloc!
-//      }
-//    }
-//  }

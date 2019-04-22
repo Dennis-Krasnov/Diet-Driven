@@ -12,7 +12,6 @@ final StreamMatcher doesNotEmit = emitsInOrder([]);
 class MockDiaryRepository extends Mock implements DiaryRepository {}
 class MockUserRepository extends Mock implements UserRepository {}
 class MockFoodRepository extends Mock implements FoodRepository {}
-class MockSettingsRepository extends Mock implements SettingsRepository {}
 class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
 
 // Mock blocs

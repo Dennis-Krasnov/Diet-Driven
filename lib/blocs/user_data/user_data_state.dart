@@ -39,7 +39,7 @@ abstract class UserDataUnauthenticated with UserDataState implements Built<UserD
   @override String toString() => runtimeType.toString();
 }
 
-/// Stores current [UserData].
+/// Application, stores current [UserData].
 abstract class UserDataLoaded with UserDataState implements Built<UserDataLoaded, UserDataLoadedBuilder> {
   UserData get userData;
 

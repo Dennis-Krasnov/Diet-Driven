@@ -11,7 +11,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/navigation/navigation.dart';
 
 /// Manages bottom navigation current page.
-/// [NavigationBloc] causes app to show white page and skeleton bottom menu and app bar until loaded.
+/// [NavigationBloc] shows skeleton bottom menu and app bar until loaded.
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   final Logger _log = new Logger("navigation bloc");
   final AnalyticsRepository analyticsRepository;
@@ -49,7 +49,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   @override
   void onTransition(Transition<NavigationEvent, NavigationState> transition) {
     // Log visited pages in Firebase analytics
-    analyticsRepository.navigatePage(transition.event.page.name);
+    analyticsRepository.navigateToScreen(transition.event.page.name);
   }
 
   @override

@@ -3,8 +3,10 @@ import 'package:dio/dio.dart';
 
 import 'package:diet_driven/models/models.dart';
 
+/// Edamam nutrition api.
+/// https://www.edamam.com/
 class EdamamProvider {
-  String appKey = "88fbceb07e4fa287b47fefa3db2004f3";
+  String appKey = "88fbceb07e4fa287b47fefa3db2004f3"; // FIXME
   String appId = "1c25cea1";
 
   static BaseOptions options = new BaseOptions(
@@ -16,6 +18,7 @@ class EdamamProvider {
 
   final Dio _dio = Dio(options);
 
+  // FIXME: move error catching to bloc!
   Future<BuiltList<FoodRecord>> searchForFood(String search) async {
     try {
       var encoded = Uri.encodeFull(search);

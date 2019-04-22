@@ -51,29 +51,16 @@ class _DiaryPageState extends State<DiaryPage> {
         if (state is FoodDiaryFailed) {
           return Scaffold(appBar: AppBar(title: Text("Diary failed")), body: Center(child: Text("Failed... ${state.error}")));
         }
-        if (state is FoodDiaryReady) {
+        if (state is FoodDiaryLoaded) {
           return Scaffold(
             appBar: AppBar(title: Text("Diary")), // TODO: date!!
             body: Center(
-              child: StreamBuilder<FoodDiaryDay>(
-                stream: state.diaryDayStream,
-                builder: (BuildContext context, AsyncSnapshot<FoodDiaryDay> snapshot) {
-                  // For debugging
-//                  showSubscriptionErrorMessages(snapshot.connectionState, context);
-
-                  // TODO: show skeleton widgets
-                  if (!snapshot.hasData) {
-                    return CircularProgressIndicator();
-                  }
-
-                  return Column(
-                    children: state.diaryDayStream.value.foodRecords.map((foodRecord) =>
-                     // TODO: pass on update callback
-                      FoodRecordTile(foodRecord, () => _foodDiaryBloc.dispatch(DeleteFoodRecord((b) => b..foodRecord = foodRecord.toBuilder())))
-                    ).toList(),
-                  );
-                }
-              )
+              child: Column(
+                children: state.foodDiaryDay.foodRecords.map((foodRecord) =>
+                 // TODO: pass on update callback
+                  FoodRecordTile(foodRecord, () => _foodDiaryBloc.dispatch(DeleteFoodRecord((b) => b..foodRecord = foodRecord.toBuilder())))
+                ).toList(),
+              ),
             ),
             floatingActionButton: FAB(),
           );

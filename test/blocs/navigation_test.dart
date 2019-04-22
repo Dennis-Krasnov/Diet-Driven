@@ -66,9 +66,9 @@ void main() {
 //        emitsDone // should succeed => timeout
       ])
     ).then((_) {
-      verify(analyticsRepository.navigatePage(Page.diet.name)).called(1);
+      verify(analyticsRepository.navigateToScreen(Page.diet.name)).called(1);
       // Don't go to default page unless going from uninitialized
-      verifyNever(analyticsRepository.navigatePage(Page.recipes.name));
+      verifyNever(analyticsRepository.navigateToScreen(Page.recipes.name));
     });
   });
 
@@ -94,10 +94,10 @@ void main() {
         NavigationLoaded((b) => b..currentPage = Page.diet),
       ])
     ).then((_) {
-      verify(analyticsRepository.navigatePage(Page.diet.name)).called(2);
-      verify(analyticsRepository.navigatePage(Page.track.name)).called(1);
-      verify(analyticsRepository.navigatePage(Page.recipes.name)).called(1);
-      verifyNever(analyticsRepository.navigatePage(Page.diary.name));
+      verify(analyticsRepository.navigateToScreen(Page.diet.name)).called(2);
+      verify(analyticsRepository.navigateToScreen(Page.track.name)).called(1);
+      verify(analyticsRepository.navigateToScreen(Page.recipes.name)).called(1);
+      verifyNever(analyticsRepository.navigateToScreen(Page.diary.name));
     });
 
     // Need time for asynchronous default page event to run
@@ -106,5 +106,4 @@ void main() {
     navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.recipes));
     navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.diet));
   });
-
 }

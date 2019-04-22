@@ -1,15 +1,16 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rxdart/rxdart.dart';
+
 import 'package:diet_driven/models/food_diary_day.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/models/serializers.dart';
-import 'package:rxdart/rxdart.dart';
 
-///
+/// Firebase Firestore provider.
+/// https://cloud.google.com/firestore/
 class FirestoreProvider {
   Firestore _firestore = Firestore.instance;
 
-  ///
   String userPath(String userId) => "users/$userId";
 
   ///   ########  #######   #######  ########     ########  ####    ###    ########  ##    ##
@@ -20,64 +21,127 @@ class FirestoreProvider {
   ///   ##       ##     ## ##     ## ##     ##    ##     ##  ##  ##     ## ##    ##     ##
   ///   ##        #######   #######  ########     ########  #### ##     ## ##     ##    ##
 
-  ///
   String foodDiaryPath(userId, daysSinceEpoch) => "${userPath(userId)}/food_diary/$daysSinceEpoch";
   final fsDiaryDay = FS<FoodDiaryDay>();
   final fsFoodRecord = FS<FoodRecord>();
 
+  /// Saves entire [FoodDiaryDay] in Firestore.
+  /// Overwrites/merges data with previous document.
   ///
+  /// Cloud function triggers on create:
+  /// - Adds date based on document id, metadata, default values to day.
+  /// - Calculates aggregate nutritional information for day.
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Cloud functions triggers on edit:
+  /// - If [dayCompleted], calculates score for the day, saves in document, saves in aggregate score.
+  /// - If [foodRecords] is empty, deletes document.
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] (field of day) is empty.
   Future<void> setFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(foodDiaryDay != null);
+    assert(foodDiaryDay.date >= 0);
+
+
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, foodDiaryDay.date));
     return ref.setData(fsDiaryDay.serializeDocument(foodDiaryDay));
+//    "lastUpdated": FieldValueType.serverTimestamp TODO: add ^^
   }
 
-  /// Throws if day doesn't exist
+  /// Deletes entire [FoodDiaryDay] in Firestore.
+  ///
+  /// Cloud functions triggers on delete:
+  /// - If [dayCompleted], calculates score for the day, saves in aggregate score.
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
+  /// Throws [Exception] if food diary day document doesn't exist.
   Future<void> deleteFoodDiaryDay(String userId, int daysSinceEpoch) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(daysSinceEpoch >= 0);
+
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
     return ref.delete();
   }
 
+  /// Fetches [Observable] of [userId]'s [FoodDiaryDay] at [daysSinceEpoch].
+  /// 'streamDiaryDay(userId, daysSinceEpoch)` is called for every diary day from [DiaryBloc].
   ///
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
+  /// Returns [null] if Firestore document doesn't exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
   Observable<FoodDiaryDay> streamFoodDiaryDay(String userId, int daysSinceEpoch) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(daysSinceEpoch >= 0);
+
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
     return fsDiaryDay.deserializeDocument(ref.snapshots());
   }
 
-  /// TODO: provide start date
-  Observable<BuiltList<FoodDiaryDay>> streamFullFoodDiary(String userId) {
+  /// Fetches [Observable] of [userId]'s all-time [FoodDiaryDay].
+  /// 'streamAllDiaryDays(userId)` is called for every user from [ReportBloc]. // TODO
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  /// Returns [null] if no Firestore documents exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Observable<BuiltList<FoodDiaryDay>> streamAllFoodDiary(String userId) {
+    assert(userId != null && userId.isNotEmpty);
+
     CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
     return fsDiaryDay.deserializeCollection(ref.snapshots());
   }
 
+  /// Adds [FoodRecord] to [FoodDiaryDay] in Firestore.
+  /// Adding a duplicate [FoodRecord] has no effect.
   ///
-  Future<BuiltList<FoodDiaryDay>> getFullFoodDiary(String userId) {
-    CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
-    return fsDiaryDay.deserializeSingleCollection(ref.getDocuments());
-  }
-
-  ///   ########  #######   #######  ########     ########  ########  ######   #######  ########  ########
-  ///   ##       ##     ## ##     ## ##     ##    ##     ## ##       ##    ## ##     ## ##     ## ##     ##
-  ///   ##       ##     ## ##     ## ##     ##    ##     ## ##       ##       ##     ## ##     ## ##     ##
-  ///   ######   ##     ## ##     ## ##     ##    ########  ######   ##       ##     ## ########  ##     ##
-  ///   ##       ##     ## ##     ## ##     ##    ##   ##   ##       ##       ##     ## ##   ##   ##     ##
-  ///   ##       ##     ## ##     ## ##     ##    ##    ##  ##       ##    ## ##     ## ##    ##  ##     ##
-  ///   ##        #######   #######  ########     ##     ## ########  ######   #######  ##     ## ########
-
+  /// Cloud function triggers on create:
+  /// - Adds date based on document id, metadata, default values to day.
+  /// - Calculates aggregate nutritional information for day.
+  /// - Calculates aggregate global statistics.
   ///
+  /// Cloud functions triggers on edit:
+  /// - If [dayCompleted], calculates score for the day, saves in document, saves in aggregate score.
+  /// - If [foodRecords] is empty, deletes document.
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
   Future<void> addFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(daysSinceEpoch >= 0);
+    assert(foodRecord != null);
+
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
 
+    // TODO: remove $: "FoodRecord" field
     var fr = fsFoodRecord.serializeDocument(foodRecord);
-    print("FR IS $fr");
 
-    return ref.updateData({
+    return ref.setData({
       "foodRecords": FieldValue.arrayUnion([fr.toString()]),
-//      "lastUpdated": FieldValueType.serverTimestamp
+      "lastUpdated": FieldValueType.serverTimestamp // Not used by application
     });
   }
 
-  /// Throws if day doesn't exist
+  /// Deletes [FoodRecord] from [FoodDiaryDay] in Firestore.
+  /// Deleting a non-existent [FoodRecord] has no effect.
+  ///
+  /// Cloud functions triggers on edit:
+  /// - If [dayCompleted], calculates score for the day, saves in document, saves in aggregate score.
+  /// - If [foodRecords] is empty, deletes document.
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Cloud functions triggers on delete:
+  /// - If [dayCompleted], calculates score for the day, saves in aggregate score.
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
+  /// Throws [Exception] if food diary day document doesn't exist.
   Future<void> deleteFoodRecord(String userId, int daysSinceEpoch, FoodRecord foodRecord) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(daysSinceEpoch >= 0);
+    assert(foodRecord != null);
+
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
 
     // FIXME: temporary solution can be to re-upload entire food diary day with edited food record
@@ -101,13 +165,29 @@ class FirestoreProvider {
     // use reflection to set `$` field to null, hope it doesn't show up in firestore
 
     return ref.updateData({
-      "foodRecords": FieldValue.arrayRemove([foodRecordSerialized])
+      "foodRecords": FieldValue.arrayRemove([foodRecordSerialized]),
+      "lastUpdated": FieldValueType.serverTimestamp // Not used by application
     });
   }
 
-  /// Throws if day doesn't exist
+  /// Edits [FoodRecord] in [FoodDiaryDay] in Firestore.
+  /// Deleting a non-existent [FoodRecord] has no effect, adding a duplicate [FoodRecord] has no effect.
+  ///
+  /// Cloud functions triggers on edit:
+  /// - If [dayCompleted], calculates score for the day, saves in document, saves in aggregate score.
+  /// - If [foodRecords] is empty, deletes document. (won't happen when editing)
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
+  /// Throws [Exception] if food diary day document doesn't exist.
   Future<void> editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(daysSinceEpoch >= 0);
+    assert(oldRecord != newRecord);
+
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+
+    // Must be done as two separate update operations, wire batch treats them as one.
     final WriteBatch batch = _firestore.batch();
 
     // TODO:
@@ -119,7 +199,8 @@ class FirestoreProvider {
     });
 
     batch.updateData(ref, <String, dynamic>{
-      "foodRecords": FieldValue.arrayUnion([newRecord])
+      "foodRecords": FieldValue.arrayUnion([newRecord]),
+      "lastUpdated": FieldValueType.serverTimestamp // Not used by application
     });
 
     return batch.commit();
