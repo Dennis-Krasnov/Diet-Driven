@@ -132,7 +132,7 @@ class _AppState extends State<App> {
               return ErrorPage(error: "Invalid user data state: $userDataState}");
             }),
             theme: theme,
-            initialRoute: "/", // TODO: replace with fluro
+//            initialRoute: "/", // TODO: replace with fluro
           );
         }
       )

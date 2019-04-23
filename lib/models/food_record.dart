@@ -9,6 +9,9 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
 
   String get foodName;
 
+  @nullable
+  num get quantity;
+
 //  @nullable
 //  Calories get calories;
 

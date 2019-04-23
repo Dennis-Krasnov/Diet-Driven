@@ -44,10 +44,14 @@ class FirestoreProvider {
     assert(foodDiaryDay != null);
     assert(foodDiaryDay.date >= 0);
 
+    // FIXME: repurpose this method to ADD an entire food diary day!
+    throw Exception("don't do this! only allow document-wise add/delete " +
+      "(only allow field-wise editing - could disrupt food recordedit)");
+    // TODO: access collection, use it's add method, throw if already exists
+    // TODO: this may need transaction, limits to online use, check default behaviour of add
 
-    DocumentReference ref = _firestore.document(foodDiaryPath(userId, foodDiaryDay.date));
-    return ref.setData(fsDiaryDay.serializeDocument(foodDiaryDay));
-//    "lastUpdated": FieldValueType.serverTimestamp TODO: add ^^
+//    DocumentReference ref = _firestore.document(foodDiaryPath(userId, foodDiaryDay.date));
+//    return ref.setData(fsDiaryDay.serializeDocument(foodDiaryDay));
   }
 
   /// Deletes entire [FoodDiaryDay] in Firestore.
@@ -163,9 +167,14 @@ class FirestoreProvider {
 
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
 
-    // Batch operation only slows this down
-    // Intentional race condition since old != new
-    // Only flaw if one fails, but the other succeeds, but is very unlikely
+    // Edit implemented as delete old + add new, no need to recreate entire day and
+    // Batch operation only slows this down, created intentional race condition since old != new
+    // Only flaw is if one of the requests fails, but the other succeeds, but this is very unlikely
+
+    // The worst case is if two instances edit same food record, which will result in both records saved (nothing lost)
+    // In this case, it's possible to detect 'duplicates' grouping by UID => show notification, highlight records red
+    // TODO: create conflict resolution page
+
     ref.updateData(<String, dynamic>{
       "foodRecords": FieldValue.arrayRemove([removeDollarSign(fsFoodRecord.serializeDocument(oldRecord))])
     });

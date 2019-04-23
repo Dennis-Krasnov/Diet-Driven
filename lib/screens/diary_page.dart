@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/screens/error_screen.dart';
+import 'package:diet_driven/screens/food_record_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -50,13 +52,25 @@ class _DiaryPageState extends State<DiaryPage> {
                 ).toList(),
               ),
             ),
-            floatingActionButton: FAB(addFoodRecord: () =>
-              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
-                ..foodRecord = FoodRecord((b) => b
-                  ..foodName = "IT'S NEW ${Random().nextInt(200)}"
-                ).toBuilder()
-              ))
+            floatingActionButton: FloatingActionButton(
+              child: Icon(Icons.add),
+              onPressed: () {
+                _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
+                  ..foodRecord = FoodRecord((b) => b
+                    ..foodName = "IT'S NEW ${Random().nextInt(200)}"
+                  ).toBuilder()
+                ));
+              }
             ),
+//            floatingActionButton: FAB(
+//              key: Key("UNIQUE"), // FIXME: causes jumpy fab
+//              addFoodRecord: () =>
+//              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
+//                ..foodRecord = FoodRecord((b) => b
+//                  ..foodName = "IT'S NEW ${Random().nextInt(200)}"
+//                ).toBuilder()
+//              ))
+//            ),
           );
         }
       }
@@ -82,14 +96,23 @@ class FoodRecordTile extends StatelessWidget {
         onPressed: deleteFoodRecord
       ),
       title: Text(foodRecord.foodName),
-      subtitle: Text("50 grams"),
-      onTap: () => editFoodRecord(foodRecord.rebuild((b) => b
-        ..foodName = "IT'S NEW ${Random().nextInt(200)}"
-      )),
+      subtitle: Text("${foodRecord.quantity} grams"),
+      onTap: () {
+        Navigator.of(context).push(
+//        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) =>
+            FoodRecordEdit(
+              foodRecord: foodRecord,
+              editFoodRecord: (foodRecord) => editFoodRecord(foodRecord),
+              key: Key(foodRecord.toString()), // TODO: uid
+            ),
+            maintainState: true
+          )
+        );
+      },
     );
   }
 }
-
 
 void _onWidgetDidBuild(Function callback) {
   WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -106,7 +129,6 @@ class FAB extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeBloc _themeBloc = BlocProvider.of<ThemeBloc>(context);
 //    final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.end,

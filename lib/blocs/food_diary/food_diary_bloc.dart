@@ -29,16 +29,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
     _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch).doOnData((data) => print(" DATA: $data"));
 
-    // OPTIMIZE: alternative for food diary and user data combine:
-    // combine into a stream of RemoteDiaryDayArrived, listen and dispatch it directly
-    // this way don't need to manually combine data, can store UserDocument, Auth, settings separately under Loaded state
-    // TODO: change user data bloc as well!!!!!!
-    // it becomes clear what's being stored in state!
-    // no huge combination data classes, (especially good here where I would need diet - illogical combination)
-    // would look like: stream.listen(dispatch) // stream is of type event!!!!
-
-    // user data: separate fields for userDocument, auth (store full auth object), and settings
-    // event and loaded state will copy all these over!
+    // TODO: diet! -> merge together into event stream -> listen(dispatch)
 
     _foodDiaryDaySubscription = _foodDiaryDayStream.listen((foodDiaryDay) =>
       // TODO: call repository for this day's diet (returns as Observable.just() if historical or live stream if today)
