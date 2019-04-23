@@ -1,4 +1,3 @@
-import 'package:rxdart/rxdart.dart';
 import 'package:built_value/built_value.dart';
 
 import 'package:diet_driven/models/models.dart';

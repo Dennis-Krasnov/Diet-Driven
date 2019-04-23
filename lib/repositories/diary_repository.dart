@@ -7,27 +7,6 @@ import 'package:rxdart/rxdart.dart';
 class DiaryRepository {
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
 
-  /// Saves entire [FoodDiaryDay].
-  /// Overwrites/merges data with previous document.
-  ///
-  /// Cloud function triggers on create:
-  /// - Adds date based on document id, metadata, default values to day.
-  /// - Calculates aggregate nutritional information for day.
-  /// - Calculates aggregate global statistics.
-  ///
-  /// Cloud functions triggers on edit:
-  /// - If [dayCompleted], calculates score for the day, saves in document, saves in aggregate score.
-  /// - If [foodRecords] is empty, deletes document.
-  /// - Calculates aggregate global statistics.
-  ///
-  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] (field of day) is empty.
-  Future<void> saveDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
-    assert(userId != null && userId.isNotEmpty);
-    assert(foodDiaryDay != null);
-
-    return _firestoreProvider.setFoodDiaryDay(userId, foodDiaryDay);
-  }
-
   /// Deletes entire [FoodDiaryDay].
   ///
   /// Cloud functions triggers on delete:
@@ -98,11 +77,11 @@ class DiaryRepository {
   ///
   /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
   /// Throws [Exception] if food diary day document doesn't exist.
-  Future<void> editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
+  void editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
     assert(oldRecord != newRecord);
 
-    return _firestoreProvider.editFoodRecord(userId, daysSinceEpoch, oldRecord, newRecord);
+    _firestoreProvider.editFoodRecord(userId, daysSinceEpoch, oldRecord, newRecord);
   }
 }

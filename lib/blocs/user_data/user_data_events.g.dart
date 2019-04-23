@@ -8,15 +8,29 @@ part of 'user_data_events.dart';
 
 class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   @override
-  final UserData userData;
+  final FirebaseUser authentication;
+  @override
+  final UserDocument userDocument;
+  @override
+  final Settings settings;
 
   factory _$RemoteUserDataArrived(
           [void updates(RemoteUserDataArrivedBuilder b)]) =>
       (new RemoteUserDataArrivedBuilder()..update(updates)).build();
 
-  _$RemoteUserDataArrived._({this.userData}) : super._() {
-    if (userData == null) {
-      throw new BuiltValueNullFieldError('RemoteUserDataArrived', 'userData');
+  _$RemoteUserDataArrived._(
+      {this.authentication, this.userDocument, this.settings})
+      : super._() {
+    if (authentication == null) {
+      throw new BuiltValueNullFieldError(
+          'RemoteUserDataArrived', 'authentication');
+    }
+    if (userDocument == null) {
+      throw new BuiltValueNullFieldError(
+          'RemoteUserDataArrived', 'userDocument');
+    }
+    if (settings == null) {
+      throw new BuiltValueNullFieldError('RemoteUserDataArrived', 'settings');
     }
   }
 
@@ -31,18 +45,24 @@ class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is RemoteUserDataArrived && userData == other.userData;
+    return other is RemoteUserDataArrived &&
+        authentication == other.authentication &&
+        userDocument == other.userDocument &&
+        settings == other.settings;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, userData.hashCode));
+    return $jf($jc($jc($jc(0, authentication.hashCode), userDocument.hashCode),
+        settings.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('RemoteUserDataArrived')
-          ..add('userData', userData))
+          ..add('authentication', authentication)
+          ..add('userDocument', userDocument)
+          ..add('settings', settings))
         .toString();
   }
 }
@@ -51,15 +71,28 @@ class RemoteUserDataArrivedBuilder
     implements Builder<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
   _$RemoteUserDataArrived _$v;
 
-  UserDataBuilder _userData;
-  UserDataBuilder get userData => _$this._userData ??= new UserDataBuilder();
-  set userData(UserDataBuilder userData) => _$this._userData = userData;
+  FirebaseUser _authentication;
+  FirebaseUser get authentication => _$this._authentication;
+  set authentication(FirebaseUser authentication) =>
+      _$this._authentication = authentication;
+
+  UserDocumentBuilder _userDocument;
+  UserDocumentBuilder get userDocument =>
+      _$this._userDocument ??= new UserDocumentBuilder();
+  set userDocument(UserDocumentBuilder userDocument) =>
+      _$this._userDocument = userDocument;
+
+  SettingsBuilder _settings;
+  SettingsBuilder get settings => _$this._settings ??= new SettingsBuilder();
+  set settings(SettingsBuilder settings) => _$this._settings = settings;
 
   RemoteUserDataArrivedBuilder();
 
   RemoteUserDataArrivedBuilder get _$this {
     if (_$v != null) {
-      _userData = _$v.userData?.toBuilder();
+      _authentication = _$v.authentication;
+      _userDocument = _$v.userDocument?.toBuilder();
+      _settings = _$v.settings?.toBuilder();
       _$v = null;
     }
     return this;
@@ -82,13 +115,18 @@ class RemoteUserDataArrivedBuilder
   _$RemoteUserDataArrived build() {
     _$RemoteUserDataArrived _$result;
     try {
-      _$result =
-          _$v ?? new _$RemoteUserDataArrived._(userData: userData.build());
+      _$result = _$v ??
+          new _$RemoteUserDataArrived._(
+              authentication: authentication,
+              userDocument: userDocument.build(),
+              settings: settings.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'userData';
-        userData.build();
+        _$failedField = 'userDocument';
+        userDocument.build();
+        _$failedField = 'settings';
+        settings.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'RemoteUserDataArrived', _$failedField, e.toString());

@@ -1,11 +1,15 @@
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-import 'package:diet_driven/models/models.dart';
+import 'package:uuid/uuid.dart';
 
 part 'food_record.g.dart';
 
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
+
+  // Must compare by uuid explicitly
+  @BuiltValueField(compare: false)
+  String get uuid;
 
   String get foodName;
 
@@ -39,4 +43,13 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
 
   FoodRecord._();
   factory FoodRecord([updates(FoodRecordBuilder b)]) = _$FoodRecord;
+}
+
+abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
+  String uuid = Uuid().v4();
+  String foodName;
+  num quantity;
+
+  factory FoodRecordBuilder() = _$FoodRecordBuilder;
+  FoodRecordBuilder._();
 }

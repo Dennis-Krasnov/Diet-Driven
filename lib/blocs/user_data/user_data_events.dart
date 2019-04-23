@@ -1,4 +1,5 @@
 import 'package:built_value/built_value.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
 import 'package:diet_driven/models/models.dart';
 
@@ -6,9 +7,13 @@ part 'user_data_events.g.dart';
 
 abstract class UserDataEvent {}
 
-/// Reactively updates current [UserData], shows application.
+/// Reactively updates current [FirebaseUser], [UserDocument], [Settings]; shows application.
 abstract class RemoteUserDataArrived with UserDataEvent implements Built<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
-  UserData get userData;
+  FirebaseUser get authentication;
+
+  UserDocument get userDocument;
+
+  Settings get settings;
 
   RemoteUserDataArrived._();
   factory RemoteUserDataArrived([updates(RemoteUserDataArrivedBuilder b)]) = _$RemoteUserDataArrived;

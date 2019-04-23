@@ -1,4 +1,3 @@
-import 'package:diet_driven/main.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:flutter_test/flutter_test.dart';
 

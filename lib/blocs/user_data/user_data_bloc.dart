@@ -14,51 +14,33 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final Logger _log = new Logger("user data bloc");
   final UserRepository userRepository;
 
-  Observable<UserData> _userDataStream;
-  StreamSubscription<UserData> _userDataSubscription;
+  Observable<UserDataEvent> _userDataEventStream;
+  StreamSubscription<UserDataEvent> _userDataEventSubscription;
 
   UserDataBloc({@required this.userRepository}) {
     assert(userRepository != null);
 
-    // OPTIMIZE: alternative for food diary and user data combine:
-    // combine into a stream of RemoteDiaryDayArrived, listen and dispatch it directly
-    // this way don't need to manually combine data, can store UserDocument, Auth, settings separately under Loaded state
-    // TODO: change user data bloc as well!!!!!!
-    // it becomes clear what's being stored in state!
-    // no huge combination data classes, (especially good here where I would need diet - illogical combination)
-    // would look like: stream.listen(dispatch) // stream is of type event!!!!
-
-    // user data: separate fields for userDocument, auth (store full auth object), and settings
-    // event and loaded state will copy all these over!
-
-    _userDataStream = userRepository.authStateChangedStream
+    _userDataEventStream = userRepository.authStateChangedStream
       .doOnData(_log.fine)
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user
       .doOnData((user) => dispatch(user == null ? OnboardUser() : StartLoadingUserData()))
       // Load user data only if user exists
       .where((user) => user != null)
-      .switchMap<UserData>((user) =>
+      .switchMap<UserDataEvent>((user) =>
         CombineLatestStream.combine2(
           userRepository.userDocumentStream(user.uid),
           userRepository.settingsStream(user.uid),
-          (UserDocument userDocument, Settings settings) => UserData((b) => b
-            // Authentication information
-            ..userId = user.uid
-            ..email = user.email
-            ..name = user.displayName
-
-            // Admin information
-            ..currentSubscription = userDocument.currentSubscription
-
-            // User's settings
-            ..settings = settings
+          (UserDocument userDocument, Settings settings) => RemoteUserDataArrived((b) => b
+            ..authentication = user
+            ..userDocument = userDocument.toBuilder()
+            ..settings = settings.toBuilder()
+            // TODO: theme
           ),
         )
       )
       .distinct();
 
-    _userDataSubscription = _userDataStream.listen((userData) =>
-      dispatch(RemoteUserDataArrived((b) => b..userData = userData.toBuilder())),
+    _userDataEventSubscription = _userDataEventStream.listen((userDataEvent) => dispatch(userDataEvent),
       onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())),
     );
   }
@@ -68,19 +50,22 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   @override
   void dispose() {
-    _userDataSubscription?.cancel();
+    _userDataEventSubscription?.cancel();
     super.dispose();
   }
 
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
     if (event is RemoteUserDataArrived) {
+      // OPTIMIZE: pass builders into events, they're directly inserted into state?
       yield UserDataLoaded((b) => b
-        ..userData = event.userData.toBuilder()
+        ..authentication = event.authentication
+        ..userDocument = event.userDocument.toBuilder()
+        ..settings = event.settings.toBuilder()
       );
 
       _log.info("loaded user data");
-      _log.fine("data: ${event.userData}");
+      _log.fine("uid: ${event.authentication.uid}");
     }
     if (event is StartLoadingUserData) {
       yield UserDataLoading();

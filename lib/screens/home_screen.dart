@@ -1,26 +1,13 @@
-import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/repositories.dart';
-import 'package:diet_driven/screens/diary_page.dart';
-import 'package:diet_driven/screens/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repository_singleton.dart';
+import 'package:diet_driven/screens/diary_page.dart';
+import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
 class HomePage extends StatefulWidget {
-  final DiaryRepository diaryRepository;
-  final FoodRepository foodRepository;
-  final AnalyticsRepository analyticsRepository;
-
-  HomePage({
-    @required this.diaryRepository,
-    @required this.foodRepository,
-    @required this.analyticsRepository
-  }) :
-    assert(diaryRepository != null),
-    assert(foodRepository != null),
-    assert(analyticsRepository != null);
-
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -28,13 +15,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   NavigationBloc navigationBloc;
 
+  FoodDiaryBloc tempFoodDiaryBloc;
+
+
   @override
   void initState() {
     super.initState();
 
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
     assert(_userDataBloc.currentState is UserDataLoaded);
-    navigationBloc = NavigationBloc(analyticsRepository: widget.analyticsRepository, userDataBloc: _userDataBloc);
+    navigationBloc = NavigationBloc(analyticsRepository: Repository().analytics, userDataBloc: _userDataBloc);
+
+    // Blocs that fetch their own dta must be instantiated before navigation BlocBuilder
+    // Otherwise they're recreated every time the user switches page
+    tempFoodDiaryBloc = FoodDiaryBloc(diaryRepository: Repository().diary, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124);
   }
 
   @override
@@ -66,7 +60,7 @@ class _HomePageState extends State<HomePage> {
               if (state is NavigationLoaded && userDataState is UserDataLoaded) {
                 return Scaffold(
                   body: Stack(
-                    children: userDataState.userData.settings.navigationSettings.bottomNavigationPages.map((page) =>
+                    children: userDataState.settings.navigationSettings.bottomNavigationPages.map((page) =>
                       Offstage(
                         offstage: state.currentPage != page,
                         child: generatePage(page)
@@ -75,15 +69,15 @@ class _HomePageState extends State<HomePage> {
                   ),
                   bottomNavigationBar: BottomNavigationBar(
                     type: BottomNavigationBarType.fixed,
-                    items: userDataState.userData.settings.navigationSettings.bottomNavigationPages.map((page) =>
+                    items: userDataState.settings.navigationSettings.bottomNavigationPages.map((page) =>
                       BottomNavigationBarItem(
                         icon: Icon(Icons.add),
                         title: Text(page.name),
                       )
                     ).toList(),
-                    currentIndex: userDataState.userData.settings.navigationSettings.bottomNavigationPages.indexOf(state.currentPage),
+                    currentIndex: userDataState.settings.navigationSettings.bottomNavigationPages.indexOf(state.currentPage),
                     onTap: (index) {
-                      navigationBloc.dispatch(NavigateToPage((b) => b..page = userDataState.userData.settings.navigationSettings.bottomNavigationPages[index]));
+                      navigationBloc.dispatch(NavigateToPage((b) => b..page = userDataState.settings.navigationSettings.bottomNavigationPages[index]));
                     },
                   ),
                 );
@@ -99,7 +93,7 @@ class _HomePageState extends State<HomePage> {
     switch (page) {
       case Page.diary:
         // FIXME: diary page wrapper that creates foodDiaryBloc, manages current date, listens to userData bloc for updates!
-        return DiaryPage(foodDiaryBloc: FoodDiaryBloc(diaryRepository: widget.diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),);
+        return DiaryPage(foodDiaryBloc: tempFoodDiaryBloc,);
         break;
       case Page.track:
         return TestPage(page);

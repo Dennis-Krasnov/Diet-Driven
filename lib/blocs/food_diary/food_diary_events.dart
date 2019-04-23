@@ -1,5 +1,3 @@
-import 'package:rxdart/rxdart.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
 import 'package:diet_driven/models/models.dart';
@@ -14,15 +12,6 @@ abstract class RemoteDiaryDayArrived with FoodDiaryEvent implements Built<Remote
 
   RemoteDiaryDayArrived._();
   factory RemoteDiaryDayArrived([updates(RemoteDiaryDayArrivedBuilder b)]) = _$RemoteDiaryDayArrived;
-}
-
-
-/// Saves entire [FoodDiaryDay].
-abstract class SaveFoodDiaryDay with FoodDiaryEvent implements Built<SaveFoodDiaryDay, SaveFoodDiaryDayBuilder> {
-  FoodDiaryDay get diaryDay;
-
-  SaveFoodDiaryDay._();
-  factory SaveFoodDiaryDay([updates(SaveFoodDiaryDayBuilder b)]) = _$SaveFoodDiaryDay;
 }
 
 /// Adds [FoodRecord] to [FoodDiaryDay].

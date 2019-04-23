@@ -23,6 +23,7 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
   @override
   void initState() {
     super.initState();
+    // FIXME: direct access to diary repository instead?
     _foodRecordEditBloc = FoodRecordEditBloc(widget.foodRecord, editFoodRecord: widget.editFoodRecord);
   }
 
@@ -42,9 +43,11 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
           key: Key('please work 2'),
           body: Center(
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text(foodRecordEditState.foodRecord.foodName),
-                Text(foodRecordEditState.foodRecord.quantity.toString()),
+                Text("UUID: ${foodRecordEditState.foodRecord.uuid}"),
+                Text("food name: ${foodRecordEditState.foodRecord.foodName}"),
+                Text("quantity: ${foodRecordEditState.foodRecord.quantity}"),
                 RaisedButton(
                   child: Text("Randomize!"),
                   onPressed: () => _foodRecordEditBloc.dispatch(UpdateQuantity((b) => b
@@ -65,10 +68,5 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
       }
     );
 
-//    call: widget.editFoodRecord(...)
   }
 }
-
-//.rebuild((b) => b
-//              ..foodName = "IT'S NEW ${Random().nextInt(200)}"
-//            )

@@ -249,14 +249,25 @@ class UserDataUnauthenticatedBuilder
 
 class _$UserDataLoaded extends UserDataLoaded {
   @override
-  final UserData userData;
+  final FirebaseUser authentication;
+  @override
+  final UserDocument userDocument;
+  @override
+  final Settings settings;
 
   factory _$UserDataLoaded([void updates(UserDataLoadedBuilder b)]) =>
       (new UserDataLoadedBuilder()..update(updates)).build();
 
-  _$UserDataLoaded._({this.userData}) : super._() {
-    if (userData == null) {
-      throw new BuiltValueNullFieldError('UserDataLoaded', 'userData');
+  _$UserDataLoaded._({this.authentication, this.userDocument, this.settings})
+      : super._() {
+    if (authentication == null) {
+      throw new BuiltValueNullFieldError('UserDataLoaded', 'authentication');
+    }
+    if (userDocument == null) {
+      throw new BuiltValueNullFieldError('UserDataLoaded', 'userDocument');
+    }
+    if (settings == null) {
+      throw new BuiltValueNullFieldError('UserDataLoaded', 'settings');
     }
   }
 
@@ -271,18 +282,24 @@ class _$UserDataLoaded extends UserDataLoaded {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UserDataLoaded && userData == other.userData;
+    return other is UserDataLoaded &&
+        authentication == other.authentication &&
+        userDocument == other.userDocument &&
+        settings == other.settings;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, userData.hashCode));
+    return $jf($jc($jc($jc(0, authentication.hashCode), userDocument.hashCode),
+        settings.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('UserDataLoaded')
-          ..add('userData', userData))
+          ..add('authentication', authentication)
+          ..add('userDocument', userDocument)
+          ..add('settings', settings))
         .toString();
   }
 }
@@ -291,15 +308,28 @@ class UserDataLoadedBuilder
     implements Builder<UserDataLoaded, UserDataLoadedBuilder> {
   _$UserDataLoaded _$v;
 
-  UserDataBuilder _userData;
-  UserDataBuilder get userData => _$this._userData ??= new UserDataBuilder();
-  set userData(UserDataBuilder userData) => _$this._userData = userData;
+  FirebaseUser _authentication;
+  FirebaseUser get authentication => _$this._authentication;
+  set authentication(FirebaseUser authentication) =>
+      _$this._authentication = authentication;
+
+  UserDocumentBuilder _userDocument;
+  UserDocumentBuilder get userDocument =>
+      _$this._userDocument ??= new UserDocumentBuilder();
+  set userDocument(UserDocumentBuilder userDocument) =>
+      _$this._userDocument = userDocument;
+
+  SettingsBuilder _settings;
+  SettingsBuilder get settings => _$this._settings ??= new SettingsBuilder();
+  set settings(SettingsBuilder settings) => _$this._settings = settings;
 
   UserDataLoadedBuilder();
 
   UserDataLoadedBuilder get _$this {
     if (_$v != null) {
-      _userData = _$v.userData?.toBuilder();
+      _authentication = _$v.authentication;
+      _userDocument = _$v.userDocument?.toBuilder();
+      _settings = _$v.settings?.toBuilder();
       _$v = null;
     }
     return this;
@@ -322,12 +352,18 @@ class UserDataLoadedBuilder
   _$UserDataLoaded build() {
     _$UserDataLoaded _$result;
     try {
-      _$result = _$v ?? new _$UserDataLoaded._(userData: userData.build());
+      _$result = _$v ??
+          new _$UserDataLoaded._(
+              authentication: authentication,
+              userDocument: userDocument.build(),
+              settings: settings.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'userData';
-        userData.build();
+        _$failedField = 'userDocument';
+        userDocument.build();
+        _$failedField = 'settings';
+        settings.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'UserDataLoaded', _$failedField, e.toString());

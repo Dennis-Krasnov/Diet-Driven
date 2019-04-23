@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 
 import 'package:diet_driven/blocs/login/login.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:rxdart/rxdart.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   // TODO: log
@@ -34,6 +33,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
 
       try {
+        // ignore: unused_local_variable
         final FirebaseUser user = await authenticationRepository.signInWithEmail(event.username, event.password);
 //        authenticationBloc.dispatch(LoggedIn((b) => b..user = user)); // OPTIMIZE: not necessary with auth subscription
         yield LoginInitial();

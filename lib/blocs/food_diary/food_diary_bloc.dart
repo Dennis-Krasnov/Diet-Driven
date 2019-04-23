@@ -54,8 +54,8 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     Observable<FoodDiaryEvent>(events)
       .groupBy((event) => event.runtimeType)
       .flatMap((eventType) {
-        if (eventType.key is SaveFoodDiaryDay ||  // TODO: create an 'distinctAction' mixin!! - single if statement! - pass this same type to undo button
-          eventType.key is AddFoodRecord || eventType.key is DeleteFoodRecord || eventType.key is EditFoodRecord) {
+        // TODO: create an 'distinctAction' mixin!! - single if statement! - pass this same type to undo button
+        if (eventType.key is AddFoodRecord || eventType.key is DeleteFoodRecord || eventType.key is EditFoodRecord) {
           return eventType.distinct();
         }
         return eventType;
@@ -77,21 +77,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         );
       }
 
-      _log.info("food diary day #${event.foodDiaryDay} arrived");
-    }
-    if (event is SaveFoodDiaryDay) {
-      assert(currentState is FoodDiaryLoaded);
-      if (currentState is FoodDiaryLoaded) {
-        // FIXME: these events shouldn't fail because of the nature of firestore - only real error is invalid id/date - beyond the scope of this bloc
-        //  - for this and other events
-//        try {
-          diaryRepository.saveDiaryDay(userId, event.diaryDay);
-
-          _log.info("${event.diaryDay.date} day saved");
-//        } on Exception catch(e) {
-//          yield FoodDiaryFailed((b) => b..error = e.toString());
-//        }
-      }
+      _log.info("food diary day #${event.foodDiaryDay.date} arrived");
     }
     // OPTIMIZE: single try catch around next 3 if statements, if I can make them specific enough as a whole
     // TODO: don't show blocking error page because of a failed food record operation - simply show error message + retry button using completer

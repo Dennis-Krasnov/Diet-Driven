@@ -27,7 +27,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     // Navigation bloc is re-instantiated for every new user, hence there is no need to wipe old state
     _navigationSettingsStream = Observable<UserDataState>(userDataBloc.state)
       .where((state) => state is UserDataLoaded)
-      .map<NavigationSettings>((state) => (state as UserDataLoaded).userData.settings.navigationSettings)
+      .map<NavigationSettings>((state) => (state as UserDataLoaded).settings.navigationSettings)
       .distinct();
 
     _navigationSettingsSubscription = _navigationSettingsStream.listen((navSettings) {

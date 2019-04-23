@@ -1,5 +1,6 @@
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
 part 'user_data_state.g.dart';
 
@@ -31,7 +32,7 @@ abstract class UserDataLoading with UserDataState implements Built<UserDataLoadi
 
 /// Unauthenticated user onboarding / sign in.
 abstract class UserDataUnauthenticated with UserDataState implements Built<UserDataUnauthenticated, UserDataUnauthenticatedBuilder> {
-  // TODO: create seperate onboarding bloc
+  // TODO: create separate onboarding bloc
 
   UserDataUnauthenticated._();
   factory UserDataUnauthenticated([updates(UserDataUnauthenticatedBuilder b)]) = _$UserDataUnauthenticated;
@@ -39,9 +40,15 @@ abstract class UserDataUnauthenticated with UserDataState implements Built<UserD
   @override String toString() => runtimeType.toString();
 }
 
-/// Application, stores current [UserData].
+/// Application; stores current [FirebaseUser], [UserDocument], and [Settings].
 abstract class UserDataLoaded with UserDataState implements Built<UserDataLoaded, UserDataLoadedBuilder> {
-  UserData get userData;
+  FirebaseUser get authentication;
+
+  UserDocument get userDocument;
+
+  Settings get settings;
+
+////  TODO: accepted terms (defaults to false), subscribedToEmails, etc!
 
   UserDataLoaded._();
   factory UserDataLoaded([updates(UserDataLoadedBuilder b)]) = _$UserDataLoaded;

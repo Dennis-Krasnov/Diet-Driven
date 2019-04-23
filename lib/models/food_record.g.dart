@@ -18,6 +18,8 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
   Iterable serialize(Serializers serializers, FoodRecord object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
+      'uuid',
+      serializers.serialize(object.uuid, specifiedType: const FullType(String)),
       'foodName',
       serializers.serialize(object.foodName,
           specifiedType: const FullType(String)),
@@ -43,6 +45,10 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
+        case 'uuid':
+          result.uuid = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
+          break;
         case 'foodName':
           result.foodName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
@@ -60,14 +66,19 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
 
 class _$FoodRecord extends FoodRecord {
   @override
+  final String uuid;
+  @override
   final String foodName;
   @override
   final num quantity;
 
   factory _$FoodRecord([void updates(FoodRecordBuilder b)]) =>
-      (new FoodRecordBuilder()..update(updates)).build();
+      (new FoodRecordBuilder()..update(updates)).build() as _$FoodRecord;
 
-  _$FoodRecord._({this.foodName, this.quantity}) : super._() {
+  _$FoodRecord._({this.uuid, this.foodName, this.quantity}) : super._() {
+    if (uuid == null) {
+      throw new BuiltValueNullFieldError('FoodRecord', 'uuid');
+    }
     if (foodName == null) {
       throw new BuiltValueNullFieldError('FoodRecord', 'foodName');
     }
@@ -78,7 +89,7 @@ class _$FoodRecord extends FoodRecord {
       (toBuilder()..update(updates)).build();
 
   @override
-  FoodRecordBuilder toBuilder() => new FoodRecordBuilder()..replace(this);
+  _$FoodRecordBuilder toBuilder() => new _$FoodRecordBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -96,29 +107,59 @@ class _$FoodRecord extends FoodRecord {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodRecord')
+          ..add('uuid', uuid)
           ..add('foodName', foodName)
           ..add('quantity', quantity))
         .toString();
   }
 }
 
-class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
+class _$FoodRecordBuilder extends FoodRecordBuilder {
   _$FoodRecord _$v;
 
-  String _foodName;
-  String get foodName => _$this._foodName;
-  set foodName(String foodName) => _$this._foodName = foodName;
+  @override
+  String get uuid {
+    _$this;
+    return super.uuid;
+  }
 
-  num _quantity;
-  num get quantity => _$this._quantity;
-  set quantity(num quantity) => _$this._quantity = quantity;
+  @override
+  set uuid(String uuid) {
+    _$this;
+    super.uuid = uuid;
+  }
 
-  FoodRecordBuilder();
+  @override
+  String get foodName {
+    _$this;
+    return super.foodName;
+  }
+
+  @override
+  set foodName(String foodName) {
+    _$this;
+    super.foodName = foodName;
+  }
+
+  @override
+  num get quantity {
+    _$this;
+    return super.quantity;
+  }
+
+  @override
+  set quantity(num quantity) {
+    _$this;
+    super.quantity = quantity;
+  }
+
+  _$FoodRecordBuilder() : super._();
 
   FoodRecordBuilder get _$this {
     if (_$v != null) {
-      _foodName = _$v.foodName;
-      _quantity = _$v.quantity;
+      super.uuid = _$v.uuid;
+      super.foodName = _$v.foodName;
+      super.quantity = _$v.quantity;
       _$v = null;
     }
     return this;
@@ -139,8 +180,8 @@ class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
 
   @override
   _$FoodRecord build() {
-    final _$result =
-        _$v ?? new _$FoodRecord._(foodName: foodName, quantity: quantity);
+    final _$result = _$v ??
+        new _$FoodRecord._(uuid: uuid, foodName: foodName, quantity: quantity);
     replace(_$result);
     return _$result;
   }

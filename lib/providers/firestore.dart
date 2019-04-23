@@ -25,35 +25,6 @@ class FirestoreProvider {
   final fsDiaryDay = FS<FoodDiaryDay>();
   final fsFoodRecord = FS<FoodRecord>();
 
-  /// Saves entire [FoodDiaryDay] in Firestore.
-  /// Overwrites/merges data with previous document.
-  ///
-  /// Cloud function triggers on create:
-  /// - Adds date based on document id, metadata, default values to day.
-  /// - Calculates aggregate nutritional information for day.
-  /// - Calculates aggregate global statistics.
-  ///
-  /// Cloud functions triggers on edit:
-  /// - If [dayCompleted], calculates score for the day, saves in document, saves in aggregate score.
-  /// - If [foodRecords] is empty, deletes document.
-  /// - Calculates aggregate global statistics.
-  ///
-  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] (field of day) is empty.
-  Future<void> setFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
-    assert(userId != null && userId.isNotEmpty);
-    assert(foodDiaryDay != null);
-    assert(foodDiaryDay.date >= 0);
-
-    // FIXME: repurpose this method to ADD an entire food diary day!
-    throw Exception("don't do this! only allow document-wise add/delete " +
-      "(only allow field-wise editing - could disrupt food recordedit)");
-    // TODO: access collection, use it's add method, throw if already exists
-    // TODO: this may need transaction, limits to online use, check default behaviour of add
-
-//    DocumentReference ref = _firestore.document(foodDiaryPath(userId, foodDiaryDay.date));
-//    return ref.setData(fsDiaryDay.serializeDocument(foodDiaryDay));
-  }
-
   /// Deletes entire [FoodDiaryDay] in Firestore.
   ///
   /// Cloud functions triggers on delete:
@@ -160,7 +131,7 @@ class FirestoreProvider {
   ///
   /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
   /// Throws [Exception] if food diary day document doesn't exist.
-  Future<void> editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
+  void editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
     assert(oldRecord != newRecord);

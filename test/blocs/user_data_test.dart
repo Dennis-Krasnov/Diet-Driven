@@ -24,27 +24,11 @@ void main() {
   UserDocument userDocumentA = UserDocument((b) => b
     ..currentSubscription = "all"
   );
-  final UserData userDataA = UserData((b) => b
-    ..userId = "1234"
-    ..email = "example@gmail.com"
-    ..name = "John Smith"
-
-    ..currentSubscription = "all"
-
-    ..settings = settings
-  );
 
   /// Anonymous user
   FirebaseUser userB = FirebaseUserMock();
   UserDocument userDocumentB = UserDocument((b) => b
     ..currentSubscription = "none"
-  );
-  final UserData userDataB = UserData((b) => b
-    ..userId = "4321"
-
-    ..currentSubscription = "none"
-
-    ..settings = settings
   );
 
   ///
@@ -98,11 +82,19 @@ void main() {
         userDataBloc.state,
         emitsInOrder([
           UserDataUninitialized(),
-          UserDataLoaded((b) => b..userData = userDataA.toBuilder())
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = userDocumentA.toBuilder()
+            ..settings = settings.toBuilder()
+          )
         ])
       );
 
-      userDataBloc.dispatch(RemoteUserDataArrived((b) => b..userData = userDataA.toBuilder()));
+      userDataBloc.dispatch(RemoteUserDataArrived((b) => b
+        ..authentication = userA
+        ..userDocument = userDocumentA.toBuilder()
+        ..settings = settings.toBuilder()
+      ));
     });
 
     test("Fail on loading error", () {
@@ -130,7 +122,11 @@ void main() {
           UserDataUninitialized(),
           UserDataUnauthenticated(),
           UserDataLoading(),
-          UserDataLoaded((b) => b..userData = userDataA.toBuilder()),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = userDocumentA.toBuilder()
+            ..settings = settings.toBuilder()
+          ),
           UserDataUnauthenticated(),
         ])
       );
@@ -147,9 +143,17 @@ void main() {
         emitsInOrder([
           UserDataUninitialized(),
           UserDataLoading(),
-          UserDataLoaded((b) => b..userData = userDataA.toBuilder()),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = userDocumentA.toBuilder()
+            ..settings = settings.toBuilder()
+          ),
           UserDataLoading(),
-          UserDataLoaded((b) => b..userData = userDataB.toBuilder()),
+          UserDataLoaded((b) => b
+            ..authentication = userB
+            ..userDocument = userDocumentB.toBuilder()
+            ..settings = settings.toBuilder()
+          ),
         ])
       );
     });
@@ -166,15 +170,23 @@ void main() {
         emitsInOrder([
           UserDataUninitialized(),
           UserDataLoading(),
-          UserDataLoaded((b) => b..userData = userDataA.toBuilder()),
-          UserDataLoaded((b) => b..userData = userDataA.rebuild((b) => b..currentSubscription = "none").toBuilder()),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = userDocumentA.toBuilder()
+            ..settings = settings.toBuilder()
+          ),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = userDocumentA.rebuild((b) => b..currentSubscription = "none").toBuilder()
+            ..settings = settings.toBuilder()
+          ),
         ])
       );
     });
 
     test("Update settings", () {
       Settings settingsB = Settings((b) => b
-        ..navigationSettings = NavigationSettings((b) => b..defaultPage = Page.profile).toBuilder()
+        ..navigationSettings = NavigationSettings((b) => b..defaultPage = Page.profile)
       );
 
       mockAuthenticationRepositoryStream(authStream: [userA]);
@@ -186,8 +198,16 @@ void main() {
         emitsInOrder([
           UserDataUninitialized(),
           UserDataLoading(),
-          UserDataLoaded((b) => b..userData = userDataA.toBuilder()),
-          UserDataLoaded((b) => b..userData = userDataA.rebuild((b) => b..settings = settingsB).toBuilder()),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = userDocumentA.toBuilder()
+            ..settings = settings.toBuilder()
+          ),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = userDocumentA.toBuilder()
+            ..settings = settingsB.toBuilder()
+          ),
         ])
       );
     });

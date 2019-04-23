@@ -1,10 +1,11 @@
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:diet_driven/blocs/blocs.dart';
 import 'package:mockito/mockito.dart';
 import 'package:rxdart/rxdart.dart';
+
+import 'package:diet_driven/blocs/blocs.dart';
 
 import '../test_utils.dart';
 
@@ -16,20 +17,39 @@ void main() {
   UserDataBloc userDataBloc;
 
   /// Data
-  final UserData userDataA = UserData((b) => b..settings = Settings((b) => b
-    ..navigationSettings = NavigationSettings((b) => b
-      ..defaultPage = Page.diet
+  FirebaseUser userA = FirebaseUserMock();
+  UserDocument userDocumentA = UserDocument((b) => b
+    ..currentSubscription = "all"
+  );
+
+  final UserDataLoaded userDataStateA = UserDataLoaded((b) => b
+    ..authentication = userA
+    ..userDocument = userDocumentA.toBuilder()
+    ..settings = Settings((b) => b
+      ..navigationSettings = NavigationSettings((b) => b
+        ..defaultPage = Page.diet
+      )
     ).toBuilder()
-  ));
-  final UserData userDataB = UserData((b) => b..settings = Settings((b) => b
-    ..navigationSettings = NavigationSettings((b) => b
-      ..defaultPage = Page.recipes
+  );
+
+  final UserDataLoaded userDataStateB = UserDataLoaded((b) => b
+    ..authentication = userA
+    ..userDocument = userDocumentA.toBuilder()
+    ..settings = Settings((b) => b
+      ..navigationSettings = NavigationSettings((b) => b
+        ..defaultPage = Page.recipes
+      )
     ).toBuilder()
-  ));
+  );
 
   setUp(() {
     analyticsRepository = MockAnalyticsRepository();
     userDataBloc = MockUserDataBlock();
+
+    // User stub
+    when(userA.uid).thenReturn("1234");
+    when(userA.email).thenReturn("example@gmail.com");
+    when(userA.displayName).thenReturn("John Smith");
 
     when(userDataBloc.state).thenAnswer((_) =>
       Observable<UserDataState>.fromIterable([])
@@ -48,12 +68,8 @@ void main() {
       Observable<UserDataState>.fromIterable([
         UserDataUninitialized(),
         UserDataLoading(),
-        UserDataLoaded((b) => b
-          ..userData = userDataA.toBuilder()
-        ),
-        UserDataLoaded((b) => b
-          ..userData = userDataB.toBuilder()
-        ),
+        userDataStateA,
+        userDataStateB
       ])
     );
     navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository, userDataBloc: userDataBloc);
@@ -77,9 +93,7 @@ void main() {
       Observable<UserDataState>.fromIterable([
         UserDataUninitialized(),
         UserDataLoading(),
-        UserDataLoaded((b) => b
-          ..userData = userDataA.toBuilder()
-        ),
+        userDataStateA
       ])
     );
     navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository, userDataBloc: userDataBloc);

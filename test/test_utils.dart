@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser, FirebaseAuth;
 import 'package:google_sign_in/google_sign_in.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';

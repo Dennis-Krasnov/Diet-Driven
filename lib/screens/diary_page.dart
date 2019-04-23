@@ -1,9 +1,6 @@
 import 'dart:math';
 
-import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/repositories.dart';
-import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/screens/food_record_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,7 +25,7 @@ class _DiaryPageState extends State<DiaryPage> {
       bloc: _foodDiaryBloc,
       builder: (BuildContext context, FoodDiaryState state) {
         if (state is FoodDiaryUninitialized) {
-          return Scaffold(appBar: AppBar(title: Text("Diary loading")), body: Center(child: CircularProgressIndicator()), floatingActionButton: FAB());
+          return Scaffold(appBar: AppBar(title: Text("Diary loading")), body: Center(child: CircularProgressIndicator()));
         }
         if (state is FoodDiaryFailed) {
           return Scaffold(appBar: AppBar(title: Text("Diary failed")), body: Center(child: Text("Failed... ${state.error}")));
