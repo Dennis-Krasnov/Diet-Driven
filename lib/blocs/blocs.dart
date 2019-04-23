@@ -1,8 +1,9 @@
 library blocs;
 
 export 'body_records/body_records.dart';
-export 'food_diary/food_diary.dart';
 export 'configuration/configuration.dart';
+export 'food_diary/food_diary.dart';
+export 'food_logging/food_logging.dart';
 export 'food_record_edit/food_record_edit.dart';
 export 'login/login.dart';
 export 'navigation/navigation.dart';

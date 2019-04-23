@@ -2,14 +2,15 @@ import 'dart:math';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repository_singleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FoodRecordEdit extends StatefulWidget {
   final FoodRecord foodRecord;
-  final void Function(FoodRecord) editFoodRecord;
+//  final void Function(FoodRecord) editFoodRecord;
 
-  const FoodRecordEdit({Key key, @required this.foodRecord, @required this.editFoodRecord}) : super(key: key);
+  FoodRecordEdit({Key key, @required this.foodRecord}) : assert(foodRecord != null), super(key: key);
 
   @override
   _FoodRecordEditState createState() => _FoodRecordEditState();
@@ -23,8 +24,17 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
   @override
   void initState() {
     super.initState();
-    // FIXME: direct access to diary repository instead?
-    _foodRecordEditBloc = FoodRecordEditBloc(widget.foodRecord, editFoodRecord: widget.editFoodRecord);
+
+    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
+    String userId = (_userDataBloc.currentState as UserDataLoaded).authentication.uid;
+    int daysSinceEpoch = 124; // TODO: take from diary wrapper bloc
+
+    _foodRecordEditBloc = FoodRecordEditBloc(
+      initialFoodRecord: widget.foodRecord,
+      userId: userId,
+      daysSinceEpoch: daysSinceEpoch,
+      diaryRepository: Repository().diary
+    );
   }
 
   @override

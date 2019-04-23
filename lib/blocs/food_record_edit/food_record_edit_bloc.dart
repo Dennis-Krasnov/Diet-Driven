@@ -4,14 +4,25 @@ import 'dart:async';
 // TODO: change other blocs to only import their own export file
 import 'package:diet_driven/blocs/food_record_edit/food_record_edit.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:meta/meta.dart';
 
 class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> {
   final FoodRecord initialFoodRecord;
-  final void Function(FoodRecord) editFoodRecord;
+  final String userId;
+  final int daysSinceEpoch;
+  final DiaryRepository diaryRepository;
 
-  FoodRecordEditBloc(this.initialFoodRecord, {@required this.editFoodRecord})
-    : assert(initialFoodRecord != null), assert(editFoodRecord != null);
+  FoodRecordEditBloc({
+    @required this.initialFoodRecord,
+    @required this.userId,
+    @required this.daysSinceEpoch,
+    @required this.diaryRepository
+  }) :
+    assert(initialFoodRecord != null),
+    assert(userId != null),
+    assert(daysSinceEpoch >= 0),
+    assert(diaryRepository != null);
 
   @override
   FoodRecordEditState get initialState => FoodRecordEditState((b) => b..foodRecord = initialFoodRecord.toBuilder());
@@ -28,9 +39,7 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
     if (event is SaveFoodRecord) {
       //
       if (initialFoodRecord != currentState.foodRecord) {
-        print("SAVVEEEE");
-        editFoodRecord(currentState.foodRecord); // FIXME: pass DiaryRepository instead?? - more independent...
-//        diaryRepository.editFoodRecord(userId, daysSinceEpoch, initialFoodRecord, currentState.foodRecord);
+        diaryRepository.editFoodRecord(userId, daysSinceEpoch, initialFoodRecord, currentState.foodRecord);
       }
     }
   }

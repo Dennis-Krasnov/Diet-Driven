@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:built_value/built_value.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
 
 import 'package:diet_driven/models/models.dart';
 
@@ -15,7 +18,7 @@ abstract class RemoteDiaryDayArrived with FoodDiaryEvent implements Built<Remote
 }
 
 /// Adds [FoodRecord] to [FoodDiaryDay].
-abstract class AddFoodRecord with FoodDiaryEvent implements Built<AddFoodRecord, AddFoodRecordBuilder> {
+abstract class AddFoodRecord with Completable, FoodDiaryEvent implements Built<AddFoodRecord, AddFoodRecordBuilder> {
   FoodRecord get foodRecord;
 
   AddFoodRecord._();
@@ -23,7 +26,7 @@ abstract class AddFoodRecord with FoodDiaryEvent implements Built<AddFoodRecord,
 }
 
 /// Deletes [FoodRecord] from [FoodDiaryDay].
-abstract class DeleteFoodRecord with FoodDiaryEvent implements Built<DeleteFoodRecord, DeleteFoodRecordBuilder> {
+abstract class DeleteFoodRecord with Completable, FoodDiaryEvent implements Built<DeleteFoodRecord, DeleteFoodRecordBuilder> {
   FoodRecord get foodRecord;
 
   DeleteFoodRecord._();
@@ -31,7 +34,7 @@ abstract class DeleteFoodRecord with FoodDiaryEvent implements Built<DeleteFoodR
 }
 
 /// Edits [FoodRecord] in [FoodDiaryDay].
-abstract class EditFoodRecord with FoodDiaryEvent implements Built<EditFoodRecord, EditFoodRecordBuilder> {
+abstract class EditFoodRecord with Completable, FoodDiaryEvent implements Built<EditFoodRecord, EditFoodRecordBuilder> {
   FoodRecord get oldRecord;
   FoodRecord get newRecord;
 

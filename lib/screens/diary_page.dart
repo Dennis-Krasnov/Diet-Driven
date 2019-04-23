@@ -1,7 +1,9 @@
 import 'dart:math';
 
+import 'package:diet_driven/widgets/completer.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/screens/food_record_edit.dart';
+import 'package:diet_driven/screens/food_logging.dart';
+import 'package:diet_driven/widgets/food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,6 +42,13 @@ class _DiaryPageState extends State<DiaryPage> {
                     foodRecord,
                     deleteFoodRecord: () => _foodDiaryBloc.dispatch(DeleteFoodRecord((b) => b
                       ..foodRecord = foodRecord.toBuilder()
+                      ..completer = undoSnackBarCompleter(
+                        context,
+                        "food record deleted",
+                        onUndo: () => _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
+                          ..foodRecord = foodRecord.toBuilder()
+                        ))
+                      )
                     )),
                     editFoodRecord: (newRecord) => _foodDiaryBloc.dispatch(EditFoodRecord((b) => b
                       ..oldRecord = foodRecord.toBuilder()
@@ -52,6 +61,13 @@ class _DiaryPageState extends State<DiaryPage> {
             floatingActionButton: FloatingActionButton(
               child: Icon(Icons.add),
               onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(builder: (context) =>
+                    FoodLogging(),
+                    maintainState: true
+                  )
+                );
+                // TODO: add/delete food record takes array, does action for each, use spread operators
                 _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
                   ..foodRecord = FoodRecord((b) => b
                     ..foodName = "IT'S NEW ${Random().nextInt(200)}"
@@ -59,54 +75,9 @@ class _DiaryPageState extends State<DiaryPage> {
                 ));
               }
             ),
-//            floatingActionButton: FAB(
-//              key: Key("UNIQUE"), // FIXME: causes jumpy fab
-//              addFoodRecord: () =>
-//              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
-//                ..foodRecord = FoodRecord((b) => b
-//                  ..foodName = "IT'S NEW ${Random().nextInt(200)}"
-//                ).toBuilder()
-//              ))
-//            ),
           );
         }
       }
-    );
-  }
-}
-
-class FoodRecordTile extends StatelessWidget {
-  final FoodRecord foodRecord;
-  final VoidCallback deleteFoodRecord;
-  final void Function(FoodRecord) editFoodRecord;
-
-  // alternatively:
-//  typedef Int2VoidFunc = void Function(int);
-// or: typedef void Int2VoidFunc(int arg);
-
-  FoodRecordTile(this.foodRecord, {@required this.deleteFoodRecord, @required this.editFoodRecord});
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: IconButton(
-        icon: Icon(Icons.delete),
-        onPressed: deleteFoodRecord
-      ),
-      title: Text(foodRecord.foodName),
-      subtitle: Text("${foodRecord.quantity} grams"),
-      onTap: () {
-        Navigator.of(context).push(
-//        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) =>
-            FoodRecordEdit(
-              foodRecord: foodRecord,
-              editFoodRecord: (foodRecord) => editFoodRecord(foodRecord),
-              key: Key(foodRecord.toString()), // TODO: uid
-            ),
-            maintainState: true
-          )
-        );
-      },
     );
   }
 }
@@ -117,37 +88,38 @@ void _onWidgetDidBuild(Function callback) {
   });
 }
 
-class FAB extends StatelessWidget {
-  final VoidCallback addFoodRecord;
+//class FAB extends StatelessWidget {
+//  final VoidCallback addFoodRecord;
+//
+//  const FAB({Key key, @required this.addFoodRecord}) : super(key: key);
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    final ThemeBloc _themeBloc = BlocProvider.of<ThemeBloc>(context);
+////    final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
+//    return Column(
+//      crossAxisAlignment: CrossAxisAlignment.end,
+//      mainAxisAlignment: MainAxisAlignment.end,
+//      children: <Widget>[
+//        Padding(
+//          padding: EdgeInsets.symmetric(vertical: 5.0),
+//          child: FloatingActionButton(
+//            child: Icon(Icons.add),
+////            onPressed: () => addFoodRecord()
+//            onPressed: addFoodRecord
+//          ),
+//        ),
+//        Padding(
+//          padding: EdgeInsets.symmetric(vertical: 5.0),
+//          child: FloatingActionButton(
+//            child: Icon(Icons.update),
+//            onPressed: () {
+//              _themeBloc.dispatch(ThemeEvent.toggleDarkTheme);
+//            },
+//          ),
+//        ),
+//      ],
+//    );
+//  }
+//}
 
-  const FAB({Key key, @required this.addFoodRecord}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final ThemeBloc _themeBloc = BlocProvider.of<ThemeBloc>(context);
-//    final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 5.0),
-          child: FloatingActionButton(
-            child: Icon(Icons.add),
-//            onPressed: () => addFoodRecord()
-            onPressed: addFoodRecord
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 5.0),
-          child: FloatingActionButton(
-            child: Icon(Icons.update),
-            onPressed: () {
-              _themeBloc.dispatch(ThemeEvent.toggleDarkTheme);
-            },
-          ),
-        ),
-      ],
-    );
-  }
-}

@@ -5,6 +5,9 @@ import 'package:diet_driven/repositories/repositories.dart';
 /// Repositories singleton for simplified repository injection across app.
 /// Blocs still take repositories as parameters for ease of testing.
 /// A new instance of [Repository] is lazily created on first use.
+///
+/// https://stackoverflow.com/questions/12649573/how-do-you-build-a-singleton-in-dart
+/// http://gameprogrammingpatterns.com/singleton.html
 class Repository {
   static final Repository _singleton = new Repository._internal();
 

@@ -97,13 +97,14 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       assert(currentState is FoodDiaryLoaded);
       if (currentState is FoodDiaryLoaded) {
         // TODO: use completer to show snack bar upon completion for undo
-//        try {
+        try {
           diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, event.foodRecord);
+          event.completer?.complete(); // TODO: create uninstantiable built value that events extend
 
           _log.info("${event.foodRecord} deleted");
-//        } on Exception catch(e) {
-//          yield FoodDiaryFailed((b) => b..error = e.toString());
-//        }
+        } on Exception catch(e) {
+          event.completer?.completeError(e);
+        }
       }
     }
     if (event is EditFoodRecord) {
