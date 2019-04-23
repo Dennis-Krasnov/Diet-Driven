@@ -114,13 +114,10 @@ class FirestoreProvider {
 
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
 
-    // TODO: remove $: "FoodRecord" field
-    var fr = fsFoodRecord.serializeDocument(foodRecord);
-
+    // Must merge, otherwise deletes all other fields in document
     return ref.setData({
-      "foodRecords": FieldValue.arrayUnion([fr.toString()]),
-      "lastUpdated": FieldValueType.serverTimestamp // Not used by application
-    });
+      "foodRecords": FieldValue.arrayUnion([removeDollarSign(fsFoodRecord.serializeDocument(foodRecord))]),
+    }, merge: true);
   }
 
   /// Deletes [FoodRecord] from [FoodDiaryDay] in Firestore.
@@ -144,29 +141,8 @@ class FirestoreProvider {
 
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
 
-    // FIXME: temporary solution can be to re-upload entire food diary day with edited food record
-    // Pros: Faster, don't need to deal with array serialization problems
-    // Cons: Error prone, limited to few people editing at once, redoing FS logic locally,
-
-    // Individual Food Record:
-    // {$: FoodRecord, foodName: yaaay}
-
-    // Built list of Food Records:
-    // {$: list, : [{$: FoodRecord, foodName: yaaay}]}
-
-    // What's stored in Firestore:
-    // foodName: yaaay
-
-    var foodRecordSerialized = fsFoodRecord.serializeDocument(foodRecord);
-    print("FR IS: $foodRecordSerialized");
-    print("FR AS Map<String, dynamic> ${foodRecordSerialized as Map<String, dynamic>}");
-    // TODO: can remove element from map!
-
-    // use reflection to set `$` field to null, hope it doesn't show up in firestore
-
     return ref.updateData({
-      "foodRecords": FieldValue.arrayRemove([foodRecordSerialized]),
-      "lastUpdated": FieldValueType.serverTimestamp // Not used by application
+      "foodRecords": FieldValue.arrayRemove([removeDollarSign(fsFoodRecord.serializeDocument(foodRecord))]),
     });
   }
 
@@ -187,23 +163,16 @@ class FirestoreProvider {
 
     DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
 
-    // Must be done as two separate update operations, wire batch treats them as one.
-    final WriteBatch batch = _firestore.batch();
-
-    // TODO:
-//    var fr = fsFoodRecord.serializeDocument(foodRecord);
-//    print("FR IS $fr");
-
-    batch.updateData(ref, <String, dynamic>{
-      "foodRecords": FieldValue.arrayRemove([oldRecord])
+    // Batch operation only slows this down
+    // Intentional race condition since old != new
+    // Only flaw if one fails, but the other succeeds, but is very unlikely
+    ref.updateData(<String, dynamic>{
+      "foodRecords": FieldValue.arrayRemove([removeDollarSign(fsFoodRecord.serializeDocument(oldRecord))])
     });
 
-    batch.updateData(ref, <String, dynamic>{
-      "foodRecords": FieldValue.arrayUnion([newRecord]),
-      "lastUpdated": FieldValueType.serverTimestamp // Not used by application
+    ref.updateData(<String, dynamic>{
+      "foodRecords": FieldValue.arrayUnion([removeDollarSign(fsFoodRecord.serializeDocument(newRecord))]),
     });
-
-    return batch.commit();
   }
 
   ///    ######  ######## ######## ######## #### ##    ##  ######    ######
@@ -300,4 +269,13 @@ class FS<T> {
     var snapshotResult = await snapshot;
     return BuiltList<T>.from(snapshotResult.documents.map((doc) => jsonSerializers.deserialize(_dataWithId(doc))));
   }
+}
+
+/// Remove `$` field specifying type from serialized data to ensure consistency.
+/// Serializing single built value adds `$` field specifying type - {$: FoodRecord, foodName: Apple}
+/// Built value also serializes sub fields without `$` - foodName: Apple}
+/// [serializedValue] stored internally as [_InternalLinkedHashMap].
+Map<String, dynamic> removeDollarSign(Object serializedValue) {
+    // https://github.com/flutter/flutter/issues/16589#issuecomment-390343331
+    return Map<String, dynamic>.from(serializedValue)..remove("\$");
 }

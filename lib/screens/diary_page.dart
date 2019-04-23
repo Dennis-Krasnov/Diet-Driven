@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
@@ -18,28 +20,6 @@ class DiaryPage extends StatefulWidget {
 class _DiaryPageState extends State<DiaryPage> {
   FoodDiaryBloc get _foodDiaryBloc => widget.foodDiaryBloc;
 
-//  @override
-//  void initState() {
-//    super.initState();
-
-    // Create local bloc instance if no bloc was injected
-    // FIXME: should somehow know about user, repository!!
-//    _foodDiaryBloc = widget.foodDiaryBloc ?? FoodDiaryBloc(diaryRepository: diaryRepository, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124);
-//    _foodDiaryBloc = widget.foodDiaryBloc ?? FoodDiaryBloc(diaryRepository: DiaryRepository(), userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124);
-//  }
-
-  // TODOCUMENT: not disposing at all!
-
-//  @override
-//  void dispose() {
-    // Dispose local bloc instance
-//    if (!isInjectedBloc) {
-//      _foodDiaryBloc.dispose();
-//    }
-
-//    super.dispose();
-//  }
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
@@ -57,12 +37,26 @@ class _DiaryPageState extends State<DiaryPage> {
             body: Center(
               child: Column(
                 children: state.foodDiaryDay.foodRecords.map((foodRecord) =>
-                 // TODO: pass on update callback
-                  FoodRecordTile(foodRecord, () => _foodDiaryBloc.dispatch(DeleteFoodRecord((b) => b..foodRecord = foodRecord.toBuilder())))
+                  FoodRecordTile(
+                    foodRecord,
+                    deleteFoodRecord: () => _foodDiaryBloc.dispatch(DeleteFoodRecord((b) => b
+                      ..foodRecord = foodRecord.toBuilder()
+                    )),
+                    editFoodRecord: (newRecord) => _foodDiaryBloc.dispatch(EditFoodRecord((b) => b
+                      ..oldRecord = foodRecord.toBuilder()
+                      ..newRecord = newRecord.toBuilder()
+                    )),
+                  )
                 ).toList(),
               ),
             ),
-            floatingActionButton: FAB(),
+            floatingActionButton: FAB(addFoodRecord: () =>
+              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
+                ..foodRecord = FoodRecord((b) => b
+                  ..foodName = "IT'S NEW ${Random().nextInt(200)}"
+                ).toBuilder()
+              ))
+            ),
           );
         }
       }
@@ -72,10 +66,14 @@ class _DiaryPageState extends State<DiaryPage> {
 
 class FoodRecordTile extends StatelessWidget {
   final FoodRecord foodRecord;
-  final VoidCallback deleteFoodRecord; // TODO: named param
+  final VoidCallback deleteFoodRecord;
+  final void Function(FoodRecord) editFoodRecord;
 
-  FoodRecordTile(this.foodRecord, this.deleteFoodRecord);
+  // alternatively:
+//  typedef Int2VoidFunc = void Function(int);
+// or: typedef void Int2VoidFunc(int arg);
 
+  FoodRecordTile(this.foodRecord, {@required this.deleteFoodRecord, @required this.editFoodRecord});
   @override
   Widget build(BuildContext context) {
     return ListTile(
@@ -85,9 +83,9 @@ class FoodRecordTile extends StatelessWidget {
       ),
       title: Text(foodRecord.foodName),
       subtitle: Text("50 grams"),
-      onTap: () {
-        
-      },
+      onTap: () => editFoodRecord(foodRecord.rebuild((b) => b
+        ..foodName = "IT'S NEW ${Random().nextInt(200)}"
+      )),
     );
   }
 }
@@ -100,6 +98,10 @@ void _onWidgetDidBuild(Function callback) {
 }
 
 class FAB extends StatelessWidget {
+  final VoidCallback addFoodRecord;
+
+  const FAB({Key key, @required this.addFoodRecord}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final ThemeBloc _themeBloc = BlocProvider.of<ThemeBloc>(context);
@@ -113,20 +115,8 @@ class FAB extends StatelessWidget {
           padding: EdgeInsets.symmetric(vertical: 5.0),
           child: FloatingActionButton(
             child: Icon(Icons.add),
-            onPressed: () {
-              // TODO: create diary day bloc!
-//              _foodDiaryBloc.dispatch(AddFoodRecord((b) => b..foodRecord = FoodRecord((b) => b..foodName = "##@").toBuilder()));
-//                _counterBloc.dispatch(CounterEvent.increment);
-            },
-          ),
-        ),
-        Padding(
-          padding: EdgeInsets.symmetric(vertical: 5.0),
-          child: FloatingActionButton(
-            child: Icon(Icons.remove),
-            onPressed: () {
-//              _foodDiaryBloc.dispatch(LoadFoodRecordDays());
-            },
+//            onPressed: () => addFoodRecord()
+            onPressed: addFoodRecord
           ),
         ),
         Padding(

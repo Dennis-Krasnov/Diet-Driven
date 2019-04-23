@@ -6,7 +6,8 @@ import 'package:diet_driven/models/models.dart';
 /// Edamam nutrition api.
 /// https://www.edamam.com/
 class EdamamProvider {
-  String appKey = "88fbceb07e4fa287b47fefa3db2004f3"; // FIXME
+  // FIXME + document what I need to specify to get started - firebase.json and this + configure code magic
+  String appKey = "88fbceb07e4fa287b47fefa3db2004f3";
   String appId = "1c25cea1";
 
   static BaseOptions options = new BaseOptions(

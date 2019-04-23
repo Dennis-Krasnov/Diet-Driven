@@ -27,7 +27,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch);
+    _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch).doOnData((data) => print(" DATA: $data"));
 
     // OPTIMIZE: alternative for food diary and user data combine:
     // combine into a stream of RemoteDiaryDayArrived, listen and dispatch it directly
@@ -121,7 +121,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       if (currentState is FoodDiaryLoaded) {
         // TODO: use completer to show snack bar upon completion for undo
 //        try {
-          diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord);
+          diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, event.foodRecord);
 
           _log.info("${event.foodRecord} deleted");
 //        } on Exception catch(e) {
