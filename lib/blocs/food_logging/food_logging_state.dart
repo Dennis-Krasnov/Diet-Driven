@@ -4,51 +4,37 @@ import 'package:diet_driven/models/models.dart';
 
 part 'food_logging_state.g.dart';
 
-/// Common fields across all selection modes.
-abstract class FoodLoggingState {
+/// Food logging for both single and multi selection mode.
+/// Viewing detailed food record details sets selectedFoodRecords as [selectedFoodRecord].
+abstract class FoodLoggingState implements Built<FoodLoggingState, FoodLoggingStateBuilder> {
+  ///
   int get meal;
 
+  /// Currently selected food records.
+  /// While in single selection mode, only a single food record may be selected at a time (by viewing food info).
+  /// Selected food records are lost when cancelling multi-selection mode.
+  BuiltList<FoodRecord> get selectedFoodRecords;
+
+  /// Whether multiple food selection mode is on.
+  bool get multiSelect;
+
+  /// Results for each tab are lists instead of streams as it would be odd if results changed while browsing.
+  /// Each result is initially null, must separately call `load...` TODOCUMENT
+
+  ///
   @nullable
   BuiltList<FoodRecord> get recentResults;
 
+  ///
   @nullable
   BuiltList<FoodRecord> get popularResults;
 
+  ///
   @nullable
   BuiltList<FoodRecord> get favoriteResults;
 
-
-//  List<FoodRecord> get selectedFoodRecords => [
-//    if (state is FoodLoggingSingleSelect)
-//      state.selectedFoodRecord,
-//    if (state is FoodLoggingMultiSelect)
-//      ...state.selectedFoodRecords,
-//  ];
-  BuiltList<FoodRecord> getSelectedFoodRecords();
   // TODO: others
-}
 
-/// Food logging, single-selection mode.
-/// Viewing detailed food record details sets it as [selectedFoodRecord].
-abstract class FoodLoggingSingleSelect with FoodLoggingState implements Built<FoodLoggingSingleSelect, FoodLoggingSingleSelectBuilder> {
-  @nullable
-  FoodRecord get selectedFoodRecord;
-
-  BuiltList<FoodRecord> getSelectedFoodRecords() => BuiltList([
-    if (selectedFoodRecord != null)
-      selectedFoodRecord
-  ]);
-
-  FoodLoggingSingleSelect._();
-  factory FoodLoggingSingleSelect([updates(FoodLoggingSingleSelectBuilder b)]) = _$FoodLoggingSingleSelect;
-}
-
-/// Food logging, multi-selection mode.
-abstract class FoodLoggingMultiSelect with FoodLoggingState implements Built<FoodLoggingMultiSelect, FoodLoggingMultiSelectBuilder> {
-  BuiltList<FoodRecord> get selectedFoodRecords;
-
-  BuiltList<FoodRecord> getSelectedFoodRecords() => selectedFoodRecords;
-
-  FoodLoggingMultiSelect._();
-  factory FoodLoggingMultiSelect([updates(FoodLoggingMultiSelectBuilder b)]) = _$FoodLoggingMultiSelect;
+  FoodLoggingState._();
+  factory FoodLoggingState([updates(FoodLoggingStateBuilder b)]) = _$FoodLoggingState;
 }

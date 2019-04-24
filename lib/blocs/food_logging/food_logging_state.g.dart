@@ -6,11 +6,13 @@ part of 'food_logging_state.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$FoodLoggingSingleSelect extends FoodLoggingSingleSelect {
-  @override
-  final FoodRecord selectedFoodRecord;
+class _$FoodLoggingState extends FoodLoggingState {
   @override
   final int meal;
+  @override
+  final BuiltList<FoodRecord> selectedFoodRecords;
+  @override
+  final bool multiSelect;
   @override
   final BuiltList<FoodRecord> recentResults;
   @override
@@ -18,37 +20,45 @@ class _$FoodLoggingSingleSelect extends FoodLoggingSingleSelect {
   @override
   final BuiltList<FoodRecord> favoriteResults;
 
-  factory _$FoodLoggingSingleSelect(
-          [void Function(FoodLoggingSingleSelectBuilder) updates]) =>
-      (new FoodLoggingSingleSelectBuilder()..update(updates)).build();
+  factory _$FoodLoggingState(
+          [void Function(FoodLoggingStateBuilder) updates]) =>
+      (new FoodLoggingStateBuilder()..update(updates)).build();
 
-  _$FoodLoggingSingleSelect._(
-      {this.selectedFoodRecord,
-      this.meal,
+  _$FoodLoggingState._(
+      {this.meal,
+      this.selectedFoodRecords,
+      this.multiSelect,
       this.recentResults,
       this.popularResults,
       this.favoriteResults})
       : super._() {
     if (meal == null) {
-      throw new BuiltValueNullFieldError('FoodLoggingSingleSelect', 'meal');
+      throw new BuiltValueNullFieldError('FoodLoggingState', 'meal');
+    }
+    if (selectedFoodRecords == null) {
+      throw new BuiltValueNullFieldError(
+          'FoodLoggingState', 'selectedFoodRecords');
+    }
+    if (multiSelect == null) {
+      throw new BuiltValueNullFieldError('FoodLoggingState', 'multiSelect');
     }
   }
 
   @override
-  FoodLoggingSingleSelect rebuild(
-          void Function(FoodLoggingSingleSelectBuilder) updates) =>
+  FoodLoggingState rebuild(void Function(FoodLoggingStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  FoodLoggingSingleSelectBuilder toBuilder() =>
-      new FoodLoggingSingleSelectBuilder()..replace(this);
+  FoodLoggingStateBuilder toBuilder() =>
+      new FoodLoggingStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodLoggingSingleSelect &&
-        selectedFoodRecord == other.selectedFoodRecord &&
+    return other is FoodLoggingState &&
         meal == other.meal &&
+        selectedFoodRecords == other.selectedFoodRecords &&
+        multiSelect == other.multiSelect &&
         recentResults == other.recentResults &&
         popularResults == other.popularResults &&
         favoriteResults == other.favoriteResults;
@@ -58,7 +68,9 @@ class _$FoodLoggingSingleSelect extends FoodLoggingSingleSelect {
   int get hashCode {
     return $jf($jc(
         $jc(
-            $jc($jc($jc(0, selectedFoodRecord.hashCode), meal.hashCode),
+            $jc(
+                $jc($jc($jc(0, meal.hashCode), selectedFoodRecords.hashCode),
+                    multiSelect.hashCode),
                 recentResults.hashCode),
             popularResults.hashCode),
         favoriteResults.hashCode));
@@ -66,9 +78,10 @@ class _$FoodLoggingSingleSelect extends FoodLoggingSingleSelect {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('FoodLoggingSingleSelect')
-          ..add('selectedFoodRecord', selectedFoodRecord)
+    return (newBuiltValueToStringHelper('FoodLoggingState')
           ..add('meal', meal)
+          ..add('selectedFoodRecords', selectedFoodRecords)
+          ..add('multiSelect', multiSelect)
           ..add('recentResults', recentResults)
           ..add('popularResults', popularResults)
           ..add('favoriteResults', favoriteResults))
@@ -76,177 +89,13 @@ class _$FoodLoggingSingleSelect extends FoodLoggingSingleSelect {
   }
 }
 
-class FoodLoggingSingleSelectBuilder
-    implements
-        Builder<FoodLoggingSingleSelect, FoodLoggingSingleSelectBuilder> {
-  _$FoodLoggingSingleSelect _$v;
-
-  FoodRecordBuilder _selectedFoodRecord;
-  FoodRecordBuilder get selectedFoodRecord =>
-      _$this._selectedFoodRecord ??= new FoodRecordBuilder();
-  set selectedFoodRecord(FoodRecordBuilder selectedFoodRecord) =>
-      _$this._selectedFoodRecord = selectedFoodRecord;
+class FoodLoggingStateBuilder
+    implements Builder<FoodLoggingState, FoodLoggingStateBuilder> {
+  _$FoodLoggingState _$v;
 
   int _meal;
   int get meal => _$this._meal;
   set meal(int meal) => _$this._meal = meal;
-
-  ListBuilder<FoodRecord> _recentResults;
-  ListBuilder<FoodRecord> get recentResults =>
-      _$this._recentResults ??= new ListBuilder<FoodRecord>();
-  set recentResults(ListBuilder<FoodRecord> recentResults) =>
-      _$this._recentResults = recentResults;
-
-  ListBuilder<FoodRecord> _popularResults;
-  ListBuilder<FoodRecord> get popularResults =>
-      _$this._popularResults ??= new ListBuilder<FoodRecord>();
-  set popularResults(ListBuilder<FoodRecord> popularResults) =>
-      _$this._popularResults = popularResults;
-
-  ListBuilder<FoodRecord> _favoriteResults;
-  ListBuilder<FoodRecord> get favoriteResults =>
-      _$this._favoriteResults ??= new ListBuilder<FoodRecord>();
-  set favoriteResults(ListBuilder<FoodRecord> favoriteResults) =>
-      _$this._favoriteResults = favoriteResults;
-
-  FoodLoggingSingleSelectBuilder();
-
-  FoodLoggingSingleSelectBuilder get _$this {
-    if (_$v != null) {
-      _selectedFoodRecord = _$v.selectedFoodRecord?.toBuilder();
-      _meal = _$v.meal;
-      _recentResults = _$v.recentResults?.toBuilder();
-      _popularResults = _$v.popularResults?.toBuilder();
-      _favoriteResults = _$v.favoriteResults?.toBuilder();
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(FoodLoggingSingleSelect other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$FoodLoggingSingleSelect;
-  }
-
-  @override
-  void update(void Function(FoodLoggingSingleSelectBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$FoodLoggingSingleSelect build() {
-    _$FoodLoggingSingleSelect _$result;
-    try {
-      _$result = _$v ??
-          new _$FoodLoggingSingleSelect._(
-              selectedFoodRecord: _selectedFoodRecord?.build(),
-              meal: meal,
-              recentResults: _recentResults?.build(),
-              popularResults: _popularResults?.build(),
-              favoriteResults: _favoriteResults?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'selectedFoodRecord';
-        _selectedFoodRecord?.build();
-
-        _$failedField = 'recentResults';
-        _recentResults?.build();
-        _$failedField = 'popularResults';
-        _popularResults?.build();
-        _$failedField = 'favoriteResults';
-        _favoriteResults?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'FoodLoggingSingleSelect', _$failedField, e.toString());
-      }
-      rethrow;
-    }
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$FoodLoggingMultiSelect extends FoodLoggingMultiSelect {
-  @override
-  final BuiltList<FoodRecord> selectedFoodRecords;
-  @override
-  final int meal;
-  @override
-  final BuiltList<FoodRecord> recentResults;
-  @override
-  final BuiltList<FoodRecord> popularResults;
-  @override
-  final BuiltList<FoodRecord> favoriteResults;
-
-  factory _$FoodLoggingMultiSelect(
-          [void Function(FoodLoggingMultiSelectBuilder) updates]) =>
-      (new FoodLoggingMultiSelectBuilder()..update(updates)).build();
-
-  _$FoodLoggingMultiSelect._(
-      {this.selectedFoodRecords,
-      this.meal,
-      this.recentResults,
-      this.popularResults,
-      this.favoriteResults})
-      : super._() {
-    if (selectedFoodRecords == null) {
-      throw new BuiltValueNullFieldError(
-          'FoodLoggingMultiSelect', 'selectedFoodRecords');
-    }
-    if (meal == null) {
-      throw new BuiltValueNullFieldError('FoodLoggingMultiSelect', 'meal');
-    }
-  }
-
-  @override
-  FoodLoggingMultiSelect rebuild(
-          void Function(FoodLoggingMultiSelectBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  FoodLoggingMultiSelectBuilder toBuilder() =>
-      new FoodLoggingMultiSelectBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is FoodLoggingMultiSelect &&
-        selectedFoodRecords == other.selectedFoodRecords &&
-        meal == other.meal &&
-        recentResults == other.recentResults &&
-        popularResults == other.popularResults &&
-        favoriteResults == other.favoriteResults;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(
-        $jc(
-            $jc($jc($jc(0, selectedFoodRecords.hashCode), meal.hashCode),
-                recentResults.hashCode),
-            popularResults.hashCode),
-        favoriteResults.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('FoodLoggingMultiSelect')
-          ..add('selectedFoodRecords', selectedFoodRecords)
-          ..add('meal', meal)
-          ..add('recentResults', recentResults)
-          ..add('popularResults', popularResults)
-          ..add('favoriteResults', favoriteResults))
-        .toString();
-  }
-}
-
-class FoodLoggingMultiSelectBuilder
-    implements Builder<FoodLoggingMultiSelect, FoodLoggingMultiSelectBuilder> {
-  _$FoodLoggingMultiSelect _$v;
 
   ListBuilder<FoodRecord> _selectedFoodRecords;
   ListBuilder<FoodRecord> get selectedFoodRecords =>
@@ -254,9 +103,9 @@ class FoodLoggingMultiSelectBuilder
   set selectedFoodRecords(ListBuilder<FoodRecord> selectedFoodRecords) =>
       _$this._selectedFoodRecords = selectedFoodRecords;
 
-  int _meal;
-  int get meal => _$this._meal;
-  set meal(int meal) => _$this._meal = meal;
+  bool _multiSelect;
+  bool get multiSelect => _$this._multiSelect;
+  set multiSelect(bool multiSelect) => _$this._multiSelect = multiSelect;
 
   ListBuilder<FoodRecord> _recentResults;
   ListBuilder<FoodRecord> get recentResults =>
@@ -276,12 +125,13 @@ class FoodLoggingMultiSelectBuilder
   set favoriteResults(ListBuilder<FoodRecord> favoriteResults) =>
       _$this._favoriteResults = favoriteResults;
 
-  FoodLoggingMultiSelectBuilder();
+  FoodLoggingStateBuilder();
 
-  FoodLoggingMultiSelectBuilder get _$this {
+  FoodLoggingStateBuilder get _$this {
     if (_$v != null) {
-      _selectedFoodRecords = _$v.selectedFoodRecords?.toBuilder();
       _meal = _$v.meal;
+      _selectedFoodRecords = _$v.selectedFoodRecords?.toBuilder();
+      _multiSelect = _$v.multiSelect;
       _recentResults = _$v.recentResults?.toBuilder();
       _popularResults = _$v.popularResults?.toBuilder();
       _favoriteResults = _$v.favoriteResults?.toBuilder();
@@ -291,26 +141,27 @@ class FoodLoggingMultiSelectBuilder
   }
 
   @override
-  void replace(FoodLoggingMultiSelect other) {
+  void replace(FoodLoggingState other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$FoodLoggingMultiSelect;
+    _$v = other as _$FoodLoggingState;
   }
 
   @override
-  void update(void Function(FoodLoggingMultiSelectBuilder) updates) {
+  void update(void Function(FoodLoggingStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$FoodLoggingMultiSelect build() {
-    _$FoodLoggingMultiSelect _$result;
+  _$FoodLoggingState build() {
+    _$FoodLoggingState _$result;
     try {
       _$result = _$v ??
-          new _$FoodLoggingMultiSelect._(
-              selectedFoodRecords: selectedFoodRecords.build(),
+          new _$FoodLoggingState._(
               meal: meal,
+              selectedFoodRecords: selectedFoodRecords.build(),
+              multiSelect: multiSelect,
               recentResults: _recentResults?.build(),
               popularResults: _popularResults?.build(),
               favoriteResults: _favoriteResults?.build());
@@ -328,7 +179,7 @@ class FoodLoggingMultiSelectBuilder
         _favoriteResults?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'FoodLoggingMultiSelect', _$failedField, e.toString());
+            'FoodLoggingState', _$failedField, e.toString());
       }
       rethrow;
     }

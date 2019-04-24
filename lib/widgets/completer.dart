@@ -2,18 +2,22 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-//    Scaffold.of(context).hideCurrentSnackBar();
-
 // TODO: confirmation page, if confirms, calls passed action
 
-Completer<void> infoSnackBarCompleter(BuildContext context, String successMessage, {bool shouldPop = false}) {
+Completer<void> infoSnackBarCompleter(BuildContext context, String successMessage, {int popNTimes = 0}) {
+  assert(context != null);
+  assert(successMessage != null && successMessage.isNotEmpty);
+  assert(popNTimes >= 0);
+
   final Completer<void> completer = Completer<void>();
 
   completer.future.then((_) {
-    if (shouldPop) {
+    while (popNTimes > 0) {
       Navigator.of(context).pop();
+      popNTimes--;
     }
 
+    Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(SnackBar(
       content: Text(successMessage)
     ));
@@ -29,14 +33,20 @@ Completer<void> infoSnackBarCompleter(BuildContext context, String successMessag
 }
 
 Completer<void> undoSnackBarCompleter(BuildContext context, String successMessage,
-    {VoidCallback onUndo, bool shouldPop = false}) {
+    {VoidCallback onUndo, int popNTimes = 0}) {
+  assert(context != null);
+  assert(successMessage != null && successMessage.isNotEmpty);
+  assert(popNTimes >= 0);
+
   final Completer<void> completer = Completer<void>();
 
   completer.future.then((_) {
-    if (shouldPop) {
+    while (popNTimes > 0) {
       Navigator.of(context).pop();
+      popNTimes--;
     }
 
+    Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(SnackBar(
       //key: ArchSampleKeys.snackbar,
       duration: Duration(seconds: 2),

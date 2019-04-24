@@ -6,6 +6,101 @@ part of 'food_logging_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+class _$FetchFoodRecordsResults extends FetchFoodRecordsResults {
+  @override
+  final LoggingTab loggingTab;
+  @override
+  final Completer<void> completer;
+
+  factory _$FetchFoodRecordsResults(
+          [void Function(FetchFoodRecordsResultsBuilder) updates]) =>
+      (new FetchFoodRecordsResultsBuilder()..update(updates)).build();
+
+  _$FetchFoodRecordsResults._({this.loggingTab, this.completer}) : super._() {
+    if (loggingTab == null) {
+      throw new BuiltValueNullFieldError(
+          'FetchFoodRecordsResults', 'loggingTab');
+    }
+  }
+
+  @override
+  FetchFoodRecordsResults rebuild(
+          void Function(FetchFoodRecordsResultsBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  FetchFoodRecordsResultsBuilder toBuilder() =>
+      new FetchFoodRecordsResultsBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is FetchFoodRecordsResults &&
+        loggingTab == other.loggingTab &&
+        completer == other.completer;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, loggingTab.hashCode), completer.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('FetchFoodRecordsResults')
+          ..add('loggingTab', loggingTab)
+          ..add('completer', completer))
+        .toString();
+  }
+}
+
+class FetchFoodRecordsResultsBuilder
+    implements
+        Builder<FetchFoodRecordsResults, FetchFoodRecordsResultsBuilder> {
+  _$FetchFoodRecordsResults _$v;
+
+  LoggingTab _loggingTab;
+  LoggingTab get loggingTab => _$this._loggingTab;
+  set loggingTab(LoggingTab loggingTab) => _$this._loggingTab = loggingTab;
+
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
+  FetchFoodRecordsResultsBuilder();
+
+  FetchFoodRecordsResultsBuilder get _$this {
+    if (_$v != null) {
+      _loggingTab = _$v.loggingTab;
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(FetchFoodRecordsResults other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$FetchFoodRecordsResults;
+  }
+
+  @override
+  void update(void Function(FetchFoodRecordsResultsBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$FetchFoodRecordsResults build() {
+    final _$result = _$v ??
+        new _$FetchFoodRecordsResults._(
+            loggingTab: loggingTab, completer: completer);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$AddToSelection extends AddToSelection {
   @override
   final FoodRecord foodRecord;

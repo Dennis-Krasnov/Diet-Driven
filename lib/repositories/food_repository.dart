@@ -23,6 +23,19 @@ class FoodRepository {
     return _edamamProvider.searchForFood(search);
   }
 
+  /// Fetches [BuiltList] of [userId]'s most recent [FoodRecord]s from Firestore.
+  /// 'recentFoodRecords(userId, daysSinceEpoch)` is called for every diary day from [DiaryBloc].
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  /// Returns [null] if Firestore document doesn't exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Future<BuiltList<FoodRecord>> recentFoodRecords(String userId) {
+    assert(userId != null && userId.isNotEmpty);
+
+    return _firestoreProvider.recentFoodRecords(userId);
+  }
+  // TODO: others!
+
   /// Fetches more detailed version of [FoodRecord].
   /// TODO: where called from
   ///

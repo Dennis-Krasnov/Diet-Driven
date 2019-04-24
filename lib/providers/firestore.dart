@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:rxdart/rxdart.dart';
@@ -155,6 +157,42 @@ class FirestoreProvider {
     });
 
     // TODO: await both for exception handling (Future.wait([]))
+  }
+
+  ///   ########  #######   #######  ########     ##        #######   ######    ######   #### ##    ##  ######
+  ///   ##       ##     ## ##     ## ##     ##    ##       ##     ## ##    ##  ##    ##   ##  ###   ## ##    ##
+  ///   ##       ##     ## ##     ## ##     ##    ##       ##     ## ##        ##         ##  ####  ## ##
+  ///   ######   ##     ## ##     ## ##     ##    ##       ##     ## ##   #### ##   ####  ##  ## ## ## ##   ####
+  ///   ##       ##     ## ##     ## ##     ##    ##       ##     ## ##    ##  ##    ##   ##  ##  #### ##    ##
+  ///   ##       ##     ## ##     ## ##     ##    ##       ##     ## ##    ##  ##    ##   ##  ##   ### ##    ##
+  ///   ##        #######   #######  ########     ########  #######   ######    ######   #### ##    ##  ######
+
+  /// OLD: Fetches [BuiltList] of [userId]'s [n] most recent [FoodRecord]s from Firestore.
+
+
+  /// Fetches [BuiltList] of [userId]'s most recent [FoodRecord]s from Firestore.
+  /// 'recentFoodRecords(userId, daysSinceEpoch)` is called for every diary day from [DiaryBloc].
+  ///
+  /// Fetches from aggregate /users/... TODO
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  /// Returns [null] if Firestore document doesn't exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Future<BuiltList<FoodRecord>> recentFoodRecords(String userId) {
+    assert(userId != null && userId.isNotEmpty);
+
+    BuiltList<FoodRecord> randomFoodRecords = BuiltList(
+      List<FoodRecord>.generate(
+        2 + Random().nextInt(8),
+        (int index) => FoodRecord((b) => b
+          ..foodName = "Some food #$index"
+          ..quantity = Random().nextInt(100)
+        )
+      )
+    );
+
+    // FIXME
+    return Future.value(randomFoodRecords);
   }
 
   ///    ######  ######## ######## ######## #### ##    ##  ######    ######

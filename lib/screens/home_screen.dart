@@ -132,6 +132,8 @@ class TestPage extends StatelessWidget {
           child: RaisedButton(
             child: Text('logout'),
             onPressed: () {
+              Repository().user.signOut();
+              // TODO: completer + through bloc
 //              authenticationBloc.dispatch(SignsOut()); // FIXME: call auth repository's sign out instead!!!
             },
           )

@@ -10,10 +10,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FoodLogging extends StatefulWidget {
-  final void Function(FoodRecord) addFoodRecord;
-
-  const FoodLogging({Key key, @required this.addFoodRecord}) : super(key: key);
-
   @override
   _FoodLoggingState createState() => _FoodLoggingState();
 }
@@ -34,11 +30,12 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
       userId: userId,
       daysSinceEpoch: daysSinceEpoch,
       meal: 0,
+      startWithMultiSelect: false, // TODO: take from settings!
       diaryRepository: Repository().diary,
       foodRepository: Repository().food
     );
 
-    _tabController = TabController(vsync: this, length: 3);
+    _tabController = TabController(vsync: this, length: 3); // TODO: take tabs from settings!
   }
 
   @override
@@ -53,23 +50,17 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
     return BlocBuilder(
       bloc: _foodLoggingBloc,
       builder: (BuildContext context, FoodLoggingState state) {
-        bool multiSelect = state is FoodLoggingMultiSelect;
-        String selectionType = multiSelect ? "multi-select" : "single-select";
+        String selectionType = state.multiSelect ? "multi-select" : "single-select";
 
-        List<LoggingTab> tabs = [LoggingTab.recent, LoggingTab.popular, LoggingTab.favorite];
+        List<LoggingTab> tabs = [LoggingTab.recent, LoggingTab.popular, LoggingTab.favorite]; // TODO: take tabs from settings!
 
-        String title;
-        if (state is FoodLoggingMultiSelect) {
-          int length = state.selectedFoodRecords.length;
-          title = length > 0 ? "$length selected" : "select foods";
-        }
-        else {
-          title = "MEAL: ${state.meal}"; // access list of meal names from BlocProvider<FoodDiary> of context 's diet field!
-        }
+        String title = state.multiSelect
+          ? (state.selectedFoodRecords.length > 0 ? "${state.selectedFoodRecords.length} selected" : "select foods")
+          : "MEAL: ${state.meal}"; // access list of meal names from BlocProvider<FoodDiary> of context 's diet field!
 
         return Scaffold(
           appBar: AppBar(
-            leading: multiSelect
+            leading: state.multiSelect
               ? IconButton(
                   icon: Icon(Icons.close),
                   onPressed: () => _foodLoggingBloc.dispatch(CancelMultiSelect()),
@@ -85,7 +76,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
               ]
             ),
             actions: <Widget>[
-              if (!multiSelect)
+              if (!state.multiSelect)
                 IconButton(
                   icon: Icon(Icons.select_all),
                   onPressed: () => _foodLoggingBloc.dispatch(StartMultiSelect()),
@@ -103,76 +94,69 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
             controller: _tabController,
             children: [
               for (var loggingTab in tabs)
-                ListView(
-                  children: <Widget>[
-                    for (var foodRecordResult in loggingTabToResults(loggingTab))
-                      if (multiSelect)
-                        CheckboxListTile( // TODO: normal list tile, trailing checkbox!
-                          title: Text("$selectionType $loggingTab result $foodRecordResult"),
-                          value: _foodLoggingBloc.currentState.getSelectedFoodRecords().contains(foodRecordResult),
-//                          onTap: details
-                          onChanged: (bool value) {
-                            if (value) {
+                // OPTIMIZE: store result of loggingTabToResults(loggingTab) so I don't call it twice in a row
+                if (loggingTabToResults(loggingTab) == null)
+                  LoadingAlsoFetches(
+                    loggingTab: loggingTab,
+                    callOnLoad: () => _foodLoggingBloc.dispatch(FetchFoodRecordsResults((b) => b
+                      ..loggingTab = loggingTab
+                      // Avoiding error state using completer FIXME: says it's not in a scaffold...
+//                      ..completer = infoSnackBarCompleter(
+//                        context,
+//                        "loaded $loggingTab",
+//                      )
+                    )),
+                  )
+                else
+                  ListView(
+                    children: <Widget>[
+                      for (var foodRecordResult in loggingTabToResults(loggingTab))
+                        if (state.multiSelect)
+                          CheckboxListTile( // TODO: normal list tile, trailing checkbox!
+                            title: Text("$selectionType $loggingTab result $foodRecordResult"),
+                            value: _foodLoggingBloc.currentState.selectedFoodRecords.contains(foodRecordResult),
+  //                          onTap: details
+                            onChanged: (bool value) {
+                              if (value) {
+                                _foodLoggingBloc.dispatch(AddToSelection((b) => b
+                                  ..foodRecord = foodRecordResult.toBuilder()
+                                ));
+                              }
+                              else {
+                                _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
+                                  ..foodRecord = foodRecordResult.toBuilder()
+                                ));
+                              }
+                            },
+                          )
+                        else
+                          ListTile(
+                            title: Text("$selectionType $loggingTab result $foodRecordResult"),
+                            onTap: null,
+                            onLongPress: () {
+                              _foodLoggingBloc.dispatch(StartMultiSelect());
                               _foodLoggingBloc.dispatch(AddToSelection((b) => b
                                 ..foodRecord = foodRecordResult.toBuilder()
                               ));
                             }
-                            else {
-                              _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
-                                ..foodRecord = foodRecordResult.toBuilder()
-                              ));
-                            }
-                          },
-                        )
-                      else
-                        ListTile(
-                          title: Text("$selectionType $loggingTab result $foodRecordResult"),
-                          onTap: null,
-                          onLongPress: () {
-                            _foodLoggingBloc.dispatch(StartMultiSelect());
-                            _foodLoggingBloc.dispatch(AddToSelection((b) => b
-                              ..foodRecord = foodRecordResult.toBuilder()
-                            ));
-                          }
-                        )
-                  ],
-                )
+                          )
+                    ],
+                  )
             ],
           ),
-          floatingActionButton: _foodLoggingBloc.currentState.getSelectedFoodRecords().isNotEmpty
+          floatingActionButton: _foodLoggingBloc.currentState.selectedFoodRecords.isNotEmpty
             ? FloatingActionButton(
                 child: Icon(Icons.check),
                 onPressed: () => _foodLoggingBloc.dispatch(SaveSelection((b) => b
                   ..completer = infoSnackBarCompleter(
                     context,
-                    "success",
-                    shouldPop: true
+                    state.multiSelect ? "${state.selectedFoodRecords.length} food records saved" : "food record saved",
+                    // Single select is completed from within food record info
+                    popNTimes: state.multiSelect ? 1 : 0
                   )
                 ))
               )
             : null,
-
-
-//        Expanded(
-//          child: SliverList(
-//            delegate: SliverChildListDelegate([
-////                    Icon(loggingTabToIcon(loggingTab)),
-//              Container(color: Colors.red, height: 150.0),
-//              Container(color: Colors.purple, height: 150.0),
-//              Container(color: Colors.green, height: 150.0),
-//            ]),
-//          )
-//        )
-//          Center(
-//            child: Column(
-//              // TODO: create separate list tile, but for selection mode (boolean for selected!)
-//              children: randomFoodRecords.map((foodRecord) => FoodRecordTile(
-//                foodRecord,
-//                deleteFoodRecord: null, // instead: field to specify before widget - can be button!
-//                editFoodRecord: null, // rename on tap TODO: (mirror/extend listTile!)
-//              )).toList(),
-//            ),
-//          ),
         );
       },
     );
@@ -196,6 +180,12 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
         throw Exception("no results was defiend for $loggingTab in loggingTabToResults");
     }
   }
+}
+
+void _onWidgetDidBuild(Function callback) {
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    callback();
+  });
 }
 
 IconData loggingTabToIcon(LoggingTab loggingTab) {
@@ -267,5 +257,19 @@ class CustomSearchDelegate extends SearchDelegate {
   @override
   Widget buildSuggestions(BuildContext context) {
     return Column();
+  }
+}
+
+class LoadingAlsoFetches extends StatelessWidget {
+  final LoggingTab loggingTab;
+  final Function callOnLoad;
+
+  const LoadingAlsoFetches({Key key, this.loggingTab, this.callOnLoad}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // TODO: only load if it's null - at if (loggingTabToResults(loggingTab) == null)
+    _onWidgetDidBuild(callOnLoad);
+    return Center(child: CircularProgressIndicator());
   }
 }

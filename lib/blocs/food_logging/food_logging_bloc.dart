@@ -10,6 +10,7 @@ import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
 
 ///
 class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
@@ -19,13 +20,15 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
   final String userId;
   final int daysSinceEpoch;
   final int meal;
+  final bool startWithMultiSelect;
 
   FoodLoggingBloc({
     @required this.diaryRepository,
     @required this.foodRepository,
     @required this.userId,
     @required this.daysSinceEpoch,
-    @required this.meal
+    @required this.meal,
+    @required this.startWithMultiSelect,
   }) {
     assert(diaryRepository != null);
     assert(foodRepository != null);
@@ -33,157 +36,121 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
     assert(daysSinceEpoch >= 0);
     assert(0 <= meal && meal <= 6);
 
+    // Don't pull more data at end of page, only do so with search & real api.
+    // dont do: switch map (n) => food repo.recent(n) (increment n on end of page - treat each tab separately)
+
+    // TODO: still do this, but do concat eager with all loading in as soon as possible
+    //  if I decide to load all no matter what...
+
+//    CombineLatestStream.combine3(
+//      Observable.fromFuture(foodRepository.recentFoodRecords(userId, 10)),
+//      Observable.fromFuture(foodRepository.recentFoodRecords(userId, 10)), // FIXME
+//      Observable.fromFuture(foodRepository.recentFoodRecords(userId, 10)),
+//      ( BuiltList<FoodRecord> recentFoodRecords,
+//        BuiltList<FoodRecord> popularFoodRecords,
+//        BuiltList<FoodRecord> favoriteFoodRecords) =>
+//          RemoteFoodRecordsArrived((b) => b
+//            ..meal = meal
+//            ..multiSelect = startWithMultiSelect
+//            ..recentFoodRecords = recentFoodRecords
+//            ..popularFoodRecords = popularFoodRecords
+//            ..favoriteFoodRecords = favoriteFoodRecords
+//          ),
+//    );
+//        Observable.fromFuture(foodRepository.recentFoodRecords(userId));
+
+
     // Generate results for all tabs!
   }
 
-  BuiltList<FoodRecord> get randomFoodRecords => BuiltList(
-    List<FoodRecord>.generate(
-      2 + Random().nextInt(5),
-      (int index) => FoodRecord((b) => b
-        ..foodName = "Some food #$index"
-        ..quantity = Random().nextInt(100)
-      )
-    )
-  );
-
   @override
-  FoodLoggingState get initialState => FoodLoggingSingleSelect((b) => b
-    ..meal = meal  // TODO: option to change default (take from settings, pass as param)!
-    ..recentResults = randomFoodRecords.toBuilder()
-    ..popularResults = randomFoodRecords.toBuilder()
-    ..favoriteResults = randomFoodRecords.toBuilder()
+  FoodLoggingState get initialState => FoodLoggingState((b) => b
+    ..meal = meal
+    ..multiSelect = startWithMultiSelect
   );
 
   @override
   Stream<FoodLoggingState> mapEventToState(FoodLoggingEvent event) async* {
-    if (event is AddToSelection) {
-      if (currentState is FoodLoggingSingleSelect) {
-        var state = currentState as FoodLoggingSingleSelect;
+    if (event is FetchFoodRecordsResults) {
+      print("FETCHING!");
+      try {
+//        if (event.loggingTab == LoggingTab.recent) { // FIXME switch case statement
+        if (true) {
+          BuiltList<FoodRecord> recentFoodRecords = await foodRepository.recentFoodRecords(userId);
+          BuiltList<FoodRecord> popularFoodRecords = await foodRepository.recentFoodRecords(userId);
+          BuiltList<FoodRecord> favoriteFoodRecords = await foodRepository.recentFoodRecords(userId);
+          yield currentState.rebuild((b) => b
+            ..recentResults = recentFoodRecords.toBuilder()
+            // FIXME only one at a time
+            ..popularResults = popularFoodRecords.toBuilder()
+            ..favoriteResults = favoriteFoodRecords.toBuilder()
+          );
+        }
+        event.completer?.complete();
 
-        // RemoveFromSelection should remove previously selected food record
-        assert(state.selectedFoodRecord == null);
-
-        yield state.rebuild((b) => b
-          ..selectedFoodRecord = event.foodRecord.toBuilder()
-        );
-      }
-
-      if (currentState is FoodLoggingMultiSelect) {
-        var state = currentState as FoodLoggingMultiSelect;
-
-        yield state.rebuild((b) => b
-          ..selectedFoodRecords = state.selectedFoodRecords.rebuild((b) => b.add(event.foodRecord)).toBuilder()
-        );
+        // TODO: log this and all other events as well
+      } on Exception catch(e) {
+        event.completer?.completeError(e);
       }
     }
 
+    if (event is AddToSelection) {
+      if (!currentState.multiSelect) {
+        assert(currentState.selectedFoodRecords.isEmpty);
+      }
+
+      yield currentState.rebuild((b) => b
+        ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) => b.add(event.foodRecord)).toBuilder()
+      );
+    }
+
     if (event is RemoveFromSelection) {
-      if (currentState is FoodLoggingSingleSelect) {
-        var state = currentState as FoodLoggingSingleSelect;
-
-        // AddToSelection should ensure selected food record exists
-        assert(state.selectedFoodRecord != null);
-
-        yield state.rebuild((b) => b
-          ..selectedFoodRecord = null
-        );
+      if (!currentState.multiSelect) {
+        assert(currentState.selectedFoodRecords.length == 1);
       }
 
-      if (currentState is FoodLoggingMultiSelect) {
-        var state = currentState as FoodLoggingMultiSelect;
-
-        yield state.rebuild((b) => b
-          ..selectedFoodRecords = state.selectedFoodRecords.rebuild((b) => b.remove(event.foodRecord)).toBuilder()
-        );
-      }
+      yield currentState.rebuild((b) => b
+        ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) => b.remove(event.foodRecord)).toBuilder()
+      );
     }
 
     if (event is SaveSelection) {
       try {
-        // TODO: dart 2.3 list if statements
-//        BuiltList<FoodRecord> selectedFoodRecords = BuiltList([
-//          if (currentState is FoodLoggingSingleSelect)
-//            currentState.selectedFoodRecord
-//          if (currentState is FoodLoggingMultiSelect)
-//            ...currentState.selectedFoodRecords
-//        ]);
-
-        // List of all selected food records
-        BuiltList<FoodRecord> selectedFoodRecords = currentState.getSelectedFoodRecords();
-//
-//        if (currentState is FoodLoggingSingleSelect) {
-//          var state = currentState as FoodLoggingSingleSelect;
-//          selectedFoodRecords = selectedFoodRecords.rebuild((b) => b..add(state.selectedFoodRecord));
-//        }
-//
-//        if (currentState is FoodLoggingMultiSelect) {
-//          var state = currentState as FoodLoggingMultiSelect;
-//          selectedFoodRecords = selectedFoodRecords.rebuild((b) => b..addAll(state.selectedFoodRecords));
-//        }
-
         // Save each food record one-by one
-        for (FoodRecord foodRecord in selectedFoodRecords) {
+        for (FoodRecord foodRecord in currentState.selectedFoodRecords) {
           diaryRepository.addFoodRecord(userId, daysSinceEpoch, foodRecord);
         }
         event.completer?.complete();
 
-        _log.info("selection of $selectedFoodRecords saved");
+        _log.info("selection of ${currentState.selectedFoodRecords} saved");
       } on Exception catch(e) {
         event.completer?.completeError(e);
       }
     }
 
     if (event is StartMultiSelect) {
-      assert(currentState is FoodLoggingSingleSelect);
-      if (currentState is FoodLoggingSingleSelect) {
-        var state = currentState as FoodLoggingSingleSelect;
+      assert(!currentState.multiSelect);
+//      assert(currentState.selectedFoodRecords.isEmpty, "Can't enter multi-select with foods selected."); not critical...
 
-        // Shouldn't have a selected food
-        assert(state.selectedFoodRecord == null);
-
-        yield FoodLoggingMultiSelect((b) => b
-          ..meal = currentState.meal
-          ..recentResults = currentState.recentResults.toBuilder()
-          ..popularResults = currentState.popularResults.toBuilder()
-          ..favoriteResults = currentState.favoriteResults.toBuilder()
-        );
-      }
+      yield currentState.rebuild((b) => b
+        ..multiSelect = true
+      );
     }
 
     if (event is CancelMultiSelect) {
-      assert(currentState is FoodLoggingMultiSelect);
-      if (currentState is FoodLoggingMultiSelect) {
-        // Clears currently selected food records!
-        // TODO: show confirmation using completer?!
-        yield FoodLoggingSingleSelect((b) => b
-          ..meal = currentState.meal
-          ..recentResults = currentState.recentResults.toBuilder()
-          ..popularResults = currentState.popularResults.toBuilder()
-          ..favoriteResults = currentState.favoriteResults.toBuilder()
-        );
-      }
+      assert(currentState.multiSelect);
+
+      // TODO: show confirmation using completer if selected food wasn't empty
+      yield currentState.rebuild((b) => b
+        ..multiSelect = false
+        ..selectedFoodRecords = ListBuilder([]) // Cancelling multi-select removes all selected food records.
+      );
     }
 
     if (event is ChangeMeal) {
-      if (currentState is FoodLoggingSingleSelect) {
-        var state = currentState as FoodLoggingSingleSelect;
-
-        yield state.rebuild((b) => b
-          ..meal = event.meal
-//          ..selectedFoodRecord = state.selectedFoodRecord.rebuild((b) => b..meal = event.meal) // TODO
-        );
-      }
-
-      if (currentState is FoodLoggingMultiSelect) {
-        var state = currentState as FoodLoggingMultiSelect;
-
-        yield state.rebuild((b) => b
-          ..meal = event.meal
-//          ..selectedFoodRecords = state.selectedFoodRecords.rebuild((b) => b.map((record) => record.rebuild((b) => b
-//            ..meal = event.meal // TODO
-//          ))).toBuilder()
-        );
-      }
+      yield currentState.rebuild((b) => b
+        ..meal = event.meal
+      );
     }
   }
 }

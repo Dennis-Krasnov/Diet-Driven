@@ -8,6 +8,14 @@ part 'food_logging_events.g.dart';
 
 abstract class FoodLoggingEvent {}
 
+/// Fetches food records based on [loggingTab], populates appropriate results list.
+abstract class FetchFoodRecordsResults with Completable, FoodLoggingEvent implements Built<FetchFoodRecordsResults, FetchFoodRecordsResultsBuilder> {
+  LoggingTab get loggingTab;
+
+  FetchFoodRecordsResults._();
+  factory FetchFoodRecordsResults([updates(FetchFoodRecordsResultsBuilder b)]) = _$FetchFoodRecordsResults;
+}
+
 /// Adds [foodRecord] to current selection.
 abstract class AddToSelection with FoodLoggingEvent implements Built<AddToSelection, AddToSelectionBuilder> {
   FoodRecord get foodRecord;
