@@ -253,12 +253,9 @@ class FirestoreProvider {
 /// Repeated [FS]s are initialized before use to improve readability.
 class FS<T> {
   /// Inserts Firestore document id into [doc] as `_id` field.
-  Map<String, dynamic> _dataWithId(DocumentSnapshot doc) {
-    if (doc == null || doc.data == null) {
-      return null;
-    }
-    return doc.data..putIfAbsent("_id", () => doc.documentID);
-  }
+  ///
+  /// Throws [NoSuchMethodError] if [doc] or [doc.data] is null.
+  Map<String, dynamic> _dataWithId(DocumentSnapshot doc) => doc.data..putIfAbsent("_id", () => doc.documentID);
 
   /// Serializes a single [T] into Firestore-readable JSON.
   ///
@@ -271,11 +268,16 @@ class FS<T> {
 
   /// Deserializes [stream] of [DocumentSnapshot] into stream of [T].
   ///
+  /// Returns null if [doc] or [doc.data] is null.
   /// Throws [DeserializationError] if Firestore data is corrupt.
   Observable<T> deserializeDocument(Stream<DocumentSnapshot> stream) {
-    return Observable(stream).map<T>((doc) =>
-      jsonSerializers.deserialize(_dataWithId(doc))
-    );
+    return Observable(stream).map<T>((doc) {
+      if (doc == null || doc.data == null) {
+        return null;
+      }
+
+      return jsonSerializers.deserialize(_dataWithId(doc));
+    });
   }
 
   /// Deserializes [stream] of [QuerySnapshot] into stream of [BuiltList] of [T].
