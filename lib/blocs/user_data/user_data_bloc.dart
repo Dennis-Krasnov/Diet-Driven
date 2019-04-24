@@ -41,7 +41,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       .distinct();
 
     _userDataEventSubscription = _userDataEventStream.listen((userDataEvent) => dispatch(userDataEvent),
-      onError: (error, trace) => dispatch(UserDataError((b) => b..error = error.toString())),
+      onError: (error, trace) => dispatch(UserDataError((b) => b..error = trace.toString())),
     );
   }
 

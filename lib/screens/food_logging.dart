@@ -123,9 +123,15 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                                 ));
                               }
                               else {
-                                _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
+                                // Exit multiple selection mode if all are unselected
+                                if (_foodLoggingBloc.currentState.selectedFoodRecords.length == 1) {
+                                  _foodLoggingBloc.dispatch(CancelMultiSelect());
+                                }
+                                else {
+                                  _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
                                   ..foodRecord = foodRecordResult.toBuilder()
-                                ));
+                                  ));
+                                }
                               }
                             },
                           )
