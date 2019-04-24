@@ -253,7 +253,12 @@ class FirestoreProvider {
 /// Repeated [FS]s are initialized before use to improve readability.
 class FS<T> {
   /// Inserts Firestore document id into [doc] as `_id` field.
-  Map<String, dynamic> _dataWithId(DocumentSnapshot doc) => doc.data..putIfAbsent("_id", () => doc.documentID);
+  Map<String, dynamic> _dataWithId(DocumentSnapshot doc) {
+    if (doc == null || doc.data == null) {
+      return null;
+    }
+    return doc.data..putIfAbsent("_id", () => doc.documentID);
+  }
 
   /// Serializes a single [T] into Firestore-readable JSON.
   ///
