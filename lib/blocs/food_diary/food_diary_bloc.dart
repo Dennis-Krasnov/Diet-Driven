@@ -27,7 +27,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch).doOnData((data) => print(" DATA: $data"));
+    _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch);//.doOnData((data) => print(" DATA: $data"));
 
     // TODO: diet! -> merge together into event stream -> listen(dispatch)
 
@@ -79,27 +79,29 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
       _log.info("food diary day #${event.foodDiaryDay.date} arrived");
     }
+
     // OPTIMIZE: single try catch around next 3 if statements, if I can make them specific enough as a whole
-    // TODO: don't show blocking error page because of a failed food record operation - simply show error message + retry button using completer
     if (event is AddFoodRecord) {
       assert(currentState is FoodDiaryLoaded);
       if (currentState is FoodDiaryLoaded) {
-//        try {
-        diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord);
+        try {
+          diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord);
+          event.completer?.complete();  // TOTEST
 
-        _log.info("${event.foodRecord} added");
-//        } on Exception catch(e) {
-//          yield FoodDiaryFailed((b) => b..error = e.toString());
-//        }
+          _log.info("${event.foodRecord} added");
+        } on Exception catch(e) {
+          event.completer?.completeError(e);  // TOTEST
+        }
       }
     }
+
     if (event is DeleteFoodRecord) {
       assert(currentState is FoodDiaryLoaded);
       if (currentState is FoodDiaryLoaded) {
         // TODO: use completer to show snack bar upon completion for undo
         try {
           diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, event.foodRecord);
-          event.completer?.complete(); // TODO: create uninstantiable built value that events extend
+          event.completer?.complete();
 
           _log.info("${event.foodRecord} deleted");
         } on Exception catch(e) {
@@ -107,16 +109,18 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         }
       }
     }
+
     if (event is EditFoodRecord) {
       assert(currentState is FoodDiaryLoaded);
       if (currentState is FoodDiaryLoaded) {
-//        try {
+        try {
           diaryRepository.editFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
+          event.completer?.complete();
 
           _log.info("${event.oldRecord} changed to ${event.newRecord}");
-//        } on Exception catch(e) {
-//          yield FoodDiaryFailed((b) => b..error = e.toString());
-//        }
+        } on Exception catch(e) {
+          event.completer?.completeError(e);
+        }
       }
     }
   }

@@ -12,7 +12,8 @@ class _$RemoteConfiguration extends RemoteConfiguration {
   @override
   final int bonus;
 
-  factory _$RemoteConfiguration([void updates(RemoteConfigurationBuilder b)]) =>
+  factory _$RemoteConfiguration(
+          [void Function(RemoteConfigurationBuilder) updates]) =>
       (new RemoteConfigurationBuilder()..update(updates)).build()
           as _$RemoteConfiguration;
 
@@ -27,7 +28,8 @@ class _$RemoteConfiguration extends RemoteConfiguration {
   }
 
   @override
-  RemoteConfiguration rebuild(void updates(RemoteConfigurationBuilder b)) =>
+  RemoteConfiguration rebuild(
+          void Function(RemoteConfigurationBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -103,7 +105,7 @@ class _$RemoteConfigurationBuilder extends RemoteConfigurationBuilder {
   }
 
   @override
-  void update(void updates(RemoteConfigurationBuilder b)) {
+  void update(void Function(RemoteConfigurationBuilder) updates) {
     if (updates != null) updates(this);
   }
 

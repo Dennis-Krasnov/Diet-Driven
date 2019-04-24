@@ -7,13 +7,15 @@ part of 'configuration_events.dart';
 // **************************************************************************
 
 class _$FetchConfiguration extends FetchConfiguration {
-  factory _$FetchConfiguration([void updates(FetchConfigurationBuilder b)]) =>
+  factory _$FetchConfiguration(
+          [void Function(FetchConfigurationBuilder) updates]) =>
       (new FetchConfigurationBuilder()..update(updates)).build();
 
   _$FetchConfiguration._() : super._();
 
   @override
-  FetchConfiguration rebuild(void updates(FetchConfigurationBuilder b)) =>
+  FetchConfiguration rebuild(
+          void Function(FetchConfigurationBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -47,7 +49,7 @@ class FetchConfigurationBuilder
   }
 
   @override
-  void update(void updates(FetchConfigurationBuilder b)) {
+  void update(void Function(FetchConfigurationBuilder) updates) {
     if (updates != null) updates(this);
   }
 

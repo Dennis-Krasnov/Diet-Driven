@@ -15,7 +15,7 @@ class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   final Settings settings;
 
   factory _$RemoteUserDataArrived(
-          [void updates(RemoteUserDataArrivedBuilder b)]) =>
+          [void Function(RemoteUserDataArrivedBuilder) updates]) =>
       (new RemoteUserDataArrivedBuilder()..update(updates)).build();
 
   _$RemoteUserDataArrived._(
@@ -35,7 +35,8 @@ class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   }
 
   @override
-  RemoteUserDataArrived rebuild(void updates(RemoteUserDataArrivedBuilder b)) =>
+  RemoteUserDataArrived rebuild(
+          void Function(RemoteUserDataArrivedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -107,7 +108,7 @@ class RemoteUserDataArrivedBuilder
   }
 
   @override
-  void update(void updates(RemoteUserDataArrivedBuilder b)) {
+  void update(void Function(RemoteUserDataArrivedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -140,13 +141,14 @@ class RemoteUserDataArrivedBuilder
 
 class _$StartLoadingUserData extends StartLoadingUserData {
   factory _$StartLoadingUserData(
-          [void updates(StartLoadingUserDataBuilder b)]) =>
+          [void Function(StartLoadingUserDataBuilder) updates]) =>
       (new StartLoadingUserDataBuilder()..update(updates)).build();
 
   _$StartLoadingUserData._() : super._();
 
   @override
-  StartLoadingUserData rebuild(void updates(StartLoadingUserDataBuilder b)) =>
+  StartLoadingUserData rebuild(
+          void Function(StartLoadingUserDataBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -180,7 +182,7 @@ class StartLoadingUserDataBuilder
   }
 
   @override
-  void update(void updates(StartLoadingUserDataBuilder b)) {
+  void update(void Function(StartLoadingUserDataBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -196,7 +198,7 @@ class _$UserDataError extends UserDataError {
   @override
   final String error;
 
-  factory _$UserDataError([void updates(UserDataErrorBuilder b)]) =>
+  factory _$UserDataError([void Function(UserDataErrorBuilder) updates]) =>
       (new UserDataErrorBuilder()..update(updates)).build();
 
   _$UserDataError._({this.error}) : super._() {
@@ -206,7 +208,7 @@ class _$UserDataError extends UserDataError {
   }
 
   @override
-  UserDataError rebuild(void updates(UserDataErrorBuilder b)) =>
+  UserDataError rebuild(void Function(UserDataErrorBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -257,7 +259,7 @@ class UserDataErrorBuilder
   }
 
   @override
-  void update(void updates(UserDataErrorBuilder b)) {
+  void update(void Function(UserDataErrorBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -270,13 +272,13 @@ class UserDataErrorBuilder
 }
 
 class _$OnboardUser extends OnboardUser {
-  factory _$OnboardUser([void updates(OnboardUserBuilder b)]) =>
+  factory _$OnboardUser([void Function(OnboardUserBuilder) updates]) =>
       (new OnboardUserBuilder()..update(updates)).build();
 
   _$OnboardUser._() : super._();
 
   @override
-  OnboardUser rebuild(void updates(OnboardUserBuilder b)) =>
+  OnboardUser rebuild(void Function(OnboardUserBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -308,7 +310,7 @@ class OnboardUserBuilder implements Builder<OnboardUser, OnboardUserBuilder> {
   }
 
   @override
-  void update(void updates(OnboardUserBuilder b)) {
+  void update(void Function(OnboardUserBuilder) updates) {
     if (updates != null) updates(this);
   }
 

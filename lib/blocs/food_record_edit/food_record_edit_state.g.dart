@@ -10,7 +10,8 @@ class _$FoodRecordEditState extends FoodRecordEditState {
   @override
   final FoodRecord foodRecord;
 
-  factory _$FoodRecordEditState([void updates(FoodRecordEditStateBuilder b)]) =>
+  factory _$FoodRecordEditState(
+          [void Function(FoodRecordEditStateBuilder) updates]) =>
       (new FoodRecordEditStateBuilder()..update(updates)).build();
 
   _$FoodRecordEditState._({this.foodRecord}) : super._() {
@@ -20,7 +21,8 @@ class _$FoodRecordEditState extends FoodRecordEditState {
   }
 
   @override
-  FoodRecordEditState rebuild(void updates(FoodRecordEditStateBuilder b)) =>
+  FoodRecordEditState rebuild(
+          void Function(FoodRecordEditStateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -75,7 +77,7 @@ class FoodRecordEditStateBuilder
   }
 
   @override
-  void update(void updates(FoodRecordEditStateBuilder b)) {
+  void update(void Function(FoodRecordEditStateBuilder) updates) {
     if (updates != null) updates(this);
   }
 

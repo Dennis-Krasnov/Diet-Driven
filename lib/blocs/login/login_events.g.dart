@@ -12,7 +12,8 @@ class _$PressLoginButton extends PressLoginButton {
   @override
   final String password;
 
-  factory _$PressLoginButton([void updates(PressLoginButtonBuilder b)]) =>
+  factory _$PressLoginButton(
+          [void Function(PressLoginButtonBuilder) updates]) =>
       (new PressLoginButtonBuilder()..update(updates)).build();
 
   _$PressLoginButton._({this.username, this.password}) : super._() {
@@ -25,7 +26,7 @@ class _$PressLoginButton extends PressLoginButton {
   }
 
   @override
-  PressLoginButton rebuild(void updates(PressLoginButtonBuilder b)) =>
+  PressLoginButton rebuild(void Function(PressLoginButtonBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -86,7 +87,7 @@ class PressLoginButtonBuilder
   }
 
   @override
-  void update(void updates(PressLoginButtonBuilder b)) {
+  void update(void Function(PressLoginButtonBuilder) updates) {
     if (updates != null) updates(this);
   }
 

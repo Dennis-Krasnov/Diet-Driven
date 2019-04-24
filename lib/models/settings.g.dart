@@ -125,13 +125,13 @@ class _$Settings extends Settings {
   @override
   final ThemeSettings themeSettings;
 
-  factory _$Settings([void updates(SettingsBuilder b)]) =>
+  factory _$Settings([void Function(SettingsBuilder) updates]) =>
       (new SettingsBuilder()..update(updates)).build() as _$Settings;
 
   _$Settings._({this.navigationSettings, this.themeSettings}) : super._();
 
   @override
-  Settings rebuild(void updates(SettingsBuilder b)) =>
+  Settings rebuild(void Function(SettingsBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -207,7 +207,7 @@ class _$SettingsBuilder extends SettingsBuilder {
   }
 
   @override
-  void update(void updates(SettingsBuilder b)) {
+  void update(void Function(SettingsBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -228,14 +228,16 @@ class _$NavigationSettings extends NavigationSettings {
   @override
   final BuiltList<Page> bottomNavigationPages;
 
-  factory _$NavigationSettings([void updates(NavigationSettingsBuilder b)]) =>
+  factory _$NavigationSettings(
+          [void Function(NavigationSettingsBuilder) updates]) =>
       (new NavigationSettingsBuilder()..update(updates)).build();
 
   _$NavigationSettings._({this.defaultPage, this.bottomNavigationPages})
       : super._();
 
   @override
-  NavigationSettings rebuild(void updates(NavigationSettingsBuilder b)) =>
+  NavigationSettings rebuild(
+          void Function(NavigationSettingsBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -299,7 +301,7 @@ class NavigationSettingsBuilder
   }
 
   @override
-  void update(void updates(NavigationSettingsBuilder b)) {
+  void update(void Function(NavigationSettingsBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -331,13 +333,13 @@ class _$ThemeSettings extends ThemeSettings {
   @override
   final bool light;
 
-  factory _$ThemeSettings([void updates(ThemeSettingsBuilder b)]) =>
+  factory _$ThemeSettings([void Function(ThemeSettingsBuilder) updates]) =>
       (new ThemeSettingsBuilder()..update(updates)).build() as _$ThemeSettings;
 
   _$ThemeSettings._({this.light}) : super._();
 
   @override
-  ThemeSettings rebuild(void updates(ThemeSettingsBuilder b)) =>
+  ThemeSettings rebuild(void Function(ThemeSettingsBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -396,7 +398,7 @@ class _$ThemeSettingsBuilder extends ThemeSettingsBuilder {
   }
 
   @override
-  void update(void updates(ThemeSettingsBuilder b)) {
+  void update(void Function(ThemeSettingsBuilder) updates) {
     if (updates != null) updates(this);
   }
 

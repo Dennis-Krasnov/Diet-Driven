@@ -63,7 +63,7 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   @override
   final BuiltList<FoodRecord> foodRecords;
 
-  factory _$FoodDiaryDay([void updates(FoodDiaryDayBuilder b)]) =>
+  factory _$FoodDiaryDay([void Function(FoodDiaryDayBuilder) updates]) =>
       (new FoodDiaryDayBuilder()..update(updates)).build();
 
   _$FoodDiaryDay._({this.date, this.foodRecords}) : super._() {
@@ -76,7 +76,7 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   }
 
   @override
-  FoodDiaryDay rebuild(void updates(FoodDiaryDayBuilder b)) =>
+  FoodDiaryDay rebuild(void Function(FoodDiaryDayBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -138,7 +138,7 @@ class FoodDiaryDayBuilder
   }
 
   @override
-  void update(void updates(FoodDiaryDayBuilder b)) {
+  void update(void Function(FoodDiaryDayBuilder) updates) {
     if (updates != null) updates(this);
   }
 

@@ -53,7 +53,7 @@ class _$UserDocument extends UserDocument {
   @override
   final String currentSubscription;
 
-  factory _$UserDocument([void updates(UserDocumentBuilder b)]) =>
+  factory _$UserDocument([void Function(UserDocumentBuilder) updates]) =>
       (new UserDocumentBuilder()..update(updates)).build();
 
   _$UserDocument._({this.currentSubscription}) : super._() {
@@ -63,7 +63,7 @@ class _$UserDocument extends UserDocument {
   }
 
   @override
-  UserDocument rebuild(void updates(UserDocumentBuilder b)) =>
+  UserDocument rebuild(void Function(UserDocumentBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -117,7 +117,7 @@ class UserDocumentBuilder
   }
 
   @override
-  void update(void updates(UserDocumentBuilder b)) {
+  void update(void Function(UserDocumentBuilder) updates) {
     if (updates != null) updates(this);
   }
 

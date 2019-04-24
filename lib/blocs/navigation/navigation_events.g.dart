@@ -11,7 +11,7 @@ class _$InitialNavigateToPage extends InitialNavigateToPage {
   final Page page;
 
   factory _$InitialNavigateToPage(
-          [void updates(InitialNavigateToPageBuilder b)]) =>
+          [void Function(InitialNavigateToPageBuilder) updates]) =>
       (new InitialNavigateToPageBuilder()..update(updates)).build();
 
   _$InitialNavigateToPage._({this.page}) : super._() {
@@ -21,7 +21,8 @@ class _$InitialNavigateToPage extends InitialNavigateToPage {
   }
 
   @override
-  InitialNavigateToPage rebuild(void updates(InitialNavigateToPageBuilder b)) =>
+  InitialNavigateToPage rebuild(
+          void Function(InitialNavigateToPageBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -74,7 +75,7 @@ class InitialNavigateToPageBuilder
   }
 
   @override
-  void update(void updates(InitialNavigateToPageBuilder b)) {
+  void update(void Function(InitialNavigateToPageBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -90,7 +91,7 @@ class _$NavigateToPage extends NavigateToPage {
   @override
   final Page page;
 
-  factory _$NavigateToPage([void updates(NavigateToPageBuilder b)]) =>
+  factory _$NavigateToPage([void Function(NavigateToPageBuilder) updates]) =>
       (new NavigateToPageBuilder()..update(updates)).build();
 
   _$NavigateToPage._({this.page}) : super._() {
@@ -100,7 +101,7 @@ class _$NavigateToPage extends NavigateToPage {
   }
 
   @override
-  NavigateToPage rebuild(void updates(NavigateToPageBuilder b)) =>
+  NavigateToPage rebuild(void Function(NavigateToPageBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -152,7 +153,7 @@ class NavigateToPageBuilder
   }
 
   @override
-  void update(void updates(NavigateToPageBuilder b)) {
+  void update(void Function(NavigateToPageBuilder) updates) {
     if (updates != null) updates(this);
   }
 

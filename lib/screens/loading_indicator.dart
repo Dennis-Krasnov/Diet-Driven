@@ -10,7 +10,9 @@ class LoadingIndicator extends StatelessWidget {
         children: <Widget>[
           Align(
             alignment: Alignment.center,
-            child: SizedBox(child: PenguinAnimation(), height: 200, width: 200,),
+            child: Container(),
+            // FIXME
+//            child: SizedBox(child: PenguinAnimation(), height: 200, width: 200,),
           ),
           Align(
             alignment: Alignment.bottomCenter,

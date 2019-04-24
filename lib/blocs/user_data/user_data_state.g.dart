@@ -8,13 +8,14 @@ part of 'user_data_state.dart';
 
 class _$UserDataUninitialized extends UserDataUninitialized {
   factory _$UserDataUninitialized(
-          [void updates(UserDataUninitializedBuilder b)]) =>
+          [void Function(UserDataUninitializedBuilder) updates]) =>
       (new UserDataUninitializedBuilder()..update(updates)).build();
 
   _$UserDataUninitialized._() : super._();
 
   @override
-  UserDataUninitialized rebuild(void updates(UserDataUninitializedBuilder b)) =>
+  UserDataUninitialized rebuild(
+          void Function(UserDataUninitializedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -48,7 +49,7 @@ class UserDataUninitializedBuilder
   }
 
   @override
-  void update(void updates(UserDataUninitializedBuilder b)) {
+  void update(void Function(UserDataUninitializedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -64,7 +65,7 @@ class _$UserDataFailed extends UserDataFailed {
   @override
   final String error;
 
-  factory _$UserDataFailed([void updates(UserDataFailedBuilder b)]) =>
+  factory _$UserDataFailed([void Function(UserDataFailedBuilder) updates]) =>
       (new UserDataFailedBuilder()..update(updates)).build();
 
   _$UserDataFailed._({this.error}) : super._() {
@@ -74,7 +75,7 @@ class _$UserDataFailed extends UserDataFailed {
   }
 
   @override
-  UserDataFailed rebuild(void updates(UserDataFailedBuilder b)) =>
+  UserDataFailed rebuild(void Function(UserDataFailedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -126,7 +127,7 @@ class UserDataFailedBuilder
   }
 
   @override
-  void update(void updates(UserDataFailedBuilder b)) {
+  void update(void Function(UserDataFailedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -139,13 +140,13 @@ class UserDataFailedBuilder
 }
 
 class _$UserDataLoading extends UserDataLoading {
-  factory _$UserDataLoading([void updates(UserDataLoadingBuilder b)]) =>
+  factory _$UserDataLoading([void Function(UserDataLoadingBuilder) updates]) =>
       (new UserDataLoadingBuilder()..update(updates)).build();
 
   _$UserDataLoading._() : super._();
 
   @override
-  UserDataLoading rebuild(void updates(UserDataLoadingBuilder b)) =>
+  UserDataLoading rebuild(void Function(UserDataLoadingBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -179,7 +180,7 @@ class UserDataLoadingBuilder
   }
 
   @override
-  void update(void updates(UserDataLoadingBuilder b)) {
+  void update(void Function(UserDataLoadingBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -193,14 +194,14 @@ class UserDataLoadingBuilder
 
 class _$UserDataUnauthenticated extends UserDataUnauthenticated {
   factory _$UserDataUnauthenticated(
-          [void updates(UserDataUnauthenticatedBuilder b)]) =>
+          [void Function(UserDataUnauthenticatedBuilder) updates]) =>
       (new UserDataUnauthenticatedBuilder()..update(updates)).build();
 
   _$UserDataUnauthenticated._() : super._();
 
   @override
   UserDataUnauthenticated rebuild(
-          void updates(UserDataUnauthenticatedBuilder b)) =>
+          void Function(UserDataUnauthenticatedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -235,7 +236,7 @@ class UserDataUnauthenticatedBuilder
   }
 
   @override
-  void update(void updates(UserDataUnauthenticatedBuilder b)) {
+  void update(void Function(UserDataUnauthenticatedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -255,7 +256,7 @@ class _$UserDataLoaded extends UserDataLoaded {
   @override
   final Settings settings;
 
-  factory _$UserDataLoaded([void updates(UserDataLoadedBuilder b)]) =>
+  factory _$UserDataLoaded([void Function(UserDataLoadedBuilder) updates]) =>
       (new UserDataLoadedBuilder()..update(updates)).build();
 
   _$UserDataLoaded._({this.authentication, this.userDocument, this.settings})
@@ -272,7 +273,7 @@ class _$UserDataLoaded extends UserDataLoaded {
   }
 
   @override
-  UserDataLoaded rebuild(void updates(UserDataLoadedBuilder b)) =>
+  UserDataLoaded rebuild(void Function(UserDataLoadedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -344,7 +345,7 @@ class UserDataLoadedBuilder
   }
 
   @override
-  void update(void updates(UserDataLoadedBuilder b)) {
+  void update(void Function(UserDataLoadedBuilder) updates) {
     if (updates != null) updates(this);
   }
 

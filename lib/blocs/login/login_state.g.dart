@@ -7,13 +7,13 @@ part of 'login_state.dart';
 // **************************************************************************
 
 class _$LoginInitial extends LoginInitial {
-  factory _$LoginInitial([void updates(LoginInitialBuilder b)]) =>
+  factory _$LoginInitial([void Function(LoginInitialBuilder) updates]) =>
       (new LoginInitialBuilder()..update(updates)).build();
 
   _$LoginInitial._() : super._();
 
   @override
-  LoginInitial rebuild(void updates(LoginInitialBuilder b)) =>
+  LoginInitial rebuild(void Function(LoginInitialBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -46,7 +46,7 @@ class LoginInitialBuilder
   }
 
   @override
-  void update(void updates(LoginInitialBuilder b)) {
+  void update(void Function(LoginInitialBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -59,13 +59,13 @@ class LoginInitialBuilder
 }
 
 class _$LoginLoading extends LoginLoading {
-  factory _$LoginLoading([void updates(LoginLoadingBuilder b)]) =>
+  factory _$LoginLoading([void Function(LoginLoadingBuilder) updates]) =>
       (new LoginLoadingBuilder()..update(updates)).build();
 
   _$LoginLoading._() : super._();
 
   @override
-  LoginLoading rebuild(void updates(LoginLoadingBuilder b)) =>
+  LoginLoading rebuild(void Function(LoginLoadingBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -98,7 +98,7 @@ class LoginLoadingBuilder
   }
 
   @override
-  void update(void updates(LoginLoadingBuilder b)) {
+  void update(void Function(LoginLoadingBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -114,7 +114,7 @@ class _$LoginFailure extends LoginFailure {
   @override
   final String error;
 
-  factory _$LoginFailure([void updates(LoginFailureBuilder b)]) =>
+  factory _$LoginFailure([void Function(LoginFailureBuilder) updates]) =>
       (new LoginFailureBuilder()..update(updates)).build();
 
   _$LoginFailure._({this.error}) : super._() {
@@ -124,7 +124,7 @@ class _$LoginFailure extends LoginFailure {
   }
 
   @override
-  LoginFailure rebuild(void updates(LoginFailureBuilder b)) =>
+  LoginFailure rebuild(void Function(LoginFailureBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -175,7 +175,7 @@ class LoginFailureBuilder
   }
 
   @override
-  void update(void updates(LoginFailureBuilder b)) {
+  void update(void Function(LoginFailureBuilder) updates) {
     if (updates != null) updates(this);
   }
 

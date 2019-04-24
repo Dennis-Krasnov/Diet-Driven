@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 
 //    Scaffold.of(context).hideCurrentSnackBar();
 
+// TODO: confirmation page, if confirms, calls passed action
+
 Completer<void> infoSnackBarCompleter(BuildContext context, String successMessage, {bool shouldPop = false}) {
   final Completer<void> completer = Completer<void>();
 

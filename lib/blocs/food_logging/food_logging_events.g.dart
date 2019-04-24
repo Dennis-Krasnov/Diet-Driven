@@ -10,7 +10,7 @@ class _$AddToSelection extends AddToSelection {
   @override
   final FoodRecord foodRecord;
 
-  factory _$AddToSelection([void updates(AddToSelectionBuilder b)]) =>
+  factory _$AddToSelection([void Function(AddToSelectionBuilder) updates]) =>
       (new AddToSelectionBuilder()..update(updates)).build();
 
   _$AddToSelection._({this.foodRecord}) : super._() {
@@ -20,7 +20,7 @@ class _$AddToSelection extends AddToSelection {
   }
 
   @override
-  AddToSelection rebuild(void updates(AddToSelectionBuilder b)) =>
+  AddToSelection rebuild(void Function(AddToSelectionBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -75,7 +75,7 @@ class AddToSelectionBuilder
   }
 
   @override
-  void update(void updates(AddToSelectionBuilder b)) {
+  void update(void Function(AddToSelectionBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -104,7 +104,8 @@ class _$RemoveFromSelection extends RemoveFromSelection {
   @override
   final FoodRecord foodRecord;
 
-  factory _$RemoveFromSelection([void updates(RemoveFromSelectionBuilder b)]) =>
+  factory _$RemoveFromSelection(
+          [void Function(RemoveFromSelectionBuilder) updates]) =>
       (new RemoveFromSelectionBuilder()..update(updates)).build();
 
   _$RemoveFromSelection._({this.foodRecord}) : super._() {
@@ -114,7 +115,8 @@ class _$RemoveFromSelection extends RemoveFromSelection {
   }
 
   @override
-  RemoveFromSelection rebuild(void updates(RemoveFromSelectionBuilder b)) =>
+  RemoveFromSelection rebuild(
+          void Function(RemoveFromSelectionBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -169,7 +171,7 @@ class RemoveFromSelectionBuilder
   }
 
   @override
-  void update(void updates(RemoveFromSelectionBuilder b)) {
+  void update(void Function(RemoveFromSelectionBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -196,13 +198,16 @@ class RemoveFromSelectionBuilder
 }
 
 class _$SaveSelection extends SaveSelection {
-  factory _$SaveSelection([void updates(SaveSelectionBuilder b)]) =>
+  @override
+  final Completer<void> completer;
+
+  factory _$SaveSelection([void Function(SaveSelectionBuilder) updates]) =>
       (new SaveSelectionBuilder()..update(updates)).build();
 
-  _$SaveSelection._() : super._();
+  _$SaveSelection._({this.completer}) : super._();
 
   @override
-  SaveSelection rebuild(void updates(SaveSelectionBuilder b)) =>
+  SaveSelection rebuild(void Function(SaveSelectionBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -211,12 +216,12 @@ class _$SaveSelection extends SaveSelection {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SaveSelection;
+    return other is SaveSelection && completer == other.completer;
   }
 
   @override
   int get hashCode {
-    return 293200859;
+    return $jf($jc(0, completer.hashCode));
   }
 }
 
@@ -224,7 +229,19 @@ class SaveSelectionBuilder
     implements Builder<SaveSelection, SaveSelectionBuilder> {
   _$SaveSelection _$v;
 
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
   SaveSelectionBuilder();
+
+  SaveSelectionBuilder get _$this {
+    if (_$v != null) {
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(SaveSelection other) {
@@ -235,26 +252,27 @@ class SaveSelectionBuilder
   }
 
   @override
-  void update(void updates(SaveSelectionBuilder b)) {
+  void update(void Function(SaveSelectionBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
   _$SaveSelection build() {
-    final _$result = _$v ?? new _$SaveSelection._();
+    final _$result = _$v ?? new _$SaveSelection._(completer: completer);
     replace(_$result);
     return _$result;
   }
 }
 
 class _$StartMultiSelect extends StartMultiSelect {
-  factory _$StartMultiSelect([void updates(StartMultiSelectBuilder b)]) =>
+  factory _$StartMultiSelect(
+          [void Function(StartMultiSelectBuilder) updates]) =>
       (new StartMultiSelectBuilder()..update(updates)).build();
 
   _$StartMultiSelect._() : super._();
 
   @override
-  StartMultiSelect rebuild(void updates(StartMultiSelectBuilder b)) =>
+  StartMultiSelect rebuild(void Function(StartMultiSelectBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -288,7 +306,7 @@ class StartMultiSelectBuilder
   }
 
   @override
-  void update(void updates(StartMultiSelectBuilder b)) {
+  void update(void Function(StartMultiSelectBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -301,13 +319,14 @@ class StartMultiSelectBuilder
 }
 
 class _$CancelMultiSelect extends CancelMultiSelect {
-  factory _$CancelMultiSelect([void updates(CancelMultiSelectBuilder b)]) =>
+  factory _$CancelMultiSelect(
+          [void Function(CancelMultiSelectBuilder) updates]) =>
       (new CancelMultiSelectBuilder()..update(updates)).build();
 
   _$CancelMultiSelect._() : super._();
 
   @override
-  CancelMultiSelect rebuild(void updates(CancelMultiSelectBuilder b)) =>
+  CancelMultiSelect rebuild(void Function(CancelMultiSelectBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -341,7 +360,7 @@ class CancelMultiSelectBuilder
   }
 
   @override
-  void update(void updates(CancelMultiSelectBuilder b)) {
+  void update(void Function(CancelMultiSelectBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -357,7 +376,7 @@ class _$ChangeMeal extends ChangeMeal {
   @override
   final int meal;
 
-  factory _$ChangeMeal([void updates(ChangeMealBuilder b)]) =>
+  factory _$ChangeMeal([void Function(ChangeMealBuilder) updates]) =>
       (new ChangeMealBuilder()..update(updates)).build();
 
   _$ChangeMeal._({this.meal}) : super._() {
@@ -367,7 +386,7 @@ class _$ChangeMeal extends ChangeMeal {
   }
 
   @override
-  ChangeMeal rebuild(void updates(ChangeMealBuilder b)) =>
+  ChangeMeal rebuild(void Function(ChangeMealBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -417,7 +436,7 @@ class ChangeMealBuilder implements Builder<ChangeMeal, ChangeMealBuilder> {
   }
 
   @override
-  void update(void updates(ChangeMealBuilder b)) {
+  void update(void Function(ChangeMealBuilder) updates) {
     if (updates != null) updates(this);
   }
 

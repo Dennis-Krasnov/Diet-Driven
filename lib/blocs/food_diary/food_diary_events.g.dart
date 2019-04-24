@@ -11,7 +11,7 @@ class _$RemoteDiaryDayArrived extends RemoteDiaryDayArrived {
   final FoodDiaryDay foodDiaryDay;
 
   factory _$RemoteDiaryDayArrived(
-          [void updates(RemoteDiaryDayArrivedBuilder b)]) =>
+          [void Function(RemoteDiaryDayArrivedBuilder) updates]) =>
       (new RemoteDiaryDayArrivedBuilder()..update(updates)).build();
 
   _$RemoteDiaryDayArrived._({this.foodDiaryDay}) : super._() {
@@ -22,7 +22,8 @@ class _$RemoteDiaryDayArrived extends RemoteDiaryDayArrived {
   }
 
   @override
-  RemoteDiaryDayArrived rebuild(void updates(RemoteDiaryDayArrivedBuilder b)) =>
+  RemoteDiaryDayArrived rebuild(
+          void Function(RemoteDiaryDayArrivedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -77,7 +78,7 @@ class RemoteDiaryDayArrivedBuilder
   }
 
   @override
-  void update(void updates(RemoteDiaryDayArrivedBuilder b)) {
+  void update(void Function(RemoteDiaryDayArrivedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -109,7 +110,7 @@ class _$AddFoodRecord extends AddFoodRecord {
   @override
   final Completer<void> completer;
 
-  factory _$AddFoodRecord([void updates(AddFoodRecordBuilder b)]) =>
+  factory _$AddFoodRecord([void Function(AddFoodRecordBuilder) updates]) =>
       (new AddFoodRecordBuilder()..update(updates)).build();
 
   _$AddFoodRecord._({this.foodRecord, this.completer}) : super._() {
@@ -119,7 +120,7 @@ class _$AddFoodRecord extends AddFoodRecord {
   }
 
   @override
-  AddFoodRecord rebuild(void updates(AddFoodRecordBuilder b)) =>
+  AddFoodRecord rebuild(void Function(AddFoodRecordBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -181,7 +182,7 @@ class AddFoodRecordBuilder
   }
 
   @override
-  void update(void updates(AddFoodRecordBuilder b)) {
+  void update(void Function(AddFoodRecordBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -214,7 +215,8 @@ class _$DeleteFoodRecord extends DeleteFoodRecord {
   @override
   final Completer<void> completer;
 
-  factory _$DeleteFoodRecord([void updates(DeleteFoodRecordBuilder b)]) =>
+  factory _$DeleteFoodRecord(
+          [void Function(DeleteFoodRecordBuilder) updates]) =>
       (new DeleteFoodRecordBuilder()..update(updates)).build();
 
   _$DeleteFoodRecord._({this.foodRecord, this.completer}) : super._() {
@@ -224,7 +226,7 @@ class _$DeleteFoodRecord extends DeleteFoodRecord {
   }
 
   @override
-  DeleteFoodRecord rebuild(void updates(DeleteFoodRecordBuilder b)) =>
+  DeleteFoodRecord rebuild(void Function(DeleteFoodRecordBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -287,7 +289,7 @@ class DeleteFoodRecordBuilder
   }
 
   @override
-  void update(void updates(DeleteFoodRecordBuilder b)) {
+  void update(void Function(DeleteFoodRecordBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -322,7 +324,7 @@ class _$EditFoodRecord extends EditFoodRecord {
   @override
   final Completer<void> completer;
 
-  factory _$EditFoodRecord([void updates(EditFoodRecordBuilder b)]) =>
+  factory _$EditFoodRecord([void Function(EditFoodRecordBuilder) updates]) =>
       (new EditFoodRecordBuilder()..update(updates)).build();
 
   _$EditFoodRecord._({this.oldRecord, this.newRecord, this.completer})
@@ -336,7 +338,7 @@ class _$EditFoodRecord extends EditFoodRecord {
   }
 
   @override
-  EditFoodRecord rebuild(void updates(EditFoodRecordBuilder b)) =>
+  EditFoodRecord rebuild(void Function(EditFoodRecordBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -407,7 +409,7 @@ class EditFoodRecordBuilder
   }
 
   @override
-  void update(void updates(EditFoodRecordBuilder b)) {
+  void update(void Function(EditFoodRecordBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -442,7 +444,7 @@ class _$FoodDiaryError extends FoodDiaryError {
   @override
   final String error;
 
-  factory _$FoodDiaryError([void updates(FoodDiaryErrorBuilder b)]) =>
+  factory _$FoodDiaryError([void Function(FoodDiaryErrorBuilder) updates]) =>
       (new FoodDiaryErrorBuilder()..update(updates)).build();
 
   _$FoodDiaryError._({this.error}) : super._() {
@@ -452,7 +454,7 @@ class _$FoodDiaryError extends FoodDiaryError {
   }
 
   @override
-  FoodDiaryError rebuild(void updates(FoodDiaryErrorBuilder b)) =>
+  FoodDiaryError rebuild(void Function(FoodDiaryErrorBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -504,7 +506,7 @@ class FoodDiaryErrorBuilder
   }
 
   @override
-  void update(void updates(FoodDiaryErrorBuilder b)) {
+  void update(void Function(FoodDiaryErrorBuilder) updates) {
     if (updates != null) updates(this);
   }
 

@@ -8,14 +8,14 @@ part of 'food_diary_state.dart';
 
 class _$FoodDiaryUninitialized extends FoodDiaryUninitialized {
   factory _$FoodDiaryUninitialized(
-          [void updates(FoodDiaryUninitializedBuilder b)]) =>
+          [void Function(FoodDiaryUninitializedBuilder) updates]) =>
       (new FoodDiaryUninitializedBuilder()..update(updates)).build();
 
   _$FoodDiaryUninitialized._() : super._();
 
   @override
   FoodDiaryUninitialized rebuild(
-          void updates(FoodDiaryUninitializedBuilder b)) =>
+          void Function(FoodDiaryUninitializedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -49,7 +49,7 @@ class FoodDiaryUninitializedBuilder
   }
 
   @override
-  void update(void updates(FoodDiaryUninitializedBuilder b)) {
+  void update(void Function(FoodDiaryUninitializedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -65,7 +65,7 @@ class _$FoodDiaryFailed extends FoodDiaryFailed {
   @override
   final String error;
 
-  factory _$FoodDiaryFailed([void updates(FoodDiaryFailedBuilder b)]) =>
+  factory _$FoodDiaryFailed([void Function(FoodDiaryFailedBuilder) updates]) =>
       (new FoodDiaryFailedBuilder()..update(updates)).build();
 
   _$FoodDiaryFailed._({this.error}) : super._() {
@@ -75,7 +75,7 @@ class _$FoodDiaryFailed extends FoodDiaryFailed {
   }
 
   @override
-  FoodDiaryFailed rebuild(void updates(FoodDiaryFailedBuilder b)) =>
+  FoodDiaryFailed rebuild(void Function(FoodDiaryFailedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -127,7 +127,7 @@ class FoodDiaryFailedBuilder
   }
 
   @override
-  void update(void updates(FoodDiaryFailedBuilder b)) {
+  void update(void Function(FoodDiaryFailedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -143,7 +143,7 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   @override
   final FoodDiaryDay foodDiaryDay;
 
-  factory _$FoodDiaryLoaded([void updates(FoodDiaryLoadedBuilder b)]) =>
+  factory _$FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder) updates]) =>
       (new FoodDiaryLoadedBuilder()..update(updates)).build();
 
   _$FoodDiaryLoaded._({this.foodDiaryDay}) : super._() {
@@ -153,7 +153,7 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   }
 
   @override
-  FoodDiaryLoaded rebuild(void updates(FoodDiaryLoadedBuilder b)) =>
+  FoodDiaryLoaded rebuild(void Function(FoodDiaryLoadedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -208,7 +208,7 @@ class FoodDiaryLoadedBuilder
   }
 
   @override
-  void update(void updates(FoodDiaryLoadedBuilder b)) {
+  void update(void Function(FoodDiaryLoadedBuilder) updates) {
     if (updates != null) updates(this);
   }
 

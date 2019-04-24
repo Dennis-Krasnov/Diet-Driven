@@ -67,12 +67,11 @@ class _DiaryPageState extends State<DiaryPage> {
                     maintainState: true
                   )
                 );
-                // TODO: add/delete food record takes array, does action for each, use spread operators
-                _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
-                  ..foodRecord = FoodRecord((b) => b
-                    ..foodName = "IT'S NEW ${Random().nextInt(200)}"
-                  ).toBuilder()
-                ));
+//                _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
+//                  ..foodRecord = FoodRecord((b) => b
+//                    ..foodName = "IT'S NEW ${Random().nextInt(200)}"
+//                  ).toBuilder()
+//                ));
               }
             ),
           );

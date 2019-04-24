@@ -153,6 +153,8 @@ class FirestoreProvider {
     ref.updateData(<String, dynamic>{
       "foodRecords": FieldValue.arrayUnion([removeDollarSign(fsFoodRecord.serializeDocument(newRecord))]),
     });
+
+    // TODO: await both for exception handling (Future.wait([]))
   }
 
   ///    ######  ######## ######## ######## #### ##    ##  ######    ######

@@ -8,14 +8,14 @@ part of 'configuration_state.dart';
 
 class _$ConfigurationUninitialized extends ConfigurationUninitialized {
   factory _$ConfigurationUninitialized(
-          [void updates(ConfigurationUninitializedBuilder b)]) =>
+          [void Function(ConfigurationUninitializedBuilder) updates]) =>
       (new ConfigurationUninitializedBuilder()..update(updates)).build();
 
   _$ConfigurationUninitialized._() : super._();
 
   @override
   ConfigurationUninitialized rebuild(
-          void updates(ConfigurationUninitializedBuilder b)) =>
+          void Function(ConfigurationUninitializedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -50,7 +50,7 @@ class ConfigurationUninitializedBuilder
   }
 
   @override
-  void update(void updates(ConfigurationUninitializedBuilder b)) {
+  void update(void Function(ConfigurationUninitializedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -66,7 +66,8 @@ class _$ConfigurationLoaded extends ConfigurationLoaded {
   @override
   final RemoteConfiguration configuration;
 
-  factory _$ConfigurationLoaded([void updates(ConfigurationLoadedBuilder b)]) =>
+  factory _$ConfigurationLoaded(
+          [void Function(ConfigurationLoadedBuilder) updates]) =>
       (new ConfigurationLoadedBuilder()..update(updates)).build();
 
   _$ConfigurationLoaded._({this.configuration}) : super._() {
@@ -77,7 +78,8 @@ class _$ConfigurationLoaded extends ConfigurationLoaded {
   }
 
   @override
-  ConfigurationLoaded rebuild(void updates(ConfigurationLoadedBuilder b)) =>
+  ConfigurationLoaded rebuild(
+          void Function(ConfigurationLoadedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -132,7 +134,7 @@ class ConfigurationLoadedBuilder
   }
 
   @override
-  void update(void updates(ConfigurationLoadedBuilder b)) {
+  void update(void Function(ConfigurationLoadedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -160,13 +162,14 @@ class ConfigurationLoadedBuilder
 
 class _$ConfigurationLoading extends ConfigurationLoading {
   factory _$ConfigurationLoading(
-          [void updates(ConfigurationLoadingBuilder b)]) =>
+          [void Function(ConfigurationLoadingBuilder) updates]) =>
       (new ConfigurationLoadingBuilder()..update(updates)).build();
 
   _$ConfigurationLoading._() : super._();
 
   @override
-  ConfigurationLoading rebuild(void updates(ConfigurationLoadingBuilder b)) =>
+  ConfigurationLoading rebuild(
+          void Function(ConfigurationLoadingBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -200,7 +203,7 @@ class ConfigurationLoadingBuilder
   }
 
   @override
-  void update(void updates(ConfigurationLoadingBuilder b)) {
+  void update(void Function(ConfigurationLoadingBuilder) updates) {
     if (updates != null) updates(this);
   }
 

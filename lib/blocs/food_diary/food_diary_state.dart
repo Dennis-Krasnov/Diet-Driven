@@ -22,13 +22,6 @@ abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFai
   factory FoodDiaryFailed([updates(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;
 }
 
-//abstract class FoodDiaryLoading implements Built<FoodDiaryLoading, FoodDiaryLoadingBuilder> {
-//  FoodDiaryLoading._();
-//  factory FoodDiaryLoading([updates(FoodDiaryLoadingBuilder b)]) = _$FoodDiaryLoading;
-//
-//  @override String toString() => runtimeType.toString();
-//}
-
 /// Food diary day, stores current [FoodDiaryDay].
 abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   FoodDiaryDay get foodDiaryDay;

@@ -8,14 +8,14 @@ part of 'subscription_state.dart';
 
 class _$SubscriptionUninitialized extends SubscriptionUninitialized {
   factory _$SubscriptionUninitialized(
-          [void updates(SubscriptionUninitializedBuilder b)]) =>
+          [void Function(SubscriptionUninitializedBuilder) updates]) =>
       (new SubscriptionUninitializedBuilder()..update(updates)).build();
 
   _$SubscriptionUninitialized._() : super._();
 
   @override
   SubscriptionUninitialized rebuild(
-          void updates(SubscriptionUninitializedBuilder b)) =>
+          void Function(SubscriptionUninitializedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -50,7 +50,7 @@ class SubscriptionUninitializedBuilder
   }
 
   @override
-  void update(void updates(SubscriptionUninitializedBuilder b)) {
+  void update(void Function(SubscriptionUninitializedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -63,13 +63,13 @@ class SubscriptionUninitializedBuilder
 }
 
 class _$NoSubscription extends NoSubscription {
-  factory _$NoSubscription([void updates(NoSubscriptionBuilder b)]) =>
+  factory _$NoSubscription([void Function(NoSubscriptionBuilder) updates]) =>
       (new NoSubscriptionBuilder()..update(updates)).build();
 
   _$NoSubscription._() : super._();
 
   @override
-  NoSubscription rebuild(void updates(NoSubscriptionBuilder b)) =>
+  NoSubscription rebuild(void Function(NoSubscriptionBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -103,7 +103,7 @@ class NoSubscriptionBuilder
   }
 
   @override
-  void update(void updates(NoSubscriptionBuilder b)) {
+  void update(void Function(NoSubscriptionBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -119,7 +119,7 @@ class _$HasSubscription extends HasSubscription {
   @override
   final SubscriptionType subscriptionType;
 
-  factory _$HasSubscription([void updates(HasSubscriptionBuilder b)]) =>
+  factory _$HasSubscription([void Function(HasSubscriptionBuilder) updates]) =>
       (new HasSubscriptionBuilder()..update(updates)).build();
 
   _$HasSubscription._({this.subscriptionType}) : super._() {
@@ -129,7 +129,7 @@ class _$HasSubscription extends HasSubscription {
   }
 
   @override
-  HasSubscription rebuild(void updates(HasSubscriptionBuilder b)) =>
+  HasSubscription rebuild(void Function(HasSubscriptionBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -184,7 +184,7 @@ class HasSubscriptionBuilder
   }
 
   @override
-  void update(void updates(HasSubscriptionBuilder b)) {
+  void update(void Function(HasSubscriptionBuilder) updates) {
     if (updates != null) updates(this);
   }
 

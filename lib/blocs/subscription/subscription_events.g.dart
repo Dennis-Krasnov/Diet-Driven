@@ -8,14 +8,14 @@ part of 'subscription_events.dart';
 
 class _$LoadExistingSubscription extends LoadExistingSubscription {
   factory _$LoadExistingSubscription(
-          [void updates(LoadExistingSubscriptionBuilder b)]) =>
+          [void Function(LoadExistingSubscriptionBuilder) updates]) =>
       (new LoadExistingSubscriptionBuilder()..update(updates)).build();
 
   _$LoadExistingSubscription._() : super._();
 
   @override
   LoadExistingSubscription rebuild(
-          void updates(LoadExistingSubscriptionBuilder b)) =>
+          void Function(LoadExistingSubscriptionBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -50,7 +50,7 @@ class LoadExistingSubscriptionBuilder
   }
 
   @override
-  void update(void updates(LoadExistingSubscriptionBuilder b)) {
+  void update(void Function(LoadExistingSubscriptionBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -66,7 +66,7 @@ class _$Subscribe extends Subscribe {
   @override
   final SubscriptionType subscriptionType;
 
-  factory _$Subscribe([void updates(SubscribeBuilder b)]) =>
+  factory _$Subscribe([void Function(SubscribeBuilder) updates]) =>
       (new SubscribeBuilder()..update(updates)).build();
 
   _$Subscribe._({this.subscriptionType}) : super._() {
@@ -76,7 +76,7 @@ class _$Subscribe extends Subscribe {
   }
 
   @override
-  Subscribe rebuild(void updates(SubscribeBuilder b)) =>
+  Subscribe rebuild(void Function(SubscribeBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -128,7 +128,7 @@ class SubscribeBuilder implements Builder<Subscribe, SubscribeBuilder> {
   }
 
   @override
-  void update(void updates(SubscribeBuilder b)) {
+  void update(void Function(SubscribeBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -142,13 +142,13 @@ class SubscribeBuilder implements Builder<Subscribe, SubscribeBuilder> {
 }
 
 class _$Unsubscribe extends Unsubscribe {
-  factory _$Unsubscribe([void updates(UnsubscribeBuilder b)]) =>
+  factory _$Unsubscribe([void Function(UnsubscribeBuilder) updates]) =>
       (new UnsubscribeBuilder()..update(updates)).build();
 
   _$Unsubscribe._() : super._();
 
   @override
-  Unsubscribe rebuild(void updates(UnsubscribeBuilder b)) =>
+  Unsubscribe rebuild(void Function(UnsubscribeBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -180,7 +180,7 @@ class UnsubscribeBuilder implements Builder<Unsubscribe, UnsubscribeBuilder> {
   }
 
   @override
-  void update(void updates(UnsubscribeBuilder b)) {
+  void update(void Function(UnsubscribeBuilder) updates) {
     if (updates != null) updates(this);
   }
 

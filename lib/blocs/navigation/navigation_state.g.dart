@@ -8,14 +8,14 @@ part of 'navigation_state.dart';
 
 class _$NavigationUninitialized extends NavigationUninitialized {
   factory _$NavigationUninitialized(
-          [void updates(NavigationUninitializedBuilder b)]) =>
+          [void Function(NavigationUninitializedBuilder) updates]) =>
       (new NavigationUninitializedBuilder()..update(updates)).build();
 
   _$NavigationUninitialized._() : super._();
 
   @override
   NavigationUninitialized rebuild(
-          void updates(NavigationUninitializedBuilder b)) =>
+          void Function(NavigationUninitializedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -50,7 +50,7 @@ class NavigationUninitializedBuilder
   }
 
   @override
-  void update(void updates(NavigationUninitializedBuilder b)) {
+  void update(void Function(NavigationUninitializedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -66,7 +66,8 @@ class _$NavigationLoaded extends NavigationLoaded {
   @override
   final Page currentPage;
 
-  factory _$NavigationLoaded([void updates(NavigationLoadedBuilder b)]) =>
+  factory _$NavigationLoaded(
+          [void Function(NavigationLoadedBuilder) updates]) =>
       (new NavigationLoadedBuilder()..update(updates)).build();
 
   _$NavigationLoaded._({this.currentPage}) : super._() {
@@ -76,7 +77,7 @@ class _$NavigationLoaded extends NavigationLoaded {
   }
 
   @override
-  NavigationLoaded rebuild(void updates(NavigationLoadedBuilder b)) =>
+  NavigationLoaded rebuild(void Function(NavigationLoadedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -129,7 +130,7 @@ class NavigationLoadedBuilder
   }
 
   @override
-  void update(void updates(NavigationLoadedBuilder b)) {
+  void update(void Function(NavigationLoadedBuilder) updates) {
     if (updates != null) updates(this);
   }
 

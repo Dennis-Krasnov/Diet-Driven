@@ -10,7 +10,7 @@ class _$UpdateQuantity extends UpdateQuantity {
   @override
   final num quantity;
 
-  factory _$UpdateQuantity([void updates(UpdateQuantityBuilder b)]) =>
+  factory _$UpdateQuantity([void Function(UpdateQuantityBuilder) updates]) =>
       (new UpdateQuantityBuilder()..update(updates)).build();
 
   _$UpdateQuantity._({this.quantity}) : super._() {
@@ -20,7 +20,7 @@ class _$UpdateQuantity extends UpdateQuantity {
   }
 
   @override
-  UpdateQuantity rebuild(void updates(UpdateQuantityBuilder b)) =>
+  UpdateQuantity rebuild(void Function(UpdateQuantityBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -73,7 +73,7 @@ class UpdateQuantityBuilder
   }
 
   @override
-  void update(void updates(UpdateQuantityBuilder b)) {
+  void update(void Function(UpdateQuantityBuilder) updates) {
     if (updates != null) updates(this);
   }
 
@@ -86,13 +86,13 @@ class UpdateQuantityBuilder
 }
 
 class _$SaveFoodRecord extends SaveFoodRecord {
-  factory _$SaveFoodRecord([void updates(SaveFoodRecordBuilder b)]) =>
+  factory _$SaveFoodRecord([void Function(SaveFoodRecordBuilder) updates]) =>
       (new SaveFoodRecordBuilder()..update(updates)).build();
 
   _$SaveFoodRecord._() : super._();
 
   @override
-  SaveFoodRecord rebuild(void updates(SaveFoodRecordBuilder b)) =>
+  SaveFoodRecord rebuild(void Function(SaveFoodRecordBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -126,7 +126,7 @@ class SaveFoodRecordBuilder
   }
 
   @override
-  void update(void updates(SaveFoodRecordBuilder b)) {
+  void update(void Function(SaveFoodRecordBuilder) updates) {
     if (updates != null) updates(this);
   }
 

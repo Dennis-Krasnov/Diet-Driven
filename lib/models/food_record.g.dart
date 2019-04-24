@@ -72,7 +72,7 @@ class _$FoodRecord extends FoodRecord {
   @override
   final num quantity;
 
-  factory _$FoodRecord([void updates(FoodRecordBuilder b)]) =>
+  factory _$FoodRecord([void Function(FoodRecordBuilder) updates]) =>
       (new FoodRecordBuilder()..update(updates)).build() as _$FoodRecord;
 
   _$FoodRecord._({this.uuid, this.foodName, this.quantity}) : super._() {
@@ -85,7 +85,7 @@ class _$FoodRecord extends FoodRecord {
   }
 
   @override
-  FoodRecord rebuild(void updates(FoodRecordBuilder b)) =>
+  FoodRecord rebuild(void Function(FoodRecordBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
@@ -174,7 +174,7 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
   }
 
   @override
-  void update(void updates(FoodRecordBuilder b)) {
+  void update(void Function(FoodRecordBuilder) updates) {
     if (updates != null) updates(this);
   }
 
