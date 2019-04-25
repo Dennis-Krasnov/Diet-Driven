@@ -21,11 +21,11 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     assert(userRepository != null);
 
     _userDataEventStream = userRepository.authStateChangedStream
-      .doOnData(_log.fine)
+      .doOnData((user) => _log.fine("USER: $user"))
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user
       .doOnData((user) => dispatch(user == null ? OnboardUser() : StartLoadingUserData()))
       // Load user data only if user exists
-      .where((user) => user != null)
+      .where((user) => user != null && user.uid != null)
       .switchMap<UserDataEvent>((user) =>
         CombineLatestStream.combine2(
           userRepository.userDocumentStream(user.uid),

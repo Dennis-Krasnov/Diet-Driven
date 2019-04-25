@@ -86,13 +86,11 @@ class UserRepository {
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns [null] if both Firestore documents doesn't exist.
   Observable<Settings> settingsStream(String userId) {
-    Observable<Settings> defaultSettingsStream = _firestoreProvider.defaultSettings();
-
     return Observable<Settings>(
       CombineLatestStream.combine2(
         // Combine user settings with latest default settings
         _firestoreProvider.settingsStream(userId),
-        defaultSettingsStream,
+        _firestoreProvider.defaultSettings(),
         (Settings settings, Settings defaultSettings) => Settings((b) => b
           ..navigationSettings = NavigationSettings((b) => b
             ..defaultPage = settings?.navigationSettings?.defaultPage ?? defaultSettings.navigationSettings.defaultPage
@@ -101,6 +99,9 @@ class UserRepository {
         )
       )
     );
+
+    // TOTEST: one stream returns Observable<Settings>.empty() - should time out
+    // TOTEST: Observable<Settings>.just(null), for my settings should return default settings!
 
     // TODO: fork built value and a create a generated 'mergeInto'/'T replaceNullFieldsWith(T)' method
     // that copies values from src to dest (where null), can also define it as a custom operator.

@@ -14,13 +14,13 @@ import 'package:flutter/material.dart';
 import 'package:diet_driven/repository_singleton.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
-
 void main() {
   // Configure logger
   // Available levels: [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
   Logger.root.level = Level.FINE;
   Logger.root.onRecord.listen((LogRecord rec) {
     print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
+    App.temporaryLogSink.add("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
   });
 
   // Logs every BLoC state transition
@@ -44,6 +44,8 @@ void main() {
 }
 
 class App extends StatefulWidget {
+  static List<String> temporaryLogSink = List<String>();
+
   @override
   State<StatefulWidget> createState() => _AppState();
 }
