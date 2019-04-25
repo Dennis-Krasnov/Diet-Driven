@@ -77,7 +77,7 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
           floatingActionButton: widget.explicitFabAction
             ? FloatingActionButton(
                 child: Icon(Icons.check),
-                onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord())
+                onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord()) // TODO: rename action
               )
             : null,
         );

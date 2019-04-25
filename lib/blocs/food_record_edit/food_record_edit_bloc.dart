@@ -40,9 +40,12 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
     }
     if (event is SaveFoodRecord) {
       // Can't edit unchanged food record
-      if (initialFoodRecord != currentState.foodRecord) {
-        saveAction(currentState.foodRecord);
-      }
+//      if (initialFoodRecord != currentState.foodRecord) {
+//        saveAction(currentState.foodRecord);
+//      }
+      // OPTIMIZE: I can't check != here since I also use this for single add, could be same if didn't change anything!
+      saveAction(currentState.foodRecord);
+
     }
   }
 }
