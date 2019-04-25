@@ -41,7 +41,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       .distinct();
 
     _userDataEventSubscription = _userDataEventStream.listen((userDataEvent) => dispatch(userDataEvent),
-      onError: (error, trace) => dispatch(UserDataError((b) => b..error = trace.toString())),
+      onError: (error, trace) => dispatch(UserDataError((b) => b
+        ..error = error.toString()
+        ..trace = trace.toString()
+      )),
     );
   }
 
@@ -79,7 +82,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       _log.info("onboarding user");
     }
     if (event is UserDataError) {
-      yield UserDataFailed((b) => b..error = event.error);
+      yield UserDataFailed((b) => b
+        ..error = event.error
+        ..trace = event.trace
+      );
 
       _log.info("user data failed");
     }

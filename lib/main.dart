@@ -112,7 +112,10 @@ class _AppState extends State<App> {
 
     // Loading user data failed
     if (userDataState is UserDataFailed) {
-      return ErrorPage(error: userDataState.error);
+      return ErrorPage(
+        error: userDataState.error,
+        trace: userDataState.trace
+      );
     }
 
     // Start application when user is loaded

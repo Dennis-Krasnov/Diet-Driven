@@ -18,6 +18,9 @@ abstract class UserDataUninitialized with UserDataState implements Built<UserDat
 abstract class UserDataFailed with UserDataState implements Built<UserDataFailed, UserDataFailedBuilder> {
   String get error;
 
+  @nullable
+  String get trace;
+
   UserDataFailed._();
   factory UserDataFailed([updates(UserDataFailedBuilder b)]) = _$UserDataFailed;
 }

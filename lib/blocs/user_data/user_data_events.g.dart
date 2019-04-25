@@ -197,11 +197,13 @@ class StartLoadingUserDataBuilder
 class _$UserDataError extends UserDataError {
   @override
   final String error;
+  @override
+  final String trace;
 
   factory _$UserDataError([void Function(UserDataErrorBuilder) updates]) =>
       (new UserDataErrorBuilder()..update(updates)).build();
 
-  _$UserDataError._({this.error}) : super._() {
+  _$UserDataError._({this.error, this.trace}) : super._() {
     if (error == null) {
       throw new BuiltValueNullFieldError('UserDataError', 'error');
     }
@@ -217,17 +219,21 @@ class _$UserDataError extends UserDataError {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UserDataError && error == other.error;
+    return other is UserDataError &&
+        error == other.error &&
+        trace == other.trace;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, error.hashCode));
+    return $jf($jc($jc(0, error.hashCode), trace.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('UserDataError')..add('error', error))
+    return (newBuiltValueToStringHelper('UserDataError')
+          ..add('error', error)
+          ..add('trace', trace))
         .toString();
   }
 }
@@ -240,11 +246,16 @@ class UserDataErrorBuilder
   String get error => _$this._error;
   set error(String error) => _$this._error = error;
 
+  String _trace;
+  String get trace => _$this._trace;
+  set trace(String trace) => _$this._trace = trace;
+
   UserDataErrorBuilder();
 
   UserDataErrorBuilder get _$this {
     if (_$v != null) {
       _error = _$v.error;
+      _trace = _$v.trace;
       _$v = null;
     }
     return this;
@@ -265,7 +276,7 @@ class UserDataErrorBuilder
 
   @override
   _$UserDataError build() {
-    final _$result = _$v ?? new _$UserDataError._(error: error);
+    final _$result = _$v ?? new _$UserDataError._(error: error, trace: trace);
     replace(_$result);
     return _$result;
   }

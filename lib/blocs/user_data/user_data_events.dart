@@ -31,6 +31,9 @@ abstract class StartLoadingUserData with UserDataEvent implements Built<StartLoa
 abstract class UserDataError with UserDataEvent implements Built<UserDataError, UserDataErrorBuilder> {
   String get error;
 
+  @nullable
+  String get trace;
+
   UserDataError._();
   factory UserDataError([updates(UserDataErrorBuilder b)]) = _$UserDataError;
 }
