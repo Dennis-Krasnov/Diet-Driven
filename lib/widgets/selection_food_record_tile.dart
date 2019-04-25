@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 
 import 'package:diet_driven/models/models.dart';
 
-class FoodRecordTile extends StatelessWidget {
+// TODO: create food record base class (private)
+// then extend it twice once with image, and once with selection!
+class SelectionFoodRecordTile extends StatelessWidget {
   /// ...
   ///
   ///
   final FoodRecord foodRecord;
+
+  /// Whether this checkbox is checked.
+  ///
+  /// This property must not be null.
+  final bool value;
 
   /// Whether this list tile is interactive.
   ///
@@ -25,13 +32,25 @@ class FoodRecordTile extends StatelessWidget {
   /// Inoperative if [enabled] is false.
   final GestureLongPressCallback onLongPress;
 
-  FoodRecordTile(
+  /// Called when the value of the checkbox should change.
+  ///
+  /// The checkbox passes the new value to the callback but does not actually
+  /// change state until the parent widget rebuilds the checkbox tile with the
+  /// new value.
+  ///
+  /// If null, the checkbox will be displayed as disabled.
+  final ValueChanged<bool> onChanged;
+
+  SelectionFoodRecordTile(
     this.foodRecord, {
     Key key,
+    this.value,
     this.enabled = true,
     this.onTap,
-    this.onLongPress
-  }) : assert(foodRecord != null),
+    this.onLongPress,
+    this.onChanged
+  }) : assert(value != null),
+       assert(foodRecord != null),
        assert(enabled != null),
        super(key: key);
 
@@ -40,9 +59,9 @@ class FoodRecordTile extends StatelessWidget {
     return ListTile(
 //      key: key, key: Key(foodRecord.uuid)
       // TODO: FadeInImage
-      leading: Image.network(
-        'https://picsum.photos/200',
-
+      leading: Checkbox(
+        value: value,
+        onChanged: onChanged
       ),
       title: Text("${foodRecord.foodName} - ${foodRecord.quantity} g"),
       subtitle: Row(

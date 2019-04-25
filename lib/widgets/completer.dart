@@ -23,6 +23,8 @@ Completer<void> infoSnackBarCompleter(BuildContext context, String successMessag
     ));
   })
   .catchError((Object error) {
+    print("SNACKBAR ERROR");
+    print(error);
     Scaffold.of(context).showSnackBar(SnackBar(
       backgroundColor: Colors.red,
       content: Text(error.toString())

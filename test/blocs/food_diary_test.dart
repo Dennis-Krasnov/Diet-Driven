@@ -75,10 +75,10 @@ void main() {
         emitsInOrder([
           FoodDiaryUninitialized(),
           FoodDiaryLoaded((b) => b
-            ..foodDiaryDay = dayA.toBuilder()
+            ..foodDiaryDay = dayA
           ),
           FoodDiaryLoaded((b) => b
-            ..foodDiaryDay = dayB.toBuilder()
+            ..foodDiaryDay = dayB
           ),
         ])
       );

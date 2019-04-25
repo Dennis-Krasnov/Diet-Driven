@@ -6,8 +6,11 @@ import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repository_singleton.dart';
 import 'package:diet_driven/widgets/completer.dart';
 import 'package:diet_driven/widgets/food_record_tile.dart';
+import 'package:diet_driven/widgets/selection_food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'food_record_edit.dart';
 
 class FoodLogging extends StatefulWidget {
   @override
@@ -100,7 +103,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                     loggingTab: loggingTab,
                     callOnLoad: () => _foodLoggingBloc.dispatch(FetchFoodRecordsResults((b) => b
                       ..loggingTab = loggingTab
-                      // Avoiding error state using completer FIXME: says it's not in a scaffold...
+                      // Avoiding error state using completer FIXME: says it's not in a scaffold.. i should pass context from caller!
 //                      ..completer = infoSnackBarCompleter(
 //                        context,
 //                        "loaded $loggingTab",
@@ -112,10 +115,9 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                     children: <Widget>[
                       for (var foodRecordResult in loggingTabToResults(loggingTab))
                         if (state.multiSelect)
-                          CheckboxListTile( // TODO: normal list tile, trailing checkbox!
-                            title: Text("$selectionType $loggingTab result $foodRecordResult"),
-                            value: _foodLoggingBloc.currentState.selectedFoodRecords.contains(foodRecordResult),
-  //                          onTap: details
+                          SelectionFoodRecordTile(
+                            foodRecordResult,
+                            value: state.selectedFoodRecords.contains(foodRecordResult),
                             onChanged: (bool value) {
                               if (value) {
                                 _foodLoggingBloc.dispatch(AddToSelection((b) => b
@@ -123,6 +125,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                                 ));
                               }
                               else {
+                                // OPTIMIZE: bloc should all of this logic in a single event (removeFromSelection)
                                 // Exit multiple selection mode if all are unselected
                                 if (_foodLoggingBloc.currentState.selectedFoodRecords.length == 1) {
                                   _foodLoggingBloc.dispatch(CancelMultiSelect());
@@ -134,11 +137,57 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                                 }
                               }
                             },
+                            onTap: () {
+                              // Adding modified result to selection
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => // Passing original context
+                                  FoodRecordEdit(
+                                    foodRecord: foodRecordResult,
+                                    saveAction: (newRecord) {
+                                      // FIXME: should set foodRecordResult to newRecord to reflect edits!
+                                      // dispatch another event to update results (with this food record replaced)
+
+                                      _foodLoggingBloc.dispatch(AddToSelection((b) => b
+                                        ..foodRecord = newRecord.toBuilder()
+                                      ));
+                                      // FIXME
+                                      Navigator.of(context).pop();
+                                    },
+                                    explicitFabAction: true,
+                                  ),
+                                )
+                              );
+                            },
                           )
                         else
-                          ListTile(
-                            title: Text("$selectionType $loggingTab result $foodRecordResult"),
-                            onTap: null,
+                          FoodRecordTile(
+                            foodRecordResult,
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(builder: (_) => // Passing original context
+                                  FoodRecordEdit(
+                                    foodRecord: foodRecordResult,
+                                    saveAction: (newRecord) {
+                                      _foodLoggingBloc.dispatch(AddToSelection((b) => b
+                                        ..foodRecord = newRecord.toBuilder() // save edited result!
+                                      ));
+                                      _foodLoggingBloc.dispatch(SaveSelection((b) => b
+//                                          ..completer = infoSnackBarCompleter( FIXME context issues
+//                                            context,
+//                                            "saved food record",
+//                                            // Single select is completed from within food record info
+//                                            popNTimes: 2
+//                                          )
+                                      ));
+                                      // FIXME
+                                      Navigator.of(context).pop();
+                                      Navigator.of(context).pop();
+                                    },
+                                    explicitFabAction: true,
+                                  ),
+                                )
+                              );
+                            },
                             onLongPress: () {
                               _foodLoggingBloc.dispatch(StartMultiSelect());
                               _foodLoggingBloc.dispatch(AddToSelection((b) => b
@@ -150,15 +199,15 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                   )
             ],
           ),
-          floatingActionButton: _foodLoggingBloc.currentState.selectedFoodRecords.isNotEmpty
+          floatingActionButton: state.multiSelect
             ? FloatingActionButton(
                 child: Icon(Icons.check),
                 onPressed: () => _foodLoggingBloc.dispatch(SaveSelection((b) => b
                   ..completer = infoSnackBarCompleter(
                     context,
-                    state.multiSelect ? "${state.selectedFoodRecords.length} food records saved" : "food record saved",
+                    "${state.selectedFoodRecords.length}",
                     // Single select is completed from within food record info
-                    popNTimes: state.multiSelect ? 1 : 0
+                    popNTimes: 1
                   )
                 ))
               )

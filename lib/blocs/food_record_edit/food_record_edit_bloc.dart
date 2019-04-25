@@ -11,18 +11,20 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
   final FoodRecord initialFoodRecord;
   final String userId;
   final int daysSinceEpoch;
-  final DiaryRepository diaryRepository;
+//  final DiaryRepository diaryRepository;
+  final void Function(FoodRecord) saveAction;
+
 
   FoodRecordEditBloc({
     @required this.initialFoodRecord,
     @required this.userId,
     @required this.daysSinceEpoch,
-    @required this.diaryRepository
+    @required this.saveAction
   }) :
     assert(initialFoodRecord != null),
     assert(userId != null),
     assert(daysSinceEpoch >= 0),
-    assert(diaryRepository != null);
+    assert(saveAction != null);
 
   @override
   FoodRecordEditState get initialState => FoodRecordEditState((b) => b..foodRecord = initialFoodRecord.toBuilder());
@@ -37,9 +39,9 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
       );
     }
     if (event is SaveFoodRecord) {
-      //
+      // Can't edit unchanged food record
       if (initialFoodRecord != currentState.foodRecord) {
-        diaryRepository.editFoodRecord(userId, daysSinceEpoch, initialFoodRecord, currentState.foodRecord);
+        saveAction(currentState.foodRecord);
       }
     }
   }

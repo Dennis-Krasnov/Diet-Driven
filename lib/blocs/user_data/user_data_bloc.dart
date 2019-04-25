@@ -20,6 +20,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   UserDataBloc({@required this.userRepository}) {
     assert(userRepository != null);
 
+    // TODO: https://pub.dartlang.org/documentation/rxdart/latest/rx/Observable/Observable.retryWhen.html
     _userDataEventStream = userRepository.authStateChangedStream
       .doOnData((user) => _log.fine("USER: $user"))
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user

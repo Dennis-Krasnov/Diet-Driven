@@ -67,13 +67,26 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
     if (event is RemoteDiaryDayArrived) {
       if (currentState is FoodDiaryLoaded) {
-        yield (currentState as FoodDiaryLoaded).rebuild((b) => b
-          ..foodDiaryDay = event.foodDiaryDay.toBuilder()
-        );
+        var state = currentState as FoodDiaryLoaded;
+
+        // Skip next data arrival if performed a food record edit
+        // ...
+        if (state.skipNextNArrivals > 0) {
+          yield state.rebuild((b) => b
+            ..skipNextNArrivals = state.skipNextNArrivals - 1
+          );
+          _log.info("SKIPPING DATA ARRIVAL");
+        }
+        // Update food diary day
+        else {
+          yield state.rebuild((b) => b
+            ..foodDiaryDay = event.foodDiaryDay
+          );
+        }
       }
       else {
         yield FoodDiaryLoaded((b) => b
-          ..foodDiaryDay = event.foodDiaryDay.toBuilder()
+          ..foodDiaryDay = event.foodDiaryDay
         );
       }
 
@@ -113,8 +126,17 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     if (event is EditFoodRecord) {
       assert(currentState is FoodDiaryLoaded);
       if (currentState is FoodDiaryLoaded) {
+        var state = currentState as FoodDiaryLoaded;
+
         try {
+          // Skip next data arrival.
+          _log.info("ADDING SKIPPED ARRIVED (going to be ${state.skipNextNArrivals + 1})");
+          yield state.rebuild((b) => b
+            ..skipNextNArrivals = state.skipNextNArrivals + 1
+          );
+
           diaryRepository.editFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
+
           event.completer?.complete();
 
           _log.info("${event.oldRecord} changed to ${event.newRecord}");

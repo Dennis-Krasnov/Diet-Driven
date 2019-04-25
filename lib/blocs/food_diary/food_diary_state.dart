@@ -26,8 +26,20 @@ abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFai
 abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   FoodDiaryDay get foodDiaryDay;
 
+  //
+  int get skipNextNArrivals;
+
   FoodDiaryLoaded._();
   factory FoodDiaryLoaded([updates(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
+}
+
+abstract class FoodDiaryLoadedBuilder implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
+  FoodDiaryDay foodDiaryDay;
+
+  int skipNextNArrivals = 0;
+
+  factory FoodDiaryLoadedBuilder() = _$FoodDiaryLoadedBuilder;
+  FoodDiaryLoadedBuilder._();
 }
 
 // TODO: create generic diary wrapper! (for pageview)
