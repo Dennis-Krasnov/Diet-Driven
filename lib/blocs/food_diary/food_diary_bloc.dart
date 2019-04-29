@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
@@ -12,31 +13,49 @@ import 'package:diet_driven/repositories/repositories.dart';
 
 /// Manages a particular food diary day for a particular user.
 /// [FoodDiaryBloc] shows skeleton meals and food records until loaded.
+/// update skips...
+/// TODO: rename all `edit` to `update` and `add` to `insert`
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   final Logger _log = new Logger("food diary bloc");
   final DiaryRepository diaryRepository;
   final String userId;
   final int daysSinceEpoch;
 
-  Observable<FoodDiaryDay> _foodDiaryDayStream;
-  StreamSubscription<FoodDiaryDay> _foodDiaryDaySubscription;
-
+  StreamSubscription<FoodDiaryEvent> _foodDiaryDaySubscription;
 
   FoodDiaryBloc({@required this.diaryRepository, @required this.userId, @required this.daysSinceEpoch}) {
     assert(diaryRepository != null);
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch);//.doOnData((data) => print(" DATA: $data"));
+    Observable<FoodDiaryEvent> _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch)
+      .switchMap<FoodDiaryEvent>((foodDiaryDay) =>
+        Observable<Diet>.just(Diet((b) => b..calories = 2520)) // TODO: call repo with date field from day
+          .map<FoodDiaryEvent>((diet) => RemoteDiaryDayArrived((b) => b
+            ..foodDiaryDay = foodDiaryDay.toBuilder()
+            ..diet = diet.toBuilder()
+          ))
+      );
 
-    // TODO: diet! -> merge together into event stream -> listen(dispatch)
-
-    _foodDiaryDaySubscription = _foodDiaryDayStream.listen((foodDiaryDay) =>
-      // TODO: call repository for this day's diet (returns as Observable.just() if historical or live stream if today)
-      // hardcode it for now! // TOTEST see user data tests
-      dispatch(RemoteDiaryDayArrived((b) => b..foodDiaryDay = foodDiaryDay.toBuilder())),
-      onError: (error, trace) => dispatch(FoodDiaryError((b) => b..error = error.toString())),
+    _foodDiaryDaySubscription = _foodDiaryDayStream.listen(
+      (foodDiaryEvent) => dispatch(foodDiaryEvent),
+      onError: (error, trace) => dispatch(FoodDiaryError((b) => b
+        ..error = error.toString()
+        ..trace = trace.toString()
+      )),
     );
+
+//    Observable<FoodDiaryDay> _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch);//.doOnData((data) => print(" DATA: $data"));
+//
+//    // TODO: diet! -> merge together into event stream -> listen(dispatch)
+//
+//    _foodDiaryDaySubscription = _foodDiaryDayStream.listen((foodDiaryDay) =>
+//      // TODO: call repository for this day's diet (returns as Observable.just() if historical or live stream if today)
+//      // hardcode it for now! // TOTEST see user data tests
+//      dispatch(RemoteDiaryDayArrived((b) => b..foodDiaryDay = foodDiaryDay.toBuilder())),
+//      onError: (error, trace) => dispatch(FoodDiaryError((b) => b..error = error.toString())),
+//        // TODO .switchIfEmpty(fallbackStream) for caching and loading historical configs
+//    );
   }
 
   @override
@@ -54,10 +73,10 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     Observable<FoodDiaryEvent>(events)
       .groupBy((event) => event.runtimeType)
       .flatMap((eventType) {
-        // TODO: create an 'distinctAction' mixin!! - single if statement! - pass this same type to undo button
-        if (eventType.key is AddFoodRecord || eventType.key is DeleteFoodRecord || eventType.key is EditFoodRecord) {
-          return eventType.distinct();
-        }
+        // TODO: stop spamming of expensive actions
+//        if (eventType.key is Completable) {
+//          return eventType.distinct();
+//        }
         return eventType;
       });
     return events;
@@ -87,57 +106,60 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       else {
         yield FoodDiaryLoaded((b) => b
           ..foodDiaryDay = event.foodDiaryDay
+          ..diet = event.diet
         );
       }
 
       _log.info("food diary day #${event.foodDiaryDay.date} arrived");
     }
 
-    // OPTIMIZE: single try catch around next 3 if statements, if I can make them specific enough as a whole
-    if (event is AddFoodRecord) {
+    if (event is AddFoodRecords) {
       assert(currentState is FoodDiaryLoaded);
       if (currentState is FoodDiaryLoaded) {
         try {
-          diaryRepository.addFoodRecord(userId, daysSinceEpoch, event.foodRecord);
+          for (FoodRecord foodRecord in event.foodRecords) {
+            diaryRepository.addFoodRecord(userId, daysSinceEpoch, foodRecord);
+          }
           event.completer?.complete();  // TOTEST
 
-          _log.info("${event.foodRecord} added");
+          _log.info("${event.foodRecords.length} food records added");
         } on Exception catch(e) {
           event.completer?.completeError(e);  // TOTEST
         }
       }
     }
 
-    if (event is DeleteFoodRecord) {
+    if (event is DeleteFoodRecords) {
       assert(currentState is FoodDiaryLoaded);
       if (currentState is FoodDiaryLoaded) {
-        // TODO: use completer to show snack bar upon completion for undo
         try {
-          diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, event.foodRecord);
-          event.completer?.complete();
+          for (FoodRecord foodRecord in event.foodRecords) {
+            diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, foodRecord);
+          }
+          event.completer?.complete();  // TOTEST
 
-          _log.info("${event.foodRecord} deleted");
+          _log.info("${event.foodRecords.length} food records deleted");
         } on Exception catch(e) {
-          event.completer?.completeError(e);
+          event.completer?.completeError(e);  // TOTEST
         }
       }
     }
 
-    if (event is EditFoodRecord) {
+    if (event is UpdateFoodRecord) {
       assert(currentState is FoodDiaryLoaded);
-      assert(event.oldRecord != event.newRecord); // TODO: also do safety if statement
+      assert(event.oldRecord != event.newRecord);
 
-      if (currentState is FoodDiaryLoaded) {
+      if (currentState is FoodDiaryLoaded && event.oldRecord != event.newRecord) {
         var state = currentState as FoodDiaryLoaded;
 
         try {
-          // Skip next data arrival.
+          // Skip next data arrival. TODOCUMENT
           _log.info("ADDING SKIPPED ARRIVED (going to be ${state.skipNextNArrivals + 1})");
           yield state.rebuild((b) => b
             ..skipNextNArrivals = state.skipNextNArrivals + 1
           );
 
-          diaryRepository.editFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
+          diaryRepository.updateFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
 
           event.completer?.complete();
 
@@ -149,4 +171,3 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     }
   }
 }
-  // TODO .switchIfEmpty(fallbackStream) for caching and loading historical configs

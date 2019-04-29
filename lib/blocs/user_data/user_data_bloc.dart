@@ -14,14 +14,13 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final Logger _log = new Logger("user data bloc");
   final UserRepository userRepository;
 
-  Observable<UserDataEvent> _userDataEventStream;
   StreamSubscription<UserDataEvent> _userDataEventSubscription;
 
   UserDataBloc({@required this.userRepository}) {
     assert(userRepository != null);
 
     // TODO: https://pub.dartlang.org/documentation/rxdart/latest/rx/Observable/Observable.retryWhen.html
-    _userDataEventStream = userRepository.authStateChangedStream
+    Observable<UserDataEvent> _userDataEventStream = userRepository.authStateChangedStream
       .doOnData((user) => _log.fine("USER: $user"))
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user
       .doOnData((user) => dispatch(user == null ? OnboardUser() : StartLoadingUserData()))
@@ -41,7 +40,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       )
       .distinct();
 
-    _userDataEventSubscription = _userDataEventStream.listen((userDataEvent) => dispatch(userDataEvent),
+    _userDataEventSubscription = _userDataEventStream.listen(
+      (userDataEvent) => dispatch(userDataEvent),
       onError: (error, trace) => dispatch(UserDataError((b) => b
         ..error = error.toString()
         ..trace = trace.toString()

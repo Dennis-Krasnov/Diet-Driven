@@ -123,7 +123,7 @@ class FirestoreProvider {
     });
   }
 
-  /// Edits [FoodRecord] in [FoodDiaryDay] in Firestore.
+  /// Updates [FoodRecord] in [FoodDiaryDay] in Firestore.
   /// Deleting a non-existent [FoodRecord] has no effect, adding a duplicate [FoodRecord] has no effect.
   ///
   /// Cloud functions triggers on edit:
@@ -133,7 +133,7 @@ class FirestoreProvider {
   ///
   /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
   /// Throws [Exception] if food diary day document doesn't exist.
-  void editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
+  void updateFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
     assert(oldRecord != newRecord);

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
 
@@ -13,39 +14,42 @@ abstract class FoodDiaryEvent {}
 abstract class RemoteDiaryDayArrived with FoodDiaryEvent implements Built<RemoteDiaryDayArrived, RemoteDiaryDayArrivedBuilder> {
   FoodDiaryDay get foodDiaryDay;
 
+  Diet get diet;
+
   RemoteDiaryDayArrived._();
   factory RemoteDiaryDayArrived([updates(RemoteDiaryDayArrivedBuilder b)]) = _$RemoteDiaryDayArrived;
-}
-
-/// Adds [FoodRecord] to [FoodDiaryDay].
-abstract class AddFoodRecord with Completable, FoodDiaryEvent implements Built<AddFoodRecord, AddFoodRecordBuilder> {
-  FoodRecord get foodRecord;
-
-  AddFoodRecord._();
-  factory AddFoodRecord([updates(AddFoodRecordBuilder b)]) = _$AddFoodRecord;
-}
-
-/// Deletes [FoodRecord] from [FoodDiaryDay].
-abstract class DeleteFoodRecord with Completable, FoodDiaryEvent implements Built<DeleteFoodRecord, DeleteFoodRecordBuilder> {
-  FoodRecord get foodRecord;
-
-  DeleteFoodRecord._();
-  factory DeleteFoodRecord([updates(DeleteFoodRecordBuilder b)]) = _$DeleteFoodRecord;
-}
-
-/// Edits [FoodRecord] in [FoodDiaryDay].
-abstract class EditFoodRecord with Completable, FoodDiaryEvent implements Built<EditFoodRecord, EditFoodRecordBuilder> {
-  FoodRecord get oldRecord;
-  FoodRecord get newRecord;
-
-  EditFoodRecord._();
-  factory EditFoodRecord([updates(EditFoodRecordBuilder b)]) = _$EditFoodRecord;
 }
 
 /// Shows error page.
 abstract class FoodDiaryError with FoodDiaryEvent implements Built<FoodDiaryError, FoodDiaryErrorBuilder> {
   String get error;
+  String get trace;
 
   FoodDiaryError._();
   factory FoodDiaryError([updates(FoodDiaryErrorBuilder b)]) = _$FoodDiaryError;
+}
+
+/// Adds [BuiltList] of [FoodRecord]s to [FoodDiaryDay].
+abstract class AddFoodRecords with Completable, FoodDiaryEvent implements Built<AddFoodRecords, AddFoodRecordsBuilder> {
+  BuiltList<FoodRecord> get foodRecords;
+
+  AddFoodRecords._();
+  factory AddFoodRecords([updates(AddFoodRecordsBuilder b)]) = _$AddFoodRecords;
+}
+
+/// Deletes [BuiltList] of [FoodRecord]s from [FoodDiaryDay].
+abstract class DeleteFoodRecords with Completable, FoodDiaryEvent implements Built<DeleteFoodRecords, DeleteFoodRecordsBuilder> {
+  BuiltList<FoodRecord> get foodRecords;
+
+  DeleteFoodRecords._();
+  factory DeleteFoodRecords([updates(DeleteFoodRecordsBuilder b)]) = _$DeleteFoodRecords;
+}
+
+/// Updates [oldRecord] to [newRecord] in [FoodDiaryDay].
+abstract class UpdateFoodRecord with Completable, FoodDiaryEvent implements Built<UpdateFoodRecord, UpdateFoodRecordBuilder> {
+  FoodRecord get oldRecord;
+  FoodRecord get newRecord;
+
+  UpdateFoodRecord._();
+  factory UpdateFoodRecord([updates(UpdateFoodRecordBuilder b)]) = _$UpdateFoodRecord;
 }

@@ -74,10 +74,10 @@ void main() {
         foodDiaryBloc.state,
         emitsInOrder([
           FoodDiaryUninitialized(),
-          FoodDiaryLoaded((b) => b
+          FoodDiaryLoaded((b) => b // TODO: diet
             ..foodDiaryDay = dayA
           ),
-          FoodDiaryLoaded((b) => b
+          FoodDiaryLoaded((b) => b // TODO: Diet
             ..foodDiaryDay = dayB
           ),
         ])

@@ -6,96 +6,78 @@ part of 'food_logging_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$FetchFoodRecordsResults extends FetchFoodRecordsResults {
+class _$ChangeMeal extends ChangeMeal {
   @override
-  final LoggingTab loggingTab;
-  @override
-  final Completer<void> completer;
+  final int mealIndex;
 
-  factory _$FetchFoodRecordsResults(
-          [void Function(FetchFoodRecordsResultsBuilder) updates]) =>
-      (new FetchFoodRecordsResultsBuilder()..update(updates)).build();
+  factory _$ChangeMeal([void Function(ChangeMealBuilder) updates]) =>
+      (new ChangeMealBuilder()..update(updates)).build();
 
-  _$FetchFoodRecordsResults._({this.loggingTab, this.completer}) : super._() {
-    if (loggingTab == null) {
-      throw new BuiltValueNullFieldError(
-          'FetchFoodRecordsResults', 'loggingTab');
+  _$ChangeMeal._({this.mealIndex}) : super._() {
+    if (mealIndex == null) {
+      throw new BuiltValueNullFieldError('ChangeMeal', 'mealIndex');
     }
   }
 
   @override
-  FetchFoodRecordsResults rebuild(
-          void Function(FetchFoodRecordsResultsBuilder) updates) =>
+  ChangeMeal rebuild(void Function(ChangeMealBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  FetchFoodRecordsResultsBuilder toBuilder() =>
-      new FetchFoodRecordsResultsBuilder()..replace(this);
+  ChangeMealBuilder toBuilder() => new ChangeMealBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FetchFoodRecordsResults &&
-        loggingTab == other.loggingTab &&
-        completer == other.completer;
+    return other is ChangeMeal && mealIndex == other.mealIndex;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, loggingTab.hashCode), completer.hashCode));
+    return $jf($jc(0, mealIndex.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('FetchFoodRecordsResults')
-          ..add('loggingTab', loggingTab)
-          ..add('completer', completer))
+    return (newBuiltValueToStringHelper('ChangeMeal')
+          ..add('mealIndex', mealIndex))
         .toString();
   }
 }
 
-class FetchFoodRecordsResultsBuilder
-    implements
-        Builder<FetchFoodRecordsResults, FetchFoodRecordsResultsBuilder> {
-  _$FetchFoodRecordsResults _$v;
+class ChangeMealBuilder implements Builder<ChangeMeal, ChangeMealBuilder> {
+  _$ChangeMeal _$v;
 
-  LoggingTab _loggingTab;
-  LoggingTab get loggingTab => _$this._loggingTab;
-  set loggingTab(LoggingTab loggingTab) => _$this._loggingTab = loggingTab;
+  int _mealIndex;
+  int get mealIndex => _$this._mealIndex;
+  set mealIndex(int mealIndex) => _$this._mealIndex = mealIndex;
 
-  Completer<void> _completer;
-  Completer<void> get completer => _$this._completer;
-  set completer(Completer<void> completer) => _$this._completer = completer;
+  ChangeMealBuilder();
 
-  FetchFoodRecordsResultsBuilder();
-
-  FetchFoodRecordsResultsBuilder get _$this {
+  ChangeMealBuilder get _$this {
     if (_$v != null) {
-      _loggingTab = _$v.loggingTab;
-      _completer = _$v.completer;
+      _mealIndex = _$v.mealIndex;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(FetchFoodRecordsResults other) {
+  void replace(ChangeMeal other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$FetchFoodRecordsResults;
+    _$v = other as _$ChangeMeal;
   }
 
   @override
-  void update(void Function(FetchFoodRecordsResultsBuilder) updates) {
+  void update(void Function(ChangeMealBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$FetchFoodRecordsResults build() {
-    final _$result = _$v ??
-        new _$FetchFoodRecordsResults._(
-            loggingTab: loggingTab, completer: completer);
+  _$ChangeMeal build() {
+    final _$result = _$v ?? new _$ChangeMeal._(mealIndex: mealIndex);
     replace(_$result);
     return _$result;
   }
@@ -292,73 +274,6 @@ class RemoveFromSelectionBuilder
   }
 }
 
-class _$SaveSelection extends SaveSelection {
-  @override
-  final Completer<void> completer;
-
-  factory _$SaveSelection([void Function(SaveSelectionBuilder) updates]) =>
-      (new SaveSelectionBuilder()..update(updates)).build();
-
-  _$SaveSelection._({this.completer}) : super._();
-
-  @override
-  SaveSelection rebuild(void Function(SaveSelectionBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  SaveSelectionBuilder toBuilder() => new SaveSelectionBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is SaveSelection && completer == other.completer;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, completer.hashCode));
-  }
-}
-
-class SaveSelectionBuilder
-    implements Builder<SaveSelection, SaveSelectionBuilder> {
-  _$SaveSelection _$v;
-
-  Completer<void> _completer;
-  Completer<void> get completer => _$this._completer;
-  set completer(Completer<void> completer) => _$this._completer = completer;
-
-  SaveSelectionBuilder();
-
-  SaveSelectionBuilder get _$this {
-    if (_$v != null) {
-      _completer = _$v.completer;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(SaveSelection other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$SaveSelection;
-  }
-
-  @override
-  void update(void Function(SaveSelectionBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$SaveSelection build() {
-    final _$result = _$v ?? new _$SaveSelection._(completer: completer);
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$StartMultiSelect extends StartMultiSelect {
   factory _$StartMultiSelect(
           [void Function(StartMultiSelectBuilder) updates]) =>
@@ -462,82 +377,6 @@ class CancelMultiSelectBuilder
   @override
   _$CancelMultiSelect build() {
     final _$result = _$v ?? new _$CancelMultiSelect._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$ChangeMeal extends ChangeMeal {
-  @override
-  final int meal;
-
-  factory _$ChangeMeal([void Function(ChangeMealBuilder) updates]) =>
-      (new ChangeMealBuilder()..update(updates)).build();
-
-  _$ChangeMeal._({this.meal}) : super._() {
-    if (meal == null) {
-      throw new BuiltValueNullFieldError('ChangeMeal', 'meal');
-    }
-  }
-
-  @override
-  ChangeMeal rebuild(void Function(ChangeMealBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  ChangeMealBuilder toBuilder() => new ChangeMealBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is ChangeMeal && meal == other.meal;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, meal.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('ChangeMeal')..add('meal', meal))
-        .toString();
-  }
-}
-
-class ChangeMealBuilder implements Builder<ChangeMeal, ChangeMealBuilder> {
-  _$ChangeMeal _$v;
-
-  int _meal;
-  int get meal => _$this._meal;
-  set meal(int meal) => _$this._meal = meal;
-
-  ChangeMealBuilder();
-
-  ChangeMealBuilder get _$this {
-    if (_$v != null) {
-      _meal = _$v.meal;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(ChangeMeal other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$ChangeMeal;
-  }
-
-  @override
-  void update(void Function(ChangeMealBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$ChangeMeal build() {
-    final _$result = _$v ?? new _$ChangeMeal._(meal: meal);
     replace(_$result);
     return _$result;
   }

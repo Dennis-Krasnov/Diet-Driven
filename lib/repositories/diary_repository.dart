@@ -72,16 +72,16 @@ class DiaryRepository {
     return _firestoreProvider.deleteFoodRecord(userId, daysSinceEpoch, foodRecord);
   }
 
-  /// Edits [FoodRecord] in [FoodDiaryDay].
+  /// Updates [FoodRecord] in [FoodDiaryDay].
   /// Deleting a non-existent [FoodRecord] has no effect, adding a duplicate [FoodRecord] has no effect.
   ///
   /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
   /// Throws [Exception] if food diary day document doesn't exist.
-  void editFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
+  void updateFoodRecord(String userId, int daysSinceEpoch, FoodRecord oldRecord, FoodRecord newRecord) {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
     assert(oldRecord != newRecord);
 
-    _firestoreProvider.editFoodRecord(userId, daysSinceEpoch, oldRecord, newRecord);
+    _firestoreProvider.updateFoodRecord(userId, daysSinceEpoch, oldRecord, newRecord);
   }
 }

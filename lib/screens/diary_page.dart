@@ -1,4 +1,7 @@
-import 'package:diet_driven/screens/food_record_edit.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/global_navigation.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/models/serializers.dart';
 import 'package:diet_driven/widgets/completer.dart';
 import 'package:diet_driven/screens/food_logging.dart';
 import 'package:diet_driven/widgets/food_record_tile.dart';
@@ -21,63 +24,82 @@ class _DiaryPageState extends State<DiaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
+//    TODO: FoodDiaryBloc provider !!!
+    return BlocProvider<FoodDiaryBloc>(
       bloc: _foodDiaryBloc,
-      builder: (BuildContext context, FoodDiaryState state) {
-        if (state is FoodDiaryUninitialized) {
-          return Scaffold(appBar: AppBar(title: Text("Diary loading")), body: Center(child: CircularProgressIndicator()));
-        }
-        if (state is FoodDiaryFailed) {
-          return Scaffold(appBar: AppBar(title: Text("Diary failed")), body: Center(child: Text("Failed... ${state.error}")));
-        }
-        if (state is FoodDiaryLoaded) {
-          return Scaffold(
-            appBar: AppBar(title: Text("Diary")), // TODO: date!!
-            body: Center(
-              child: Column(
-                children: [
-                  for (var foodRecord in state.foodDiaryDay.foodRecords)
-                    FoodRecordTile(
-                      foodRecord,
-                      onTap: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => // Passing original context
-                          FoodRecordEdit(
-                            foodRecord: foodRecord,
-                            saveAction: (newRecord) => _foodDiaryBloc.dispatch(EditFoodRecord((b) => b
+      child: BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
+        bloc: _foodDiaryBloc,
+        builder: (BuildContext context, FoodDiaryState state) {
+          if (state is FoodDiaryUninitialized) {
+            return Scaffold(appBar: AppBar(title: Text("Diary loading")), body: Center(child: CircularProgressIndicator()));
+          }
+          if (state is FoodDiaryFailed) {
+            return Scaffold(appBar: AppBar(title: Text("Diary failed")), body: Center(child: Text("Failed... ${state.error}")));
+          }
+          if (state is FoodDiaryLoaded) {
+            return Scaffold(
+              appBar: AppBar(title: Text("Diary")), // TODO: date!! // TODO: click to go to info!
+              body: Center(
+                child: Column(
+                  children: [
+                    Text("You've eaten ${state.foodDiaryDay.foodRecords.fold(0, (prev, e) => prev + e.quantity)} out of ${state.diet.calories} calories"),
+                    for (var foodRecord in state.foodDiaryDay.foodRecords)
+                      FoodRecordTile(
+                        foodRecord,
+                        onTap: () async {
+                          FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
+                            GlobalNavigation.manualFoodRecordEditor,
+                            arguments: foodRecord
+                          );
+
+                          if (modified != null) {
+                            _foodDiaryBloc.dispatch(UpdateFoodRecord((b) => b
                               ..oldRecord = foodRecord.toBuilder()
-                              ..newRecord = newRecord.toBuilder()
-                              ..completer = infoSnackBarCompleter(context, "${foodRecord.uuid} saved", popNTimes: 1)
-                            )),
-                            explicitFabAction: true,
-                          ),
-                        )),
-                      onLongPress: () => _foodDiaryBloc.dispatch(DeleteFoodRecord((b) => b
-                        ..foodRecord = foodRecord.toBuilder()
-                        ..completer = undoSnackBarCompleter(
-                          context,
-                          "food record deleted",
-                          onUndo: () => _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
-                            ..foodRecord = foodRecord.toBuilder()
-                          ))
-                        )
-                      )),
-                    )
-                ]
+                              ..newRecord = modified.toBuilder()
+                              ..completer = infoSnackBarCompleter(context, "${foodRecord.uuid} saved")
+                            ));
+                          }
+                        },
+  //                      onLongPress: () => _foodDiaryBloc.dispatch(DeleteFoodRecord((b) => b
+  //                        ..foodRecord = foodRecord.toBuilder()
+  //                        ..completer = undoSnackBarCompleter(
+  //                          context,
+  //                          "food record deleted",
+  //                          onUndo: () => _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
+  //                            ..foodRecord = foodRecord.toBuilder()
+  //                          ))
+  //                        )
+  //                      )),
+                      )
+                  ]
+                ),
               ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(builder: (context) =>
-                    FoodLogging(),
-                  )
-                );
-              }
-            ),
-          );
+              floatingActionButton: FloatingActionButton(
+                child: Icon(Icons.add),
+                onPressed: () async {
+                  // FIXME - doesn't include DiaryBlocProvider - do I need a bloc builder?
+                  BuiltList<FoodRecord> result = await Navigator.of(context).pushNamed<BuiltList<FoodRecord>>(
+                    "/food_logging",
+                    arguments: state
+                  );
+
+                  if (result != null) {
+                    _foodDiaryBloc.dispatch(AddFoodRecords((b) => b
+                      ..foodRecords = result.toBuilder()
+    //                  TODO completer
+                    ));
+                  }
+  //                Navigator.of(context).push(
+  //                  MaterialPageRoute(builder: (context) =>
+  //                    FoodLogging(),
+  //                  )
+  //                );
+                }
+              ),
+            );
+          }
         }
-      }
+      )
     );
   }
 }
@@ -87,47 +109,3 @@ void _onWidgetDidBuild(Function callback) {
     callback();
   });
 }
-
-//class FAB extends StatelessWidget {
-//  final VoidCallback addFoodRecord;
-//
-//  const FAB({Key key, @required this.addFoodRecord}) : super(key: key);
-//
-//  @override
-//  Widget build(BuildContext context) {
-//    final ThemeBloc _themeBloc = BlocProvider.of<ThemeBloc>(context);
-////    final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
-//    return Column(
-//      crossAxisAlignment: CrossAxisAlignment.end,
-//      mainAxisAlignment: MainAxisAlignment.end,
-//      children: <Widget>[
-//        Padding(
-//          padding: EdgeInsets.symmetric(vertical: 5.0),
-//          child: FloatingActionButton(
-//            child: Icon(Icons.add),
-////            onPressed: () => addFoodRecord()
-//            onPressed: addFoodRecord
-//          ),
-//        ),
-//        Padding(
-//          padding: EdgeInsets.symmetric(vertical: 5.0),
-//          child: FloatingActionButton(
-//            child: Icon(Icons.update),
-//            onPressed: () {
-//              _themeBloc.dispatch(ThemeEvent.toggleDarkTheme);
-//            },
-//          ),
-//        ),
-//      ],
-//    );
-//  }
-//}
-
-
-
-//                _foodDiaryBloc.dispatch(AddFoodRecord((b) => b
-//                  ..foodRecord = FoodRecord((b) => b
-//                    ..foodName = "IT'S NEW ${Random().nextInt(200)}"
-//                  ).toBuilder()
-//                ));
-

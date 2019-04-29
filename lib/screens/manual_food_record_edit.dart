@@ -6,26 +6,24 @@ import 'package:diet_driven/repository_singleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FoodRecordEdit extends StatefulWidget {
+class ManualFoodRecordEdit extends StatefulWidget {
   final FoodRecord foodRecord;
-  final void Function(FoodRecord) saveAction; // TODO: rename to editAction
-//  final void Function(FoodRecord) deleteAction;
-  final bool explicitFabAction; // TODO: rename to explicitFabSave
+  final bool deletable;
 
-  FoodRecordEdit({
+  ManualFoodRecordEdit({
     Key key,
     @required this.foodRecord,
-    this.saveAction,
-    this.explicitFabAction: true
-  }) : assert(foodRecord != null),
-       assert(explicitFabAction != null),
-       super(key: key);
+    @required this.deletable
+  }) :
+      assert(foodRecord != null),
+      assert(deletable != null),
+      super(key: key);
 
   @override
-  _FoodRecordEditState createState() => _FoodRecordEditState();
+  _ManualFoodRecordEditState createState() => _ManualFoodRecordEditState();
 }
 
-class _FoodRecordEditState extends State<FoodRecordEdit> {
+class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
   FoodRecordEditBloc _foodRecordEditBloc;
   // TODO: text controllers => sub = controllers.listen((val) => dispatch(event(val)))
   // sub.cancel()
@@ -42,7 +40,8 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
       initialFoodRecord: widget.foodRecord,
       userId: userId,
       daysSinceEpoch: daysSinceEpoch,
-      saveAction: widget.saveAction
+      diaryRepository: Repository().diary,
+//      saveAction: widget.saveAction // FIXME pass live: false instead
     );
   }
 
@@ -54,10 +53,23 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FoodRecordEditEvent, FoodRecordEditState>( // TODO: place user data before theme (config => userData => theme) so that theme change doesn't trigger user data fetch
+    return BlocBuilder<FoodRecordEditEvent, FoodRecordEditState>(
       bloc: _foodRecordEditBloc,
       builder: (BuildContext context, FoodRecordEditState state) {
         return Scaffold(
+          appBar: AppBar(
+            title: Text("${state.foodRecord.foodName}"),
+            actions: <Widget>[
+              if (widget.deletable)
+                IconButton(
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    _foodRecordEditBloc.dispatch(DeleteFoodRecord());
+                    Navigator.of(context).pop<FoodRecord>(null);
+                  },
+                )
+            ],
+          ),
           body: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -74,15 +86,23 @@ class _FoodRecordEditState extends State<FoodRecordEdit> {
               ],
             ),
           ),
-          floatingActionButton: widget.explicitFabAction
-            ? FloatingActionButton(
-                child: Icon(Icons.check),
-                onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord()) // TODO: rename action
-              )
-            : null,
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.check),
+            onPressed: () {
+              assert(Navigator.of(context).canPop());
+
+              if (widget.foodRecord != state.foodRecord) {
+                Navigator.of(context).pop<FoodRecord>(state.foodRecord);
+              }
+              // Nothing changed
+              else {
+                Navigator.of(context).pop<FoodRecord>(null);
+              }
+            }
+//            onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord()) // TODO: live does this instead
+          )
         );
       }
     );
-
   }
 }

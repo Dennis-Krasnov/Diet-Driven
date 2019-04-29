@@ -30,6 +30,12 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
         ..add(serializers.serialize(object.quantity,
             specifiedType: const FullType(num)));
     }
+    if (object.mealIndex != null) {
+      result
+        ..add('mealIndex')
+        ..add(serializers.serialize(object.mealIndex,
+            specifiedType: const FullType(int)));
+    }
 
     return result;
   }
@@ -57,6 +63,10 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
           result.quantity = serializers.deserialize(value,
               specifiedType: const FullType(num)) as num;
           break;
+        case 'mealIndex':
+          result.mealIndex = serializers.deserialize(value,
+              specifiedType: const FullType(int)) as int;
+          break;
       }
     }
 
@@ -71,11 +81,14 @@ class _$FoodRecord extends FoodRecord {
   final String foodName;
   @override
   final num quantity;
+  @override
+  final int mealIndex;
 
   factory _$FoodRecord([void Function(FoodRecordBuilder) updates]) =>
       (new FoodRecordBuilder()..update(updates)).build() as _$FoodRecord;
 
-  _$FoodRecord._({this.uuid, this.foodName, this.quantity}) : super._() {
+  _$FoodRecord._({this.uuid, this.foodName, this.quantity, this.mealIndex})
+      : super._() {
     if (uuid == null) {
       throw new BuiltValueNullFieldError('FoodRecord', 'uuid');
     }
@@ -96,12 +109,14 @@ class _$FoodRecord extends FoodRecord {
     if (identical(other, this)) return true;
     return other is FoodRecord &&
         foodName == other.foodName &&
-        quantity == other.quantity;
+        quantity == other.quantity &&
+        mealIndex == other.mealIndex;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, foodName.hashCode), quantity.hashCode));
+    return $jf($jc(
+        $jc($jc(0, foodName.hashCode), quantity.hashCode), mealIndex.hashCode));
   }
 
   @override
@@ -109,7 +124,8 @@ class _$FoodRecord extends FoodRecord {
     return (newBuiltValueToStringHelper('FoodRecord')
           ..add('uuid', uuid)
           ..add('foodName', foodName)
-          ..add('quantity', quantity))
+          ..add('quantity', quantity)
+          ..add('mealIndex', mealIndex))
         .toString();
   }
 }
@@ -153,6 +169,18 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
     super.quantity = quantity;
   }
 
+  @override
+  int get mealIndex {
+    _$this;
+    return super.mealIndex;
+  }
+
+  @override
+  set mealIndex(int mealIndex) {
+    _$this;
+    super.mealIndex = mealIndex;
+  }
+
   _$FoodRecordBuilder() : super._();
 
   FoodRecordBuilder get _$this {
@@ -160,6 +188,7 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
       super.uuid = _$v.uuid;
       super.foodName = _$v.foodName;
       super.quantity = _$v.quantity;
+      super.mealIndex = _$v.mealIndex;
       _$v = null;
     }
     return this;
@@ -181,7 +210,11 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
   @override
   _$FoodRecord build() {
     final _$result = _$v ??
-        new _$FoodRecord._(uuid: uuid, foodName: foodName, quantity: quantity);
+        new _$FoodRecord._(
+            uuid: uuid,
+            foodName: foodName,
+            quantity: quantity,
+            mealIndex: mealIndex);
     replace(_$result);
     return _$result;
   }

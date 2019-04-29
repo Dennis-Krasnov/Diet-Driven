@@ -85,6 +85,82 @@ class UpdateQuantityBuilder
   }
 }
 
+class _$DeleteFoodRecord extends DeleteFoodRecord {
+  @override
+  final Completer<void> completer;
+
+  factory _$DeleteFoodRecord(
+          [void Function(DeleteFoodRecordBuilder) updates]) =>
+      (new DeleteFoodRecordBuilder()..update(updates)).build();
+
+  _$DeleteFoodRecord._({this.completer}) : super._();
+
+  @override
+  DeleteFoodRecord rebuild(void Function(DeleteFoodRecordBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DeleteFoodRecordBuilder toBuilder() =>
+      new DeleteFoodRecordBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DeleteFoodRecord && completer == other.completer;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, completer.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('DeleteFoodRecord')
+          ..add('completer', completer))
+        .toString();
+  }
+}
+
+class DeleteFoodRecordBuilder
+    implements Builder<DeleteFoodRecord, DeleteFoodRecordBuilder> {
+  _$DeleteFoodRecord _$v;
+
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
+  DeleteFoodRecordBuilder();
+
+  DeleteFoodRecordBuilder get _$this {
+    if (_$v != null) {
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(DeleteFoodRecord other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DeleteFoodRecord;
+  }
+
+  @override
+  void update(void Function(DeleteFoodRecordBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DeleteFoodRecord build() {
+    final _$result = _$v ?? new _$DeleteFoodRecord._(completer: completer);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$SaveFoodRecord extends SaveFoodRecord {
   factory _$SaveFoodRecord([void Function(SaveFoodRecordBuilder) updates]) =>
       (new SaveFoodRecordBuilder()..update(updates)).build();

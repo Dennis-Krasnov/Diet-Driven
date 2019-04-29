@@ -1,8 +1,11 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/screens/error_screen.dart';
+import 'package:diet_driven/screens/food_logging.dart';
 import 'package:diet_driven/screens/home_screen.dart';
 import 'package:diet_driven/screens/loading_indicator.dart';
 import 'package:diet_driven/screens/login.dart';
+import 'package:diet_driven/screens/manual_food_record_edit.dart';
 import 'package:diet_driven/screens/splash_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:bloc/bloc.dart';
@@ -13,6 +16,9 @@ import 'package:flutter/material.dart';
 
 import 'package:diet_driven/repository_singleton.dart';
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:rxdart/rxdart.dart';
+
+import 'global_navigation.dart';
 
 void main() {
   // Configure logger
@@ -71,12 +77,59 @@ class _AppState extends State<App> {
             bloc: userDataBloc,
             builder: (BuildContext context, UserDataState userDataState) {
               return MaterialApp(
+                // Overrides `/` navigator route
                 home: appLoadingLogic(configurationState, userDataState),
+                // User or default settings
                 theme: generateThemeSettings(userDataState is UserDataLoaded
                   ? userDataState.settings.themeSettings
-                  : ThemeSettings() // Default settings
+                  : ThemeSettings()
                 ),
-                // TODO: Fluro navigation
+                onGenerateRoute: (settings) {
+                  final arguments = settings.arguments;
+
+                  switch (settings.name) { // FIXME: use global constants
+                    case "/manual_food_record_edit":
+                      assert(arguments is FoodRecord);
+
+                      // Returns edited food record
+                      return MaterialPageRoute<FoodRecord>(
+                        builder: (context) => ManualFoodRecordEdit(
+                          foodRecord: arguments,
+                          deletable: true, // TODO: diary should have two paths - live and manual, both deletable
+                        ),
+                        maintainState: true,
+                      );
+                      break;
+                    case "/food_logging":
+                      // TODO: if arguments != null => assert they're a valid meal
+                      assert(arguments is FoodDiaryLoaded);
+
+                      // Returns list of food records to add
+                      return MaterialPageRoute<BuiltList<FoodRecord>>(
+                        builder: (context) => FoodLogging(
+                          foodDiaryLoaded: arguments,
+                        ),
+                        maintainState: true,
+                      );
+                      break;
+                    case "/logging_food_record_edit":
+                      assert(arguments is FoodRecord);
+
+                      // Returns edited food record
+                      return MaterialPageRoute<FoodRecord>(
+                        builder: (context) => ManualFoodRecordEdit(
+                          foodRecord: arguments,
+                          deletable: false,
+                        ),
+                        maintainState: true,
+                      );
+                      break;
+                  }
+                  return null;
+                },
+                onUnknownRoute: (RouteSettings setting) {
+                  return MaterialPageRoute(builder: (context) => ErrorPage(error: "${setting.name} route not found"));
+                }
               );
             }
           );

@@ -18,15 +18,21 @@ abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodD
 abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFailed, FoodDiaryFailedBuilder> {
   String get error;
 
+  String get trace;
+
   FoodDiaryFailed._();
   factory FoodDiaryFailed([updates(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;
 }
 
 /// Food diary day, stores current [FoodDiaryDay].
 abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
+  ///
   FoodDiaryDay get foodDiaryDay;
 
-  //
+  ///
+  Diet get diet;
+
+  ///
   int get skipNextNArrivals;
 
   FoodDiaryLoaded._();
@@ -35,6 +41,8 @@ abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoa
 
 abstract class FoodDiaryLoadedBuilder implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   FoodDiaryDay foodDiaryDay;
+
+  Diet diet;
 
   int skipNextNArrivals = 0;
 

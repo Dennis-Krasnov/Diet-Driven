@@ -93,8 +93,11 @@ class UserRepository {
         _firestoreProvider.defaultSettings(),
         (Settings settings, Settings defaultSettings) => Settings((b) => b
           ..navigationSettings = NavigationSettings((b) => b
-            ..defaultPage = settings?.navigationSettings?.defaultPage ?? defaultSettings.navigationSettings.defaultPage
-            ..bottomNavigationPages = settings?.navigationSettings?.bottomNavigationPages?.toBuilder() ?? defaultSettings.navigationSettings.bottomNavigationPages.toBuilder()
+            ..defaultPage = settings?.navigationSettings?.defaultPage
+              ?? defaultSettings.navigationSettings.defaultPage
+
+            ..bottomNavigationPages = settings?.navigationSettings?.bottomNavigationPages?.toBuilder()
+              ?? defaultSettings.navigationSettings.bottomNavigationPages.toBuilder()
           )
         )
       )

@@ -1,49 +1,70 @@
 import 'dart:math';
 
-import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/blocs/blocs.dart';
-import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repository_singleton.dart';
-import 'package:diet_driven/widgets/completer.dart';
-import 'package:diet_driven/widgets/food_record_tile.dart';
-import 'package:diet_driven/widgets/selection_food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:built_collection/built_collection.dart';
 
-import 'food_record_edit.dart';
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/repository_singleton.dart';
+import 'package:diet_driven/widgets/food_record_tile.dart';
+import 'package:diet_driven/widgets/selection_food_record_tile.dart';
+
 
 class FoodLogging extends StatefulWidget {
+  final FoodDiaryLoaded foodDiaryLoaded;
+
+  const FoodLogging({Key key, @required this.foodDiaryLoaded}) : assert(foodDiaryLoaded != null), super(key: key);
+
   @override
   _FoodLoggingState createState() => _FoodLoggingState();
 }
 
 class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin {
   FoodLoggingBloc _foodLoggingBloc;
+  BuiltList<FoodLoggingTabBloc> _tabBlocs;
+
   TabController _tabController;
+
+  String userId;
+  BuiltList<LoggingTab> loggingTabs;
+
 
   @override
   void initState() {
     super.initState();
 
-    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
-    String userId = (_userDataBloc.currentState as UserDataLoaded).authentication.uid;
-    int daysSinceEpoch = 124; // TODO: take from diary wrapper bloc
+    userId = (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid;
+    loggingTabs = BuiltList([LoggingTab.recent, LoggingTab.popular, LoggingTab.favorite]); // TODO: take tabs from settings!
 
     _foodLoggingBloc = FoodLoggingBloc(
       userId: userId,
-      daysSinceEpoch: daysSinceEpoch,
-      meal: 0,
+      mealIndex: 0, // TODO: take as optional widget parameter!
       startWithMultiSelect: false, // TODO: take from settings!
-      diaryRepository: Repository().diary,
+      foodDiaryLoaded: widget.foodDiaryLoaded,
       foodRepository: Repository().food
     );
 
-    _tabController = TabController(vsync: this, length: 3); // TODO: take tabs from settings!
+    // TODO: create inside tab content stateful widget instead
+    // TOTEST: ensure results aren't recreated when switching
+    // TOTEST: selection works across tabs
+    _tabBlocs = BuiltList(loggingTabs.map((tab) =>
+      FoodLoggingTabBloc(
+        loggingTab: tab,
+        futureResultRecords: futureFoodRecordResultsFor(tab),
+        diaryRecords: widget.foodDiaryLoaded.foodDiaryDay.foodRecords, // TODO: where foodRecord.meal == meal
+        foodLoggingBloc: _foodLoggingBloc
+      )
+    ));
+
+    _tabController = TabController(vsync: this, length: loggingTabs.length);
   }
 
   @override
   void dispose() {
     _foodLoggingBloc.dispose();
+    _tabBlocs.forEach((bloc) => bloc.dispose());
     _tabController.dispose();
     super.dispose();
   }
@@ -55,35 +76,65 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
       builder: (BuildContext context, FoodLoggingState state) {
         String selectionType = state.multiSelect ? "multi-select" : "single-select";
 
-        List<LoggingTab> tabs = [LoggingTab.recent, LoggingTab.popular, LoggingTab.favorite]; // TODO: take tabs from settings!
-
         String title = state.multiSelect
-          ? (state.selectedFoodRecords.length > 0 ? "${state.selectedFoodRecords.length} selected" : "select foods")
-          : "MEAL: ${state.meal}"; // access list of meal names from BlocProvider<FoodDiary> of context 's diet field!
+          ? "Add (${state.selectedFoodRecords.length}) to #${state.mealIndex} (${widget.foodDiaryLoaded.foodDiaryDay.foodRecords.length})"
+          : "Add to #${state.mealIndex} (${widget.foodDiaryLoaded.foodDiaryDay.foodRecords.length})"; // TODO: of that meal
+        // access list of meal names from BlocProvider<FoodDiary> of context 's diet field!
 
         return Scaffold(
           appBar: AppBar(
-            leading: state.multiSelect
-              ? IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () => _foodLoggingBloc.dispatch(CancelMultiSelect()),
-                )
-              : null,
             title: Text(title),
             bottom: TabBar(
               controller: _tabController,
               tabs: [
-                for (var loggingTab in tabs) Tab(
+                for (var loggingTab in loggingTabs) Tab(
                   icon: Icon(loggingTabToIcon(loggingTab))
                 )
               ]
             ),
             actions: <Widget>[
-              if (!state.multiSelect)
-                IconButton(
-                  icon: Icon(Icons.select_all),
-                  onPressed: () => _foodLoggingBloc.dispatch(StartMultiSelect()),
-                ),
+              IconButton(
+                icon: Icon(Icons.select_all), // TODO: single and multi select icons
+                onPressed: () async {
+                  if (state.multiSelect) {
+                    // Confirmation if going to lose non-empty selection
+                    if (state.selectedFoodRecords.isNotEmpty) {
+                      bool confirmed = await showDialog<bool>(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: new Text("Switching to single selection will lose ${state.selectedFoodRecords.length} records"),
+                            content: new Text("[list the records]"),
+                            actions: <Widget>[
+                              new FlatButton(
+                                child: new Text("Cancel"),
+                                onPressed: () {
+                                  Navigator.of(context).pop<bool>(false);
+                                },
+                              ),
+                              new FlatButton(
+                                child: new Text("Yes!"),
+                                onPressed: () {
+                                  Navigator.of(context).pop<bool>(true);
+                                },
+                              ),
+                            ],
+                          );
+                        }
+                      );
+                      if (confirmed != null && confirmed) {
+                        _foodLoggingBloc.dispatch(CancelMultiSelect());
+                      }
+                    }
+                    else {
+                      _foodLoggingBloc.dispatch(CancelMultiSelect());
+                    }
+                  }
+                  else {
+                    _foodLoggingBloc.dispatch(StartMultiSelect());
+                  }
+                },
+              ),
               IconButton(
                 icon: Icon(Icons.search),
                 onPressed: () => showSearch(
@@ -96,120 +147,99 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
           body: TabBarView(
             controller: _tabController,
             children: [
-              for (var loggingTab in tabs)
-                // OPTIMIZE: store result of loggingTabToResults(loggingTab) so I don't call it twice in a row
-                if (loggingTabToResults(loggingTab) == null)
-                  LoadingAlsoFetches(
-                    loggingTab: loggingTab,
-                    callOnLoad: () => _foodLoggingBloc.dispatch(FetchFoodRecordsResults((b) => b
-                      ..loggingTab = loggingTab
-                      // Avoiding error state using completer FIXME: says it's not in a scaffold.. i should pass context from caller!
-//                      ..completer = infoSnackBarCompleter(
-//                        context,
-//                        "loaded $loggingTab",
-//                      )
-                    )),
-                  )
-                else
-                  ListView(
-                    children: <Widget>[
-                      for (var foodRecordResult in loggingTabToResults(loggingTab))
-                        if (state.multiSelect)
-                          SelectionFoodRecordTile(
-                            foodRecordResult,
-                            value: state.selectedFoodRecords.contains(foodRecordResult),
-                            onChanged: (bool value) {
-                              if (value) {
-                                _foodLoggingBloc.dispatch(AddToSelection((b) => b
-                                  ..foodRecord = foodRecordResult.toBuilder()
-                                ));
-                              }
-                              else {
-                                // OPTIMIZE: bloc should all of this logic in a single event (removeFromSelection)
-                                // Exit multiple selection mode if all are unselected
-                                if (_foodLoggingBloc.currentState.selectedFoodRecords.length == 1) {
-                                  _foodLoggingBloc.dispatch(CancelMultiSelect());
-                                }
-                                else {
-                                  _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
-                                  ..foodRecord = foodRecordResult.toBuilder()
+              for (var tabBloc in _tabBlocs)
+                BlocBuilder<FoodLoggingTabEvent, FoodLoggingTabState>(
+                  bloc: tabBloc,
+                  builder: (BuildContext context, FoodLoggingTabState tabState) {
+                    if (tabState is FoodLoggingTabUninitialized) {
+                      return Center(child: CircularProgressIndicator(),);
+                    }
+
+                    if (tabState is FoodLoggingTabFailed) {
+                      return Center(child: Text("Couldn't load results sorry"));
+                    }
+
+                    if (tabState is FoodLoggingTabLoaded) {
+                      return ListView(
+                        children: <Widget>[
+                          for (var foodRecordResult in tabState.results)
+                            if (state.multiSelect)
+                              SelectionFoodRecordTile(
+                                foodRecordResult.foodRecord,
+//                                value: state.selectedFoodRecords.contains(foodRecordResult),
+                                // TODO: exists in diary in different colour, for now disabled!
+                                value: foodRecordResult.existsInSelection,
+                                onChanged: (bool value) {
+                                  if (value) {
+                                    _foodLoggingBloc.dispatch(AddToSelection((b) => b
+                                      ..foodRecord = foodRecordResult.foodRecord.toBuilder()
+                                    ));
+                                  }
+                                  else {
+                                    _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
+                                      ..foodRecord = foodRecordResult.foodRecord.toBuilder()
+                                    ));
+                                  }
+                                },
+                                onTap: () async {
+                                  FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
+                                    "/logging_food_record_edit",
+                                    arguments: foodRecordResult.foodRecord
+                                  );
+
+                                  // TOTEST: enter multiple selection, edit a result to something else, save it to selection,
+                                    //  then remove it from selection and the old result quantity should reappear
+
+                                  // Removes old food record from selection, adds modified result to selection
+                                  if (modified != null) {
+                                    // TODO: instead of remove selection has to contain removee for delete
+                                    // TODO: create editSelection event, also moves logic out of UI // Similar to logic in updating food records in Firestore
+                                    _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
+                                      ..foodRecord = foodRecordResult.foodRecord.toBuilder()
+                                    ));
+                                    _foodLoggingBloc.dispatch(AddToSelection((b) => b
+                                      ..foodRecord = modified.toBuilder()
+                                    ));
+                                  }
+                                },
+                              )
+                            else
+                              FoodRecordTile(
+                                foodRecordResult.foodRecord,
+                                onTap: () async {
+                                  FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
+                                    "/logging_food_record_edit",
+                                    arguments: foodRecordResult.foodRecord
+                                  );
+
+                                  // Adds modified result to diary
+                                  if (modified != null) {
+                                    Navigator.of(context).pop(BuiltList<FoodRecord>([modified]));
+                                  }
+                                },
+                                onLongPress: () {
+                                  // Enters multiple selection mode with initial selection
+                                  _foodLoggingBloc.dispatch(StartMultiSelect());
+                                  _foodLoggingBloc.dispatch(AddToSelection((b) => b
+                                    ..foodRecord = foodRecordResult.foodRecord.toBuilder()
                                   ));
                                 }
-                              }
-                            },
-                            onTap: () {
-                              // Adding modified result to selection
-                              Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => // Passing original context
-                                  FoodRecordEdit(
-                                    foodRecord: foodRecordResult,
-                                    saveAction: (newRecord) {
-                                      // FIXME: should set foodRecordResult to newRecord to reflect edits!
-                                      // dispatch another event to update results (with this food record replaced)
+                              )
+                        ],
+                      );
+                    }
 
-                                      _foodLoggingBloc.dispatch(AddToSelection((b) => b
-                                        ..foodRecord = newRecord.toBuilder()
-                                      ));
-                                      // FIXME
-                                      Navigator.of(context).pop();
-                                    },
-                                    explicitFabAction: true,
-                                  ),
-                                )
-                              );
-                            },
-                          )
-                        else
-                          FoodRecordTile(
-                            foodRecordResult,
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(builder: (_) => // Passing original context
-                                  FoodRecordEdit(
-                                    foodRecord: foodRecordResult,
-                                    saveAction: (newRecord) {
-                                      _foodLoggingBloc.dispatch(AddToSelection((b) => b
-                                        ..foodRecord = newRecord.toBuilder() // save edited result!
-                                      ));
-                                      _foodLoggingBloc.dispatch(SaveSelection((b) => b
-//                                          ..completer = infoSnackBarCompleter( FIXME context issues
-//                                            context,
-//                                            "saved food record",
-//                                            // Single select is completed from within food record info
-//                                            popNTimes: 2
-//                                          )
-                                      ));
-                                      // FIXME
-                                      Navigator.of(context).pop();
-                                      Navigator.of(context).pop();
-                                    },
-                                    explicitFabAction: true,
-                                  ),
-                                )
-                              );
-                            },
-                            onLongPress: () {
-                              _foodLoggingBloc.dispatch(StartMultiSelect());
-                              _foodLoggingBloc.dispatch(AddToSelection((b) => b
-                                ..foodRecord = foodRecordResult.toBuilder()
-                              ));
-                            }
-                          )
-                    ],
-                  )
+                    return Center(child: Text("Tab state isn't defined: $tabState. Please report this to the developer!"));
+                  }
+                )
             ],
           ),
-          floatingActionButton: state.multiSelect
+          floatingActionButton: state.multiSelect && state.selectedFoodRecords.isNotEmpty
             ? FloatingActionButton(
                 child: Icon(Icons.check),
-                onPressed: () => _foodLoggingBloc.dispatch(SaveSelection((b) => b
-                  ..completer = infoSnackBarCompleter(
-                    context,
-                    "${state.selectedFoodRecords.length}",
-                    // Single select is completed from within food record info
-                    popNTimes: 1
-                  )
-                ))
+                onPressed: () {
+                  Navigator.of(context).pop(state.selectedFoodRecords);
+                }
               )
             : null,
         );
@@ -217,31 +247,44 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
     );
   }
 
-  BuiltList<FoodRecord> loggingTabToResults(LoggingTab loggingTab) {
-    switch (loggingTab) {
-      // FIXME
-      case LoggingTab.frequent:
-      case LoggingTab.recipes:
+  // TODO: move this to food repository
+  /// Returns food record results for [userId]'s [loggingTab].
+  /// Used to avoid passing down [foodRepository] and [userId] to every [FoodLoggingTabBloc].
+  Future<BuiltList<FoodRecord>> futureFoodRecordResultsFor(LoggingTab loggingTab) {
+    FoodRepository foodRepository = Repository().food;
+    switch(loggingTab) {
       case LoggingTab.recent:
-        return _foodLoggingBloc.currentState.recentResults;
+        return foodRepository.recentFoodRecords(userId);
         break;
-      case LoggingTab.popular:
-        return _foodLoggingBloc.currentState.popularResults;
-        break;
+
       case LoggingTab.favorite:
-        return _foodLoggingBloc.currentState.favoriteResults;
+        return foodRepository.recentFoodRecords(userId);
         break;
+
+      case LoggingTab.popular:
+        return foodRepository.recentFoodRecords(userId);
+        break;
+
+      case LoggingTab.frequent:
+        return foodRepository.recentFoodRecords(userId);
+        break;
+
+      case LoggingTab.recipes:
+        return foodRepository.recentFoodRecords(userId);
+        break;
+
       default:
-        throw Exception("no results was defiend for $loggingTab in loggingTabToResults");
+        throw Exception("$loggingTab isn't defined for futureFoodRecordResultsFor");
     }
   }
+
 }
 
-void _onWidgetDidBuild(Function callback) {
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    callback();
-  });
-}
+//void _onWidgetDidBuild(Function callback) {
+//  WidgetsBinding.instance.addPostFrameCallback((_) {
+//    callback();
+//  });
+//}
 
 IconData loggingTabToIcon(LoggingTab loggingTab) {
   switch (loggingTab) {
@@ -313,18 +356,22 @@ class CustomSearchDelegate extends SearchDelegate {
   Widget buildSuggestions(BuildContext context) {
     return Column();
   }
+
 }
 
-class LoadingAlsoFetches extends StatelessWidget {
-  final LoggingTab loggingTab;
-  final Function callOnLoad;
+//class LoadingAlsoFetches extends StatelessWidget { // TODO: name this something relevant
+//  final LoggingTab loggingTab;
+//  final Function callOnLoad;
+//
+//  const LoadingAlsoFetches({Key key, this.loggingTab, this.callOnLoad}) : super(key: key);
+//
+//  @override
+//  Widget build(BuildContext context) {
+//    // TODO: only load if it's null - at if (loggingTabToResults(loggingTab) == null)
+//    _onWidgetDidBuild(callOnLoad); // TODO: use stateful widget instead...
+//    return Center(child: CircularProgressIndicator());
+//  }
+//}
 
-  const LoadingAlsoFetches({Key key, this.loggingTab, this.callOnLoad}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: only load if it's null - at if (loggingTabToResults(loggingTab) == null)
-    _onWidgetDidBuild(callOnLoad);
-    return Center(child: CircularProgressIndicator());
-  }
-}
+//// Access context from food diary bloc provider instead of inheriting ancestor context.
+//      child: Builder(builder: (BuildContext context) {
