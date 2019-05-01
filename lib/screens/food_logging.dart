@@ -192,13 +192,9 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
 
                                   // Removes old food record from selection, adds modified result to selection
                                   if (modified != null) {
-                                    // TODO: instead of remove selection has to contain removee for delete
-                                    // TODO: create editSelection event, also moves logic out of UI // Similar to logic in updating food records in Firestore
-                                    _foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
-                                      ..foodRecord = foodRecordResult.foodRecord.toBuilder()
-                                    ));
-                                    _foodLoggingBloc.dispatch(AddToSelection((b) => b
-                                      ..foodRecord = modified.toBuilder()
+                                    _foodLoggingBloc.dispatch(ReplaceSelected((b) => b
+                                      ..oldRecord = foodRecordResult.foodRecord.toBuilder()
+                                      ..newRecord = modified.toBuilder()
                                     ));
                                   }
                                 },

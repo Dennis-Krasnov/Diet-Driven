@@ -9,12 +9,14 @@ part of 'food_record_edit_state.dart';
 class _$FoodRecordEditState extends FoodRecordEditState {
   @override
   final FoodRecord foodRecord;
+  @override
+  final String quantityError;
 
   factory _$FoodRecordEditState(
           [void Function(FoodRecordEditStateBuilder) updates]) =>
       (new FoodRecordEditStateBuilder()..update(updates)).build();
 
-  _$FoodRecordEditState._({this.foodRecord}) : super._() {
+  _$FoodRecordEditState._({this.foodRecord, this.quantityError}) : super._() {
     if (foodRecord == null) {
       throw new BuiltValueNullFieldError('FoodRecordEditState', 'foodRecord');
     }
@@ -32,18 +34,21 @@ class _$FoodRecordEditState extends FoodRecordEditState {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodRecordEditState && foodRecord == other.foodRecord;
+    return other is FoodRecordEditState &&
+        foodRecord == other.foodRecord &&
+        quantityError == other.quantityError;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, foodRecord.hashCode));
+    return $jf($jc($jc(0, foodRecord.hashCode), quantityError.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodRecordEditState')
-          ..add('foodRecord', foodRecord))
+          ..add('foodRecord', foodRecord)
+          ..add('quantityError', quantityError))
         .toString();
   }
 }
@@ -58,11 +63,17 @@ class FoodRecordEditStateBuilder
   set foodRecord(FoodRecordBuilder foodRecord) =>
       _$this._foodRecord = foodRecord;
 
+  String _quantityError;
+  String get quantityError => _$this._quantityError;
+  set quantityError(String quantityError) =>
+      _$this._quantityError = quantityError;
+
   FoodRecordEditStateBuilder();
 
   FoodRecordEditStateBuilder get _$this {
     if (_$v != null) {
       _foodRecord = _$v.foodRecord?.toBuilder();
+      _quantityError = _$v.quantityError;
       _$v = null;
     }
     return this;
@@ -85,8 +96,9 @@ class FoodRecordEditStateBuilder
   _$FoodRecordEditState build() {
     _$FoodRecordEditState _$result;
     try {
-      _$result =
-          _$v ?? new _$FoodRecordEditState._(foodRecord: foodRecord.build());
+      _$result = _$v ??
+          new _$FoodRecordEditState._(
+              foodRecord: foodRecord.build(), quantityError: quantityError);
     } catch (_) {
       String _$failedField;
       try {

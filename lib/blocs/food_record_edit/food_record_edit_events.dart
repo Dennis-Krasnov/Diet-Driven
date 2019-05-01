@@ -10,6 +10,7 @@ part 'food_record_edit_events.g.dart';
 abstract class FoodRecordEditEvent {}
 
 /// Updates local [FoodRecord]'s [quantity].
+/// Validates [quantity]'s correctness.
 abstract class UpdateQuantity with FoodRecordEditEvent implements Built<UpdateQuantity, UpdateQuantityBuilder> {
   num get quantity;
 

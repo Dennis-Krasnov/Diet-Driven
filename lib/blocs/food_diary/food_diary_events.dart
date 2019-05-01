@@ -46,10 +46,10 @@ abstract class DeleteFoodRecords with Completable, FoodDiaryEvent implements Bui
 }
 
 /// Updates [oldRecord] to [newRecord] in [FoodDiaryDay].
-abstract class UpdateFoodRecord with Completable, FoodDiaryEvent implements Built<UpdateFoodRecord, UpdateFoodRecordBuilder> {
+abstract class ReplaceFoodRecord with Completable, FoodDiaryEvent implements Built<ReplaceFoodRecord, ReplaceFoodRecordBuilder> {
   FoodRecord get oldRecord;
   FoodRecord get newRecord;
 
-  UpdateFoodRecord._();
-  factory UpdateFoodRecord([updates(UpdateFoodRecordBuilder b)]) = _$UpdateFoodRecord;
+  ReplaceFoodRecord._();
+  factory ReplaceFoodRecord([updates(ReplaceFoodRecordBuilder b)]) = _$ReplaceFoodRecord;
 }

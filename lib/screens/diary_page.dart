@@ -53,7 +53,7 @@ class _DiaryPageState extends State<DiaryPage> {
                           );
 
                           if (modified != null) {
-                            _foodDiaryBloc.dispatch(UpdateFoodRecord((b) => b
+                            _foodDiaryBloc.dispatch(ReplaceFoodRecord((b) => b
                               ..oldRecord = foodRecord.toBuilder()
                               ..newRecord = modified.toBuilder()
                               ..completer = infoSnackBarCompleter(context, "${foodRecord.uuid} saved")

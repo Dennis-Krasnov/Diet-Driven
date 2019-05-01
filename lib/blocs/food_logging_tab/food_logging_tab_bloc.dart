@@ -28,7 +28,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
     Observable<BuiltList<FoodRecordResult>> mergedResultsStream = Observable.combineLatest3<BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecordResult>>(
       Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltList<FoodRecord>>((state) => state.selectedFoodRecords),
       Observable.just(diaryRecords),
-      Observable.fromFuture(futureResultRecords),
+      Observable.fromFuture(futureResultRecords), // .delay(Duration(seconds: 2)); TOTEST every page loads independently
       (selected, diary, results) {
         return BuiltList(results.map<FoodRecordResult>((foodRecord) {
           bool existsInDiary = diaryRecords.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid);
@@ -53,7 +53,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
           );
         }));
       }
-    ); //.delay(Duration(seconds: 2)); TOTEST every page loads independently
+    );
 
     // TODO: change user data to be like this! (instead of a stream of events)
     _selectionEventSubscription = mergedResultsStream.listen(

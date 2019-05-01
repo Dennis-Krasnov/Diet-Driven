@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:built_value/built_value.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
 
 part 'food_logging_events.g.dart';
@@ -32,6 +33,19 @@ abstract class RemoveFromSelection with FoodLoggingEvent implements Built<Remove
 
   RemoveFromSelection._();
   factory RemoveFromSelection([updates(RemoveFromSelectionBuilder b)]) = _$RemoveFromSelection;
+}
+
+/// Updates [oldRecord] to [newRecord] in current selection.
+/// Similar to logic in updating food records in Firestore.
+/// [oldRecord] may or may not exist in current selection to avoid logic in UI.
+/// Nothing happens if [oldRecord] == [newRecord].
+/// Only available when [multiSelect] is true.
+abstract class ReplaceSelected with FoodLoggingEvent implements Built<ReplaceSelected, ReplaceSelectedBuilder> {
+  FoodRecord get oldRecord;
+  FoodRecord get newRecord;
+
+  ReplaceSelected._();
+  factory ReplaceSelected([updates(ReplaceSelectedBuilder b)]) = _$ReplaceSelected;
 }
 
 /// Enters multi-selection mode.

@@ -112,7 +112,7 @@ class _AppState extends State<App> {
                         maintainState: true,
                       );
                       break;
-                    case "/logging_food_record_edit":
+                    case "/logging_food_record_edit": // TODO: reuse similar configuration for custom food creation, but with empty food record
                       assert(arguments is FoodRecord);
 
                       // Returns edited food record

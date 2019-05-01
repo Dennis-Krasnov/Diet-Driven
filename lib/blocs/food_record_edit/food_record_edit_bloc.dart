@@ -33,11 +33,23 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
   @override
   Stream<FoodRecordEditState> mapEventToState(FoodRecordEditEvent event) async* {
     if (event is UpdateQuantity) {
-      yield currentState.rebuild((b) => b..
-        foodRecord = currentState.foodRecord.rebuild((b) => b
-          ..quantity = event.quantity
-        ).toBuilder()
-      );
+      // TOTEST
+      assert(event.quantity.isFinite);
+      assert(event.quantity <= 100000);
+      if (event.quantity.isNegative || event.quantity == 0) {
+        yield currentState.rebuild((b) => b
+          ..quantityError = "Quantity must be positive"
+        );
+      }
+      else {
+        yield currentState.rebuild((b) => b..
+          foodRecord = currentState.foodRecord.rebuild((b) => b
+            ..quantity = event.quantity // TODO: round here instead!? - function in bloc utils
+          ).toBuilder()
+          ..quantityError = null
+        );
+        _log.info("Quantity updated to ${event.quantity}");
+      }
     }
 
     if (event is DeleteFoodRecord) {

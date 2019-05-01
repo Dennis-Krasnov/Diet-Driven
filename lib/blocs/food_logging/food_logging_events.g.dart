@@ -274,6 +274,117 @@ class RemoveFromSelectionBuilder
   }
 }
 
+class _$ReplaceSelected extends ReplaceSelected {
+  @override
+  final FoodRecord oldRecord;
+  @override
+  final FoodRecord newRecord;
+
+  factory _$ReplaceSelected([void Function(ReplaceSelectedBuilder) updates]) =>
+      (new ReplaceSelectedBuilder()..update(updates)).build();
+
+  _$ReplaceSelected._({this.oldRecord, this.newRecord}) : super._() {
+    if (oldRecord == null) {
+      throw new BuiltValueNullFieldError('ReplaceSelected', 'oldRecord');
+    }
+    if (newRecord == null) {
+      throw new BuiltValueNullFieldError('ReplaceSelected', 'newRecord');
+    }
+  }
+
+  @override
+  ReplaceSelected rebuild(void Function(ReplaceSelectedBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  ReplaceSelectedBuilder toBuilder() =>
+      new ReplaceSelectedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is ReplaceSelected &&
+        oldRecord == other.oldRecord &&
+        newRecord == other.newRecord;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, oldRecord.hashCode), newRecord.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('ReplaceSelected')
+          ..add('oldRecord', oldRecord)
+          ..add('newRecord', newRecord))
+        .toString();
+  }
+}
+
+class ReplaceSelectedBuilder
+    implements Builder<ReplaceSelected, ReplaceSelectedBuilder> {
+  _$ReplaceSelected _$v;
+
+  FoodRecordBuilder _oldRecord;
+  FoodRecordBuilder get oldRecord =>
+      _$this._oldRecord ??= new FoodRecordBuilder();
+  set oldRecord(FoodRecordBuilder oldRecord) => _$this._oldRecord = oldRecord;
+
+  FoodRecordBuilder _newRecord;
+  FoodRecordBuilder get newRecord =>
+      _$this._newRecord ??= new FoodRecordBuilder();
+  set newRecord(FoodRecordBuilder newRecord) => _$this._newRecord = newRecord;
+
+  ReplaceSelectedBuilder();
+
+  ReplaceSelectedBuilder get _$this {
+    if (_$v != null) {
+      _oldRecord = _$v.oldRecord?.toBuilder();
+      _newRecord = _$v.newRecord?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(ReplaceSelected other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$ReplaceSelected;
+  }
+
+  @override
+  void update(void Function(ReplaceSelectedBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$ReplaceSelected build() {
+    _$ReplaceSelected _$result;
+    try {
+      _$result = _$v ??
+          new _$ReplaceSelected._(
+              oldRecord: oldRecord.build(), newRecord: newRecord.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'oldRecord';
+        oldRecord.build();
+        _$failedField = 'newRecord';
+        newRecord.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'ReplaceSelected', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$StartMultiSelect extends StartMultiSelect {
   factory _$StartMultiSelect(
           [void Function(StartMultiSelectBuilder) updates]) =>

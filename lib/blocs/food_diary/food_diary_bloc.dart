@@ -145,7 +145,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       }
     }
 
-    if (event is UpdateFoodRecord) {
+    if (event is ReplaceFoodRecord) {
       assert(currentState is FoodDiaryLoaded);
       assert(event.oldRecord != event.newRecord);
 
@@ -159,7 +159,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
             ..skipNextNArrivals = state.skipNextNArrivals + 1
           );
 
-          diaryRepository.updateFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
+          diaryRepository.replaceFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
 
           event.completer?.complete();
 

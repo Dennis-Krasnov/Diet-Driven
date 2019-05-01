@@ -1,8 +1,7 @@
-import 'dart:math';
-
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repository_singleton.dart';
+import 'package:diet_driven/widgets/number_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -25,8 +24,6 @@ class ManualFoodRecordEdit extends StatefulWidget {
 
 class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
   FoodRecordEditBloc _foodRecordEditBloc;
-  // TODO: text controllers => sub = controllers.listen((val) => dispatch(event(val)))
-  // sub.cancel()
 
   @override
   void initState() {
@@ -41,13 +38,13 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
       userId: userId,
       daysSinceEpoch: daysSinceEpoch,
       diaryRepository: Repository().diary,
-//      saveAction: widget.saveAction // FIXME pass live: false instead
     );
   }
 
   @override
   void dispose() {
     _foodRecordEditBloc.dispose();
+//    quantityController.dispose();
     super.dispose();
   }
 
@@ -76,13 +73,22 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
               children: <Widget>[
                 Text("UUID: ${state.foodRecord.uuid}"),
                 Text("food name: ${state.foodRecord.foodName}"),
-                Text("quantity: ${state.foodRecord.quantity}"),
-                RaisedButton(
-                  child: Text("Randomize!"),
-                  onPressed: () => _foodRecordEditBloc.dispatch(UpdateQuantity((b) => b
-                    ..quantity = Random().nextInt(500))
-                  ),
+                NumberFormField(
+                  value: state.foodRecord.quantity,
+                  minValue: 0,
+                  maxValue: 100000,
+                  decimalPlaces: 1, // TODO: 0 if grams are selected, 1 otherwise
+                  labelText: "Quantity",
+                  icon: Icon(Icons.functions),
+                  textInputAction: TextInputAction.done, // pops with result!
+                  errorText: state.quantityError,
+                  autofocus: true,
+                  onChanged: (number) => _foodRecordEditBloc.dispatch(UpdateQuantity((b) => b
+                    ..quantity = number
+                  ))
                 ),
+                // TODO: portion size's 'next' textInputAction focuses on quantity
+                Text("quantity: ${state.foodRecord.quantity}"),
               ],
             ),
           ),
@@ -99,7 +105,7 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
                 Navigator.of(context).pop<FoodRecord>(null);
               }
             }
-//            onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord()) // TODO: live does this instead
+//            onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord()) // TODO: live does this instead of pop
           )
         );
       }

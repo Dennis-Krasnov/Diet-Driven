@@ -69,7 +69,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
 
     if (event is RemoveFromSelection) {
       assert(currentState.multiSelect);
-//      assert(currentState.selectedFoodRecords.contains(event.foodRecord)); FIXME: uncomment after creating editSelection(old, new), similar to food record update in FS
+      assert(currentState.selectedFoodRecords.contains(event.foodRecord));
 
       bool selectionWillBecomeEmpty = currentState.selectedFoodRecords.length == 1;
 
@@ -77,6 +77,21 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
         ..multiSelect = !selectionWillBecomeEmpty
         ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) => b.remove(event.foodRecord)).toBuilder()
       );
+    }
+
+    if (event is ReplaceSelected) {
+      assert(currentState.multiSelect);
+
+      if (event.oldRecord != event.newRecord) {
+        // OPTIMIZE: find more elegant way of mutating array twice.
+        yield currentState.rebuild((b) => b
+          ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) => b
+            .remove(event.oldRecord)
+          ).rebuild((b) => b
+            .add(event.newRecord)
+          ).toBuilder()
+        );
+      }
     }
 
     if (event is StartMultiSelect) {
