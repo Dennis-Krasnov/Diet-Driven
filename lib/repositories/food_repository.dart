@@ -23,6 +23,37 @@ class FoodRepository {
     return _edamamProvider.searchForFood(search);
   }
 
+  /// Returns food record results for [userId]'s [loggingTab].
+  /// Used to avoid passing down [foodRepository] and [userId] to every [FoodLoggingTabBloc].
+  ///
+  /// Throws ... TODOCUMENT
+  Future<BuiltList<FoodRecord>> futureFoodRecordResultsFor(LoggingTab loggingTab, String userId) {
+    switch(loggingTab) {
+      case LoggingTab.recent:
+        return recentFoodRecords(userId);
+        break;
+
+      case LoggingTab.favorite:
+        return recentFoodRecords(userId);
+        break;
+
+      case LoggingTab.popular:
+        return recentFoodRecords(userId);
+        break;
+
+      case LoggingTab.frequent:
+        return recentFoodRecords(userId);
+        break;
+
+      case LoggingTab.recipes:
+        return recentFoodRecords(userId);
+        break;
+
+      default:
+        throw Exception("$loggingTab isn't defined for futureFoodRecordResultsFor");
+    }
+  }
+
   /// Fetches [BuiltList] of [userId]'s most recent [FoodRecord]s from Firestore.
   /// 'recentFoodRecords(userId, daysSinceEpoch)` is called for every diary day from [DiaryBloc].
   ///

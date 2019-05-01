@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
@@ -19,7 +20,12 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
 
   StreamSubscription<BuiltList<FoodRecordResult>> _selectionEventSubscription;
 
-  FoodLoggingTabBloc({@required this.loggingTab, @required this.futureResultRecords, @required this.diaryRecords, @required this.foodLoggingBloc}) {
+  FoodLoggingTabBloc({
+    @required this.loggingTab,
+    @required this.futureResultRecords,
+    @required this.diaryRecords,
+    @required this.foodLoggingBloc
+  }) {
     assert(loggingTab != null);
     assert(futureResultRecords != null);
     assert(diaryRecords != null);
@@ -28,7 +34,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
     Observable<BuiltList<FoodRecordResult>> mergedResultsStream = Observable.combineLatest3<BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecordResult>>(
       Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltList<FoodRecord>>((state) => state.selectedFoodRecords),
       Observable.just(diaryRecords),
-      Observable.fromFuture(futureResultRecords), // .delay(Duration(seconds: 2)); TOTEST every page loads independently
+      Observable.fromFuture(futureResultRecords), //.delay(Duration(seconds: 2)), // FIXME
       (selected, diary, results) {
         return BuiltList(results.map<FoodRecordResult>((foodRecord) {
           bool existsInDiary = diaryRecords.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid);
