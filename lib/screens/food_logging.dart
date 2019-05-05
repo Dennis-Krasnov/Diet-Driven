@@ -1,6 +1,8 @@
 import 'dart:math';
 
+import 'package:diet_driven/screens/food_record_search.dart';
 import 'package:diet_driven/widgets/food_logging_tab.dart';
+import 'package:diet_driven/widgets/food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:built_collection/built_collection.dart';
@@ -53,7 +55,8 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder(
+
+    return BlocBuilder<FoodLoggingEvent, FoodLoggingState>(
       bloc: _foodLoggingBloc,
       builder: (BuildContext context, FoodLoggingState state) {
         String selectionType = state.multiSelect ? "multi-select" : "single-select";
@@ -119,10 +122,23 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
               ),
               IconButton(
                 icon: Icon(Icons.search),
-                onPressed: () => showSearch(
-                  context: context,
-                  delegate: CustomSearchDelegate()
-                )
+                onPressed: () async {
+                  FoodRecord searchFoodRecord = await Navigator.of(context).pushNamed<FoodRecord>(
+                    "/food_search",
+                    arguments: state
+                  );
+
+                  if (searchFoodRecord != null) {
+                    if (state.multiSelect) {
+                      _foodLoggingBloc.dispatch(AddToSelection((b) => b
+                        ..foodRecord = searchFoodRecord.toBuilder()
+                      ));
+                    }
+                    else {
+                      Navigator.of(context).pop(BuiltList<FoodRecord>([searchFoodRecord]));
+                    }
+                  }
+                }
               )
             ],
           ),
@@ -131,10 +147,8 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
             children: [
               for (var tab in loggingTabs)
                 FoodLoggingTab(
-                  foodLoggingState: state,
                   foodLoggingBloc: _foodLoggingBloc,
                   loggingTab: tab,
-                  diaryRecords: widget.foodDiaryLoaded.foodDiaryDay.foodRecords, // TODO: where = meal goes here or above in getter
                 )
             ],
           ),
@@ -181,56 +195,6 @@ IconData loggingTabToIcon(LoggingTab loggingTab) {
   }
 }
 
-//https://medium.com/flutterpub/implementing-search-in-flutter-17dc5aa72018
-class CustomSearchDelegate extends SearchDelegate {
-
-  // TODO: attach a bloc / at least use a repository
-
-  @override
-  ThemeData appBarTheme(BuildContext context) => Theme.of(context);
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null); // can return T data
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    List<int> random = List<int>.generate(Random().nextInt(10), (index) => index * Random().nextInt(10));
-    return ListView.builder(
-      itemCount: random.length,
-      itemBuilder: (context, index) {
-        var result = random[index];
-        return ListTile(
-          title: Text(result.toString()),
-        );
-      },
-    );
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return Column();
-  }
-
-}
 
 //class LoadingAlsoFetches extends StatelessWidget { // TODO: name this something relevant
 //  final LoggingTab loggingTab;

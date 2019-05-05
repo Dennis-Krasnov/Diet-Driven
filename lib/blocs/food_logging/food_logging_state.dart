@@ -18,6 +18,10 @@ abstract class FoodLoggingState implements Built<FoodLoggingState, FoodLoggingSt
   /// Selected food records are lost when leaving multi-selection mode.
   BuiltList<FoodRecord> get selectedFoodRecords;
 
+  /// Currently logged food records in food diary.
+  /// Food records aren't real time and may become outdated.
+  BuiltList<FoodRecord> get diaryFoodRecords;
+
   FoodLoggingState._();
   factory FoodLoggingState([updates(FoodLoggingStateBuilder b)]) = _$FoodLoggingState;
 }

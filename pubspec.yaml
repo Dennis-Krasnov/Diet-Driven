@@ -13,8 +13,8 @@ dependencies:
 
   ## BLOC
   rxdart: ^0.21.0
-  bloc: ^0.11.1
-  flutter_bloc: ^0.9.1
+  bloc: ^0.12.0
+  flutter_bloc: ^0.12.0
 
   ## FIREBASE
   cloud_firestore: ^0.9.11

@@ -6,6 +6,7 @@ import 'package:diet_driven/blocs/configuration/configuration.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:logging/logging.dart';
+import 'package:rxdart/rxdart.dart';
 
 /// Fetches and manages app-wide configuration.
 /// [ConfigurationBloc] shows splash page until loaded.
@@ -26,8 +27,11 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   ConfigurationState get initialState => ConfigurationUninitialized();
 
   @override
-  Stream<ConfigurationEvent> transform(Stream<ConfigurationEvent> events) {
-    return events.distinct();
+  Stream<ConfigurationState> transform(Stream<ConfigurationEvent> events, Stream<ConfigurationState> Function(ConfigurationEvent event) next) {
+    return super.transform(
+      (events as Observable<ConfigurationEvent>).distinct(),
+      next,
+    );
   }
 
   @override

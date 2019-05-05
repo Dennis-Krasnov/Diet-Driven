@@ -13,13 +13,18 @@ class _$FoodLoggingState extends FoodLoggingState {
   final bool multiSelect;
   @override
   final BuiltList<FoodRecord> selectedFoodRecords;
+  @override
+  final BuiltList<FoodRecord> diaryFoodRecords;
 
   factory _$FoodLoggingState(
           [void Function(FoodLoggingStateBuilder) updates]) =>
       (new FoodLoggingStateBuilder()..update(updates)).build();
 
   _$FoodLoggingState._(
-      {this.mealIndex, this.multiSelect, this.selectedFoodRecords})
+      {this.mealIndex,
+      this.multiSelect,
+      this.selectedFoodRecords,
+      this.diaryFoodRecords})
       : super._() {
     if (mealIndex == null) {
       throw new BuiltValueNullFieldError('FoodLoggingState', 'mealIndex');
@@ -30,6 +35,10 @@ class _$FoodLoggingState extends FoodLoggingState {
     if (selectedFoodRecords == null) {
       throw new BuiltValueNullFieldError(
           'FoodLoggingState', 'selectedFoodRecords');
+    }
+    if (diaryFoodRecords == null) {
+      throw new BuiltValueNullFieldError(
+          'FoodLoggingState', 'diaryFoodRecords');
     }
   }
 
@@ -47,13 +56,16 @@ class _$FoodLoggingState extends FoodLoggingState {
     return other is FoodLoggingState &&
         mealIndex == other.mealIndex &&
         multiSelect == other.multiSelect &&
-        selectedFoodRecords == other.selectedFoodRecords;
+        selectedFoodRecords == other.selectedFoodRecords &&
+        diaryFoodRecords == other.diaryFoodRecords;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, mealIndex.hashCode), multiSelect.hashCode),
-        selectedFoodRecords.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, mealIndex.hashCode), multiSelect.hashCode),
+            selectedFoodRecords.hashCode),
+        diaryFoodRecords.hashCode));
   }
 
   @override
@@ -61,7 +73,8 @@ class _$FoodLoggingState extends FoodLoggingState {
     return (newBuiltValueToStringHelper('FoodLoggingState')
           ..add('mealIndex', mealIndex)
           ..add('multiSelect', multiSelect)
-          ..add('selectedFoodRecords', selectedFoodRecords))
+          ..add('selectedFoodRecords', selectedFoodRecords)
+          ..add('diaryFoodRecords', diaryFoodRecords))
         .toString();
   }
 }
@@ -84,6 +97,12 @@ class FoodLoggingStateBuilder
   set selectedFoodRecords(ListBuilder<FoodRecord> selectedFoodRecords) =>
       _$this._selectedFoodRecords = selectedFoodRecords;
 
+  ListBuilder<FoodRecord> _diaryFoodRecords;
+  ListBuilder<FoodRecord> get diaryFoodRecords =>
+      _$this._diaryFoodRecords ??= new ListBuilder<FoodRecord>();
+  set diaryFoodRecords(ListBuilder<FoodRecord> diaryFoodRecords) =>
+      _$this._diaryFoodRecords = diaryFoodRecords;
+
   FoodLoggingStateBuilder();
 
   FoodLoggingStateBuilder get _$this {
@@ -91,6 +110,7 @@ class FoodLoggingStateBuilder
       _mealIndex = _$v.mealIndex;
       _multiSelect = _$v.multiSelect;
       _selectedFoodRecords = _$v.selectedFoodRecords?.toBuilder();
+      _diaryFoodRecords = _$v.diaryFoodRecords?.toBuilder();
       _$v = null;
     }
     return this;
@@ -117,12 +137,15 @@ class FoodLoggingStateBuilder
           new _$FoodLoggingState._(
               mealIndex: mealIndex,
               multiSelect: multiSelect,
-              selectedFoodRecords: selectedFoodRecords.build());
+              selectedFoodRecords: selectedFoodRecords.build(),
+              diaryFoodRecords: diaryFoodRecords.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'selectedFoodRecords';
         selectedFoodRecords.build();
+        _$failedField = 'diaryFoodRecords';
+        diaryFoodRecords.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'FoodLoggingState', _$failedField, e.toString());

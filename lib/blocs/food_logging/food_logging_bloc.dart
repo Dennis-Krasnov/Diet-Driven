@@ -39,6 +39,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
     ..mealIndex = mealIndex
     ..multiSelect = startWithMultiSelect
     ..selectedFoodRecords = ListBuilder([])
+    ..diaryFoodRecords = foodDiaryLoaded.foodDiaryDay.foodRecords.toBuilder()
   );
 
   @override

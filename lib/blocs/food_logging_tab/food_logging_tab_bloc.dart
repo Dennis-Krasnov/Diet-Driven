@@ -15,7 +15,6 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
   final Logger _log = new Logger("food logging tab bloc");
   final LoggingTab loggingTab;
   final Future<BuiltList<FoodRecord>> futureResultRecords;
-  final BuiltList<FoodRecord> diaryRecords;
   final FoodLoggingBloc foodLoggingBloc;
 
   StreamSubscription<BuiltList<FoodRecordResult>> _selectionEventSubscription;
@@ -23,21 +22,19 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
   FoodLoggingTabBloc({
     @required this.loggingTab,
     @required this.futureResultRecords,
-    @required this.diaryRecords,
     @required this.foodLoggingBloc
   }) {
     assert(loggingTab != null);
     assert(futureResultRecords != null);
-    assert(diaryRecords != null);
     assert(foodLoggingBloc != null);
 
     Observable<BuiltList<FoodRecordResult>> mergedResultsStream = Observable.combineLatest3<BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecordResult>>(
       Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltList<FoodRecord>>((state) => state.selectedFoodRecords),
-      Observable.just(diaryRecords),
-      Observable.fromFuture(futureResultRecords), //.delay(Duration(seconds: 2)), // FIXME
+      Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltList<FoodRecord>>((state) => state.diaryFoodRecords), // TODO: where foodRecord.meal == meal
+      Observable.fromFuture(futureResultRecords),
       (selected, diary, results) {
         return BuiltList(results.map<FoodRecordResult>((foodRecord) {
-          bool existsInDiary = diaryRecords.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid);
+          bool existsInDiary = diary.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid);
           bool existsInSelection = selected.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid);
           assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
 
@@ -45,7 +42,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
           FoodRecordBuilder mergedBuilder = foodRecord.toBuilder();
 
           if (existsInDiary) {
-            mergedBuilder.replace(diaryRecords.singleWhere((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid));
+            mergedBuilder.replace(diary.singleWhere((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid));
           }
           else if (existsInSelection) {
             mergedBuilder.replace(selected.singleWhere((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid));

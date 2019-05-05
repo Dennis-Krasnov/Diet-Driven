@@ -68,18 +68,24 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   }
 
   @override
-  Stream<FoodDiaryEvent> transform(Stream<FoodDiaryEvent> events) {
+  Stream<FoodDiaryState> transform(Stream<FoodDiaryEvent> events, Stream<FoodDiaryState> Function(FoodDiaryEvent event) next) {
+    return super.transform(
+      (events as Observable<FoodDiaryEvent>),
+//        .debounce(Duration(milliseconds: 500)),
+      next,
+    );
+    // FIXME: use updated transform contract
     // Distinct stream for each event type // TODO: make this a reusable observable transformation
-    Observable<FoodDiaryEvent>(events)
-      .groupBy((event) => event.runtimeType)
-      .flatMap((eventType) {
-        // TODO: stop spamming of expensive actions
-//        if (eventType.key is Completable) {
-//          return eventType.distinct();
-//        }
-        return eventType;
-      });
-    return events;
+//    Observable<FoodDiaryEvent>(events)
+//      .groupBy((event) => event.runtimeType)
+//      .flatMap((eventType) {
+//        // TODO: stop spamming of expensive actions
+////        if (eventType.key is Completable) {
+////          return eventType.distinct();
+////        }
+//        return eventType;
+//      });
+//    return events;
   }
 
   @override

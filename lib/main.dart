@@ -2,6 +2,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/screens/food_logging.dart';
+import 'package:diet_driven/screens/food_record_search.dart';
 import 'package:diet_driven/screens/home_screen.dart';
 import 'package:diet_driven/screens/loading_indicator.dart';
 import 'package:diet_driven/screens/login.dart';
@@ -120,6 +121,17 @@ class _AppState extends State<App> {
                         builder: (context) => ManualFoodRecordEdit(
                           foodRecord: arguments,
                           deletable: false,
+                        ),
+                        maintainState: true,
+                      );
+                      break;
+                    case "/food_search":
+                      assert(arguments is FoodLoggingState);
+
+                      // Returns food record search result
+                      return MaterialPageRoute<FoodRecord>(
+                        builder: (context) => FoodRecordSearch(
+                          foodLoggingState: arguments,
                         ),
                         maintainState: true,
                       );

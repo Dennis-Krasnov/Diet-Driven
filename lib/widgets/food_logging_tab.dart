@@ -8,15 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FoodLoggingTab extends StatefulWidget {
-  final FoodLoggingState foodLoggingState;
   final FoodLoggingBloc foodLoggingBloc;
-  final BuiltList<FoodRecord> diaryRecords; // TODO: place these into foodLogging bloc
   final LoggingTab loggingTab;
 
-  const FoodLoggingTab({Key key, this.foodLoggingState, this.foodLoggingBloc, this.diaryRecords, this.loggingTab})
-    : assert(foodLoggingState != null),
-      assert(foodLoggingBloc != null),
-      assert(diaryRecords != null),
+  const FoodLoggingTab({Key key, @required this.foodLoggingBloc, @required this.loggingTab})
+    : assert(foodLoggingBloc != null),
       assert(loggingTab != null),
       super(key: key);
 
@@ -41,7 +37,6 @@ class _FoodLoggingTabState extends State<FoodLoggingTab> with AutomaticKeepAlive
     _tabBloc = FoodLoggingTabBloc(
       loggingTab: widget.loggingTab,
       futureResultRecords: Repository().food.futureFoodRecordResultsFor(widget.loggingTab, userId), // OPTIMIZE: bloc should access repository itself, also pass userId
-      diaryRecords: widget.diaryRecords, // TODO: where foodRecord.meal == meal
       foodLoggingBloc: widget.foodLoggingBloc
     );
   }
@@ -74,7 +69,7 @@ class _FoodLoggingTabState extends State<FoodLoggingTab> with AutomaticKeepAlive
           return ListView(
             children: <Widget>[
               for (var foodRecordResult in state.results)
-                if (widget.foodLoggingState.multiSelect)
+                if (widget.foodLoggingBloc.currentState.multiSelect)
                   SelectionFoodRecordTile(
                     foodRecordResult.foodRecord,
 //                                value: state.selectedFoodRecords.contains(foodRecordResult),

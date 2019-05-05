@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'package:built_collection/built_collection.dart';
 
@@ -9,6 +10,10 @@ class FoodRepository {
   final Logger log = new Logger("food repository");
   final EdamamProvider _edamamProvider = EdamamProvider();
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
+
+  Future<BuiltList<String>> foodSuggestions(String search) {
+    return _edamamProvider.foodSuggestions(search);
+  }
 
   /// Fetches [BuiltList] of [FoodRecord] based on [search].
   /// TODO: where called from
@@ -76,10 +81,5 @@ class FoodRepository {
 //    final EdamamData = await _edamamProvider.info(foodRecord.edamamId); // if it exists...
     return Future.value(foodRecord);
   }
-}
 
-// TODO: create enum for each measure, make a method here that does a switch, converts to edamam url...
-//  Name	URI
-//  Ounce	http://www.edamam.com/ontologies/edamam.owl#Measure_ounce
-//  Gram	http://www.edamam.com/ontologies/edamam.owl#Measure_gram
-//  Pound	http://www.edamam.com/ontologies/edamam.owl#Measure_pound
+}

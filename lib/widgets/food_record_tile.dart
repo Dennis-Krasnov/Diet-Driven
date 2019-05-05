@@ -42,7 +42,7 @@ class FoodRecordTile extends StatelessWidget {
       // TODO: FadeInImage
       leading: Image.network(
         'https://picsum.photos/200',
-
+        // FIXME: doesn't work without internet...
       ),
       title: Text("${foodRecord.foodName} - ${foodRecord.quantity} g"),
       subtitle: Row(

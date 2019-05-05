@@ -19,13 +19,21 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   @override
   LoginState get initialState => LoginInitial();
 
-  @override
-  Stream<LoginEvent> transform(Stream<LoginEvent> events) {
-    // TODO: recommend to reset password if too many requests made
-//    return DistinctUniqueStreamTransformer().bind(events);
-    return events;
 
-  }
+//  @override
+//  Stream<FoodDiaryState> transform(Stream<FoodDiaryEvent> events, Stream<FoodDiaryState> Function(FoodDiaryEvent event) next) {
+//    return super.transform(
+//      (events as Observable<FoodDiaryEvent>),
+////        .debounce(Duration(milliseconds: 500)),
+//      next,
+//    );
+//  @override
+//  Stream<LoginEvent> transform(Stream<LoginEvent> events) {
+//    // TODO: recommend to reset password if too many requests made
+////    return DistinctUniqueStreamTransformer().bind(events);
+//    return events;
+//
+//  }
 
   @override
   Stream<LoginState> mapEventToState(LoginEvent event) async* {
