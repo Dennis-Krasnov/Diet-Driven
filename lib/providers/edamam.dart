@@ -1,7 +1,9 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:dio/dio.dart';
 
 import 'package:diet_driven/models/models.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 /// Edamam nutrition api.
 /// https://www.edamam.com/
@@ -17,18 +19,24 @@ class EdamamProvider {
     receiveTimeout: 3000,
   );
 
+  // TODO: call (token authenticated) cloud function directly
+  // it stores the secret keys (specify which api to use), contacts edamam and everything else, returns nice response
+  // TODO: protect against too many requests
+
   final Dio _dio = Dio(options);
 
   Future<BuiltList<String>> foodSuggestions(String search) async {
-    int limit = 10;
-    var encoded = Uri.encodeFull("/auto-complete?q=$search&limit=$limit&app_id=$appId&app_key=$appKey");
-//    Response response = await _dio.get(encoded);
-    Response response = await _dio.get("https://api.edamam.com/auto-complete?q=$search&limit=10&app_id=1c25cea1&app_key=88fbceb07e4fa287b47fefa3db2004f3");
 
-    var list = BuiltList<String>.from(response.data);
+    final HttpsCallable foodSuggestionsFunction = CloudFunctions.instance.getHttpsCallable(functionName: 'foodSuggestions');
+    foodSuggestionsFunction.timeout = Duration(seconds: 10);
 
-    print("LIST: $list");
-    return list; // FIXME
+//   Cloud function parameters CANNOT be defined as <String, dynamic>{}
+    HttpsCallableResult result = await foodSuggestionsFunction({"query": search});
+
+    print("result: $result");
+    print("result data: ${result.data}");
+
+    return BuiltList<String>.from(result.data);
   }
 
   // FIXME: move error catching to bloc!
@@ -46,12 +54,13 @@ class EdamamProvider {
         var foodRecord = json["food"];
         print(foodRecord);
         return FoodRecord((b) => b
-//          ..foodName = foodRecord["foodId"] as String TODO: id
+//          ..foodName = foodRecord["foodId"] as String TODO: edamam id
           ..foodName = foodRecord["label"] as String
-          ..quantity = foodRecord["nutrients"]["ENERC_KCAL"] as num
-          ..quantity = foodRecord["nutrients"]["PROCNT"] as num
-          ..quantity = foodRecord["nutrients"]["FAT"] as num
-          ..quantity = foodRecord["nutrients"]["CHOCDF"] as num
+          ..grams = 100
+          ..calories = foodRecord["nutrients"]["ENERC_KCAL"] as num
+          ..protein = foodRecord["nutrients"]["PROCNT"] as num
+          ..fat = foodRecord["nutrients"]["FAT"] as num
+          ..carbs = foodRecord["nutrients"]["CHOCDF"] as num
 //          ..quantity = foodRecord["source"] as String
 //          ..quantity = foodRecord["_links"]["next"]["href"] as String
         // TODO: noteworthy custom measurements
@@ -70,16 +79,35 @@ class EdamamProvider {
       data: {
         "quantity": 1,
         "measureURI": "http://www.edamam.com/ontologies/edamam.owl#Measure_unit",
-        "foodId": "food_bwemjc2ad6k4bhbumwlx5aanbanp"
+        "foodId": edamamFoodId
       }
     );
+
+    var json = Map<String, dynamic>.from(response.data);
+
+    num foodYield = json["yield"];
+//    num calories = json["calories"]; FIXME imprecise
+    num totalWeight = json["totalWeight"];
+
+    List<String> dietLabels = json["dietLabels"];
+    List<String> healthLabels = json["healthLabels"];
+    List<String> cautions = json["cautions"];
+
+    // Per 100 g
+    var nutrients = json["totalNutrients"];
 
     print(response.statusCode);
     print(response.data);
 
     return FoodRecord((b) => b
-      ..foodName = "from edamam"
-      ..quantity = 23
+      ..foodName = "from edamam" // TODO: take from previous request, keep it's id, etc (pass food record, throw if it doesn't have edamam id)
+      ..grams = 100
+      ..calories = nutrients["ENERC_KCAL"]["quantity"] as num
+      ..protein = nutrients["PROCNT"]["quantity"] as num
+      ..fat = nutrients["FAT"]["quantity"] as num
+      ..carbs = nutrients["CHOCDF"]["quantity"] as num
+
+
     );
   }
 }

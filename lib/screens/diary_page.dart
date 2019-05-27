@@ -42,7 +42,7 @@ class _DiaryPageState extends State<DiaryPage> {
               body: Center(
                 child: Column(
                   children: [
-                    Text("You've eaten ${state.foodDiaryDay.foodRecords.fold(0, (prev, e) => prev + e.quantity)} out of ${state.diet.calories} calories"),
+                    Text("You've eaten ${state.foodDiaryDay.foodRecords.fold(0, (prev, e) => prev + (e?.calories ?? 0))} out of ${state.diet.calories} calories"),
                     for (var foodRecord in state.foodDiaryDay.foodRecords)
                       FoodRecordTile(
                         foodRecord,

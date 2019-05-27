@@ -13,7 +13,7 @@ class RemoteConfigProvider {
     // Developer mode to relax fetch throttling
     await config.setConfigSettings(RemoteConfigSettings(debugMode: true)); // FIXME
 
-    await config.fetch(expiration: const Duration(seconds: 0)); // FIXME
+    await config.fetch(expiration: const Duration(hours: 6));
     // ignore: unused_local_variable
     bool differentFromCurrentlyActivated = await config.activateFetched();
 

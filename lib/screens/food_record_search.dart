@@ -70,7 +70,14 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
               for (String suggestion in state.suggestions)
                 ListTile(
                   title: Text(suggestion),
-                  // TODO: actions
+//                  leading: Icon(Icons.search), or recent icon, etc
+                  onTap: () {
+                    // Update search field
+                    _updateQuery(suggestion);
+
+                    // Automatically run search
+                    _searchQuery(suggestion);
+                  },
                 )
             ],
           );
@@ -94,7 +101,11 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
             children: state.results.map((foodRecordResult) =>
               FoodRecordTile(
                 foodRecordResult.foodRecord,
+                enabled: !foodRecordResult.existsInDiary && !foodRecordResult.existsInSelection,
                 onTap: () async {
+//                  FoodRecord fullNutritionalInfo = null; // TODO: await nutritional api, return full nutritional info!
+                  // (call event with typed completer, eventually takes nutrition api enum, switch login in repository, stored in userData) - don't call api from UI
+
                   FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
                     "/logging_food_record_edit",
                     arguments: foodRecordResult.foodRecord
@@ -105,7 +116,8 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
                     assert(Navigator.of(context).canPop());
                     Navigator.of(context).pop<FoodRecord>(modified);
                   }
-                }
+                },
+                onLongPress: () => print(foodRecordResult),
               )
             ).toList(),
           );
@@ -145,7 +157,6 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
                 // Called initially with previous controller instance's value then empty (possibly a hot restart error)
                 // Also called on loss of focus with latest value
                 onChanged: (text) {
-                  // OPTIMIZE: take distinct events in bloc!!!
                   _foodSearchBloc.dispatch(UpdateQuery((b) => b
                     ..query = text
                   ));
@@ -206,8 +217,8 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
     );
 
     // OPTIMIZE: might not be required if settings selection
-    if (!queryFocusNode.hasPrimaryFocus) {
-      queryFocusNode.requestFocus();
+    if (!queryFocusNode.hasFocus) {
+      FocusScope.of(context).requestFocus(queryFocusNode);
     }
   }
 
@@ -231,75 +242,3 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
     return routeName;
   }
 }
-
-
-
-
-
-//https://medium.com/flutterpub/implementing-search-in-flutter-17dc5aa72018
-
-//class FoodRecordSearchDelegate extends SearchDelegate<FoodRecord> {
-//  final FoodLoggingBloc foodLoggingBloc; // TODO: use provider instead!!!
-//  // TODO: colour already logged & selected similar to logging
-//
-//  FoodRecordSearchDelegate({@required this.foodLoggingBloc, @required this.foodSearchBloc})
-//    : assert(foodLoggingBloc != null),
-//      assert(foodSearchBloc != null);
-//
-//  @override
-//  ThemeData appBarTheme(BuildContext context) => Theme.of(context);
-//
-//  // TODO: bloc listener
-//
-//
-//
-//  /// Uses built-in query field instead of bloc state for simplicity.
-//  @override
-//  List<Widget> buildActions(BuildContext context) {
-//    return ;
-//  }
-//
-//  /// Uses built-in query field instead of bloc state for simplicity.
-//  @override
-//  Widget buildLeading(BuildContext context) {
-//    return ;
-//  }
-//
-//  @override
-//  Widget buildResults(BuildContext context) {
-//    // Update bloc query whenever query fields updates
-//    foodSearchBloc.dispatch(UpdateQuery((b) => b..query = query));
-//
-//    return BlocBuilder<FoodSearchEvent, FoodSearchState>(
-//      bloc: foodSearchBloc,
-//      builder: (BuildContext context, FoodSearchState state) {
-//        return ListView(
-//          children: <Widget>[
-//            for (var foodRecordResult in state.results)
-//              FoodRecordTile(
-//                foodRecordResult.foodRecord,
-//                onTap: () async {
-//                  FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
-//                    "/logging_food_record_edit",
-//                    arguments: foodRecordResult.foodRecord
-//                  );
-//
-//                  // Adds modified result to diary
-//                  if (modified != null) {
-//                    close(context, modified);
-//                  }
-//                },
-//              )
-//          ]
-//        );
-//      }
-//    );
-//  }
-//
-//  @override
-//  Widget buildSuggestions(BuildContext context) {
-//    // TODO: bloc builder
-//    return Column();
-//  }
-//
-//}

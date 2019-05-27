@@ -11,29 +11,36 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   @BuiltValueField(compare: false)
   String get uuid;
 
+  // TODO: edamam ID
+
   ///
   String get foodName;
 
   ///
   @nullable
-  num get quantity;
+  int get mealIndex;
 
   ///
   @nullable
-  int get mealIndex;
+  num get grams;
 
-//  @nullable
-//  Calories get calories;
+  /// NUTRIENTS
 
-  /// Macronutrients
-//  @nullable
-//  Protein get protein;
+  ///
+  @nullable
+  num get calories;
 
-//  @nullable
-//  Fat get fat;
+  ///
+  @nullable
+  num get protein;
 
-//  @nullable
-//  Carbs get carbs;
+  ///
+  @nullable
+  num get fat;
+
+  ///
+  @nullable
+  num get carbs;
 
   /// Minerals
 //  @nullable
@@ -54,8 +61,13 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
 abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   String uuid = Uuid().v4();
   String foodName;
-  num quantity;
   int mealIndex;
+
+  num grams;
+  num calories;
+  num protein;
+  num fat;
+  num carbs;
 
 
   // Parses e.g. John "Joe" Smith into username+nickname.
@@ -65,7 +77,14 @@ abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilde
 
 //  var user = new User((b) => b..parseUser('John "Joe" Smith'));
 //https://medium.com/dartlang/darts-built-value-for-immutable-object-models-83e2497922d4
-  // TODO: use this to manually parse from edamam without making a custom serializer!!!
+
+
+  // TODO: make builder update to:
+  // to normalize to 1 gram (private)
+  // to scale by n (private)
+
+  // to update to different quantity (public)
+
 
   factory FoodRecordBuilder() = _$FoodRecordBuilder;
   FoodRecordBuilder._();

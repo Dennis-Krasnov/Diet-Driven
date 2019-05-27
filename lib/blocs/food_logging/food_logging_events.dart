@@ -37,8 +37,8 @@ abstract class RemoveFromSelection with FoodLoggingEvent implements Built<Remove
 
 /// Updates [oldRecord] to [newRecord] in current selection.
 /// Similar to logic in updating food records in Firestore.
-/// [oldRecord] may or may not exist in current selection to avoid logic in UI.
-/// Nothing happens if [oldRecord] == [newRecord].
+/// Replacing a non-existent [oldRecord] has no effect.
+/// Adding a duplicate [newRecord] has no effect.
 /// Only available when [multiSelect] is true.
 abstract class ReplaceSelected with FoodLoggingEvent implements Built<ReplaceSelected, ReplaceSelectedBuilder> {
   FoodRecord get oldRecord;

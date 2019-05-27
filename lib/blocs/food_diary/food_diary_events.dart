@@ -46,6 +46,9 @@ abstract class DeleteFoodRecords with Completable, FoodDiaryEvent implements Bui
 }
 
 /// Updates [oldRecord] to [newRecord] in [FoodDiaryDay].
+/// Replacing a non-existent [oldRecord] has no effect.
+/// Adding a duplicate [newRecord] has no effect.
+/// Only available when in [FoodDiaryLoaded]. // TODOCUMENT other events in all blocs
 abstract class ReplaceFoodRecord with Completable, FoodDiaryEvent implements Built<ReplaceFoodRecord, ReplaceFoodRecordBuilder> {
   FoodRecord get oldRecord;
   FoodRecord get newRecord;

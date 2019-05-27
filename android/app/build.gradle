@@ -39,8 +39,11 @@ android {
 
     defaultConfig {
         applicationId "com.krasnovtech.dietdriven"
-        minSdkVersion 21 //16
+        minSdkVersion 21
         targetSdkVersion 28
+        // Required only for large apps (> 64k methods)
+        // https://developer.android.com/studio/build/multidex
+        // multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -78,3 +81,4 @@ dependencies {
 
 // Firebase
 apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.android.gms:play-services-location:11.0.4'

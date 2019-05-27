@@ -16,7 +16,7 @@ abstract class FoodLoggingState implements Built<FoodLoggingState, FoodLoggingSt
 
   /// Currently selected food records for [multiSelect].
   /// Selected food records are lost when leaving multi-selection mode.
-  BuiltList<FoodRecord> get selectedFoodRecords;
+  BuiltSet<FoodRecord> get selectedFoodRecords; // TODO: use built sets in other set-like states
 
   /// Currently logged food records in food diary.
   /// Food records aren't real time and may become outdated.

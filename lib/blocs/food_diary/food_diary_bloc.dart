@@ -153,7 +153,6 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
     if (event is ReplaceFoodRecord) {
       assert(currentState is FoodDiaryLoaded);
-      assert(event.oldRecord != event.newRecord);
 
       if (currentState is FoodDiaryLoaded && event.oldRecord != event.newRecord) {
         var state = currentState as FoodDiaryLoaded;

@@ -12,7 +12,7 @@ class _$FoodLoggingState extends FoodLoggingState {
   @override
   final bool multiSelect;
   @override
-  final BuiltList<FoodRecord> selectedFoodRecords;
+  final BuiltSet<FoodRecord> selectedFoodRecords;
   @override
   final BuiltList<FoodRecord> diaryFoodRecords;
 
@@ -91,10 +91,10 @@ class FoodLoggingStateBuilder
   bool get multiSelect => _$this._multiSelect;
   set multiSelect(bool multiSelect) => _$this._multiSelect = multiSelect;
 
-  ListBuilder<FoodRecord> _selectedFoodRecords;
-  ListBuilder<FoodRecord> get selectedFoodRecords =>
-      _$this._selectedFoodRecords ??= new ListBuilder<FoodRecord>();
-  set selectedFoodRecords(ListBuilder<FoodRecord> selectedFoodRecords) =>
+  SetBuilder<FoodRecord> _selectedFoodRecords;
+  SetBuilder<FoodRecord> get selectedFoodRecords =>
+      _$this._selectedFoodRecords ??= new SetBuilder<FoodRecord>();
+  set selectedFoodRecords(SetBuilder<FoodRecord> selectedFoodRecords) =>
       _$this._selectedFoodRecords = selectedFoodRecords;
 
   ListBuilder<FoodRecord> _diaryFoodRecords;

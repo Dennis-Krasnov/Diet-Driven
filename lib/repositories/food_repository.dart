@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:logging/logging.dart';
 import 'package:built_collection/built_collection.dart';
 
@@ -11,7 +12,8 @@ class FoodRepository {
   final EdamamProvider _edamamProvider = EdamamProvider();
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
 
-  Future<BuiltList<String>> foodSuggestions(String search) {
+  Future<BuiltList<String>> foodSuggestions(String search) async {
+    // TODO: memoize suggestions using https://pub.dev/packages/memoize
     return _edamamProvider.foodSuggestions(search);
   }
 

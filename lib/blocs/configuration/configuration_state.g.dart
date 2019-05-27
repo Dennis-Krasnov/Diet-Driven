@@ -62,6 +62,98 @@ class ConfigurationUninitializedBuilder
   }
 }
 
+class _$ConfigurationFailed extends ConfigurationFailed {
+  @override
+  final String error;
+  @override
+  final String trace;
+
+  factory _$ConfigurationFailed(
+          [void Function(ConfigurationFailedBuilder) updates]) =>
+      (new ConfigurationFailedBuilder()..update(updates)).build();
+
+  _$ConfigurationFailed._({this.error, this.trace}) : super._() {
+    if (error == null) {
+      throw new BuiltValueNullFieldError('ConfigurationFailed', 'error');
+    }
+  }
+
+  @override
+  ConfigurationFailed rebuild(
+          void Function(ConfigurationFailedBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  ConfigurationFailedBuilder toBuilder() =>
+      new ConfigurationFailedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is ConfigurationFailed &&
+        error == other.error &&
+        trace == other.trace;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, error.hashCode), trace.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('ConfigurationFailed')
+          ..add('error', error)
+          ..add('trace', trace))
+        .toString();
+  }
+}
+
+class ConfigurationFailedBuilder
+    implements Builder<ConfigurationFailed, ConfigurationFailedBuilder> {
+  _$ConfigurationFailed _$v;
+
+  String _error;
+  String get error => _$this._error;
+  set error(String error) => _$this._error = error;
+
+  String _trace;
+  String get trace => _$this._trace;
+  set trace(String trace) => _$this._trace = trace;
+
+  ConfigurationFailedBuilder();
+
+  ConfigurationFailedBuilder get _$this {
+    if (_$v != null) {
+      _error = _$v.error;
+      _trace = _$v.trace;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(ConfigurationFailed other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$ConfigurationFailed;
+  }
+
+  @override
+  void update(void Function(ConfigurationFailedBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$ConfigurationFailed build() {
+    final _$result =
+        _$v ?? new _$ConfigurationFailed._(error: error, trace: trace);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$ConfigurationLoaded extends ConfigurationLoaded {
   @override
   final RemoteConfiguration configuration;

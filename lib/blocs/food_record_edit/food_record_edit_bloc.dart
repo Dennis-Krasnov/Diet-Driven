@@ -34,21 +34,21 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
   Stream<FoodRecordEditState> mapEventToState(FoodRecordEditEvent event) async* {
     if (event is UpdateQuantity) {
       // TOTEST
-      assert(event.quantity.isFinite);
-      assert(event.quantity <= 100000);
-      if (event.quantity.isNegative || event.quantity == 0) {
+      assert(event.grams.isFinite);
+      assert(event.grams <= 100000);
+      if (event.grams.isNegative || event.grams == 0) {
         yield currentState.rebuild((b) => b
-          ..quantityError = "Quantity must be positive"
+          ..quantityError = "Grams must be positive"
         );
       }
       else {
         yield currentState.rebuild((b) => b..
           foodRecord = currentState.foodRecord.rebuild((b) => b
-            ..quantity = event.quantity // TODO: round here instead!? - function in bloc utils
+            ..grams = event.grams // TODO: round here instead!? - function in bloc utils
           ).toBuilder()
           ..quantityError = null
         );
-        _log.info("Quantity updated to ${event.quantity}");
+        _log.info("Grams updated to ${event.grams}");
       }
     }
 

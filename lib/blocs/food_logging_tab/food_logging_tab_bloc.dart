@@ -28,8 +28,8 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
     assert(futureResultRecords != null);
     assert(foodLoggingBloc != null);
 
-    Observable<BuiltList<FoodRecordResult>> mergedResultsStream = Observable.combineLatest3<BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecordResult>>(
-      Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltList<FoodRecord>>((state) => state.selectedFoodRecords),
+    Observable<BuiltList<FoodRecordResult>> mergedResultsStream = Observable.combineLatest3<BuiltSet<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecordResult>>(
+      Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltSet<FoodRecord>>((state) => state.selectedFoodRecords),
       Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltList<FoodRecord>>((state) => state.diaryFoodRecords), // TODO: where foodRecord.meal == meal
       Observable.fromFuture(futureResultRecords),
       (selected, diary, results) {

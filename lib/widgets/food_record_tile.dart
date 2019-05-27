@@ -44,15 +44,14 @@ class FoodRecordTile extends StatelessWidget {
         'https://picsum.photos/200',
         // FIXME: doesn't work without internet...
       ),
-      title: Text("${foodRecord.foodName} - ${foodRecord.quantity} g"),
+      title: Text("${foodRecord.foodName} - ${foodRecord.grams} g"),
       subtitle: Row(
         children: <Widget>[
           // TODO: table
-          // TODO: food record's values
-          Text("20g"),
-          Text("35g"),
-          Text("62g"),
-          Text("125",
+          Text("${foodRecord.protein} g"),
+          Text("${foodRecord.fat} g"),
+          Text("${foodRecord.carbs} g"),
+          Text("${foodRecord.calories}",
             style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
           ),
         ],

@@ -5,10 +5,12 @@ import 'package:dio/dio.dart';
 import 'package:logging/logging.dart';
 import 'dart:async';
 import 'package:meta/meta.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/search/search.dart';
+import 'package:rxdart/rxdart.dart';
 
 class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
   final Logger _log = new Logger("food record search bloc");
@@ -26,7 +28,30 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
     ..suggestions = ListBuilder([]) // TODO: initial suggestions from repo!
   );
 
-  @override // OPTIMIZE: debounce - doesn't affect UI!!!
+  // Debouncing update query events doesn't bottleneck UI
+  @override
+  Stream<FoodSearchState> transform(
+    Stream<FoodSearchEvent> events,
+    Stream<FoodSearchState> Function(FoodSearchEvent event) next,
+  ) {
+    return super.transform(
+      (events as Observable<FoodSearchEvent>)
+      .debounce(Duration(milliseconds: 500)), // OPTIMIZE: also affects search event! (put to 5000 to test)
+      // FIXME: doesn't work!
+//        .groupBy((event) => event.runtimeType)
+//        .flatMap((eventType) {
+//          print(eventType);
+//          print(eventType is UpdateQuery);
+//          if (eventType is UpdateQuery) {
+//            return eventType.debounce(Duration(milliseconds: 3000));
+//          }
+//          return eventType;
+//        }),
+      next,
+    );
+  }
+
+  @override
   Stream<FoodSearchState> mapEventToState(FoodSearchEvent event) async* {
     if (event is UpdateQuery) {
       _log.info("updated query to ${event.query}, state used to be ${currentState.runtimeType}");
@@ -39,10 +64,25 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
           ..query = event.query
           ..suggestions = suggestions.toBuilder()
         );
-      } on DioError catch (error, trace) {
+      }
+      on CloudFunctionsException catch (error, trace) {
+        print('caught firebase functions exception');
+        print(error.code);
+        print(error.message);
+        print(error.details);
+        print(trace);
+
         yield FoodSearchFailed((b) => b
-//          ..error = error.toString()
-          ..error = _handleError(error)
+          ..error = error.toString()
+          ..trace = trace.toString()
+        );
+      }
+      catch (error, trace) {
+        print(error);
+        print(trace);
+
+        yield FoodSearchFailed((b) => b
+          ..error = error.toString()
           ..trace = trace.toString()
         );
       }
@@ -52,8 +92,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
       yield FoodSearchLoading();
 
       try {
-//        await Future.delayed(Duration(seconds: 2));
-
+        // TODO: memoize results!
         BuiltList<FoodRecord> results = await foodRepository.searchForFood(event.query);
         _log.fine(results);
 
@@ -63,12 +102,14 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
             FoodRecordResult((b) => b
               ..foodRecord = foodRecord.toBuilder()
               ..resultType = LoggingTab.popular // FIXME: none of the above!
-              ..existsInDiary = false // TODO
-              ..existsInSelection = false // TODO
+              // FIXME: compare by edamam id!!!
+              ..existsInDiary = foodLoggingState.diaryFoodRecords.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid)
+              ..existsInSelection = foodLoggingState.selectedFoodRecords.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid)
             )
           ))
         );
 
+//        assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
         _log.fine("${event.query} was searched!");
       } on DioError catch (error, trace) {
         yield FoodSearchFailed((b) => b

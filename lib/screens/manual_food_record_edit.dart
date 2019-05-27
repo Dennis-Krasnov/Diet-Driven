@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repository_singleton.dart';
@@ -74,7 +75,7 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
                 Text("UUID: ${state.foodRecord.uuid}"),
                 Text("food name: ${state.foodRecord.foodName}"),
                 NumberFormField(
-                  value: state.foodRecord.quantity,
+                  value: state.foodRecord.grams,
                   minValue: 0,
                   maxValue: 100000,
                   decimalPlaces: 1, // TODO: 0 if grams are selected, 1 otherwise
@@ -84,28 +85,22 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
                   errorText: state.quantityError,
                   autofocus: true,
                   onChanged: (number) => _foodRecordEditBloc.dispatch(UpdateQuantity((b) => b
-                    ..quantity = number
+                    ..grams = number
                   ))
                 ),
                 // TODO: portion size's 'next' textInputAction focuses on quantity
-                Text("quantity: ${state.foodRecord.quantity}"),
+                Text("quantity: ${state.foodRecord.grams} g"),
               ],
             ),
           ),
           floatingActionButton: FloatingActionButton(
             child: Icon(Icons.check),
             onPressed: () {
+              // Returns current food record even if nothing changed
               assert(Navigator.of(context).canPop());
-
-              if (widget.foodRecord != state.foodRecord) {
-                Navigator.of(context).pop<FoodRecord>(state.foodRecord);
-              }
-              // Nothing changed
-              else {
-                Navigator.of(context).pop<FoodRecord>(null);
-              }
+              Navigator.of(context).pop<FoodRecord>(state.foodRecord);
             }
-//            onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord()) // TODO: live does this instead of pop
+//            onPressed: () => _foodRecordEditBloc.dispatch(SaveFoodRecord()) // TODO: live does this instead of popping
           )
         );
       }

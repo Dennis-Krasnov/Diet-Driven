@@ -10,14 +10,16 @@ class SplashPage extends StatelessWidget {
     final ConfigurationBloc _configurationBloc = BlocProvider.of<ConfigurationBloc>(context);
 
     return Scaffold(
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Text('Splash Screen'),
-            Text('User data: ${_userDataBloc.currentState}'),
-            Text('Configuration: ${_configurationBloc.currentState}'),
-          ],
-        )
+      body: SafeArea( // TODO:
+        child: Center(
+          child: Column(
+            children: <Widget>[
+              Text('Splash Screen'),
+              Text('User data: ${_userDataBloc.currentState}'),
+              Text('Configuration: ${_configurationBloc.currentState}'),
+            ],
+          )
+        ),
       ),
     );
   }

@@ -8,14 +8,14 @@ part of 'food_record_edit_events.dart';
 
 class _$UpdateQuantity extends UpdateQuantity {
   @override
-  final num quantity;
+  final num grams;
 
   factory _$UpdateQuantity([void Function(UpdateQuantityBuilder) updates]) =>
       (new UpdateQuantityBuilder()..update(updates)).build();
 
-  _$UpdateQuantity._({this.quantity}) : super._() {
-    if (quantity == null) {
-      throw new BuiltValueNullFieldError('UpdateQuantity', 'quantity');
+  _$UpdateQuantity._({this.grams}) : super._() {
+    if (grams == null) {
+      throw new BuiltValueNullFieldError('UpdateQuantity', 'grams');
     }
   }
 
@@ -30,18 +30,17 @@ class _$UpdateQuantity extends UpdateQuantity {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UpdateQuantity && quantity == other.quantity;
+    return other is UpdateQuantity && grams == other.grams;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, quantity.hashCode));
+    return $jf($jc(0, grams.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('UpdateQuantity')
-          ..add('quantity', quantity))
+    return (newBuiltValueToStringHelper('UpdateQuantity')..add('grams', grams))
         .toString();
   }
 }
@@ -50,15 +49,15 @@ class UpdateQuantityBuilder
     implements Builder<UpdateQuantity, UpdateQuantityBuilder> {
   _$UpdateQuantity _$v;
 
-  num _quantity;
-  num get quantity => _$this._quantity;
-  set quantity(num quantity) => _$this._quantity = quantity;
+  num _grams;
+  num get grams => _$this._grams;
+  set grams(num grams) => _$this._grams = grams;
 
   UpdateQuantityBuilder();
 
   UpdateQuantityBuilder get _$this {
     if (_$v != null) {
-      _quantity = _$v.quantity;
+      _grams = _$v.grams;
       _$v = null;
     }
     return this;
@@ -79,7 +78,7 @@ class UpdateQuantityBuilder
 
   @override
   _$UpdateQuantity build() {
-    final _$result = _$v ?? new _$UpdateQuantity._(quantity: quantity);
+    final _$result = _$v ?? new _$UpdateQuantity._(grams: grams);
     replace(_$result);
     return _$result;
   }

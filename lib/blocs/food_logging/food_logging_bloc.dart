@@ -38,7 +38,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
   FoodLoggingState get initialState => FoodLoggingState((b) => b
     ..mealIndex = mealIndex
     ..multiSelect = startWithMultiSelect
-    ..selectedFoodRecords = ListBuilder([])
+    ..selectedFoodRecords = SetBuilder([])
     ..diaryFoodRecords = foodDiaryLoaded.foodDiaryDay.foodRecords.toBuilder()
   );
 
@@ -47,7 +47,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
     if (event is ChangeMeal) {
       yield currentState.rebuild((b) => b
         ..mealIndex = event.mealIndex
-        ..selectedFoodRecords = ListBuilder(currentState.selectedFoodRecords.map((foodRecord) =>
+        ..selectedFoodRecords = SetBuilder(currentState.selectedFoodRecords.map((foodRecord) =>
           foodRecord.rebuild((b) => b
             ..mealIndex = mealIndex
           )
@@ -82,16 +82,19 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
     if (event is ReplaceSelected) {
       assert(currentState.multiSelect);
 
-      if (event.oldRecord != event.newRecord) {
-        // OPTIMIZE: find more elegant way of mutating array twice.
-        yield currentState.rebuild((b) => b
-          ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) => b
-            .remove(event.oldRecord)
-          ).rebuild((b) => b
-            .add(event.newRecord)
-          ).toBuilder()
-        );
-      }
+      // Remove old food record from selection
+      FoodLoggingState state = currentState.rebuild((b) => b
+        ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) => b
+          .remove(event.oldRecord) // Has no effect if element doesn't exist
+        ).toBuilder()
+      );
+
+      // Add new food record to selection
+      yield state.rebuild((b) => b
+        ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) => b
+          .add(event.newRecord)
+        ).toBuilder()
+      );
     }
 
     if (event is StartMultiSelect) {
@@ -108,7 +111,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
 
       yield currentState.rebuild((b) => b
         ..multiSelect = false
-        ..selectedFoodRecords = ListBuilder([])
+        ..selectedFoodRecords = SetBuilder([])
       );
     }
   }

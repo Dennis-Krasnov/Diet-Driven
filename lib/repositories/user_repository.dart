@@ -55,7 +55,7 @@ class UserRepository {
   Future<RemoteConfiguration> fetchRemoteConfig() async {
     RemoteConfig config = await _remoteConfigProvider.fetchRemoteConfig();
 
-    // Intentionally throws if Firebase Remote Config is invalid
+    // Intentionally throws on invalid Firebase Remote Config
     var configSettings = RemoteConfiguration((b) => b
       ..liveConfiguration = true
       ..bonus = config.getInt("bonus")

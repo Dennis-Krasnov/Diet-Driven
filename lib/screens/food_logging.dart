@@ -156,7 +156,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
             ? FloatingActionButton(
                 child: Icon(Icons.check),
                 onPressed: () {
-                  Navigator.of(context).pop(state.selectedFoodRecords);
+                  Navigator.of(context).pop(state.selectedFoodRecords.toBuiltList()); // OPTIMIZE: should diary also store in built sets?
                 }
               )
             : null,

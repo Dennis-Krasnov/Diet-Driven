@@ -13,6 +13,17 @@ abstract class ConfigurationUninitialized with ConfigurationState implements Bui
   @override String toString() => runtimeType.toString();
 }
 
+/// Global error page.
+abstract class ConfigurationFailed with ConfigurationState implements Built<ConfigurationFailed, ConfigurationFailedBuilder> {
+  String get error;
+
+  @nullable
+  String get trace;
+
+  ConfigurationFailed._();
+  factory ConfigurationFailed([updates(ConfigurationFailedBuilder b)]) = _$ConfigurationFailed;
+}
+
 /// Application, stores current [RemoteConfiguration].
 abstract class ConfigurationLoaded with ConfigurationState implements Built<ConfigurationLoaded, ConfigurationLoadedBuilder> {
   RemoteConfiguration get configuration;

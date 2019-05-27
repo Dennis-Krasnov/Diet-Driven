@@ -24,17 +24,41 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       serializers.serialize(object.foodName,
           specifiedType: const FullType(String)),
     ];
-    if (object.quantity != null) {
-      result
-        ..add('quantity')
-        ..add(serializers.serialize(object.quantity,
-            specifiedType: const FullType(num)));
-    }
     if (object.mealIndex != null) {
       result
         ..add('mealIndex')
         ..add(serializers.serialize(object.mealIndex,
             specifiedType: const FullType(int)));
+    }
+    if (object.grams != null) {
+      result
+        ..add('grams')
+        ..add(serializers.serialize(object.grams,
+            specifiedType: const FullType(num)));
+    }
+    if (object.calories != null) {
+      result
+        ..add('calories')
+        ..add(serializers.serialize(object.calories,
+            specifiedType: const FullType(num)));
+    }
+    if (object.protein != null) {
+      result
+        ..add('protein')
+        ..add(serializers.serialize(object.protein,
+            specifiedType: const FullType(num)));
+    }
+    if (object.fat != null) {
+      result
+        ..add('fat')
+        ..add(serializers.serialize(object.fat,
+            specifiedType: const FullType(num)));
+    }
+    if (object.carbs != null) {
+      result
+        ..add('carbs')
+        ..add(serializers.serialize(object.carbs,
+            specifiedType: const FullType(num)));
     }
 
     return result;
@@ -59,13 +83,29 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
           result.foodName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
-        case 'quantity':
-          result.quantity = serializers.deserialize(value,
-              specifiedType: const FullType(num)) as num;
-          break;
         case 'mealIndex':
           result.mealIndex = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
+          break;
+        case 'grams':
+          result.grams = serializers.deserialize(value,
+              specifiedType: const FullType(num)) as num;
+          break;
+        case 'calories':
+          result.calories = serializers.deserialize(value,
+              specifiedType: const FullType(num)) as num;
+          break;
+        case 'protein':
+          result.protein = serializers.deserialize(value,
+              specifiedType: const FullType(num)) as num;
+          break;
+        case 'fat':
+          result.fat = serializers.deserialize(value,
+              specifiedType: const FullType(num)) as num;
+          break;
+        case 'carbs':
+          result.carbs = serializers.deserialize(value,
+              specifiedType: const FullType(num)) as num;
           break;
       }
     }
@@ -80,14 +120,30 @@ class _$FoodRecord extends FoodRecord {
   @override
   final String foodName;
   @override
-  final num quantity;
-  @override
   final int mealIndex;
+  @override
+  final num grams;
+  @override
+  final num calories;
+  @override
+  final num protein;
+  @override
+  final num fat;
+  @override
+  final num carbs;
 
   factory _$FoodRecord([void Function(FoodRecordBuilder) updates]) =>
       (new FoodRecordBuilder()..update(updates)).build() as _$FoodRecord;
 
-  _$FoodRecord._({this.uuid, this.foodName, this.quantity, this.mealIndex})
+  _$FoodRecord._(
+      {this.uuid,
+      this.foodName,
+      this.mealIndex,
+      this.grams,
+      this.calories,
+      this.protein,
+      this.fat,
+      this.carbs})
       : super._() {
     if (uuid == null) {
       throw new BuiltValueNullFieldError('FoodRecord', 'uuid');
@@ -109,14 +165,26 @@ class _$FoodRecord extends FoodRecord {
     if (identical(other, this)) return true;
     return other is FoodRecord &&
         foodName == other.foodName &&
-        quantity == other.quantity &&
-        mealIndex == other.mealIndex;
+        mealIndex == other.mealIndex &&
+        grams == other.grams &&
+        calories == other.calories &&
+        protein == other.protein &&
+        fat == other.fat &&
+        carbs == other.carbs;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc(0, foodName.hashCode), quantity.hashCode), mealIndex.hashCode));
+        $jc(
+            $jc(
+                $jc(
+                    $jc($jc($jc(0, foodName.hashCode), mealIndex.hashCode),
+                        grams.hashCode),
+                    calories.hashCode),
+                protein.hashCode),
+            fat.hashCode),
+        carbs.hashCode));
   }
 
   @override
@@ -124,8 +192,12 @@ class _$FoodRecord extends FoodRecord {
     return (newBuiltValueToStringHelper('FoodRecord')
           ..add('uuid', uuid)
           ..add('foodName', foodName)
-          ..add('quantity', quantity)
-          ..add('mealIndex', mealIndex))
+          ..add('mealIndex', mealIndex)
+          ..add('grams', grams)
+          ..add('calories', calories)
+          ..add('protein', protein)
+          ..add('fat', fat)
+          ..add('carbs', carbs))
         .toString();
   }
 }
@@ -158,18 +230,6 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
   }
 
   @override
-  num get quantity {
-    _$this;
-    return super.quantity;
-  }
-
-  @override
-  set quantity(num quantity) {
-    _$this;
-    super.quantity = quantity;
-  }
-
-  @override
   int get mealIndex {
     _$this;
     return super.mealIndex;
@@ -181,14 +241,78 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
     super.mealIndex = mealIndex;
   }
 
+  @override
+  num get grams {
+    _$this;
+    return super.grams;
+  }
+
+  @override
+  set grams(num grams) {
+    _$this;
+    super.grams = grams;
+  }
+
+  @override
+  num get calories {
+    _$this;
+    return super.calories;
+  }
+
+  @override
+  set calories(num calories) {
+    _$this;
+    super.calories = calories;
+  }
+
+  @override
+  num get protein {
+    _$this;
+    return super.protein;
+  }
+
+  @override
+  set protein(num protein) {
+    _$this;
+    super.protein = protein;
+  }
+
+  @override
+  num get fat {
+    _$this;
+    return super.fat;
+  }
+
+  @override
+  set fat(num fat) {
+    _$this;
+    super.fat = fat;
+  }
+
+  @override
+  num get carbs {
+    _$this;
+    return super.carbs;
+  }
+
+  @override
+  set carbs(num carbs) {
+    _$this;
+    super.carbs = carbs;
+  }
+
   _$FoodRecordBuilder() : super._();
 
   FoodRecordBuilder get _$this {
     if (_$v != null) {
       super.uuid = _$v.uuid;
       super.foodName = _$v.foodName;
-      super.quantity = _$v.quantity;
       super.mealIndex = _$v.mealIndex;
+      super.grams = _$v.grams;
+      super.calories = _$v.calories;
+      super.protein = _$v.protein;
+      super.fat = _$v.fat;
+      super.carbs = _$v.carbs;
       _$v = null;
     }
     return this;
@@ -213,8 +337,12 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
         new _$FoodRecord._(
             uuid: uuid,
             foodName: foodName,
-            quantity: quantity,
-            mealIndex: mealIndex);
+            mealIndex: mealIndex,
+            grams: grams,
+            calories: calories,
+            protein: protein,
+            fat: fat,
+            carbs: carbs);
     replace(_$result);
     return _$result;
   }

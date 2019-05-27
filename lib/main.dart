@@ -165,7 +165,24 @@ class _AppState extends State<App> {
         userDataState is UserDataUninitialized) {
       return SplashPage();
     }
+
+    // Loading configuration failed
+    if (configurationState is ConfigurationFailed) {
+      return ErrorPage(
+        error: configurationState.error,
+        trace: configurationState.trace
+      );
+    }
+
     assert(configurationState is ConfigurationLoaded);
+
+    // Loading user data failed
+    if (userDataState is UserDataFailed) {
+      return ErrorPage(
+        error: userDataState.error,
+        trace: userDataState.trace
+      );
+    }
 
     // Onboarding / sign in / sign up
     if (userDataState is UserDataUnauthenticated) {
@@ -175,14 +192,6 @@ class _AppState extends State<App> {
     // Loading critical user settings
     if (userDataState is UserDataLoading) {
       return LoadingIndicator();
-    }
-
-    // Loading user data failed
-    if (userDataState is UserDataFailed) {
-      return ErrorPage(
-        error: userDataState.error,
-        trace: userDataState.trace
-      );
     }
 
     // Start application when user is loaded

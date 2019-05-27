@@ -186,7 +186,11 @@ class FirestoreProvider {
         2 + Random().nextInt(8),
         (int index) => FoodRecord((b) => b
           ..foodName = "Some food #$index"
-          ..quantity = Random().nextInt(100)
+          ..grams = Random().nextInt(100)
+          ..calories = Random().nextInt(1000)
+          ..protein = Random().nextInt(100)
+          ..fat = Random().nextInt(100)
+          ..carbs = Random().nextInt(100)
         )
       )
     );
