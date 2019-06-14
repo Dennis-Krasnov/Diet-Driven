@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 
-import '../main.dart';
-
 class ErrorPage extends StatelessWidget {
   final String error;
   final String trace;
@@ -25,14 +23,14 @@ class ErrorPage extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Text('Sorry, $name'),
-              SizedBox(height: 50,),
-              Divider(height: 10,),
+              const SizedBox(height: 50,),
+              const Divider(height: 10,),
               Text('Error: $error'),
-              SizedBox(height: 50,),
+              const SizedBox(height: 50,),
               Text('$trace'),
-              SizedBox(height: 50,),
-              Divider(height: 10,),
-              ...App.temporaryLogSink.map((s) => Padding(child: Text(s), padding: EdgeInsets.symmetric(vertical: 20),))
+              const SizedBox(height: 50,),
+              const Divider(height: 10,),
+//              ...App.temporaryLogSink.map((s) => Padding(child: Text(s), padding: EdgeInsets.symmetric(vertical: 20),)) // FIXME
             ],
           )
         )

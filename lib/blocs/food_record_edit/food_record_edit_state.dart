@@ -10,5 +10,5 @@ abstract class FoodRecordEditState implements Built<FoodRecordEditState, FoodRec
   String get quantityError;
 
   FoodRecordEditState._();
-  factory FoodRecordEditState([updates(FoodRecordEditStateBuilder b)]) = _$FoodRecordEditState;
+  factory FoodRecordEditState([void Function(FoodRecordEditStateBuilder b)]) = _$FoodRecordEditState;
 }

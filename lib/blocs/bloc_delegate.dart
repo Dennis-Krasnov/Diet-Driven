@@ -3,10 +3,11 @@ import 'package:logging/logging.dart';
 
 
 class SimpleBlocDelegate extends BlocDelegate {
-  final Logger _log = new Logger("BloC delegate");
+  final Logger _log = Logger("BloC delegate");
 
   @override
-  void onTransition(Transition transition) {
+  void onTransition(Bloc bloc, Transition transition) {
+    super.onTransition(bloc, transition);
 //    _log.fine("");
     _log.finest("////////////////////");
     _log.info("${transition.event}");
@@ -17,7 +18,8 @@ class SimpleBlocDelegate extends BlocDelegate {
   }
 
   @override
-  void onError(Object error, StackTrace stacktrace) {
+  void onError(Bloc bloc, Object error, Object stacktrace) {
+    super.onError(bloc, error, stacktrace);
     _log.severe(error);
   }
 }

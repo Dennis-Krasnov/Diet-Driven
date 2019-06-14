@@ -1,21 +1,23 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart' show FetchThrottledException;
-import 'dart:async';
 
 import 'package:diet_driven/blocs/configuration/configuration.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:logging/logging.dart';
+import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Fetches and manages app-wide configuration.
 /// [ConfigurationBloc] shows splash page until loaded.
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
-  final Logger _log = new Logger("configuration bloc");
+  final Logger _log = Logger("configuration bloc");
   final UserRepository userRepository;
 
-  ConfigurationBloc({this.userRepository}) {
+  ConfigurationBloc({@required this.userRepository}) {
     assert(userRepository != null);
 
     // Fetch initial configuration
@@ -33,6 +35,16 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
       (events as Observable<ConfigurationEvent>).distinct(),
       next,
     );
+
+//    TODO
+//    VS.
+//    if (events is! Observable<ConfigurationEvent>)
+//      throw Exception();
+//
+//    return super.transform(
+//      events.distinct(),
+//      next,
+//    );
   }
 
   @override
@@ -55,7 +67,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
 //          ..configuration = config.toBuilder()
 //        );
 //      }
-//      on FetchThrottledException catch (error, trace) {
+//      on FetchThrottledException catch (Error error, StackTrace trace) {
         _log.warning('Unable to fetch remote config. Cached or default values will be used');
 //        _log.fine(error);
 

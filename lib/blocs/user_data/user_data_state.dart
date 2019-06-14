@@ -9,7 +9,7 @@ abstract class UserDataState {}
 /// Loading page.
 abstract class UserDataUninitialized with UserDataState implements Built<UserDataUninitialized, UserDataUninitializedBuilder> {
   UserDataUninitialized._();
-  factory UserDataUninitialized([updates(UserDataUninitializedBuilder b)]) = _$UserDataUninitialized;
+  factory UserDataUninitialized([void Function(UserDataUninitializedBuilder b)]) = _$UserDataUninitialized;
 
   @override String toString() => runtimeType.toString();
 }
@@ -22,13 +22,13 @@ abstract class UserDataFailed with UserDataState implements Built<UserDataFailed
   String get trace;
 
   UserDataFailed._();
-  factory UserDataFailed([updates(UserDataFailedBuilder b)]) = _$UserDataFailed;
+  factory UserDataFailed([void Function(UserDataFailedBuilder b)]) = _$UserDataFailed;
 }
 
 /// Loading screen.
 abstract class UserDataLoading with UserDataState implements Built<UserDataLoading, UserDataLoadingBuilder> {
   UserDataLoading._();
-  factory UserDataLoading([updates(UserDataLoadingBuilder b)]) = _$UserDataLoading;
+  factory UserDataLoading([void Function(UserDataLoadingBuilder b)]) = _$UserDataLoading;
 
   @override String toString() => runtimeType.toString();
 }
@@ -38,7 +38,7 @@ abstract class UserDataUnauthenticated with UserDataState implements Built<UserD
   // TODO: create separate onboarding bloc
 
   UserDataUnauthenticated._();
-  factory UserDataUnauthenticated([updates(UserDataUnauthenticatedBuilder b)]) = _$UserDataUnauthenticated;
+  factory UserDataUnauthenticated([void Function(UserDataUnauthenticatedBuilder b)]) = _$UserDataUnauthenticated;
 
   @override String toString() => runtimeType.toString();
 }
@@ -54,5 +54,5 @@ abstract class UserDataLoaded with UserDataState implements Built<UserDataLoaded
 ////  TODO: accepted terms (defaults to false), subscribedToEmails, etc!
 
   UserDataLoaded._();
-  factory UserDataLoaded([updates(UserDataLoadedBuilder b)]) = _$UserDataLoaded;
+  factory UserDataLoaded([void Function(UserDataLoadedBuilder b)]) = _$UserDataLoaded;
 }

@@ -9,7 +9,7 @@ abstract class FoodLoggingTabState {}
 /// Skeleton food record results.
 abstract class FoodLoggingTabUninitialized with FoodLoggingTabState implements Built<FoodLoggingTabUninitialized, FoodLoggingTabUninitializedBuilder> {
   FoodLoggingTabUninitialized._();
-  factory FoodLoggingTabUninitialized([updates(FoodLoggingTabUninitializedBuilder b)]) = _$FoodLoggingTabUninitialized;
+  factory FoodLoggingTabUninitialized([void Function(FoodLoggingTabUninitializedBuilder b)]) = _$FoodLoggingTabUninitialized;
 
   @override String toString() => runtimeType.toString();
 }
@@ -19,11 +19,11 @@ abstract class FoodLoggingTabLoaded with FoodLoggingTabState implements Built<Fo
   BuiltList<FoodRecordResult> get results;
 
   FoodLoggingTabLoaded._();
-  factory FoodLoggingTabLoaded([updates(FoodLoggingTabLoadedBuilder b)]) = _$FoodLoggingTabLoaded;
+  factory FoodLoggingTabLoaded([void Function(FoodLoggingTabLoadedBuilder b)]) = _$FoodLoggingTabLoaded;
 }
 
 /// Error page.
 abstract class FoodLoggingTabFailed with FoodLoggingTabState implements Built<FoodLoggingTabFailed, FoodLoggingTabFailedBuilder> {
   FoodLoggingTabFailed._();
-  factory FoodLoggingTabFailed([updates(FoodLoggingTabFailedBuilder b)]) = _$FoodLoggingTabFailed;
+  factory FoodLoggingTabFailed([void Function(FoodLoggingTabFailedBuilder b)]) = _$FoodLoggingTabFailed;
 }

@@ -20,20 +20,20 @@ void main() {
   final Settings settings = Settings();
 
   /// Signed in user
-  FirebaseUser userA = FirebaseUserMock();
-  UserDocument userDocumentA = UserDocument((b) => b
+  final FirebaseUser userA = FirebaseUserMock();
+  final UserDocument userDocumentA = UserDocument((b) => b
     ..currentSubscription = "all"
   );
 
   /// Anonymous user
-  FirebaseUser userB = FirebaseUserMock();
-  UserDocument userDocumentB = UserDocument((b) => b
+  final FirebaseUser userB = FirebaseUserMock();
+  final UserDocument userDocumentB = UserDocument((b) => b
     ..currentSubscription = "none"
   );
 
   ///
   void mockAuthenticationRepositoryStream({
-    List<FirebaseUser> authStream: const []
+    List<FirebaseUser> authStream = const []
   }) {
     when(userRepository.authStateChangedStream).thenAnswer((_) =>
       Observable<FirebaseUser>.fromIterable(authStream)
@@ -43,8 +43,8 @@ void main() {
   ///
   void mockUserRepositoryStream({
     @required String userId,
-    List<UserDocument> userDocumentStream: const [],
-    List<Settings> settingsStream: const []
+    List<UserDocument> userDocumentStream = const [],
+    List<Settings> settingsStream = const []
   }) {
     when(userRepository.userDocumentStream(userId)).thenAnswer((_) =>
       Observable<UserDocument>.fromIterable(userDocumentStream)
@@ -69,7 +69,7 @@ void main() {
     // No authentication state changes by default
     mockAuthenticationRepositoryStream();
 
-    userDataBloc = new UserDataBloc(userRepository: userRepository);
+    userDataBloc = UserDataBloc(userRepository: userRepository);
   });
 
   test("Initialize properly", () {
@@ -80,7 +80,7 @@ void main() {
     test("Load user data", () {
       expectLater(
         userDataBloc.state,
-        emitsInOrder([
+        emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataLoaded((b) => b
             ..authentication = userA
@@ -100,7 +100,7 @@ void main() {
     test("Fail on loading error", () {
       expectLater(
         userDataBloc.state,
-        emitsInOrder([
+        emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataFailed((b) => b..error = "oops")
         ])
@@ -118,7 +118,7 @@ void main() {
 
       expectLater(
         userDataBloc.state,
-        emitsInOrder([
+        emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
           UserDataLoading(),
@@ -140,7 +140,7 @@ void main() {
 
       expectLater(
         userDataBloc.state,
-        emitsInOrder([
+        emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataLoading(),
           UserDataLoaded((b) => b
@@ -167,7 +167,7 @@ void main() {
 
       expectLater(
         userDataBloc.state,
-        emitsInOrder([
+        emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataLoading(),
           UserDataLoaded((b) => b
@@ -195,7 +195,7 @@ void main() {
 
       expectLater(
         userDataBloc.state,
-        emitsInOrder([
+        emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataLoading(),
           UserDataLoaded((b) => b

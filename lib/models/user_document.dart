@@ -10,5 +10,5 @@ abstract class UserDocument implements Built<UserDocument, UserDocumentBuilder> 
   String get currentSubscription; // TODO: subscription enum
 
   UserDocument._();
-  factory UserDocument([updates(UserDocumentBuilder b)]) = _$UserDocument;
+  factory UserDocument([void Function(UserDocumentBuilder b)]) = _$UserDocument;
 }

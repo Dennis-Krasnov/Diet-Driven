@@ -60,7 +60,6 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
         ..add(serializers.serialize(object.carbs,
             specifiedType: const FullType(num)));
     }
-
     return result;
   }
 

@@ -28,18 +28,18 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
     assert(futureResultRecords != null);
     assert(foodLoggingBloc != null);
 
-    Observable<BuiltList<FoodRecordResult>> mergedResultsStream = Observable.combineLatest3<BuiltSet<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecordResult>>(
+    final Observable<BuiltList<FoodRecordResult>> mergedResultsStream = Observable.combineLatest3<BuiltSet<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecord>, BuiltList<FoodRecordResult>>(
       Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltSet<FoodRecord>>((state) => state.selectedFoodRecords),
       Observable<FoodLoggingState>(foodLoggingBloc.state).map<BuiltList<FoodRecord>>((state) => state.diaryFoodRecords), // TODO: where foodRecord.meal == meal
       Observable.fromFuture(futureResultRecords),
       (selected, diary, results) {
         return BuiltList(results.map<FoodRecordResult>((foodRecord) {
-          bool existsInDiary = diary.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid);
-          bool existsInSelection = selected.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid);
+          final bool existsInDiary = diary.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid);
+          final bool existsInSelection = selected.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid);
           assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
 
           // Updating foodRecord as needed to match diary or selection
-          FoodRecordBuilder mergedBuilder = foodRecord.toBuilder();
+          final FoodRecordBuilder mergedBuilder = foodRecord.toBuilder();
 
           if (existsInDiary) {
             mergedBuilder.replace(diary.singleWhere((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid));
@@ -63,7 +63,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
       (mergedResults) => dispatch(ResultsArrived((b) => b
         ..results = mergedResults.toBuilder()
       )),
-      onError: (error, trace) => dispatch(FoodLoggingTabError((b) => b
+      onError: (Object error, Object trace) => dispatch(FoodLoggingTabError((b) => b
         ..error = error.toString()
         ..trace = trace.toString()
       )),

@@ -16,21 +16,21 @@ void main() {
   DiaryRepository diaryRepository;
 
   /// Data
-  final String userId = "Jerry";
-  final int daysSinceEpoch = 243;
+  const String userId = "Jerry";
+  const int daysSinceEpoch = 243;
   final FoodRecord apple = FoodRecord((b) => b..foodName = "Apple");
   final FoodRecord pear = FoodRecord((b) => b..foodName = "Pear");
   final FoodRecord orange = FoodRecord((b) => b..foodName = "Orange");
   final FoodDiaryDay dayA = FoodDiaryDay((b) => b
     ..date = daysSinceEpoch
-    ..foodRecords = ListBuilder([
+    ..foodRecords = ListBuilder(<FoodRecord>[
       apple,
       orange,
     ])
   );
   final FoodDiaryDay dayB = FoodDiaryDay((b) => b
     ..date = daysSinceEpoch
-    ..foodRecords = ListBuilder([
+    ..foodRecords = ListBuilder(<FoodRecord>[
       orange,
       pear,
     ])
@@ -38,7 +38,7 @@ void main() {
 
   ///
   void mockDiaryRepositoryStream({
-    List<FoodDiaryDay> foodDiaryDayStream: const []
+    List<FoodDiaryDay> foodDiaryDayStream = const []
   }) {
     when(diaryRepository.streamDiaryDay(userId, daysSinceEpoch)).thenAnswer((_) =>
       Observable<FoodDiaryDay>.fromIterable(foodDiaryDayStream)
@@ -72,7 +72,7 @@ void main() {
 
       expectLater(
         foodDiaryBloc.state,
-        emitsInOrder([
+        emitsInOrder(<FoodDiaryState>[
           FoodDiaryUninitialized(),
           FoodDiaryLoaded((b) => b // TODO: diet
             ..foodDiaryDay = dayA
@@ -101,7 +101,7 @@ void main() {
 
       expectLater(
         foodDiaryBloc.state,
-        emitsInOrder([
+        emitsInOrder(<FoodDiaryState>[
           FoodDiaryUninitialized(),
           FoodDiaryFailed((b) => b..error = "oops")
         ])

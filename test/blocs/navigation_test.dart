@@ -17,8 +17,8 @@ void main() {
   UserDataBloc userDataBloc;
 
   /// Data
-  FirebaseUser userA = FirebaseUserMock();
-  UserDocument userDocumentA = UserDocument((b) => b
+  final FirebaseUser userA = FirebaseUserMock();
+  final UserDocument userDocumentA = UserDocument((b) => b
     ..currentSubscription = "all"
   );
 
@@ -76,7 +76,7 @@ void main() {
 
     expectLater(
       navigationBloc.state,
-      emitsInOrder([
+      emitsInOrder(<NavigationState>[
         NavigationUninitialized(),
         NavigationLoaded((b) => b..currentPage = Page.diet),
 //        emitsDone // should succeed => timeout
@@ -100,7 +100,7 @@ void main() {
 
     expectLater(
       navigationBloc.state,
-      emitsInOrder([
+      emitsInOrder(<NavigationState>[
         NavigationUninitialized(),
         NavigationLoaded((b) => b..currentPage = Page.diet), // default page
         NavigationLoaded((b) => b..currentPage = Page.track),
@@ -115,7 +115,7 @@ void main() {
     });
 
     // Need time for asynchronous default page event to run
-    await Future.delayed(Duration(milliseconds: 10));
+    await Future<dynamic>.delayed(Duration(milliseconds: 10));
     navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.track));
     navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.recipes));
     navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.diet));

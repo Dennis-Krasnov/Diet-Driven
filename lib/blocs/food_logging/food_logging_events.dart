@@ -10,29 +10,29 @@ abstract class FoodLoggingEvent {}
 
 /// Changes [mealIndex] the selected food records are logged to.
 abstract class ChangeMeal with FoodLoggingEvent implements Built<ChangeMeal, ChangeMealBuilder> {
-  int get mealIndex;
-
+  factory ChangeMeal([void Function(ChangeMealBuilder b)]) = _$ChangeMeal;
   ChangeMeal._();
-  factory ChangeMeal([updates(ChangeMealBuilder b)]) = _$ChangeMeal;
+
+  int get mealIndex;
 }
 
 /// Adds [foodRecord] to current selection.
 /// Only available when [multiSelect] is true.
 abstract class AddToSelection with FoodLoggingEvent implements Built<AddToSelection, AddToSelectionBuilder> {
-  FoodRecord get foodRecord;
-
+  factory AddToSelection([void Function(AddToSelectionBuilder b)]) = _$AddToSelection;
   AddToSelection._();
-  factory AddToSelection([updates(AddToSelectionBuilder b)]) = _$AddToSelection;
+
+  FoodRecord get foodRecord;
 }
 
 /// Removes [foodRecord] from current selection.
 /// Cancels multi-select if there are no longer food records in selection after removal.
 /// Only available when [multiSelect] is true.
 abstract class RemoveFromSelection with FoodLoggingEvent implements Built<RemoveFromSelection, RemoveFromSelectionBuilder> {
-  FoodRecord get foodRecord;
-
+  factory RemoveFromSelection([void Function(RemoveFromSelectionBuilder b)]) = _$RemoveFromSelection;
   RemoveFromSelection._();
-  factory RemoveFromSelection([updates(RemoveFromSelectionBuilder b)]) = _$RemoveFromSelection;
+
+  FoodRecord get foodRecord;
 }
 
 /// Updates [oldRecord] to [newRecord] in current selection.
@@ -41,18 +41,18 @@ abstract class RemoveFromSelection with FoodLoggingEvent implements Built<Remove
 /// Adding a duplicate [newRecord] has no effect.
 /// Only available when [multiSelect] is true.
 abstract class ReplaceSelected with FoodLoggingEvent implements Built<ReplaceSelected, ReplaceSelectedBuilder> {
+  factory ReplaceSelected([void Function(ReplaceSelectedBuilder b)]) = _$ReplaceSelected;
+  ReplaceSelected._();
+
   FoodRecord get oldRecord;
   FoodRecord get newRecord;
-
-  ReplaceSelected._();
-  factory ReplaceSelected([updates(ReplaceSelectedBuilder b)]) = _$ReplaceSelected;
 }
 
 /// Enters multi-selection mode.
 /// Only available when [multiSelect] is false.
 abstract class StartMultiSelect with FoodLoggingEvent implements Built<StartMultiSelect, StartMultiSelectBuilder> {
+  factory StartMultiSelect([void Function(StartMultiSelectBuilder b)]) = _$StartMultiSelect;
   StartMultiSelect._();
-  factory StartMultiSelect([updates(StartMultiSelectBuilder b)]) = _$StartMultiSelect;
 
   @override String toString() => runtimeType.toString();
 }
@@ -60,8 +60,8 @@ abstract class StartMultiSelect with FoodLoggingEvent implements Built<StartMult
 /// Exits multi-selection mode, loses all current selected food records.
 /// Only available when [multiSelect] is true.
 abstract class CancelMultiSelect with FoodLoggingEvent implements Built<CancelMultiSelect, CancelMultiSelectBuilder> {
+  factory CancelMultiSelect([void Function(CancelMultiSelectBuilder b)]) = _$CancelMultiSelect;
   CancelMultiSelect._();
-  factory CancelMultiSelect([updates(CancelMultiSelectBuilder b)]) = _$CancelMultiSelect;
 
   @override String toString() => runtimeType.toString();
 }

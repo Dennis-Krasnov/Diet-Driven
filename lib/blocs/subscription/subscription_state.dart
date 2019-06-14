@@ -9,7 +9,7 @@ abstract class SubscriptionState {}
 ///
 abstract class SubscriptionUninitialized with SubscriptionState implements Built<SubscriptionUninitialized, SubscriptionUninitializedBuilder> {
   SubscriptionUninitialized._();
-  factory SubscriptionUninitialized([updates(SubscriptionUninitializedBuilder b)]) = _$SubscriptionUninitialized;
+  factory SubscriptionUninitialized([void Function(SubscriptionUninitializedBuilder b)]) = _$SubscriptionUninitialized;
 
   @override String toString() => runtimeType.toString();
 }
@@ -17,7 +17,7 @@ abstract class SubscriptionUninitialized with SubscriptionState implements Built
 ///
 abstract class NoSubscription with SubscriptionState implements Built<NoSubscription, NoSubscriptionBuilder> {
   NoSubscription._();
-  factory NoSubscription([updates(NoSubscriptionBuilder b)]) = _$NoSubscription;
+  factory NoSubscription([void Function(NoSubscriptionBuilder b)]) = _$NoSubscription;
 
   @override String toString() => runtimeType.toString();
 }
@@ -27,5 +27,5 @@ abstract class HasSubscription with SubscriptionState implements Built<HasSubscr
   SubscriptionType get subscriptionType;
 
   HasSubscription._();
-  factory HasSubscription([updates(HasSubscriptionBuilder b)]) = _$HasSubscription;
+  factory HasSubscription([void Function(HasSubscriptionBuilder b)]) = _$HasSubscription;
 }

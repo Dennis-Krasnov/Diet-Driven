@@ -2,18 +2,17 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/models/models.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
 
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/food_logging/food_logging.dart';
-import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
 ///
 class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
-  final Logger _log = new Logger("food logging bloc");
+  final Logger _log = Logger("food logging bloc");
   final FoodRepository foodRepository;
   final String userId;
   final int mealIndex;
@@ -38,7 +37,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
   FoodLoggingState get initialState => FoodLoggingState((b) => b
     ..mealIndex = mealIndex
     ..multiSelect = startWithMultiSelect
-    ..selectedFoodRecords = SetBuilder([])
+    ..selectedFoodRecords = SetBuilder(<FoodRecord>[])
     ..diaryFoodRecords = foodDiaryLoaded.foodDiaryDay.foodRecords.toBuilder()
   );
 
@@ -47,7 +46,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
     if (event is ChangeMeal) {
       yield currentState.rebuild((b) => b
         ..mealIndex = event.mealIndex
-        ..selectedFoodRecords = SetBuilder(currentState.selectedFoodRecords.map((foodRecord) =>
+        ..selectedFoodRecords = SetBuilder(currentState.selectedFoodRecords.map<FoodRecord>((foodRecord) =>
           foodRecord.rebuild((b) => b
             ..mealIndex = mealIndex
           )
@@ -111,7 +110,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
 
       yield currentState.rebuild((b) => b
         ..multiSelect = false
-        ..selectedFoodRecords = SetBuilder([])
+        ..selectedFoodRecords = SetBuilder(<FoodRecord>[])
       );
     }
   }

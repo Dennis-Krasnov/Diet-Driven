@@ -20,5 +20,5 @@ abstract class FoodRecordResult implements Built<FoodRecordResult, FoodRecordRes
   bool get existsInSelection;
 
   FoodRecordResult._();
-  factory FoodRecordResult([updates(FoodRecordResultBuilder b)]) = _$FoodRecordResult;
+  factory FoodRecordResult([void Function(FoodRecordResultBuilder b)]) = _$FoodRecordResult;
 }

@@ -11,11 +11,11 @@ abstract class NavigationEvent {
 /// Navigates to default [page] in bottom navigation if bloc hasn't been initialized.
 abstract class InitialNavigateToPage with NavigationEvent implements Built<InitialNavigateToPage, InitialNavigateToPageBuilder> {
   InitialNavigateToPage._();
-  factory InitialNavigateToPage([updates(InitialNavigateToPageBuilder b)]) = _$InitialNavigateToPage;
+  factory InitialNavigateToPage([void Function(InitialNavigateToPageBuilder b)]) = _$InitialNavigateToPage;
 }
 
 /// Navigates to [page] in bottom navigation.
 abstract class NavigateToPage with NavigationEvent implements Built<NavigateToPage, NavigateToPageBuilder> {
   NavigateToPage._();
-  factory NavigateToPage([updates(NavigateToPageBuilder b)]) = _$NavigateToPage;
+  factory NavigateToPage([void Function(NavigateToPageBuilder b)]) = _$NavigateToPage;
 }

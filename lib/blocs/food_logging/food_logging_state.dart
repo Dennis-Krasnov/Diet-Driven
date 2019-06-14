@@ -23,5 +23,5 @@ abstract class FoodLoggingState implements Built<FoodLoggingState, FoodLoggingSt
   BuiltList<FoodRecord> get diaryFoodRecords;
 
   FoodLoggingState._();
-  factory FoodLoggingState([updates(FoodLoggingStateBuilder b)]) = _$FoodLoggingState;
+  factory FoodLoggingState([void Function(FoodLoggingStateBuilder b)]) = _$FoodLoggingState;
 }

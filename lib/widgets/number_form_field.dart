@@ -19,7 +19,7 @@ class NumberFormField extends StatefulWidget {
 
   const NumberFormField({
     Key key,
-    this.value,
+    @required this.value,
     this.minValue,
     this.maxValue,
     this.focusNode,
@@ -31,7 +31,7 @@ class NumberFormField extends StatefulWidget {
     this.errorText,
     this.labelText,
     this.icon,
-    this.onChanged
+    @required this.onChanged
   }) :
       assert(value != null),
       assert(onChanged != null),
@@ -105,12 +105,12 @@ class _NumberFormFieldState extends State<NumberFormField> {
     );
   }
 
-  String valToString(value) => value.toStringAsFixed(widget.decimalPlaces);
+  String valToString(num value) => value.toStringAsFixed(widget.decimalPlaces);
 
   // TODO: make this a globally used function
   num round(num val, num places) {
     num mod = pow(10.0, places);
-    return ((val * mod).round().toDouble() / mod);
+    return (val * mod).round().toDouble() / mod;
   }
 
   bool validNumber(String text) {

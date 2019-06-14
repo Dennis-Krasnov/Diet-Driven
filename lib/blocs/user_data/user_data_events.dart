@@ -15,14 +15,14 @@ abstract class RemoteUserDataArrived with UserDataEvent implements Built<RemoteU
 
   Settings get settings;
 
+  factory RemoteUserDataArrived([void Function(RemoteUserDataArrivedBuilder b)]) = _$RemoteUserDataArrived;
   RemoteUserDataArrived._();
-  factory RemoteUserDataArrived([updates(RemoteUserDataArrivedBuilder b)]) = _$RemoteUserDataArrived;
 }
 
 /// Reactively shows loading screen for every authentication state change.
 abstract class StartLoadingUserData with UserDataEvent implements Built<StartLoadingUserData, StartLoadingUserDataBuilder> {
+  factory StartLoadingUserData([void Function(StartLoadingUserDataBuilder b)]) = _$StartLoadingUserData;
   StartLoadingUserData._();
-  factory StartLoadingUserData([updates(StartLoadingUserDataBuilder b)]) = _$StartLoadingUserData;
 
   @override String toString() => runtimeType.toString();
 }
@@ -34,14 +34,22 @@ abstract class UserDataError with UserDataEvent implements Built<UserDataError, 
   @nullable
   String get trace;
 
+  factory UserDataError([void Function(UserDataErrorBuilder b)]) = _$UserDataError;
   UserDataError._();
-  factory UserDataError([updates(UserDataErrorBuilder b)]) = _$UserDataError;
 }
 
 /// Shows unauthenticated user onboarding / sign in.
 abstract class OnboardUser with UserDataEvent implements Built<OnboardUser, OnboardUserBuilder> {
+  factory OnboardUser([void Function(OnboardUserBuilder b)]) = _$OnboardUser;
   OnboardUser._();
-  factory OnboardUser([updates(OnboardUserBuilder b)]) = _$OnboardUser;
 
   @override String toString() => runtimeType.toString();
+}
+
+/// Updates user's settings
+abstract class UpdateSettings with UserDataEvent implements Built<UpdateSettings, UpdateSettingsBuilder> {
+  bool get darkMode;
+
+  factory UpdateSettings([void Function(UpdateSettingsBuilder b)]) = _$UpdateSettings;
+  UpdateSettings._();
 }

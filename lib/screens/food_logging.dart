@@ -33,7 +33,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
     super.initState();
 
     userId = (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid;
-    loggingTabs = BuiltList([LoggingTab.recent, LoggingTab.popular, LoggingTab.favorite]); // TODO: take tabs from settings!
+    loggingTabs = BuiltList(<LoggingTab>[LoggingTab.recent, LoggingTab.popular, LoggingTab.favorite]); // TODO: take tabs from settings!
 
     _foodLoggingBloc = FoodLoggingBloc(
       userId: userId,
@@ -79,26 +79,26 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
             ),
             actions: <Widget>[
               IconButton(
-                icon: Icon(Icons.select_all), // TODO: single and multi select icons
+                icon: const Icon(Icons.select_all), // TODO: single and multi select icons
                 onPressed: () async {
                   if (state.multiSelect) {
                     // Confirmation if going to lose non-empty selection
                     if (state.selectedFoodRecords.isNotEmpty) {
-                      bool confirmed = await showDialog<bool>(
+                      final bool confirmed = await showDialog<bool>(
                         context: context,
                         builder: (BuildContext context) {
                           return AlertDialog(
-                            title: new Text("Switching to single selection will lose ${state.selectedFoodRecords.length} records"),
-                            content: new Text("[list the records]"),
+                            title: Text("Switching to single selection will lose ${state.selectedFoodRecords.length} records"),
+                            content: const Text("[list the records]"),
                             actions: <Widget>[
-                              new FlatButton(
-                                child: new Text("Cancel"),
+                              FlatButton(
+                                child: const Text("Cancel"),
                                 onPressed: () {
                                   Navigator.of(context).pop<bool>(false);
                                 },
                               ),
-                              new FlatButton(
-                                child: new Text("Yes!"),
+                              FlatButton(
+                                child: const Text("Yes!"),
                                 onPressed: () {
                                   Navigator.of(context).pop<bool>(true);
                                 },
@@ -121,9 +121,9 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                 },
               ),
               IconButton(
-                icon: Icon(Icons.search),
+                icon: const Icon(Icons.search),
                 onPressed: () async {
-                  FoodRecord searchFoodRecord = await Navigator.of(context).pushNamed<FoodRecord>(
+                  final FoodRecord searchFoodRecord = await Navigator.of(context).pushNamed<FoodRecord>(
                     "/food_search",
                     arguments: state
                   );
@@ -135,7 +135,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
                       ));
                     }
                     else {
-                      Navigator.of(context).pop(BuiltList<FoodRecord>([searchFoodRecord]));
+                      Navigator.of(context).pop(BuiltList<FoodRecord>(<FoodRecord>[searchFoodRecord]));
                     }
                   }
                 }
@@ -154,7 +154,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
           ),
           floatingActionButton: state.multiSelect && state.selectedFoodRecords.isNotEmpty
             ? FloatingActionButton(
-                child: Icon(Icons.check),
+                child: const Icon(Icons.check),
                 onPressed: () {
                   Navigator.of(context).pop(state.selectedFoodRecords.toBuiltList()); // OPTIMIZE: should diary also store in built sets?
                 }

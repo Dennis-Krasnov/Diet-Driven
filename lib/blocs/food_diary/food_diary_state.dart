@@ -9,7 +9,7 @@ abstract class FoodDiaryState {}
 /// Skeleton meals and food records.
 abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
   FoodDiaryUninitialized._();
-  factory FoodDiaryUninitialized([updates(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
+  factory FoodDiaryUninitialized([void Function(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
 
   @override String toString() => runtimeType.toString();
 }
@@ -21,7 +21,7 @@ abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFai
   String get trace;
 
   FoodDiaryFailed._();
-  factory FoodDiaryFailed([updates(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;
+  factory FoodDiaryFailed([void Function(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;
 }
 
 /// Food diary day, stores current [FoodDiaryDay].
@@ -36,7 +36,7 @@ abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoa
   int get skipNextNArrivals;
 
   FoodDiaryLoaded._();
-  factory FoodDiaryLoaded([updates(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
+  factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
 }
 
 abstract class FoodDiaryLoadedBuilder implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {

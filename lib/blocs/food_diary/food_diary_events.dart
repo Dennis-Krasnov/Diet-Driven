@@ -17,7 +17,7 @@ abstract class RemoteDiaryDayArrived with FoodDiaryEvent implements Built<Remote
   Diet get diet;
 
   RemoteDiaryDayArrived._();
-  factory RemoteDiaryDayArrived([updates(RemoteDiaryDayArrivedBuilder b)]) = _$RemoteDiaryDayArrived;
+  factory RemoteDiaryDayArrived([void Function(RemoteDiaryDayArrivedBuilder b)]) = _$RemoteDiaryDayArrived;
 }
 
 /// Shows error page.
@@ -26,7 +26,7 @@ abstract class FoodDiaryError with FoodDiaryEvent implements Built<FoodDiaryErro
   String get trace;
 
   FoodDiaryError._();
-  factory FoodDiaryError([updates(FoodDiaryErrorBuilder b)]) = _$FoodDiaryError;
+  factory FoodDiaryError([void Function(FoodDiaryErrorBuilder b)]) = _$FoodDiaryError;
 }
 
 /// Adds [BuiltList] of [FoodRecord]s to [FoodDiaryDay].
@@ -34,7 +34,7 @@ abstract class AddFoodRecords with Completable, FoodDiaryEvent implements Built<
   BuiltList<FoodRecord> get foodRecords;
 
   AddFoodRecords._();
-  factory AddFoodRecords([updates(AddFoodRecordsBuilder b)]) = _$AddFoodRecords;
+  factory AddFoodRecords([void Function(AddFoodRecordsBuilder b)]) = _$AddFoodRecords;
 }
 
 /// Deletes [BuiltList] of [FoodRecord]s from [FoodDiaryDay].
@@ -42,7 +42,7 @@ abstract class DeleteFoodRecords with Completable, FoodDiaryEvent implements Bui
   BuiltList<FoodRecord> get foodRecords;
 
   DeleteFoodRecords._();
-  factory DeleteFoodRecords([updates(DeleteFoodRecordsBuilder b)]) = _$DeleteFoodRecords;
+  factory DeleteFoodRecords([void Function(DeleteFoodRecordsBuilder b)]) = _$DeleteFoodRecords;
 }
 
 /// Updates [oldRecord] to [newRecord] in [FoodDiaryDay].
@@ -54,5 +54,5 @@ abstract class ReplaceFoodRecord with Completable, FoodDiaryEvent implements Bui
   FoodRecord get newRecord;
 
   ReplaceFoodRecord._();
-  factory ReplaceFoodRecord([updates(ReplaceFoodRecordBuilder b)]) = _$ReplaceFoodRecord;
+  factory ReplaceFoodRecord([void Function(ReplaceFoodRecordBuilder b)]) = _$ReplaceFoodRecord;
 }

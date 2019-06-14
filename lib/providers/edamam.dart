@@ -12,7 +12,7 @@ class EdamamProvider {
   String appKey = "88fbceb07e4fa287b47fefa3db2004f3";
   String appId = "1c25cea1";
 
-  static BaseOptions options = new BaseOptions(
+  static BaseOptions options = BaseOptions(
     baseUrl: "https://api.edamam.com/api",
     responseType: ResponseType.json,
     connectTimeout: 5000,
@@ -27,31 +27,31 @@ class EdamamProvider {
 
   Future<BuiltList<String>> foodSuggestions(String search) async {
 
-    final HttpsCallable foodSuggestionsFunction = CloudFunctions.instance.getHttpsCallable(functionName: 'foodSuggestions');
-    foodSuggestionsFunction.timeout = Duration(seconds: 10);
+    final HttpsCallable foodSuggestionsFunction = CloudFunctions.instance.getHttpsCallable(
+      functionName: 'foodSuggestions'
+    )..timeout = Duration(seconds: 10);
 
 //   Cloud function parameters CANNOT be defined as <String, dynamic>{}
-    HttpsCallableResult result = await foodSuggestionsFunction({"query": search});
-
-    print("result: $result");
-    print("result data: ${result.data}");
+    final HttpsCallableResult result = await foodSuggestionsFunction({"query": search});
 
     return BuiltList<String>.from(result.data);
   }
 
   // FIXME: move error catching to bloc!
+//  TODO: use callable cloud function, use built value's json serializers for deserializion!
   Future<BuiltList<FoodRecord>> searchForFood(String search) async {
-    var encoded = Uri.encodeFull("/food-database/parser?ingr=$search&app_id=$appId&app_key=$appKey");
-    Response response = await _dio.get(encoded);
+    final String encoded = Uri.encodeFull("/food-database/parser?ingr=$search&app_id=$appId&app_key=$appKey");
+//    Response response = await _dio.get(encoded);
+    final Response<Map<String, dynamic>> response = await _dio.get<Map<String, dynamic>>(encoded);
 
-    var json = Map<String, dynamic>.from(response.data);
+//    var json = Map<String, dynamic>.from(response.data);
 
-    var parsed = json["parsed"];
-    var hints = json["hints"];
+    final Map<String, dynamic> parsed = response.data["parsed"];
+    final List<dynamic> hints = response.data["hints"];
 
     return BuiltList<FoodRecord>(
-      (hints as List).map((json) {
-        var foodRecord = json["food"];
+      hints.map<FoodRecord>((dynamic hint) {
+        final Map<String, dynamic> foodRecord = hint["food"];
         print(foodRecord);
         return FoodRecord((b) => b
 //          ..foodName = foodRecord["foodId"] as String TODO: edamam id
@@ -73,8 +73,8 @@ class EdamamProvider {
   }
 
   Future<FoodRecord> nutritionalInformation(String edamamFoodId) async {
-    var encoded = Uri.encodeFull("/food-database/nutrients?app_id=$appId&app_key=$appKey");
-    Response response = await _dio.post(
+    final encoded = Uri.encodeFull("/food-database/nutrients?app_id=$appId&app_key=$appKey");
+    final Response<Map<String, dynamic>> response = await _dio.post<Map<String, dynamic>>(
       encoded,
       data: {
         "quantity": 1,
@@ -83,18 +83,19 @@ class EdamamProvider {
       }
     );
 
-    var json = Map<String, dynamic>.from(response.data);
+//    final json = Map<String, dynamic>.from(response.data);
+//    final json = response.data;
 
-    num foodYield = json["yield"];
+    num foodYield = response.data["yield"];
 //    num calories = json["calories"]; FIXME imprecise
-    num totalWeight = json["totalWeight"];
+    num totalWeight = response.data["totalWeight"];
 
-    List<String> dietLabels = json["dietLabels"];
-    List<String> healthLabels = json["healthLabels"];
-    List<String> cautions = json["cautions"];
+    List<String> dietLabels = response.data["dietLabels"];
+    List<String> healthLabels = response.data["healthLabels"];
+    List<String> cautions = response.data["cautions"];
 
     // Per 100 g
-    var nutrients = json["totalNutrients"];
+    final Map<String, dynamic> nutrients = response.data["totalNutrients"];
 
     print(response.statusCode);
     print(response.data);

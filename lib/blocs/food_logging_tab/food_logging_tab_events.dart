@@ -11,7 +11,7 @@ abstract class ResultsArrived with FoodLoggingTabEvent implements Built<ResultsA
   BuiltList<FoodRecordResult> get results;
 
   ResultsArrived._();
-  factory ResultsArrived([updates(ResultsArrivedBuilder b)]) = _$ResultsArrived;
+  factory ResultsArrived([void Function(ResultsArrivedBuilder b)]) = _$ResultsArrived;
 }
 
 /// Shows error page.
@@ -20,5 +20,5 @@ abstract class FoodLoggingTabError with FoodLoggingTabEvent implements Built<Foo
   String get trace;
 
   FoodLoggingTabError._();
-  factory FoodLoggingTabError([updates(FoodLoggingTabErrorBuilder b)]) = _$FoodLoggingTabError;
+  factory FoodLoggingTabError([void Function(FoodLoggingTabErrorBuilder b)]) = _$FoodLoggingTabError;
 }

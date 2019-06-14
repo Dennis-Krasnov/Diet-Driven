@@ -1,7 +1,8 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'dart:async';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
@@ -11,7 +12,7 @@ import 'package:diet_driven/models/models.dart';
 /// Aggregates and manages authentication and settings.
 /// [UserDataBloc] shows loading or onboarding until loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
-  final Logger _log = new Logger("user data bloc");
+  final Logger _log = Logger("user data bloc");
   final UserRepository userRepository;
 
   StreamSubscription<UserDataEvent> _userDataEventSubscription;
@@ -19,8 +20,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   UserDataBloc({@required this.userRepository}) {
     assert(userRepository != null);
 
-    // TODO: https://pub.dartlang.org/documentation/rxdart/latest/rx/Observable/Observable.retryWhen.html
-    Observable<UserDataEvent> _userDataEventStream = userRepository.authStateChangedStream
+    final Observable<UserDataEvent> _userDataEventStream = userRepository.authStateChangedStream
       .doOnData((user) => _log.fine("USER: $user"))
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user
       .doOnData((user) => dispatch(user == null ? OnboardUser() : StartLoadingUserData()))
@@ -42,7 +42,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
     _userDataEventSubscription = _userDataEventStream.listen(
       (userDataEvent) => dispatch(userDataEvent),
-      onError: (error, trace) => dispatch(UserDataError((b) => b
+      onError: (Object error, Object trace) => dispatch(UserDataError((b) => b // FIXME
         ..error = error.toString()
         ..trace = trace.toString()
       )),
@@ -89,6 +89,19 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       );
 
       _log.info("user data failed");
+    }
+
+    // FIXME: shouldn't be here, should update using repository, and using a different bloc! - see addFoodRecord event!
+    if (event is UpdateSettings) {
+      final builder = (currentState as UserDataLoaded).toBuilder();
+
+      // TODO: research how to do less nested!
+      builder.settings.themeSettings = builder.settings.themeSettings.rebuild((b) => b
+        ..darkMode = event.darkMode
+      );
+
+      yield builder.build();
+      _log.info("updated user settings");
     }
   }
 }

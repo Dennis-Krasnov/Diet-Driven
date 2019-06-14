@@ -10,7 +10,7 @@ abstract class Nutrient implements Built<Nutrient, NutrientBuilder> {
   String get unit;
 
 //  Nutrient._();
-//  factory Nutrient([updates(NutrientBuilder b)]) = _$Nutrient;
+//  factory Nutrient([void Function(NutrientBuilder b)]) = _$Nutrient;
 }
 //abstract class Nutrient {
 //  String get name;
@@ -22,7 +22,7 @@ abstract class Nutrient implements Built<Nutrient, NutrientBuilder> {
 ////  num get caloriesPerGram;
 //
 //  MacroNutrient._();
-//  factory MacroNutrient([updates(MacroNutrientBuilder b)]) = _$MacroNutrient;
+//  factory MacroNutrient([void Function(MacroNutrientBuilder b)]) = _$MacroNutrient;
 //}
 
 //abstract class MacroNutrient extends Nutrient {
@@ -55,7 +55,7 @@ abstract class Nutrient implements Built<Nutrient, NutrientBuilder> {
 //  String get unit => "kcal"; // TODO: enum
 //
 //  Calories._();
-//  factory Calories([updates(CaloriesBuilder b)]) = _$Calories;
+//  factory Calories([void Function(CaloriesBuilder b)]) = _$Calories;
 //}
 //
 //abstract class Protein implements MacroNutrient, Built<Protein, ProteinBuilder> {
@@ -71,7 +71,7 @@ abstract class Nutrient implements Built<Nutrient, NutrientBuilder> {
 //
 //
 //  Protein._();
-//  factory Protein([updates(ProteinBuilder b)]) = _$Protein;
+//  factory Protein([void Function(ProteinBuilder b)]) = _$Protein;
 //}
 //
 //// when using mixins it shows up as an overrride instead of implement! (better?)
@@ -80,7 +80,7 @@ abstract class Nutrient implements Built<Nutrient, NutrientBuilder> {
 //  String get alternativeName => "Thiamin";
 //
 //  VitaminB1._();
-//  factory VitaminB1([updates(VitaminB1Builder b)]) = _$VitaminB1;
+//  factory VitaminB1([void Function(VitaminB1Builder b)]) = _$VitaminB1;
 //}
 //
 //abstract class Calcium with Mineral implements Built<Calcium, CalciumBuilder> {
@@ -91,5 +91,5 @@ abstract class Nutrient implements Built<Nutrient, NutrientBuilder> {
 //  String get periodicTableName => "Ca";
 //
 //  Calcium._();
-//  factory Calcium([updates(CalciumBuilder b)]) = _$Calcium;
+//  factory Calcium([void Function(CalciumBuilder b)]) = _$Calcium;
 //}

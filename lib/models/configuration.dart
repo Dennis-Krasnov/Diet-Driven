@@ -8,7 +8,7 @@ abstract class RemoteConfiguration implements Built<RemoteConfiguration, RemoteC
   int get bonus;
 
   RemoteConfiguration._();
-  factory RemoteConfiguration([updates(RemoteConfigurationBuilder b)]) = _$RemoteConfiguration;
+  factory RemoteConfiguration([void Function(RemoteConfigurationBuilder b)]) = _$RemoteConfiguration;
 }
 
 abstract class RemoteConfigurationBuilder implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {

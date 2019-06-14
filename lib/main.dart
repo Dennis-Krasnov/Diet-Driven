@@ -17,144 +17,123 @@ import 'package:flutter/material.dart';
 
 import 'package:diet_driven/repository_singleton.dart';
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:rxdart/rxdart.dart';
-
-import 'global_navigation.dart';
 
 void main() {
   // Configure logger
-  // Available levels: [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
-  Logger.root.level = Level.FINE;
+  Logger.root.level = Level.FINE; // [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
   Logger.root.onRecord.listen((LogRecord rec) {
     print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
-    App.temporaryLogSink.add("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
   });
 
   // Logs every BLoC state transition
-  BlocSupervisor().delegate = SimpleBlocDelegate();
+  BlocSupervisor.delegate = SimpleBlocDelegate();
 
-  runApp(App());
-
-  // TODO: create repository to manage system preferences, orientation, overlays (eg. for maximizing screen)
-  //  on per-page basis
-//  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-  //  statusBarColor:
-  //  systemNavigationBarColor:
-  //  systemNavigationBarIconBrightness:
-//  ));
+  runApp(
+    // Inject blocs into context
+    BlocProviderTree(
+      blocProviders: [
+        BlocProvider<ConfigurationBloc>(
+          builder: (BuildContext context) => ConfigurationBloc(userRepository: Repository().user),
+          dispose: (BuildContext context, ConfigurationBloc configurationBloc) => configurationBloc.dispose(),
+        ),
+        BlocProvider<UserDataBloc>(
+          builder: (BuildContext context) => UserDataBloc(userRepository: Repository().user),
+          dispose: (BuildContext context, UserDataBloc userDataBloc) => userDataBloc.dispose(),
+        ),
+      ],
+      child: App(),
+    )
+  );
 
   // Lock to portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
-    DeviceOrientation.portraitDown
+    DeviceOrientation.portraitDown,
   ]);
 }
 
-class App extends StatefulWidget {
-  static List<String> temporaryLogSink = List<String>();
-
-  @override
-  State<StatefulWidget> createState() => _AppState();
-}
-
-class _AppState extends State<App> {
-  final ConfigurationBloc configurationBloc = ConfigurationBloc(userRepository: Repository().user);
-  final UserDataBloc userDataBloc = UserDataBloc(userRepository: Repository().user);
-
+class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Inject blocs into context
-    return BlocProviderTree(
-      blocProviders: [
-        BlocProvider<ConfigurationBloc>(bloc: configurationBloc),
-        BlocProvider<UserDataBloc>(bloc: userDataBloc),
-      ],
-      // Configuration builder
-      child: BlocBuilder<ConfigurationEvent, ConfigurationState>(
-        bloc: configurationBloc,
-        builder: (BuildContext context, ConfigurationState configurationState) {
-          // User data builder
-          return BlocBuilder<UserDataEvent, UserDataState>(
-            bloc: userDataBloc,
-            builder: (BuildContext context, UserDataState userDataState) {
-              return MaterialApp(
-                // Overrides `/` navigator route
-                home: appLoadingLogic(configurationState, userDataState),
-                // User or default settings
-                theme: generateThemeSettings(userDataState is UserDataLoaded
-                  ? userDataState.settings.themeSettings
-                  : ThemeSettings()
-                ),
-                onGenerateRoute: (settings) {
-                  final arguments = settings.arguments;
+    // Configuration builder
+    return BlocBuilder<ConfigurationEvent, ConfigurationState>(
+      bloc: BlocProvider.of<ConfigurationBloc>(context),
+      builder: (BuildContext context, ConfigurationState configurationState) {
+        // User data builder
+        return BlocBuilder<UserDataEvent, UserDataState>(
+          bloc: BlocProvider.of<UserDataBloc>(context),
+          builder: (BuildContext context, UserDataState userDataState) {
+            return MaterialApp(
+              // Overrides `/` navigator route
+              home: appLoadingLogic(configurationState, userDataState),
+              // Use default settings while user data is being loaded
+              theme: generateThemeSettings(userDataState is UserDataLoaded
+                ? userDataState.settings.themeSettings
+                : ThemeSettings()
+              ),
+              // TODO: extract to method
+              onGenerateRoute: (settings) {
+                final arguments = settings.arguments;
 
-                  switch (settings.name) { // FIXME: use global constants
-                    case "/manual_food_record_edit":
-                      assert(arguments is FoodRecord);
+                switch (settings.name) { // FIXME: use global constants
+                  case "/manual_food_record_edit":
+                    assert(arguments is FoodRecord);
 
-                      // Returns edited food record
-                      return MaterialPageRoute<FoodRecord>(
-                        builder: (context) => ManualFoodRecordEdit(
-                          foodRecord: arguments,
-                          deletable: true, // TODO: diary should have two paths - live and manual, both deletable
-                        ),
-                        maintainState: true,
-                      );
-                      break;
-                    case "/food_logging":
-                      // TODO: if arguments != null => assert they're a valid meal
-                      assert(arguments is FoodDiaryLoaded);
+                    // Returns edited food record
+                    return MaterialPageRoute<FoodRecord>(
+                      builder: (context) => ManualFoodRecordEdit(
+                        foodRecord: arguments,
+                        deletable: true, // TODO: diary should have two paths - live and manual, both deletable
+                      ),
+                      maintainState: true,
+                    );
+                    break;
+                  case "/food_logging":
+                    // TODO: if arguments != null => assert they're a valid meal
+                    assert(arguments is FoodDiaryLoaded);
 
-                      // Returns list of food records to add
-                      return MaterialPageRoute<BuiltList<FoodRecord>>(
-                        builder: (context) => FoodLogging(
-                          foodDiaryLoaded: arguments,
-                        ),
-                        maintainState: true,
-                      );
-                      break;
-                    case "/logging_food_record_edit": // TODO: reuse similar configuration for custom food creation, but with empty food record
-                      assert(arguments is FoodRecord);
+                    // Returns list of food records to add
+                    return MaterialPageRoute<BuiltList<FoodRecord>>(
+                      builder: (context) => FoodLogging(
+                        foodDiaryLoaded: arguments,
+                      ),
+                      maintainState: true,
+                    );
+                    break;
+                  case "/logging_food_record_edit": // TODO: reuse similar configuration for custom food creation, but with empty food record
+                    assert(arguments is FoodRecord);
 
-                      // Returns edited food record
-                      return MaterialPageRoute<FoodRecord>(
-                        builder: (context) => ManualFoodRecordEdit(
-                          foodRecord: arguments,
-                          deletable: false,
-                        ),
-                        maintainState: true,
-                      );
-                      break;
-                    case "/food_search":
-                      assert(arguments is FoodLoggingState);
+                    // Returns edited food record
+                    return MaterialPageRoute<FoodRecord>(
+                      builder: (context) => ManualFoodRecordEdit(
+                        foodRecord: arguments,
+                        deletable: false,
+                      ),
+                      maintainState: true,
+                    );
+                    break;
+                  case "/food_search":
+                    assert(arguments is FoodLoggingState);
 
-                      // Returns food record search result
-                      return MaterialPageRoute<FoodRecord>(
-                        builder: (context) => FoodRecordSearch(
-                          foodLoggingState: arguments,
-                        ),
-                        maintainState: true,
-                      );
-                      break;
-                  }
-                  return null;
-                },
-                onUnknownRoute: (RouteSettings setting) {
-                  return MaterialPageRoute(builder: (context) => ErrorPage(error: "${setting.name} route not found"));
+                    // Returns food record search result
+                    return MaterialPageRoute<FoodRecord>(
+                      builder: (context) => FoodRecordSearch(
+                        foodLoggingState: arguments,
+                      ),
+                      maintainState: true,
+                    );
+                    break;
                 }
-              );
-            }
-          );
-        }
-      ),
+                return null;
+              },
+              onUnknownRoute: (RouteSettings setting) {
+                return MaterialPageRoute<dynamic>(builder: (BuildContext context) => ErrorPage(error: "${setting.name} route not found"));
+              }
+            );
+          }
+        );
+      }
     );
-  }
-
-  @override
-  void dispose() {
-    configurationBloc.dispose();
-    userDataBloc.dispose();
-    super.dispose();
   }
 
   /// ...
@@ -204,6 +183,6 @@ class _AppState extends State<App> {
 
   /// ...
   ThemeData generateThemeSettings(ThemeSettings themeSettings) {
-    return themeSettings.light ? ThemeData.light() : ThemeData.dark();
+    return themeSettings.darkMode ? ThemeData.dark() : ThemeData.light();
   }
 }

@@ -6,7 +6,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
-final StreamMatcher doesNotEmit = emitsInOrder([]);
+final StreamMatcher doesNotEmit = emitsInOrder(<dynamic>[]);
 
 // Mock repositories
 class MockDiaryRepository extends Mock implements DiaryRepository {}

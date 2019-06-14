@@ -32,7 +32,6 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
         ..add(serializers.serialize(object.themeSettings,
             specifiedType: const FullType(ThemeSettings)));
     }
-
     return result;
   }
 
@@ -87,7 +86,6 @@ class _$NavigationSettingsSerializer
             specifiedType:
                 const FullType(BuiltList, const [const FullType(Page)])));
     }
-
     return result;
   }
 
@@ -331,12 +329,12 @@ class NavigationSettingsBuilder
 
 class _$ThemeSettings extends ThemeSettings {
   @override
-  final bool light;
+  final bool darkMode;
 
   factory _$ThemeSettings([void Function(ThemeSettingsBuilder) updates]) =>
       (new ThemeSettingsBuilder()..update(updates)).build() as _$ThemeSettings;
 
-  _$ThemeSettings._({this.light}) : super._();
+  _$ThemeSettings._({this.darkMode}) : super._();
 
   @override
   ThemeSettings rebuild(void Function(ThemeSettingsBuilder) updates) =>
@@ -349,17 +347,18 @@ class _$ThemeSettings extends ThemeSettings {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ThemeSettings && light == other.light;
+    return other is ThemeSettings && darkMode == other.darkMode;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, light.hashCode));
+    return $jf($jc(0, darkMode.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ThemeSettings')..add('light', light))
+    return (newBuiltValueToStringHelper('ThemeSettings')
+          ..add('darkMode', darkMode))
         .toString();
   }
 }
@@ -368,22 +367,22 @@ class _$ThemeSettingsBuilder extends ThemeSettingsBuilder {
   _$ThemeSettings _$v;
 
   @override
-  bool get light {
+  bool get darkMode {
     _$this;
-    return super.light;
+    return super.darkMode;
   }
 
   @override
-  set light(bool light) {
+  set darkMode(bool darkMode) {
     _$this;
-    super.light = light;
+    super.darkMode = darkMode;
   }
 
   _$ThemeSettingsBuilder() : super._();
 
   ThemeSettingsBuilder get _$this {
     if (_$v != null) {
-      super.light = _$v.light;
+      super.darkMode = _$v.darkMode;
       _$v = null;
     }
     return this;
@@ -404,7 +403,7 @@ class _$ThemeSettingsBuilder extends ThemeSettingsBuilder {
 
   @override
   _$ThemeSettings build() {
-    final _$result = _$v ?? new _$ThemeSettings._(light: light);
+    final _$result = _$v ?? new _$ThemeSettings._(darkMode: darkMode);
     replace(_$result);
     return _$result;
   }

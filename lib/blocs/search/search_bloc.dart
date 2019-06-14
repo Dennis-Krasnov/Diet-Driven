@@ -13,7 +13,7 @@ import 'package:diet_driven/blocs/search/search.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
-  final Logger _log = new Logger("food record search bloc");
+  final Logger _log = Logger("food record search bloc");
   final FoodLoggingState foodLoggingState;
   final FoodRepository foodRepository;
 
@@ -25,7 +25,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
   @override
   FoodSearchState get initialState => FoodSearchQuery((b) => b
     ..query = ""
-    ..suggestions = ListBuilder([]) // TODO: initial suggestions from repo!
+    ..suggestions = ListBuilder(<String>[]) // TODO: initial suggestions from repo!
   );
 
   // Debouncing update query events doesn't bottleneck UI
@@ -36,7 +36,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
   ) {
     return super.transform(
       (events as Observable<FoodSearchEvent>)
-      .debounce(Duration(milliseconds: 500)), // OPTIMIZE: also affects search event! (put to 5000 to test)
+      .debounceTime(const Duration(milliseconds: 500)), // OPTIMIZE: also affects search event! (put to 5000 to test)
       // FIXME: doesn't work!
 //        .groupBy((event) => event.runtimeType)
 //        .flatMap((eventType) {
@@ -57,7 +57,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
       _log.info("updated query to ${event.query}, state used to be ${currentState.runtimeType}");
 
       try {
-        BuiltList<String> suggestions = await foodRepository.foodSuggestions(event.query);
+        final BuiltList<String> suggestions = await foodRepository.foodSuggestions(event.query);
         _log.fine(suggestions);
 
         yield FoodSearchQuery((b) => b
@@ -93,12 +93,12 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
 
       try {
         // TODO: memoize results!
-        BuiltList<FoodRecord> results = await foodRepository.searchForFood(event.query);
+        final BuiltList<FoodRecord> results = await foodRepository.searchForFood(event.query);
         _log.fine(results);
 
         yield FoodSearchLoaded((b) => b
           // TODO: extract to method
-          ..results = ListBuilder(results.map((foodRecord) =>
+          ..results = ListBuilder(results.map<FoodRecordResult>((foodRecord) =>
             FoodRecordResult((b) => b
               ..foodRecord = foodRecord.toBuilder()
               ..resultType = LoggingTab.popular // FIXME: none of the above!

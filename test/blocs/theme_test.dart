@@ -17,7 +17,7 @@ void main() {
   test("Switch between dark and light theme", () {
     expectLater(
       themeBloc.state,
-      emitsInOrder([
+      emitsInOrder(<ThemeData>[
         ThemeData.light(),
         ThemeData.dark(),
         ThemeData.light(),

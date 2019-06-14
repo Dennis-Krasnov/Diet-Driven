@@ -8,7 +8,7 @@ abstract class ConfigurationState {}
 /// Splash page.
 abstract class ConfigurationUninitialized with ConfigurationState implements Built<ConfigurationUninitialized, ConfigurationUninitializedBuilder> {
   ConfigurationUninitialized._();
-  factory ConfigurationUninitialized([updates(ConfigurationUninitializedBuilder b)]) = _$ConfigurationUninitialized;
+  factory ConfigurationUninitialized([void Function(ConfigurationUninitializedBuilder b)]) = _$ConfigurationUninitialized;
 
   @override String toString() => runtimeType.toString();
 }
@@ -21,7 +21,7 @@ abstract class ConfigurationFailed with ConfigurationState implements Built<Conf
   String get trace;
 
   ConfigurationFailed._();
-  factory ConfigurationFailed([updates(ConfigurationFailedBuilder b)]) = _$ConfigurationFailed;
+  factory ConfigurationFailed([void Function(ConfigurationFailedBuilder b)]) = _$ConfigurationFailed;
 }
 
 /// Application, stores current [RemoteConfiguration].
@@ -29,13 +29,13 @@ abstract class ConfigurationLoaded with ConfigurationState implements Built<Conf
   RemoteConfiguration get configuration;
 
   ConfigurationLoaded._();
-  factory ConfigurationLoaded([updates(ConfigurationLoadedBuilder b)]) = _$ConfigurationLoaded;
+  factory ConfigurationLoaded([void Function(ConfigurationLoadedBuilder b)]) = _$ConfigurationLoaded;
 }
 
 /// Splash page, redundant state.
 abstract class ConfigurationLoading with ConfigurationState implements Built<ConfigurationLoading, ConfigurationLoadingBuilder> {
   ConfigurationLoading._();
-  factory ConfigurationLoading([updates(ConfigurationLoadingBuilder b)]) = _$ConfigurationLoading;
+  factory ConfigurationLoading([void Function(ConfigurationLoadingBuilder b)]) = _$ConfigurationLoading;
 
   @override String toString() => runtimeType.toString();
 }

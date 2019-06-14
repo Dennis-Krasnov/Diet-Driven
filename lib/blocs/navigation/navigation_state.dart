@@ -9,7 +9,7 @@ abstract class NavigationState {}
 /// White screen with skeleton menu and app bar
 abstract class NavigationUninitialized with NavigationState implements Built<NavigationUninitialized, NavigationUninitializedBuilder> {
   NavigationUninitialized._();
-  factory NavigationUninitialized([updates(NavigationUninitializedBuilder b)]) = _$NavigationUninitialized;
+  factory NavigationUninitialized([void Function(NavigationUninitializedBuilder b)]) = _$NavigationUninitialized;
 
   @override String toString() => runtimeType.toString();
 }
@@ -19,5 +19,5 @@ abstract class NavigationLoaded with NavigationState implements Built<Navigation
   Page get currentPage;
 
   NavigationLoaded._();
-  factory NavigationLoaded([updates(NavigationLoadedBuilder b)]) = _$NavigationLoaded;
+  factory NavigationLoaded([void Function(NavigationLoadedBuilder b)]) = _$NavigationLoaded;
 }

@@ -37,7 +37,7 @@ void main() {
 
     expectLater(
       configurationBloc.state,
-      emitsInOrder([
+      emitsInOrder(<ConfigurationState>[
         ConfigurationUninitialized(),
         ConfigurationLoading(),
         ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()),
@@ -52,7 +52,7 @@ void main() {
 
     expectLater(
       configurationBloc.state,
-      emitsInOrder([
+      emitsInOrder(<ConfigurationState>[
         ConfigurationUninitialized(),
         ConfigurationLoading(),
         ConfigurationLoaded((b) => b..configuration = defaultConfig.toBuilder()),
@@ -76,7 +76,7 @@ void main() {
 
     expectLater(
       configurationBloc.state,
-      emitsInOrder([
+      emitsInOrder(<ConfigurationState>[
         ConfigurationUninitialized(),
         ConfigurationLoading(),
         ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()), // initial configuration
@@ -85,7 +85,7 @@ void main() {
     );
 
     // Need time for asynchronous default page event to run
-    await Future.delayed(Duration(milliseconds: 10)); // FIXME: this broke because I moved initial fetch to constructor instead of main.
+    await Future<dynamic>.delayed(Duration(milliseconds: 10)); // FIXME: this broke because I moved initial fetch to constructor instead of main.
     configurationBloc.dispatch(FetchConfiguration());
 //    configurationBloc.dispatch(FetchConfiguration());
   });

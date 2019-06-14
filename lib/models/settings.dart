@@ -16,8 +16,8 @@ abstract class Settings implements Built<Settings, SettingsBuilder> {
   @nullable
   ThemeSettings get themeSettings;
 
+  factory Settings([void Function(SettingsBuilder b)]) = _$Settings;
   Settings._();
-  factory Settings([updates(SettingsBuilder b)]) = _$Settings;
 }
 
 /// Default theme settings.
@@ -39,22 +39,23 @@ abstract class NavigationSettings implements Built<NavigationSettings, Navigatio
   @nullable
   BuiltList<Page> get bottomNavigationPages;
 
+  factory NavigationSettings([void Function(NavigationSettingsBuilder b)]) = _$NavigationSettings;
   NavigationSettings._();
-  factory NavigationSettings([updates(NavigationSettingsBuilder b)]) = _$NavigationSettings;
 }
 
 /// Everything must be nullable due implicit settings.
 abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilder> {
   @nullable
-  bool get light;
+  bool get darkMode;
 
+  factory ThemeSettings([void Function(ThemeSettingsBuilder b)]) = _$ThemeSettings;
   ThemeSettings._();
-  factory ThemeSettings([updates(ThemeSettingsBuilder b)]) = _$ThemeSettings;
 }
 
+// FIXME: upload theme to firestore!
 /// Default theme settings.
 abstract class ThemeSettingsBuilder implements Builder<ThemeSettings, ThemeSettingsBuilder> {
-  bool light = true;
+  bool darkMode = false;
 
   factory ThemeSettingsBuilder() = _$ThemeSettingsBuilder;
   ThemeSettingsBuilder._();

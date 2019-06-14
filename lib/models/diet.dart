@@ -15,13 +15,13 @@ abstract class Diet implements Built<Diet, DietBuilder> {
   // TODO: 'mealIndexRightNow()` method
 
   Diet._();
-  factory Diet([updates(DietBuilder b)]) = _$Diet;
+  factory Diet([void Function(DietBuilder b)]) = _$Diet;
 }
 
 abstract class DietBuilder implements Builder<Diet, DietBuilder> {
   num calories;
 
-  BuiltList<String> meals = BuiltList(["Breakfast", "Lunch", "Dinner", "Snacks"]);
+  BuiltList<String> meals = BuiltList(<String>["Breakfast", "Lunch", "Dinner", "Snacks"]);
 
   factory DietBuilder() = _$DietBuilder;
   DietBuilder._();

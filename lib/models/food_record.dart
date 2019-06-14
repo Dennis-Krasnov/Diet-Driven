@@ -55,7 +55,7 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   // etc
 
   FoodRecord._();
-  factory FoodRecord([updates(FoodRecordBuilder b)]) = _$FoodRecord;
+  factory FoodRecord([void Function(FoodRecordBuilder b)]) = _$FoodRecord;
 }
 
 abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {

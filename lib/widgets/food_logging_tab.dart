@@ -56,11 +56,11 @@ class _FoodLoggingTabState extends State<FoodLoggingTab> with AutomaticKeepAlive
       bloc: _tabBloc,
       builder: (BuildContext context, FoodLoggingTabState state) {
         if (state is FoodLoggingTabUninitialized) {
-          return Center(child: CircularProgressIndicator(),);
+          return Center(child: const CircularProgressIndicator(),);
         }
 
         if (state is FoodLoggingTabFailed) {
-          return Center(child: Text("Couldn't load results sorry"));
+          return Center(child: const Text("Couldn't load results sorry"));
         }
 
         if (state is FoodLoggingTabLoaded) {
@@ -109,14 +109,14 @@ class _FoodLoggingTabState extends State<FoodLoggingTab> with AutomaticKeepAlive
                   FoodRecordTile(
                     foodRecordResult.foodRecord,
                     onTap: () async {
-                      FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
+                      final FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
                         "/logging_food_record_edit",
                         arguments: foodRecordResult.foodRecord
                       );
 
                       // Adds modified result to diary
                       if (modified != null) {
-                        Navigator.of(context).pop(BuiltList<FoodRecord>([modified]));
+                        Navigator.of(context).pop(BuiltList<FoodRecord>(<FoodRecord>[modified]));
                       }
                     },
                     onLongPress: () {

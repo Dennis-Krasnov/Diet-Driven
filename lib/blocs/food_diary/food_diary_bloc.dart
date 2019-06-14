@@ -28,7 +28,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    Observable<FoodDiaryEvent> _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch)
+    final Observable<FoodDiaryEvent> _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch)
       .switchMap<FoodDiaryEvent>((foodDiaryDay) =>
         Observable<Diet>.just(Diet((b) => b..calories = 2520)) // TODO: call repo with date field from day
           .map<FoodDiaryEvent>((diet) => RemoteDiaryDayArrived((b) => b
@@ -39,7 +39,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
     _foodDiaryDaySubscription = _foodDiaryDayStream.listen(
       (foodDiaryEvent) => dispatch(foodDiaryEvent),
-      onError: (error, trace) => dispatch(FoodDiaryError((b) => b
+      onError: (Object error, Object trace) => dispatch(FoodDiaryError((b) => b
         ..error = error.toString()
         ..trace = trace.toString()
       )),
@@ -53,7 +53,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 //      // TODO: call repository for this day's diet (returns as Observable.just() if historical or live stream if today)
 //      // hardcode it for now! // TOTEST see user data tests
 //      dispatch(RemoteDiaryDayArrived((b) => b..foodDiaryDay = foodDiaryDay.toBuilder())),
-//      onError: (error, trace) => dispatch(FoodDiaryError((b) => b..error = error.toString())),
+//      onError: (Error error, StackTrace trace) => dispatch(FoodDiaryError((b) => b..error = error.toString())),
 //        // TODO .switchIfEmpty(fallbackStream) for caching and loading historical configs
 //    );
   }
