@@ -4,18 +4,46 @@ import 'package:diet_driven/models/models.dart';
 
 part 'navigation_events.g.dart';
 
+@BuiltValue(instantiable: false)
 abstract class NavigationEvent {
-  Page get page;
+  bool get onlyIfUninitialized;
+
+  NavigationEvent rebuild(void Function(NavigationEventBuilder) updates);
+  NavigationEventBuilder toBuilder();
 }
 
-/// Navigates to default [page] in bottom navigation if bloc hasn't been initialized.
-abstract class InitialNavigateToPage with NavigationEvent implements Built<InitialNavigateToPage, InitialNavigateToPageBuilder> {
-  InitialNavigateToPage._();
-  factory InitialNavigateToPage([void Function(InitialNavigateToPageBuilder b)]) = _$InitialNavigateToPage;
+/// Deep link to diary page.
+abstract class NavigateToDiary implements NavigationEvent, Built<NavigateToDiary, NavigateToDiaryBuilder> {
+  ///
+  @nullable
+  int get date;
+
+  factory NavigateToDiary([void Function(NavigateToDiaryBuilder) updates]) = _$NavigateToDiary;
+  NavigateToDiary._();
 }
 
-/// Navigates to [page] in bottom navigation.
-abstract class NavigateToPage with NavigationEvent implements Built<NavigateToPage, NavigateToPageBuilder> {
-  NavigateToPage._();
-  factory NavigateToPage([void Function(NavigateToPageBuilder b)]) = _$NavigateToPage;
+/// Deep link to tracking page.
+abstract class NavigateToTrack implements NavigationEvent, Built<NavigateToTrack, NavigateToTrackBuilder> {
+
+
+  factory NavigateToTrack([void Function(NavigateToTrackBuilder) updates]) = _$NavigateToTrack;
+  NavigateToTrack._();
+}
+
+/// Deep link to diet page.
+abstract class NavigateToDiet implements NavigationEvent, Built<NavigateToDiet, NavigateToDietBuilder> {
+
+
+  factory NavigateToDiet([void Function(NavigateToDietBuilder) updates]) = _$NavigateToDiet;
+  NavigateToDiet._();
+}
+
+/// Deep link to profile page.
+abstract class NavigateToProfile implements NavigationEvent, Built<NavigateToProfile, NavigateToProfileBuilder> {
+  @nullable
+  String get setting;
+  // TODO: settings enum
+
+  factory NavigateToProfile([void Function(NavigateToProfileBuilder) updates]) = _$NavigateToProfile;
+  NavigateToProfile._();
 }

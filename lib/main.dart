@@ -71,69 +71,69 @@ class App extends StatelessWidget {
                 ? userDataState.settings.themeSettings
                 : ThemeSettings()
               ),
-              // TODO: extract to method
-              onGenerateRoute: (settings) {
-                final arguments = settings.arguments;
-
-                switch (settings.name) { // FIXME: use global constants
-                  case "/manual_food_record_edit":
-                    assert(arguments is FoodRecord);
-
-                    // Returns edited food record
-                    return MaterialPageRoute<FoodRecord>(
-                      builder: (context) => ManualFoodRecordEdit(
-                        foodRecord: arguments,
-                        deletable: true, // TODO: diary should have two paths - live and manual, both deletable
-                      ),
-                      maintainState: true,
-                    );
-                    break;
-                  case "/food_logging":
-                    // TODO: if arguments != null => assert they're a valid meal
-                    assert(arguments is FoodDiaryLoaded);
-
-                    // Returns list of food records to add
-                    return MaterialPageRoute<BuiltList<FoodRecord>>(
-                      builder: (context) => FoodLogging(
-                        foodDiaryLoaded: arguments,
-                      ),
-                      maintainState: true,
-                    );
-                    break;
-                  case "/logging_food_record_edit": // TODO: reuse similar configuration for custom food creation, but with empty food record
-                    assert(arguments is FoodRecord);
-
-                    // Returns edited food record
-                    return MaterialPageRoute<FoodRecord>(
-                      builder: (context) => ManualFoodRecordEdit(
-                        foodRecord: arguments,
-                        deletable: false,
-                      ),
-                      maintainState: true,
-                    );
-                    break;
-                  case "/food_search":
-                    assert(arguments is FoodLoggingState);
-
-                    // Returns food record search result
-                    return MaterialPageRoute<FoodRecord>(
-                      builder: (context) => FoodRecordSearch(
-                        foodLoggingState: arguments,
-                      ),
-                      maintainState: true,
-                    );
-                    break;
-                }
-                return null;
-              },
-              onUnknownRoute: (RouteSettings setting) {
-                return MaterialPageRoute<dynamic>(builder: (BuildContext context) => ErrorPage(error: "${setting.name} route not found"));
-              }
+              onGenerateRoute: (settings) => generateRoute(context, settings),
+              onUnknownRoute: (RouteSettings setting) => MaterialPageRoute<dynamic>(builder: (BuildContext context) => ErrorPage(error: "${setting.name} route not found")),
             );
           }
         );
       }
     );
+  }
+
+  ///
+  Route generateRoute(BuildContext context, RouteSettings settings) {
+    final arguments = settings.arguments;
+
+    switch (settings.name) { // FIXME: use global constants
+      case "/manual_food_record_edit":
+        assert(arguments is FoodRecord);
+
+        // Returns edited food record
+        return MaterialPageRoute<FoodRecord>(
+          builder: (context) => ManualFoodRecordEdit(
+            foodRecord: arguments,
+            deletable: true, // TODO: diary should have two paths - live and manual, both deletable
+          ),
+          maintainState: true,
+        );
+        break;
+      case "/food_logging":
+      // TODO: if arguments != null => assert they're a valid meal
+        assert(arguments is FoodDiaryLoaded);
+
+        // Returns list of food records to add
+        return MaterialPageRoute<BuiltList<FoodRecord>>(
+          builder: (context) => FoodLogging(
+            foodDiaryLoaded: arguments,
+          ),
+          maintainState: true,
+        );
+        break;
+      case "/logging_food_record_edit": // TODO: reuse similar configuration for custom food creation, but with empty food record
+        assert(arguments is FoodRecord);
+
+        // Returns edited food record
+        return MaterialPageRoute<FoodRecord>(
+          builder: (context) => ManualFoodRecordEdit(
+            foodRecord: arguments,
+            deletable: false,
+          ),
+          maintainState: true,
+        );
+        break;
+      case "/food_search":
+        assert(arguments is FoodLoggingState);
+
+        // Returns food record search result
+        return MaterialPageRoute<FoodRecord>(
+          builder: (context) => FoodRecordSearch(
+            foodLoggingState: arguments,
+          ),
+          maintainState: true,
+        );
+        break;
+    }
+    return null;
   }
 
   /// ...

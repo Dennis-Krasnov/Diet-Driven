@@ -8,20 +8,11 @@ import 'package:diet_driven/widgets/completer.dart';
 import 'package:diet_driven/widgets/food_record_tile.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
-class DiaryPage extends StatefulWidget {
-  final FoodDiaryBloc foodDiaryBloc;
-
-  const DiaryPage({Key key, @required this.foodDiaryBloc}) : super(key: key);
-
-  @override
-  _DiaryPageState createState() => _DiaryPageState();
-}
-
-class _DiaryPageState extends State<DiaryPage> {
-  FoodDiaryBloc get _foodDiaryBloc => widget.foodDiaryBloc;
-
+class DiaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final FoodDiaryBloc _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
+
     return BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
       bloc: _foodDiaryBloc,
       builder: (BuildContext context, FoodDiaryState state) {
@@ -70,7 +61,7 @@ class _DiaryPageState extends State<DiaryPage> {
               ),
             ),
             floatingActionButton: FloatingActionButton(
-              child: Icon(Icons.add),
+              child: const Icon(Icons.add),
               onPressed: () async {
                 // FIXME - doesn't include DiaryBlocProvider - do I need a bloc builder?
                 BuiltList<FoodRecord> result = await Navigator.of(context).pushNamed<BuiltList<FoodRecord>>(

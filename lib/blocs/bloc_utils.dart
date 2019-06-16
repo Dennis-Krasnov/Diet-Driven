@@ -33,3 +33,21 @@ abstract class Completable {
 // ctrl+shift+r with regex
 // from: \[updates\((\w+Builder)
 // to: \[void Function\($1
+
+
+
+// BEFORE:
+//abstract class Test with NavigationEvent implements Built<Test, TestBuilder> {
+//  factory Test([void Function(TestBuilder) updates]) = _$Test;
+//  Test._();
+//}
+
+// AFTER:
+//abstract class Test implements NavigationEvent, Built<Test, TestBuilder> {
+//  factory Test([void Function(TestBuilder) updates]) = _$Test;
+//  Test._();
+//}
+
+// ctrl+shift+r with regex
+//from: with (\w+Event) implements
+//to: implements $1,
