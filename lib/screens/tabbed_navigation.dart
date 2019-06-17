@@ -8,13 +8,19 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/screens/profile_page.dart';
 import 'package:diet_driven/screens/under_construction.dart';
 
+// TODO: ensure scroll is also persisted
+//  https://api.flutter.dev/flutter/widgets/PageStorageKey-class.html
+//              https://medium.com/@boldijar.paul/flutter-keeping-list-view-index-while-changing-page-view-c260352f35f8
+//              https://www.youtube.com/watch?v=ht76lDzPgUQ
+
+// Must be stateful widget to persist navigator keys
 class TabbedNavigation extends StatefulWidget {
   @override
   _TabbedNavigationState createState() => _TabbedNavigationState();
 }
 
 class _TabbedNavigationState extends State<TabbedNavigation> {
-  // Must be stateful widget to persist navigator keys
+  // Storing navigator keys for every potential page to persist navigation state
   Map<Page, GlobalKey<NavigatorState>> navigatorKeys = Map<Page, GlobalKey<NavigatorState>>.fromIterable(Page.values,
     key: (dynamic page) => page,
     value: (dynamic page) => GlobalKey<NavigatorState>(),
@@ -26,15 +32,12 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
     return BlocBuilder<UserDataEvent, UserDataState>(
       bloc: BlocProvider.of<UserDataBloc>(context),
       condition: (previous, current) { // TODO: do >> everywhere
-        // First/last build
+        // User data not loaded
         if (previous is! UserDataLoaded || current is! UserDataLoaded) {
-          print("UNCONDITIONAL UPDATE");
+          print("UNCONDITIONAL TABBED NAV USER DATA UPDATE");
           return true;
         }
         // Navigation settings changed
-        print((previous as UserDataLoaded).settings.navigationSettings);
-        print((current as UserDataLoaded).settings.navigationSettings);
-        print((previous as UserDataLoaded).settings.navigationSettings != (current as UserDataLoaded).settings.navigationSettings);
         return (previous as UserDataLoaded).settings.navigationSettings != (current as UserDataLoaded).settings.navigationSettings;
       },
       // Navigation builder
@@ -55,8 +58,6 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
               return Scaffold(); // OPTIMIZE
             }
 
-            print("NAVIGATOR KEYS: $navigatorKeys");
-
             return Scaffold(
               // Need to specify custom back button behaviour
               // Otherwise app is dismissed and we are back to the home screen
@@ -74,7 +75,6 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
                   index: tabIndex,
                   children: <Widget>[
                     for (var page in bottomNavPages)
-//                      pageToWidget(page, navigatorKeys[bottomNavPages.indexOf(page)])
                       pageToWidget(page, navigatorKeys[page])
                   ],
                 ),
@@ -82,7 +82,7 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
               bottomNavigationBar: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
                 items: <BottomNavigationBarItem>[
-                  // Displaying current bottom navigation buttons in proper order
+                  // Displaying current bottom navigation buttons, no duplicates allowed
                   for(var page in bottomNavPages)
                     BottomNavigationBarItem(
                       icon: pageToIcon(page),
@@ -102,7 +102,7 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
     );
   }
 
-  ///
+  /// Creates respective page widget based on page enum.
   Widget pageToWidget(Page page, GlobalKey<NavigatorState> navigationKey) {
     switch (page) {
       case Page.diary:
@@ -122,7 +122,7 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
     }
   }
 
-  ///
+  /// Creates respective icon widget based on page enum.
   Icon pageToIcon(Page page) {
     switch (page) {
       case Page.diary:
@@ -142,15 +142,3 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
     }
   }
 }
-
-
-// TODO: ensure scroll is also persisted
-//  https://api.flutter.dev/flutter/widgets/PageStorageKey-class.html
-//              https://medium.com/@boldijar.paul/flutter-keeping-list-view-index-while-changing-page-view-c260352f35f8
-//              https://www.youtube.com/watch?v=ht76lDzPgUQ
-
-// TODO: HOC that handles nested navigation
-// 1) stateful in order to keep same navigator key
-// 2) Will pop scope logic
-// 3) builder with navigator key given, need to put into navigator!
-// 4) ensures scroll is persisted

@@ -45,11 +45,3 @@ abstract class OnboardUser with UserDataEvent implements Built<OnboardUser, Onbo
 
   @override String toString() => runtimeType.toString();
 }
-
-/// Updates user's settings
-abstract class UpdateSettings with UserDataEvent implements Built<UpdateSettings, UpdateSettingsBuilder> {
-  bool get darkMode;
-
-  factory UpdateSettings([void Function(UpdateSettingsBuilder b)]) = _$UpdateSettings;
-  UpdateSettings._();
-}

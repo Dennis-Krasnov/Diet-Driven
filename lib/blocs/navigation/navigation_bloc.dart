@@ -11,7 +11,7 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/navigation/navigation.dart';
 
-/// Manages bottom navigation current page.
+/// Manages bottom navigation's current page.
 /// [NavigationBloc] shows skeleton bottom menu and app bar until loaded.
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   final Logger _log = Logger("navigation bloc");
@@ -77,16 +77,16 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   NavigationEvent pageToEvent(Page page) {
     switch (page) {
       case Page.diary:
-        return NavigateToDiary((b) => b..onlyIfUninitialized = false);
+        return NavigateToDiary();
         break;
       case Page.track:
-        return NavigateToTrack((b) => b..onlyIfUninitialized = false);
+        return NavigateToTrack();
         break;
       case Page.diet:
-        return NavigateToDiet((b) => b..onlyIfUninitialized = false);
+        return NavigateToDiet();
         break;
       case Page.profile:
-        return NavigateToProfile((b) => b..onlyIfUninitialized = false);
+        return NavigateToProfile();
         break;
     }
   }

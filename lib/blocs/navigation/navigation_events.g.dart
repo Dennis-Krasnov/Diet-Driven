@@ -20,7 +20,8 @@ class _$NavigateToDiary extends NavigateToDiary {
   final bool onlyIfUninitialized;
 
   factory _$NavigateToDiary([void Function(NavigateToDiaryBuilder) updates]) =>
-      (new NavigateToDiaryBuilder()..update(updates)).build();
+      (new NavigateToDiaryBuilder()..update(updates)).build()
+          as _$NavigateToDiary;
 
   _$NavigateToDiary._({this.date, this.onlyIfUninitialized}) : super._() {
     if (onlyIfUninitialized == null) {
@@ -34,8 +35,8 @@ class _$NavigateToDiary extends NavigateToDiary {
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigateToDiaryBuilder toBuilder() =>
-      new NavigateToDiaryBuilder()..replace(this);
+  _$NavigateToDiaryBuilder toBuilder() =>
+      new _$NavigateToDiaryBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -59,27 +60,39 @@ class _$NavigateToDiary extends NavigateToDiary {
   }
 }
 
-class NavigateToDiaryBuilder
-    implements
-        Builder<NavigateToDiary, NavigateToDiaryBuilder>,
-        NavigationEventBuilder {
+class _$NavigateToDiaryBuilder extends NavigateToDiaryBuilder {
   _$NavigateToDiary _$v;
 
-  int _date;
-  int get date => _$this._date;
-  set date(int date) => _$this._date = date;
+  @override
+  int get date {
+    _$this;
+    return super.date;
+  }
 
-  bool _onlyIfUninitialized;
-  bool get onlyIfUninitialized => _$this._onlyIfUninitialized;
-  set onlyIfUninitialized(bool onlyIfUninitialized) =>
-      _$this._onlyIfUninitialized = onlyIfUninitialized;
+  @override
+  set date(int date) {
+    _$this;
+    super.date = date;
+  }
 
-  NavigateToDiaryBuilder();
+  @override
+  bool get onlyIfUninitialized {
+    _$this;
+    return super.onlyIfUninitialized;
+  }
+
+  @override
+  set onlyIfUninitialized(bool onlyIfUninitialized) {
+    _$this;
+    super.onlyIfUninitialized = onlyIfUninitialized;
+  }
+
+  _$NavigateToDiaryBuilder() : super._();
 
   NavigateToDiaryBuilder get _$this {
     if (_$v != null) {
-      _date = _$v.date;
-      _onlyIfUninitialized = _$v.onlyIfUninitialized;
+      super.date = _$v.date;
+      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
     }
     return this;
@@ -113,7 +126,8 @@ class _$NavigateToTrack extends NavigateToTrack {
   final bool onlyIfUninitialized;
 
   factory _$NavigateToTrack([void Function(NavigateToTrackBuilder) updates]) =>
-      (new NavigateToTrackBuilder()..update(updates)).build();
+      (new NavigateToTrackBuilder()..update(updates)).build()
+          as _$NavigateToTrack;
 
   _$NavigateToTrack._({this.onlyIfUninitialized}) : super._() {
     if (onlyIfUninitialized == null) {
@@ -127,8 +141,8 @@ class _$NavigateToTrack extends NavigateToTrack {
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigateToTrackBuilder toBuilder() =>
-      new NavigateToTrackBuilder()..replace(this);
+  _$NavigateToTrackBuilder toBuilder() =>
+      new _$NavigateToTrackBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -150,22 +164,26 @@ class _$NavigateToTrack extends NavigateToTrack {
   }
 }
 
-class NavigateToTrackBuilder
-    implements
-        Builder<NavigateToTrack, NavigateToTrackBuilder>,
-        NavigationEventBuilder {
+class _$NavigateToTrackBuilder extends NavigateToTrackBuilder {
   _$NavigateToTrack _$v;
 
-  bool _onlyIfUninitialized;
-  bool get onlyIfUninitialized => _$this._onlyIfUninitialized;
-  set onlyIfUninitialized(bool onlyIfUninitialized) =>
-      _$this._onlyIfUninitialized = onlyIfUninitialized;
+  @override
+  bool get onlyIfUninitialized {
+    _$this;
+    return super.onlyIfUninitialized;
+  }
 
-  NavigateToTrackBuilder();
+  @override
+  set onlyIfUninitialized(bool onlyIfUninitialized) {
+    _$this;
+    super.onlyIfUninitialized = onlyIfUninitialized;
+  }
+
+  _$NavigateToTrackBuilder() : super._();
 
   NavigateToTrackBuilder get _$this {
     if (_$v != null) {
-      _onlyIfUninitialized = _$v.onlyIfUninitialized;
+      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
     }
     return this;
@@ -198,7 +216,8 @@ class _$NavigateToDiet extends NavigateToDiet {
   final bool onlyIfUninitialized;
 
   factory _$NavigateToDiet([void Function(NavigateToDietBuilder) updates]) =>
-      (new NavigateToDietBuilder()..update(updates)).build();
+      (new NavigateToDietBuilder()..update(updates)).build()
+          as _$NavigateToDiet;
 
   _$NavigateToDiet._({this.onlyIfUninitialized}) : super._() {
     if (onlyIfUninitialized == null) {
@@ -212,8 +231,8 @@ class _$NavigateToDiet extends NavigateToDiet {
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigateToDietBuilder toBuilder() =>
-      new NavigateToDietBuilder()..replace(this);
+  _$NavigateToDietBuilder toBuilder() =>
+      new _$NavigateToDietBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -235,22 +254,26 @@ class _$NavigateToDiet extends NavigateToDiet {
   }
 }
 
-class NavigateToDietBuilder
-    implements
-        Builder<NavigateToDiet, NavigateToDietBuilder>,
-        NavigationEventBuilder {
+class _$NavigateToDietBuilder extends NavigateToDietBuilder {
   _$NavigateToDiet _$v;
 
-  bool _onlyIfUninitialized;
-  bool get onlyIfUninitialized => _$this._onlyIfUninitialized;
-  set onlyIfUninitialized(bool onlyIfUninitialized) =>
-      _$this._onlyIfUninitialized = onlyIfUninitialized;
+  @override
+  bool get onlyIfUninitialized {
+    _$this;
+    return super.onlyIfUninitialized;
+  }
 
-  NavigateToDietBuilder();
+  @override
+  set onlyIfUninitialized(bool onlyIfUninitialized) {
+    _$this;
+    super.onlyIfUninitialized = onlyIfUninitialized;
+  }
+
+  _$NavigateToDietBuilder() : super._();
 
   NavigateToDietBuilder get _$this {
     if (_$v != null) {
-      _onlyIfUninitialized = _$v.onlyIfUninitialized;
+      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
     }
     return this;
@@ -286,7 +309,8 @@ class _$NavigateToProfile extends NavigateToProfile {
 
   factory _$NavigateToProfile(
           [void Function(NavigateToProfileBuilder) updates]) =>
-      (new NavigateToProfileBuilder()..update(updates)).build();
+      (new NavigateToProfileBuilder()..update(updates)).build()
+          as _$NavigateToProfile;
 
   _$NavigateToProfile._({this.setting, this.onlyIfUninitialized}) : super._() {
     if (onlyIfUninitialized == null) {
@@ -300,8 +324,8 @@ class _$NavigateToProfile extends NavigateToProfile {
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigateToProfileBuilder toBuilder() =>
-      new NavigateToProfileBuilder()..replace(this);
+  _$NavigateToProfileBuilder toBuilder() =>
+      new _$NavigateToProfileBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -325,27 +349,39 @@ class _$NavigateToProfile extends NavigateToProfile {
   }
 }
 
-class NavigateToProfileBuilder
-    implements
-        Builder<NavigateToProfile, NavigateToProfileBuilder>,
-        NavigationEventBuilder {
+class _$NavigateToProfileBuilder extends NavigateToProfileBuilder {
   _$NavigateToProfile _$v;
 
-  String _setting;
-  String get setting => _$this._setting;
-  set setting(String setting) => _$this._setting = setting;
+  @override
+  String get setting {
+    _$this;
+    return super.setting;
+  }
 
-  bool _onlyIfUninitialized;
-  bool get onlyIfUninitialized => _$this._onlyIfUninitialized;
-  set onlyIfUninitialized(bool onlyIfUninitialized) =>
-      _$this._onlyIfUninitialized = onlyIfUninitialized;
+  @override
+  set setting(String setting) {
+    _$this;
+    super.setting = setting;
+  }
 
-  NavigateToProfileBuilder();
+  @override
+  bool get onlyIfUninitialized {
+    _$this;
+    return super.onlyIfUninitialized;
+  }
+
+  @override
+  set onlyIfUninitialized(bool onlyIfUninitialized) {
+    _$this;
+    super.onlyIfUninitialized = onlyIfUninitialized;
+  }
+
+  _$NavigateToProfileBuilder() : super._();
 
   NavigateToProfileBuilder get _$this {
     if (_$v != null) {
-      _setting = _$v.setting;
-      _onlyIfUninitialized = _$v.onlyIfUninitialized;
+      super.setting = _$v.setting;
+      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
     }
     return this;

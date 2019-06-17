@@ -51,3 +51,5 @@ abstract class Completable {
 // ctrl+shift+r with regex
 //from: with (\w+Event) implements
 //to: implements $1,
+
+// HAVE TO CREATE BUILDERS FOR EACH SUBCLASS TO DEFINE DEFAULTS FOR FIELDS IN UNINSTANTIATED CLASS

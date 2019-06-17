@@ -34,7 +34,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
             ..authentication = user
             ..userDocument = userDocument.toBuilder()
             ..settings = settings.toBuilder()
-            // TODO: theme
           ),
         )
       )
@@ -89,19 +88,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       );
 
       _log.info("user data failed");
-    }
-
-    // FIXME: shouldn't be here, should update using repository, and using a different bloc! - see addFoodRecord event!
-    if (event is UpdateSettings) {
-      final builder = (currentState as UserDataLoaded).toBuilder();
-
-      // TODO: research how to do less nested!
-      builder.settings.themeSettings = builder.settings.themeSettings.rebuild((b) => b
-        ..darkMode = event.darkMode
-      );
-
-      yield builder.build();
-      _log.info("updated user settings");
     }
   }
 }

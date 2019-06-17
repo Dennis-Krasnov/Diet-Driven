@@ -8,8 +8,8 @@ abstract class UserDataState {}
 
 /// Loading page.
 abstract class UserDataUninitialized with UserDataState implements Built<UserDataUninitialized, UserDataUninitializedBuilder> {
-  UserDataUninitialized._();
   factory UserDataUninitialized([void Function(UserDataUninitializedBuilder b)]) = _$UserDataUninitialized;
+  UserDataUninitialized._();
 
   @override String toString() => runtimeType.toString();
 }
@@ -21,14 +21,14 @@ abstract class UserDataFailed with UserDataState implements Built<UserDataFailed
   @nullable
   String get trace;
 
-  UserDataFailed._();
   factory UserDataFailed([void Function(UserDataFailedBuilder b)]) = _$UserDataFailed;
+  UserDataFailed._();
 }
 
 /// Loading screen.
 abstract class UserDataLoading with UserDataState implements Built<UserDataLoading, UserDataLoadingBuilder> {
-  UserDataLoading._();
   factory UserDataLoading([void Function(UserDataLoadingBuilder b)]) = _$UserDataLoading;
+  UserDataLoading._();
 
   @override String toString() => runtimeType.toString();
 }
@@ -37,8 +37,8 @@ abstract class UserDataLoading with UserDataState implements Built<UserDataLoadi
 abstract class UserDataUnauthenticated with UserDataState implements Built<UserDataUnauthenticated, UserDataUnauthenticatedBuilder> {
   // TODO: create separate onboarding bloc
 
-  UserDataUnauthenticated._();
   factory UserDataUnauthenticated([void Function(UserDataUnauthenticatedBuilder b)]) = _$UserDataUnauthenticated;
+  UserDataUnauthenticated._();
 
   @override String toString() => runtimeType.toString();
 }
@@ -53,6 +53,6 @@ abstract class UserDataLoaded with UserDataState implements Built<UserDataLoaded
 
 ////  TODO: accepted terms (defaults to false), subscribedToEmails, etc!
 
-  UserDataLoaded._();
   factory UserDataLoaded([void Function(UserDataLoadedBuilder b)]) = _$UserDataLoaded;
+  UserDataLoaded._();
 }

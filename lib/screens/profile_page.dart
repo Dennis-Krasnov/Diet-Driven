@@ -1,11 +1,14 @@
 import 'dart:math';
 
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repository_singleton.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 
 class ProfilePage extends StatelessWidget {
+  // Persists navigation across tabs
   final GlobalKey<NavigatorState> navigationKey;
 
   const ProfilePage({Key key, @required this.navigationKey}) : super(key: key);
@@ -15,21 +18,43 @@ class ProfilePage extends StatelessWidget {
     return Navigator(
       key: navigationKey,
       initialRoute: 'profile',
-      onGenerateRoute: (RouteSettings settings) {
-        WidgetBuilder builder;
-        switch (settings.name) {
-          case 'profile':
-            builder = (BuildContext _) => ProfileInfo();
-            break;
-          case 'profile/settings':
-            builder = (BuildContext _) => SettingsPage();
-            break;
-          default:
-            throw Exception('Invalid deep link: ${settings.name}');
-        }
-        return MaterialPageRoute<void>(builder: builder, settings: settings);
-      },
+      onGenerateRoute: (RouteSettings settings) => generateRoute(context, settings),
     );
+
+    // FIXME: doesn't solve the issue!!, wrapping element with provider + builder also doesn't solve
+//    return BlocProvider<SettingsEditBloc>(
+//      builder: (BuildContext context) => SettingsEditBloc(userDataBloc: BlocProvider.of<UserDataBloc>(context), userRepository: Repository().user),
+//      dispose: (BuildContext context, SettingsEditBloc settingsEditBloc) => settingsEditBloc.dispose(),
+//      child: Navigator(
+//        key: navigationKey,
+//        initialRoute: 'profile',
+//        onGenerateRoute: (RouteSettings settings) => generateRoute(context, settings),
+//      ),
+//    );
+  }
+
+  /// Profile page navigator's routes.
+  Route generateRoute(BuildContext context, RouteSettings settings) {
+    final arguments = settings.arguments;
+
+    WidgetBuilder builder;
+    switch (settings.name) {
+      case 'profile':
+        builder = (BuildContext _) => ProfileInfo();
+        break;
+      case 'profile/settings':
+        builder = (BuildContext _) => BlocProvider<SettingsEditBloc>(
+          builder: (BuildContext context) => SettingsEditBloc(userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", userRepository: Repository().user), // FIXME
+          dispose: (BuildContext context, SettingsEditBloc settingsEditBloc) => settingsEditBloc.dispose(),
+          child: SettingsPage()
+        );
+        break;
+      default:
+        throw Exception('Invalid deep link: ${settings.name}');
+    }
+
+    // TODO: make global navigator follow this builder pattern as well
+    return MaterialPageRoute<void>(builder: builder, settings: settings);
   }
 }
 
@@ -42,6 +67,7 @@ class ProfileInfo extends StatelessWidget {
     return BlocListener<NavigationEvent, NavigationState>(
       bloc: BlocProvider.of<NavigationBloc>(context),
       listener: (BuildContext context, NavigationState state) {
+        // Deep link handler
         if (state is ProfileTab && state.setting != null) {
           print("SETTING IS ${state.setting}");
           if (Navigator.of(context).canPop())
@@ -84,10 +110,9 @@ class ProfileInfo extends StatelessWidget {
                     RaisedButton(
                       child: const Text("go to settings parameterized"),
                       onPressed: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToProfile((b) => b
-                        ..onlyIfUninitialized = false
                         ..setting = Random().nextInt(10000).toString()
                       )),
-                    )
+                    ),
                   ],
                 )
               )
@@ -102,41 +127,36 @@ class ProfileInfo extends StatelessWidget {
 class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
+//    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
+    final SettingsEditBloc settingsEditBloc = BlocProvider.of<SettingsEditBloc>(context);
 
     return BlocBuilder<UserDataEvent, UserDataState>(
-      bloc: _userDataBloc,
+      bloc: BlocProvider.of<UserDataBloc>(context),
       builder: (BuildContext context, UserDataState userDataState) {
-        if (userDataState is UserDataLoaded) {
-          return Scaffold(
-            appBar: AppBar(title: Text((BlocProvider.of<NavigationBloc>(context).currentState is ProfileTab ? ((BlocProvider.of<NavigationBloc>(context).currentState as ProfileTab)?.setting ?? "no deep link specified"): "") )),
-            body: SafeArea(
-              child: ListView(
-                children: <Widget>[
-                  ListTile(
-                    title: Text(
-                      "Theme",
-                      style: Theme.of(context).textTheme.subtitle,
-                    ),
+        return Scaffold(
+          appBar: AppBar(title: Text((BlocProvider.of<NavigationBloc>(context).currentState is ProfileTab ? ((BlocProvider.of<NavigationBloc>(context).currentState as ProfileTab)?.setting ?? "no deep link specified"): "") )),
+          body: SafeArea(
+            child: ListView(
+              children: <Widget>[
+                ListTile(
+                  title: Text(
+                    "Theme",
+                    style: Theme.of(context).textTheme.subtitle,
                   ),
-                  SwitchListTile( // TODO: move to settings page, create its own bloc
-                    // TODO: create branch, attempt to make proper navigation! - subnavigation!
-                    title: const Text('Dark mode'),
-                    value: userDataState.settings.themeSettings.darkMode,
-                    // TODO bloc method that does this specific thing
-                    onChanged: (bool value) => _userDataBloc.dispatch(UpdateSettings((b) => b..darkMode = value)),
-                    secondary: const Icon(Icons.lightbulb_outline),
-                  ),
+                ),
+                SwitchListTile(
+                  title: const Text('Dark mode'),
+                  value: (userDataState as UserDataLoaded).settings.themeSettings.darkMode, // TODO: entire settings edit state is just Settings object!!! - null when not ready
+                  // TODO bloc method that does this specific thing
+                  onChanged: (bool value) => settingsEditBloc.dispatch(UpdateDarkMode((b) => b..darkMode = value)),
+                  secondary: const Icon(Icons.lightbulb_outline),
+                ),
 
-                  TextField(
-
-                    onChanged: (value) => print(value),
-                  )
-                ],
-              )
+                TextField(onChanged: (value) => print(value)),
+              ],
             )
-          );
-        }
+          )
+        );
       }
     );
   }

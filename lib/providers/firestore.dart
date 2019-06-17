@@ -243,6 +243,36 @@ class FirestoreProvider {
     final DocumentReference ref = _firestore.document(userPath(userId));
     return FS<UserDocument>().deserializeDocument(ref.snapshots());
   }
+
+  /// Replaces user's [Settings].
+  ///
+  /// Cloud functions triggers on edit:
+  /// -
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  Future<void> replaceSettings(String userId, Settings settings) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(settings != null);
+
+    final DocumentReference ref = _firestore.document("${userPath(userId)}/metadata/settings");
+    return ref.setData(FS<Settings>().serializeDocument(settings), merge: false);
+  }
+
+  /// Updates user's [Settings].
+  ///
+  /// Cloud functions triggers on edit:
+  /// -
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  Future<void> updateSettings(String userId, Map<String, dynamic> data) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(data != null && data.isNotEmpty);
+
+    final DocumentReference ref = _firestore.document("${userPath(userId)}/metadata/settings");
+    return ref.updateData(data);
+  }
+
+
 }
 
 ///   ######## #### ########  ########  ######  ########  #######  ########  ########

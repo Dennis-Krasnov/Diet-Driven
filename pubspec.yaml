@@ -33,6 +33,7 @@ dependencies:
   intl: ^0.15.8
   date_utils: ^0.1.0+2
   uuid: ^2.0.1
+  merge_map: ^1.0.2
 
 dev_dependencies:
   flutter_test:

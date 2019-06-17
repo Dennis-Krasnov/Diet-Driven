@@ -45,6 +45,8 @@ abstract class NavigationSettings implements Built<NavigationSettings, Navigatio
 
 /// Everything must be nullable due implicit settings.
 abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilder> {
+  static Serializer<ThemeSettings> get serializer => _$themeSettingsSerializer;
+
   @nullable
   bool get darkMode;
 

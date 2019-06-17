@@ -17,7 +17,6 @@ abstract class NavigationUninitialized with NavigationState implements Built<Nav
   @override String toString() => runtimeType.toString();
 }
 
-///
 abstract class DiaryTab with NavigationState implements Built<DiaryTab, DiaryTabBuilder> {
   @override
   Page get page => Page.diary;
@@ -30,7 +29,6 @@ abstract class DiaryTab with NavigationState implements Built<DiaryTab, DiaryTab
   DiaryTab._();
 }
 
-///
 abstract class TrackTab with NavigationState implements Built<TrackTab, TrackTabBuilder> {
   @override
   Page get page => Page.track;
@@ -39,7 +37,6 @@ abstract class TrackTab with NavigationState implements Built<TrackTab, TrackTab
   TrackTab._();
 }
 
-///
 abstract class DietTab with NavigationState implements Built<DietTab, DietTabBuilder> {
   @override
   Page get page => Page.diet;
@@ -48,7 +45,6 @@ abstract class DietTab with NavigationState implements Built<DietTab, DietTabBui
   DietTab._();
 }
 
-///
 abstract class ProfileTab with NavigationState implements Built<ProfileTab, ProfileTabBuilder> {
   @override
   Page get page => Page.profile;

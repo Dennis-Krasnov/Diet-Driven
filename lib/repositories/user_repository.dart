@@ -2,16 +2,16 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:merge_map/merge_map.dart';
 
 import 'package:diet_driven/providers/providers.dart';
 import 'package:diet_driven/models/models.dart';
 
 /// Data access object for authentication, settings, and configuration.
 class UserRepository {
-  final Logger log = new Logger("user repository");
+  final Logger log = Logger("user repository");
   final RemoteConfigProvider _remoteConfigProvider = RemoteConfigProvider();
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
-  // TODO: Connectivity().onConnectivityChanged
 
   /// Fetches [Observable] of live [FirebaseUser] authentication status.
   /// 'authStateChangedStream` is called from [UserDataBloc].
@@ -53,10 +53,10 @@ class UserRepository {
   /// Throws [FetchThrottledException] or [Exception] if failed to fetch live Firebase Remote Config data.
   /// Throws [BuiltValueNullFieldError] if remote config is missing parameters.
   Future<RemoteConfiguration> fetchRemoteConfig() async {
-    RemoteConfig config = await _remoteConfigProvider.fetchRemoteConfig();
+    final RemoteConfig config = await _remoteConfigProvider.fetchRemoteConfig();
 
     // Intentionally throws on invalid Firebase Remote Config
-    var configSettings = RemoteConfiguration((b) => b
+    final RemoteConfiguration configSettings = RemoteConfiguration((b) => b
       ..liveConfiguration = true
       ..bonus = config.getInt("bonus")
     );
@@ -88,26 +88,53 @@ class UserRepository {
   Observable<Settings> settingsStream(String userId) {
     return Observable<Settings>(
       CombineLatestStream.combine2(
-        // Combine user settings with latest default settings
+        // Combine latest user settings and default settings
         _firestoreProvider.settingsStream(userId),
         _firestoreProvider.defaultSettings(),
-        (Settings settings, Settings defaultSettings) => Settings((b) => b
-          ..navigationSettings = NavigationSettings((b) => b
-            ..defaultPage = settings?.navigationSettings?.defaultPage
-              ?? defaultSettings.navigationSettings.defaultPage
+        (Settings settings, Settings defaultSettings) {
+          // Serialize settings into JSON
+          final Map<String, dynamic> jsonSettings = jsonSerializers.serialize(settings);
+          final Map<String, dynamic> jsonDefaultSettings = jsonSerializers.serialize(defaultSettings);
 
-            ..bottomNavigationPages = settings?.navigationSettings?.bottomNavigationPages?.toBuilder()
-              ?? defaultSettings.navigationSettings.bottomNavigationPages.toBuilder()
-          )
-        )
+          // Deep merge JSON using merge_map library
+          final Map mergedJsonSettings = mergeMap<String, dynamic>([jsonDefaultSettings, jsonSettings]);
+
+          // Deserialize user's settings
+          return jsonSerializers.deserialize(mergedJsonSettings);
+        }
       )
     );
 
     // TOTEST: one stream returns Observable<Settings>.empty() - should time out
     // TOTEST: Observable<Settings>.just(null), for my settings should return default settings!
+  }
 
-    // TODO: fork built value and a create a generated 'mergeInto'/'T replaceNullFieldsWith(T)' method
-    // that copies values from src to dest (where null), can also define it as a custom operator.
-    // This would remove the need for manual 'merging' repetition.
+
+  /// Replaces user's [Settings].
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  Future<void> replaceSettings(String userId, Settings settings) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(settings != null);
+
+    return _firestoreProvider.replaceSettings(userId, settings);
+  }
+
+  /// Updates user's dark mode setting.
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  Future<void> updateDarkMode(String userId, bool darkMode) async {
+    assert(userId != null && userId.isNotEmpty);
+    assert(darkMode != null);
+
+    // Build user's settings (not merged with default settings)
+    final Settings settings = await _firestoreProvider.settingsStream(userId).first;
+    final SettingsBuilder settingsBuilder = settings.toBuilder();
+
+    settingsBuilder.themeSettings = settingsBuilder.themeSettings.rebuild((b) => b
+      ..darkMode = darkMode
+    );
+
+    _firestoreProvider.replaceSettings(userId, settingsBuilder.build());
   }
 }

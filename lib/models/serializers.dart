@@ -8,7 +8,7 @@ import 'package:diet_driven/models/models.dart';
 
 part 'serializers.g.dart';
 
-@SerializersFor(const [
+@SerializersFor([
   FoodRecord,
   FoodDiaryDay,
 
@@ -17,6 +17,7 @@ part 'serializers.g.dart';
 //  UserData,
   UserDocument,
   Settings,
+  ThemeSettings,
   NavigationSettings,
 
 //  Uncertainty,
@@ -28,10 +29,10 @@ final Serializers serializers = _$serializers;
 // JSON serializer
 final Serializers jsonSerializers = (serializers.toBuilder()
   // Supporting built collections with custom classes
-  ..addBuilderFactory(const FullType(BuiltList, const [const FullType(FoodRecord)]), () => new ListBuilder<FoodRecord>())
-  ..addBuilderFactory(const FullType(BuiltList, const [const FullType(FoodDiaryDay)]), () => new ListBuilder<FoodDiaryDay>())
+  ..addBuilderFactory(const FullType(BuiltList, [FullType(FoodRecord)]), () => ListBuilder<FoodRecord>())
+  ..addBuilderFactory(const FullType(BuiltList, [FullType(FoodDiaryDay)]), () =>ListBuilder<FoodDiaryDay>())
   // Converting to JSON
-  ..addPlugin(new StandardJsonPlugin())
+  ..addPlugin(StandardJsonPlugin())
 ).build();
 
 //var serializersWithBuilder = (serializers.toBuilder()..addBuilderFactory( const FullType(BuiltSet, const[const FullType(GroupMessageReadBy)])) .build()

@@ -65,15 +65,13 @@ class App extends StatelessWidget {
         return BlocBuilder<UserDataEvent, UserDataState>(
           bloc: BlocProvider.of<UserDataBloc>(context),
           condition: (previous, current) {
-            // First/last build
+            // User data not loaded
             if (previous is! UserDataLoaded || current is! UserDataLoaded) {
               print("UNCONDITIONAL MAIN USER DATA UPDATE");
               return true;
             }
-            // Navigation settings changed
-            print((previous as UserDataLoaded).settings.themeSettings);
-            print((current as UserDataLoaded).settings.themeSettings);
-            print((previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings);
+            // Theme settings changed
+            print((previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings ? "MAIN USER DATA UPDATE" : "");
             return (previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings;
           },
           builder: (BuildContext context, UserDataState userDataState) {
@@ -94,7 +92,7 @@ class App extends StatelessWidget {
     );
   }
 
-  ///
+  /// Global navigator's routes.
   Route generateRoute(BuildContext context, RouteSettings settings) {
     final arguments = settings.arguments;
 
@@ -150,7 +148,7 @@ class App extends StatelessWidget {
     return null;
   }
 
-  /// ...
+  /// Reactively builds app based on user and configuration state.
   Widget appLoadingLogic(ConfigurationState configurationState, UserDataState userDataState) {
     // Initial splash screen
     if (configurationState is ConfigurationUninitialized ||
@@ -195,7 +193,7 @@ class App extends StatelessWidget {
     return ErrorPage(error: "Invalid user data state: $userDataState}");
   }
 
-  /// ...
+  /// Creates Flutter theme data from theme settings.
   ThemeData generateThemeSettings(ThemeSettings themeSettings) {
     return themeSettings.darkMode ? ThemeData.dark() : ThemeData.light();
   }

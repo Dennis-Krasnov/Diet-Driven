@@ -14,8 +14,7 @@ class HomePage extends StatelessWidget {
           builder: (BuildContext context) => NavigationBloc(analyticsRepository: Repository().analytics, userDataBloc: BlocProvider.of<UserDataBloc>(context)),
           dispose: (BuildContext context, NavigationBloc navigationBloc) => navigationBloc.dispose(),
         ),
-        // Blocs that fetch their own data must be instantiated above navigation BlocBuilder
-        // Otherwise they're recreated every time the user switches tabs
+        // TODO: diary switcher
         BlocProvider<FoodDiaryBloc>(
           builder: (BuildContext context) => FoodDiaryBloc(diaryRepository: Repository().diary, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),
           dispose: (BuildContext context, FoodDiaryBloc tempFoodDiaryBloc) => tempFoodDiaryBloc.dispose(),

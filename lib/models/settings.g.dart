@@ -9,6 +9,8 @@ part of 'settings.dart';
 Serializer<Settings> _$settingsSerializer = new _$SettingsSerializer();
 Serializer<NavigationSettings> _$navigationSettingsSerializer =
     new _$NavigationSettingsSerializer();
+Serializer<ThemeSettings> _$themeSettingsSerializer =
+    new _$ThemeSettingsSerializer();
 
 class _$SettingsSerializer implements StructuredSerializer<Settings> {
   @override
@@ -109,6 +111,47 @@ class _$NavigationSettingsSerializer
                   specifiedType:
                       const FullType(BuiltList, const [const FullType(Page)]))
               as BuiltList);
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
+  @override
+  final Iterable<Type> types = const [ThemeSettings, _$ThemeSettings];
+  @override
+  final String wireName = 'ThemeSettings';
+
+  @override
+  Iterable serialize(Serializers serializers, ThemeSettings object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[];
+    if (object.darkMode != null) {
+      result
+        ..add('darkMode')
+        ..add(serializers.serialize(object.darkMode,
+            specifiedType: const FullType(bool)));
+    }
+    return result;
+  }
+
+  @override
+  ThemeSettings deserialize(Serializers serializers, Iterable serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new ThemeSettingsBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'darkMode':
+          result.darkMode = serializers.deserialize(value,
+              specifiedType: const FullType(bool)) as bool;
           break;
       }
     }
