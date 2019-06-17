@@ -58,10 +58,24 @@ class App extends StatelessWidget {
     // Configuration builder
     return BlocBuilder<ConfigurationEvent, ConfigurationState>(
       bloc: BlocProvider.of<ConfigurationBloc>(context),
+      condition: (previous, current) => true,
       builder: (BuildContext context, ConfigurationState configurationState) {
+        print("CONFIGURATION REBUILD");
         // User data builder
         return BlocBuilder<UserDataEvent, UserDataState>(
           bloc: BlocProvider.of<UserDataBloc>(context),
+          condition: (previous, current) {
+            // First/last build
+            if (previous is! UserDataLoaded || current is! UserDataLoaded) {
+              print("UNCONDITIONAL MAIN USER DATA UPDATE");
+              return true;
+            }
+            // Navigation settings changed
+            print((previous as UserDataLoaded).settings.themeSettings);
+            print((current as UserDataLoaded).settings.themeSettings);
+            print((previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings);
+            return (previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings;
+          },
           builder: (BuildContext context, UserDataState userDataState) {
             return MaterialApp(
               // Overrides `/` navigator route

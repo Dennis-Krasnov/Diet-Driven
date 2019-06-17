@@ -40,10 +40,10 @@ class FoodRecordTile extends StatelessWidget {
     return ListTile(
 //      key: key, key: Key(foodRecord.uuid)
       // TODO: FadeInImage
-      leading: Image.network(
-        'https://picsum.photos/200',
-        // FIXME: doesn't work without internet...
-      ),
+//      leading: Image.network(
+//        'https://picsum.photos/200',
+//        // FIXME: doesn't work without internet...
+//      ),
       title: Text("${foodRecord.foodName} - ${foodRecord.grams} g"),
       subtitle: Row(
         children: <Widget>[

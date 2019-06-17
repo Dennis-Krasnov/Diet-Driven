@@ -124,7 +124,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
 
 
 // TODO: move to bloc helper class
-String _handleError(Error error) {
+String _handleError(Object error) {
 //String _handleError(dynamic error) { // FIXME
   print("error runtype is ${error.runtimeType}"); // FIXME
 
@@ -138,8 +138,7 @@ String _handleError(Error error) {
         errorDescription = "Connection timeout with API server";
         break;
       case DioErrorType.DEFAULT:
-        errorDescription =
-        "Connection to API server failed due to internet connection";
+        errorDescription = "Connection to API server failed due to internet connection";
         break;
       case DioErrorType.RECEIVE_TIMEOUT:
         errorDescription = "Receive timeout in connection with API server";
@@ -148,8 +147,7 @@ String _handleError(Error error) {
         errorDescription = "??????";
         break;
       case DioErrorType.RESPONSE:
-        errorDescription =
-        "Received invalid status code: ${error.response.statusCode}";
+        errorDescription = "Received invalid status code: $error";
         break;
     }
   } else {

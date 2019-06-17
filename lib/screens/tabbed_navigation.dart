@@ -8,25 +8,40 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/screens/profile_page.dart';
 import 'package:diet_driven/screens/under_construction.dart';
 
-class TabbedNavigation extends StatelessWidget {
+class TabbedNavigation extends StatefulWidget {
+  @override
+  _TabbedNavigationState createState() => _TabbedNavigationState();
+}
+
+class _TabbedNavigationState extends State<TabbedNavigation> {
+  // Must be stateful widget to persist navigator keys
+  Map<Page, GlobalKey<NavigatorState>> navigatorKeys = Map<Page, GlobalKey<NavigatorState>>.fromIterable(Page.values,
+    key: (dynamic page) => page,
+    value: (dynamic page) => GlobalKey<NavigatorState>(),
+  );
+
   @override
   Widget build(BuildContext context) {
     // User data builder
     return BlocBuilder<UserDataEvent, UserDataState>(
       bloc: BlocProvider.of<UserDataBloc>(context),
       condition: (previous, current) { // TODO: do >> everywhere
-        // First build
-        if (previous is! UserDataLoaded)
+        // First/last build
+        if (previous is! UserDataLoaded || current is! UserDataLoaded) {
+          print("UNCONDITIONAL UPDATE");
           return true;
+        }
         // Navigation settings changed
-        return (previous as UserDataLoaded).settings.navigationSettings != (previous as UserDataLoaded).settings.navigationSettings;
+        print((previous as UserDataLoaded).settings.navigationSettings);
+        print((current as UserDataLoaded).settings.navigationSettings);
+        print((previous as UserDataLoaded).settings.navigationSettings != (current as UserDataLoaded).settings.navigationSettings);
+        return (previous as UserDataLoaded).settings.navigationSettings != (current as UserDataLoaded).settings.navigationSettings;
       },
       // Navigation builder
       builder: (BuildContext context, UserDataState userDataState) {
         // ...
         final BuiltList<Page> bottomNavPages = (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages;
-        // ...
-        final navigatorKeys = List<GlobalKey<NavigatorState>>.generate(bottomNavPages.length, (i) => GlobalKey<NavigatorState>());
+        print("BOTTOM NAV PAGES $bottomNavPages");
 
         return BlocBuilder<NavigationEvent, NavigationState>(
           bloc: BlocProvider.of<NavigationBloc>(context),
@@ -46,13 +61,21 @@ class TabbedNavigation extends StatelessWidget {
               // Need to specify custom back button behaviour
               // Otherwise app is dismissed and we are back to the home screen
               body: WillPopScope(
-                onWillPop: () async => navigatorKeys[tabIndex].currentState == null || !await navigatorKeys[tabIndex].currentState.maybePop(),
+                onWillPop: () async {
+                  final Page currentPage = Page.values.toList()[tabIndex];
+                  // Page doesn't have nested navigation
+                  if (navigatorKeys[currentPage].currentState == null)
+                    return true;
+                  // ...
+                  return !await navigatorKeys[currentPage].currentState.maybePop();
+                },
                 // Shows one page at a time while persisting navigation
                 child: IndexedStack(
                   index: tabIndex,
                   children: <Widget>[
                     for (var page in bottomNavPages)
-                      pageToWidget(page, navigatorKeys[bottomNavPages.indexOf(page)])
+//                      pageToWidget(page, navigatorKeys[bottomNavPages.indexOf(page)])
+                      pageToWidget(page, navigatorKeys[page])
                   ],
                 ),
               ),
