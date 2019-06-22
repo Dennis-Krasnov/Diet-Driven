@@ -70,6 +70,9 @@ abstract class NavigateToProfile implements NavigationEvent, Built<NavigateToPro
   @nullable
   String get setting; // TODO: enum
 
+  @nullable
+  SubscriptionType get subscriptionType;
+
   factory NavigateToProfile([void Function(NavigateToProfileBuilder) updates]) = _$NavigateToProfile;
   NavigateToProfile._();
 }
@@ -80,6 +83,9 @@ abstract class NavigateToProfileBuilder implements NavigationEventBuilder, Build
 
   @nullable
   String setting;
+
+  @nullable
+  SubscriptionType subscriptionType;
 
   factory NavigateToProfileBuilder() = _$NavigateToProfileBuilder;
   NavigateToProfileBuilder._();

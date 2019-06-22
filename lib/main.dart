@@ -1,5 +1,14 @@
+import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
+
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repository_singleton.dart';
 import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/screens/food_logging.dart';
 import 'package:diet_driven/screens/food_record_search.dart';
@@ -8,15 +17,6 @@ import 'package:diet_driven/screens/loading_indicator.dart';
 import 'package:diet_driven/screens/login.dart';
 import 'package:diet_driven/screens/manual_food_record_edit.dart';
 import 'package:diet_driven/screens/splash_screen.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:bloc/bloc.dart';
-import 'package:logging/logging.dart';
-import 'package:intl/intl.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/material.dart';
-
-import 'package:diet_driven/repository_singleton.dart';
-import 'package:diet_driven/blocs/blocs.dart';
 
 void main() {
   // Configure logger
@@ -53,6 +53,51 @@ void main() {
 }
 
 class App extends StatelessWidget {
+  /// Reactively builds app based on user and configuration state.
+  Widget appLoadingLogic(ConfigurationState configurationState, UserDataState userDataState) {
+    // Initial splash screen
+    if (configurationState is ConfigurationUninitialized ||
+        configurationState is ConfigurationLoading ||
+        userDataState is UserDataUninitialized) {
+      return SplashPage();
+    }
+
+    // Loading configuration failed
+    if (configurationState is ConfigurationFailed) {
+      return ErrorPage(
+        error: configurationState.error,
+        trace: configurationState.trace
+      );
+    }
+
+    assert(configurationState is ConfigurationLoaded);
+
+    // Loading user data failed
+    if (userDataState is UserDataFailed) {
+      return ErrorPage(
+        error: userDataState.error,
+        trace: userDataState.trace
+      );
+    }
+
+    // Onboarding / sign in / sign up
+    if (userDataState is UserDataUnauthenticated) {
+      return LoginPage(userRepository: Repository().user);
+    }
+
+    // Loading critical user settings
+    if (userDataState is UserDataLoading) {
+      return LoadingIndicator();
+    }
+
+    // Start application when user is loaded
+    if (userDataState is UserDataLoaded) {
+      return HomePage();
+    }
+
+    return ErrorPage(error: "Invalid user data state: $userDataState}");
+  }
+
   @override
   Widget build(BuildContext context) {
     // Configuration builder
@@ -146,51 +191,6 @@ class App extends StatelessWidget {
         break;
     }
     return null;
-  }
-
-  /// Reactively builds app based on user and configuration state.
-  Widget appLoadingLogic(ConfigurationState configurationState, UserDataState userDataState) {
-    // Initial splash screen
-    if (configurationState is ConfigurationUninitialized ||
-        configurationState is ConfigurationLoading ||
-        userDataState is UserDataUninitialized) {
-      return SplashPage();
-    }
-
-    // Loading configuration failed
-    if (configurationState is ConfigurationFailed) {
-      return ErrorPage(
-        error: configurationState.error,
-        trace: configurationState.trace
-      );
-    }
-
-    assert(configurationState is ConfigurationLoaded);
-
-    // Loading user data failed
-    if (userDataState is UserDataFailed) {
-      return ErrorPage(
-        error: userDataState.error,
-        trace: userDataState.trace
-      );
-    }
-
-    // Onboarding / sign in / sign up
-    if (userDataState is UserDataUnauthenticated) {
-      return LoginPage(userRepository: Repository().user);
-    }
-
-    // Loading critical user settings
-    if (userDataState is UserDataLoading) {
-      return LoadingIndicator();
-    }
-
-    // Start application when user is loaded
-    if (userDataState is UserDataLoaded) {
-      return HomePage();
-    }
-
-    return ErrorPage(error: "Invalid user data state: $userDataState}");
   }
 
   /// Creates Flutter theme data from theme settings.

@@ -21,7 +21,7 @@ class _$UserDocumentSerializer implements StructuredSerializer<UserDocument> {
     final result = <Object>[
       'currentSubscription',
       serializers.serialize(object.currentSubscription,
-          specifiedType: const FullType(String)),
+          specifiedType: const FullType(SubscriptionType)),
     ];
 
     return result;
@@ -40,7 +40,8 @@ class _$UserDocumentSerializer implements StructuredSerializer<UserDocument> {
       switch (key) {
         case 'currentSubscription':
           result.currentSubscription = serializers.deserialize(value,
-              specifiedType: const FullType(String)) as String;
+                  specifiedType: const FullType(SubscriptionType))
+              as SubscriptionType;
           break;
       }
     }
@@ -51,7 +52,7 @@ class _$UserDocumentSerializer implements StructuredSerializer<UserDocument> {
 
 class _$UserDocument extends UserDocument {
   @override
-  final String currentSubscription;
+  final SubscriptionType currentSubscription;
 
   factory _$UserDocument([void Function(UserDocumentBuilder) updates]) =>
       (new UserDocumentBuilder()..update(updates)).build();
@@ -93,9 +94,9 @@ class UserDocumentBuilder
     implements Builder<UserDocument, UserDocumentBuilder> {
   _$UserDocument _$v;
 
-  String _currentSubscription;
-  String get currentSubscription => _$this._currentSubscription;
-  set currentSubscription(String currentSubscription) =>
+  SubscriptionType _currentSubscription;
+  SubscriptionType get currentSubscription => _$this._currentSubscription;
+  set currentSubscription(SubscriptionType currentSubscription) =>
       _$this._currentSubscription = currentSubscription;
 
   UserDocumentBuilder();

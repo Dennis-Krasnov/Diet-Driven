@@ -17,6 +17,7 @@ part 'serializers.g.dart';
 //  UserData,
   UserDocument,
   Settings,
+  SubscriptionType,
   ThemeSettings,
   NavigationSettings,
 

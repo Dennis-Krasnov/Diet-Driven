@@ -10,7 +10,7 @@ export 'search/search.dart';
 export 'login/login.dart';
 export 'navigation/navigation.dart';
 export 'settings_edit/settings_edit.dart';
-export 'subscription/subscription.dart';
+export 'subscription_edit/subscription_edit.dart';
 export 'theme/theme.dart';
 export 'user_data/user_data.dart';
 export 'profile/profile.dart';

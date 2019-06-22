@@ -67,7 +67,10 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       }
 
       if (event is NavigateToProfile) {
-        yield ProfileTab((b) => b..setting = event.setting);
+        yield ProfileTab((b) => b
+          ..setting = event.setting
+          ..subscriptionType = event.subscriptionType
+        );
       }
 
       _log.info("navigated to page ${currentState.page}");

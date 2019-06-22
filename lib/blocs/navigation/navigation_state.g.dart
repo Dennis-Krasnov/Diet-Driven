@@ -264,11 +264,13 @@ class DietTabBuilder implements Builder<DietTab, DietTabBuilder> {
 class _$ProfileTab extends ProfileTab {
   @override
   final String setting;
+  @override
+  final SubscriptionType subscriptionType;
 
   factory _$ProfileTab([void Function(ProfileTabBuilder) updates]) =>
       (new ProfileTabBuilder()..update(updates)).build();
 
-  _$ProfileTab._({this.setting}) : super._();
+  _$ProfileTab._({this.setting, this.subscriptionType}) : super._();
 
   @override
   ProfileTab rebuild(void Function(ProfileTabBuilder) updates) =>
@@ -280,17 +282,21 @@ class _$ProfileTab extends ProfileTab {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ProfileTab && setting == other.setting;
+    return other is ProfileTab &&
+        setting == other.setting &&
+        subscriptionType == other.subscriptionType;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, setting.hashCode));
+    return $jf($jc($jc(0, setting.hashCode), subscriptionType.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ProfileTab')..add('setting', setting))
+    return (newBuiltValueToStringHelper('ProfileTab')
+          ..add('setting', setting)
+          ..add('subscriptionType', subscriptionType))
         .toString();
   }
 }
@@ -302,11 +308,17 @@ class ProfileTabBuilder implements Builder<ProfileTab, ProfileTabBuilder> {
   String get setting => _$this._setting;
   set setting(String setting) => _$this._setting = setting;
 
+  SubscriptionType _subscriptionType;
+  SubscriptionType get subscriptionType => _$this._subscriptionType;
+  set subscriptionType(SubscriptionType subscriptionType) =>
+      _$this._subscriptionType = subscriptionType;
+
   ProfileTabBuilder();
 
   ProfileTabBuilder get _$this {
     if (_$v != null) {
       _setting = _$v.setting;
+      _subscriptionType = _$v.subscriptionType;
       _$v = null;
     }
     return this;
@@ -327,7 +339,9 @@ class ProfileTabBuilder implements Builder<ProfileTab, ProfileTabBuilder> {
 
   @override
   _$ProfileTab build() {
-    final _$result = _$v ?? new _$ProfileTab._(setting: setting);
+    final _$result = _$v ??
+        new _$ProfileTab._(
+            setting: setting, subscriptionType: subscriptionType);
     replace(_$result);
     return _$result;
   }

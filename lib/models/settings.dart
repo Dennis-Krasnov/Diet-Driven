@@ -20,7 +20,7 @@ abstract class Settings implements Built<Settings, SettingsBuilder> {
   Settings._();
 }
 
-/// Default theme settings.
+/// Default settings.
 abstract class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
   NavigationSettings navigationSettings;
   ThemeSettings themeSettings = ThemeSettings();
@@ -54,7 +54,6 @@ abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilde
   ThemeSettings._();
 }
 
-// FIXME: upload theme to firestore!
 /// Default theme settings.
 abstract class ThemeSettingsBuilder implements Builder<ThemeSettings, ThemeSettingsBuilder> {
   bool darkMode = false;

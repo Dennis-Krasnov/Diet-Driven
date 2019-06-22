@@ -9,11 +9,13 @@ part of 'settings_edit_events.dart';
 class _$UpdateDarkMode extends UpdateDarkMode {
   @override
   final bool darkMode;
+  @override
+  final Completer<void> completer;
 
   factory _$UpdateDarkMode([void Function(UpdateDarkModeBuilder) updates]) =>
       (new UpdateDarkModeBuilder()..update(updates)).build();
 
-  _$UpdateDarkMode._({this.darkMode}) : super._() {
+  _$UpdateDarkMode._({this.darkMode, this.completer}) : super._() {
     if (darkMode == null) {
       throw new BuiltValueNullFieldError('UpdateDarkMode', 'darkMode');
     }
@@ -30,18 +32,21 @@ class _$UpdateDarkMode extends UpdateDarkMode {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UpdateDarkMode && darkMode == other.darkMode;
+    return other is UpdateDarkMode &&
+        darkMode == other.darkMode &&
+        completer == other.completer;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, darkMode.hashCode));
+    return $jf($jc($jc(0, darkMode.hashCode), completer.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('UpdateDarkMode')
-          ..add('darkMode', darkMode))
+          ..add('darkMode', darkMode)
+          ..add('completer', completer))
         .toString();
   }
 }
@@ -54,11 +59,16 @@ class UpdateDarkModeBuilder
   bool get darkMode => _$this._darkMode;
   set darkMode(bool darkMode) => _$this._darkMode = darkMode;
 
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
   UpdateDarkModeBuilder();
 
   UpdateDarkModeBuilder get _$this {
     if (_$v != null) {
       _darkMode = _$v.darkMode;
+      _completer = _$v.completer;
       _$v = null;
     }
     return this;
@@ -79,7 +89,8 @@ class UpdateDarkModeBuilder
 
   @override
   _$UpdateDarkMode build() {
-    final _$result = _$v ?? new _$UpdateDarkMode._(darkMode: darkMode);
+    final _$result =
+        _$v ?? new _$UpdateDarkMode._(darkMode: darkMode, completer: completer);
     replace(_$result);
     return _$result;
   }

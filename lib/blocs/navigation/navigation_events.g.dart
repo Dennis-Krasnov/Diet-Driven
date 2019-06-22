@@ -305,6 +305,8 @@ class _$NavigateToProfile extends NavigateToProfile {
   @override
   final String setting;
   @override
+  final SubscriptionType subscriptionType;
+  @override
   final bool onlyIfUninitialized;
 
   factory _$NavigateToProfile(
@@ -312,7 +314,9 @@ class _$NavigateToProfile extends NavigateToProfile {
       (new NavigateToProfileBuilder()..update(updates)).build()
           as _$NavigateToProfile;
 
-  _$NavigateToProfile._({this.setting, this.onlyIfUninitialized}) : super._() {
+  _$NavigateToProfile._(
+      {this.setting, this.subscriptionType, this.onlyIfUninitialized})
+      : super._() {
     if (onlyIfUninitialized == null) {
       throw new BuiltValueNullFieldError(
           'NavigateToProfile', 'onlyIfUninitialized');
@@ -332,18 +336,21 @@ class _$NavigateToProfile extends NavigateToProfile {
     if (identical(other, this)) return true;
     return other is NavigateToProfile &&
         setting == other.setting &&
+        subscriptionType == other.subscriptionType &&
         onlyIfUninitialized == other.onlyIfUninitialized;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, setting.hashCode), onlyIfUninitialized.hashCode));
+    return $jf($jc($jc($jc(0, setting.hashCode), subscriptionType.hashCode),
+        onlyIfUninitialized.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('NavigateToProfile')
           ..add('setting', setting)
+          ..add('subscriptionType', subscriptionType)
           ..add('onlyIfUninitialized', onlyIfUninitialized))
         .toString();
   }
@@ -365,6 +372,18 @@ class _$NavigateToProfileBuilder extends NavigateToProfileBuilder {
   }
 
   @override
+  SubscriptionType get subscriptionType {
+    _$this;
+    return super.subscriptionType;
+  }
+
+  @override
+  set subscriptionType(SubscriptionType subscriptionType) {
+    _$this;
+    super.subscriptionType = subscriptionType;
+  }
+
+  @override
   bool get onlyIfUninitialized {
     _$this;
     return super.onlyIfUninitialized;
@@ -381,6 +400,7 @@ class _$NavigateToProfileBuilder extends NavigateToProfileBuilder {
   NavigateToProfileBuilder get _$this {
     if (_$v != null) {
       super.setting = _$v.setting;
+      super.subscriptionType = _$v.subscriptionType;
       super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
     }
@@ -404,7 +424,9 @@ class _$NavigateToProfileBuilder extends NavigateToProfileBuilder {
   _$NavigateToProfile build() {
     final _$result = _$v ??
         new _$NavigateToProfile._(
-            setting: setting, onlyIfUninitialized: onlyIfUninitialized);
+            setting: setting,
+            subscriptionType: subscriptionType,
+            onlyIfUninitialized: onlyIfUninitialized);
     replace(_$result);
     return _$result;
   }

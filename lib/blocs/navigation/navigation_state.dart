@@ -49,9 +49,11 @@ abstract class ProfileTab with NavigationState implements Built<ProfileTab, Prof
   @override
   Page get page => Page.profile;
 
-
   @nullable
   String get setting;
+
+  @nullable
+  SubscriptionType get subscriptionType;
 
   factory ProfileTab([void Function(ProfileTabBuilder) updates]) = _$ProfileTab;
   ProfileTab._();
