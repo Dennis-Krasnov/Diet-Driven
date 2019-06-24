@@ -6,15 +6,27 @@ part of 'navigation_state.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+abstract class NavigationStateBuilder {
+  void replace(NavigationState other);
+  void update(void Function(NavigationStateBuilder) updates);
+  Page get page;
+  set page(Page page);
+
+  DeepLink get deepLink;
+  set deepLink(DeepLink deepLink);
+}
+
 class _$NavigationUninitialized extends NavigationUninitialized {
   @override
   final Page page;
+  @override
+  final DeepLink deepLink;
 
   factory _$NavigationUninitialized(
           [void Function(NavigationUninitializedBuilder) updates]) =>
       (new NavigationUninitializedBuilder()..update(updates)).build();
 
-  _$NavigationUninitialized._({this.page}) : super._();
+  _$NavigationUninitialized._({this.page, this.deepLink}) : super._();
 
   @override
   NavigationUninitialized rebuild(
@@ -28,36 +40,44 @@ class _$NavigationUninitialized extends NavigationUninitialized {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigationUninitialized && page == other.page;
+    return other is NavigationUninitialized &&
+        page == other.page &&
+        deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, page.hashCode));
+    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
   }
 }
 
 class NavigationUninitializedBuilder
     implements
-        Builder<NavigationUninitialized, NavigationUninitializedBuilder> {
+        Builder<NavigationUninitialized, NavigationUninitializedBuilder>,
+        NavigationStateBuilder {
   _$NavigationUninitialized _$v;
 
   Page _page;
   Page get page => _$this._page;
   set page(Page page) => _$this._page = page;
 
+  DeepLink _deepLink;
+  DeepLink get deepLink => _$this._deepLink;
+  set deepLink(DeepLink deepLink) => _$this._deepLink = deepLink;
+
   NavigationUninitializedBuilder();
 
   NavigationUninitializedBuilder get _$this {
     if (_$v != null) {
       _page = _$v.page;
+      _deepLink = _$v.deepLink;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(NavigationUninitialized other) {
+  void replace(covariant NavigationUninitialized other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -71,7 +91,8 @@ class NavigationUninitializedBuilder
 
   @override
   _$NavigationUninitialized build() {
-    final _$result = _$v ?? new _$NavigationUninitialized._(page: page);
+    final _$result =
+        _$v ?? new _$NavigationUninitialized._(page: page, deepLink: deepLink);
     replace(_$result);
     return _$result;
   }
@@ -79,57 +100,84 @@ class NavigationUninitializedBuilder
 
 class _$DiaryTab extends DiaryTab {
   @override
-  final int date;
+  final Page page;
+  @override
+  final DeepLink deepLink;
 
   factory _$DiaryTab([void Function(DiaryTabBuilder) updates]) =>
-      (new DiaryTabBuilder()..update(updates)).build();
+      (new DiaryTabBuilder()..update(updates)).build() as _$DiaryTab;
 
-  _$DiaryTab._({this.date}) : super._();
+  _$DiaryTab._({this.page, this.deepLink}) : super._();
 
   @override
   DiaryTab rebuild(void Function(DiaryTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  DiaryTabBuilder toBuilder() => new DiaryTabBuilder()..replace(this);
+  _$DiaryTabBuilder toBuilder() => new _$DiaryTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is DiaryTab && date == other.date;
+    return other is DiaryTab &&
+        page == other.page &&
+        deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, date.hashCode));
+    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('DiaryTab')..add('date', date))
+    return (newBuiltValueToStringHelper('DiaryTab')
+          ..add('page', page)
+          ..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class DiaryTabBuilder implements Builder<DiaryTab, DiaryTabBuilder> {
+class _$DiaryTabBuilder extends DiaryTabBuilder {
   _$DiaryTab _$v;
 
-  int _date;
-  int get date => _$this._date;
-  set date(int date) => _$this._date = date;
+  @override
+  Page get page {
+    _$this;
+    return super.page;
+  }
 
-  DiaryTabBuilder();
+  @override
+  set page(Page page) {
+    _$this;
+    super.page = page;
+  }
+
+  @override
+  DeepLink get deepLink {
+    _$this;
+    return super.deepLink;
+  }
+
+  @override
+  set deepLink(DeepLink deepLink) {
+    _$this;
+    super.deepLink = deepLink;
+  }
+
+  _$DiaryTabBuilder() : super._();
 
   DiaryTabBuilder get _$this {
     if (_$v != null) {
-      _date = _$v.date;
+      super.page = _$v.page;
+      super.deepLink = _$v.deepLink;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(DiaryTab other) {
+  void replace(covariant DiaryTab other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -143,49 +191,92 @@ class DiaryTabBuilder implements Builder<DiaryTab, DiaryTabBuilder> {
 
   @override
   _$DiaryTab build() {
-    final _$result = _$v ?? new _$DiaryTab._(date: date);
+    final _$result = _$v ?? new _$DiaryTab._(page: page, deepLink: deepLink);
     replace(_$result);
     return _$result;
   }
 }
 
 class _$TrackTab extends TrackTab {
-  factory _$TrackTab([void Function(TrackTabBuilder) updates]) =>
-      (new TrackTabBuilder()..update(updates)).build();
+  @override
+  final Page page;
+  @override
+  final DeepLink deepLink;
 
-  _$TrackTab._() : super._();
+  factory _$TrackTab([void Function(TrackTabBuilder) updates]) =>
+      (new TrackTabBuilder()..update(updates)).build() as _$TrackTab;
+
+  _$TrackTab._({this.page, this.deepLink}) : super._();
 
   @override
   TrackTab rebuild(void Function(TrackTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  TrackTabBuilder toBuilder() => new TrackTabBuilder()..replace(this);
+  _$TrackTabBuilder toBuilder() => new _$TrackTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TrackTab;
+    return other is TrackTab &&
+        page == other.page &&
+        deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return 713278670;
+    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('TrackTab').toString();
+    return (newBuiltValueToStringHelper('TrackTab')
+          ..add('page', page)
+          ..add('deepLink', deepLink))
+        .toString();
   }
 }
 
-class TrackTabBuilder implements Builder<TrackTab, TrackTabBuilder> {
+class _$TrackTabBuilder extends TrackTabBuilder {
   _$TrackTab _$v;
 
-  TrackTabBuilder();
+  @override
+  Page get page {
+    _$this;
+    return super.page;
+  }
 
   @override
-  void replace(TrackTab other) {
+  set page(Page page) {
+    _$this;
+    super.page = page;
+  }
+
+  @override
+  DeepLink get deepLink {
+    _$this;
+    return super.deepLink;
+  }
+
+  @override
+  set deepLink(DeepLink deepLink) {
+    _$this;
+    super.deepLink = deepLink;
+  }
+
+  _$TrackTabBuilder() : super._();
+
+  TrackTabBuilder get _$this {
+    if (_$v != null) {
+      super.page = _$v.page;
+      super.deepLink = _$v.deepLink;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant TrackTab other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -199,149 +290,205 @@ class TrackTabBuilder implements Builder<TrackTab, TrackTabBuilder> {
 
   @override
   _$TrackTab build() {
-    final _$result = _$v ?? new _$TrackTab._();
+    final _$result = _$v ?? new _$TrackTab._(page: page, deepLink: deepLink);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$DietTab extends DietTab {
-  factory _$DietTab([void Function(DietTabBuilder) updates]) =>
-      (new DietTabBuilder()..update(updates)).build();
+class _$ReportsTab extends ReportsTab {
+  @override
+  final Page page;
+  @override
+  final DeepLink deepLink;
 
-  _$DietTab._() : super._();
+  factory _$ReportsTab([void Function(ReportsTabBuilder) updates]) =>
+      (new ReportsTabBuilder()..update(updates)).build() as _$ReportsTab;
+
+  _$ReportsTab._({this.page, this.deepLink}) : super._();
 
   @override
-  DietTab rebuild(void Function(DietTabBuilder) updates) =>
+  ReportsTab rebuild(void Function(ReportsTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  DietTabBuilder toBuilder() => new DietTabBuilder()..replace(this);
+  _$ReportsTabBuilder toBuilder() => new _$ReportsTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is DietTab;
+    return other is ReportsTab &&
+        page == other.page &&
+        deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return 867275950;
+    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('DietTab').toString();
-  }
-}
-
-class DietTabBuilder implements Builder<DietTab, DietTabBuilder> {
-  _$DietTab _$v;
-
-  DietTabBuilder();
-
-  @override
-  void replace(DietTab other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$DietTab;
-  }
-
-  @override
-  void update(void Function(DietTabBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$DietTab build() {
-    final _$result = _$v ?? new _$DietTab._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$ProfileTab extends ProfileTab {
-  @override
-  final String setting;
-  @override
-  final SubscriptionType subscriptionType;
-
-  factory _$ProfileTab([void Function(ProfileTabBuilder) updates]) =>
-      (new ProfileTabBuilder()..update(updates)).build();
-
-  _$ProfileTab._({this.setting, this.subscriptionType}) : super._();
-
-  @override
-  ProfileTab rebuild(void Function(ProfileTabBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  ProfileTabBuilder toBuilder() => new ProfileTabBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is ProfileTab &&
-        setting == other.setting &&
-        subscriptionType == other.subscriptionType;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc($jc(0, setting.hashCode), subscriptionType.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('ProfileTab')
-          ..add('setting', setting)
-          ..add('subscriptionType', subscriptionType))
+    return (newBuiltValueToStringHelper('ReportsTab')
+          ..add('page', page)
+          ..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class ProfileTabBuilder implements Builder<ProfileTab, ProfileTabBuilder> {
-  _$ProfileTab _$v;
+class _$ReportsTabBuilder extends ReportsTabBuilder {
+  _$ReportsTab _$v;
 
-  String _setting;
-  String get setting => _$this._setting;
-  set setting(String setting) => _$this._setting = setting;
+  @override
+  Page get page {
+    _$this;
+    return super.page;
+  }
 
-  SubscriptionType _subscriptionType;
-  SubscriptionType get subscriptionType => _$this._subscriptionType;
-  set subscriptionType(SubscriptionType subscriptionType) =>
-      _$this._subscriptionType = subscriptionType;
+  @override
+  set page(Page page) {
+    _$this;
+    super.page = page;
+  }
 
-  ProfileTabBuilder();
+  @override
+  DeepLink get deepLink {
+    _$this;
+    return super.deepLink;
+  }
 
-  ProfileTabBuilder get _$this {
+  @override
+  set deepLink(DeepLink deepLink) {
+    _$this;
+    super.deepLink = deepLink;
+  }
+
+  _$ReportsTabBuilder() : super._();
+
+  ReportsTabBuilder get _$this {
     if (_$v != null) {
-      _setting = _$v.setting;
-      _subscriptionType = _$v.subscriptionType;
+      super.page = _$v.page;
+      super.deepLink = _$v.deepLink;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(ProfileTab other) {
+  void replace(covariant ReportsTab other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ProfileTab;
+    _$v = other as _$ReportsTab;
   }
 
   @override
-  void update(void Function(ProfileTabBuilder) updates) {
+  void update(void Function(ReportsTabBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ProfileTab build() {
-    final _$result = _$v ??
-        new _$ProfileTab._(
-            setting: setting, subscriptionType: subscriptionType);
+  _$ReportsTab build() {
+    final _$result = _$v ?? new _$ReportsTab._(page: page, deepLink: deepLink);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SettingsTab extends SettingsTab {
+  @override
+  final Page page;
+  @override
+  final DeepLink deepLink;
+
+  factory _$SettingsTab([void Function(SettingsTabBuilder) updates]) =>
+      (new SettingsTabBuilder()..update(updates)).build() as _$SettingsTab;
+
+  _$SettingsTab._({this.page, this.deepLink}) : super._();
+
+  @override
+  SettingsTab rebuild(void Function(SettingsTabBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  _$SettingsTabBuilder toBuilder() => new _$SettingsTabBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SettingsTab &&
+        page == other.page &&
+        deepLink == other.deepLink;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('SettingsTab')
+          ..add('page', page)
+          ..add('deepLink', deepLink))
+        .toString();
+  }
+}
+
+class _$SettingsTabBuilder extends SettingsTabBuilder {
+  _$SettingsTab _$v;
+
+  @override
+  Page get page {
+    _$this;
+    return super.page;
+  }
+
+  @override
+  set page(Page page) {
+    _$this;
+    super.page = page;
+  }
+
+  @override
+  DeepLink get deepLink {
+    _$this;
+    return super.deepLink;
+  }
+
+  @override
+  set deepLink(DeepLink deepLink) {
+    _$this;
+    super.deepLink = deepLink;
+  }
+
+  _$SettingsTabBuilder() : super._();
+
+  SettingsTabBuilder get _$this {
+    if (_$v != null) {
+      super.page = _$v.page;
+      super.deepLink = _$v.deepLink;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant SettingsTab other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SettingsTab;
+  }
+
+  @override
+  void update(void Function(SettingsTabBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SettingsTab build() {
+    final _$result = _$v ?? new _$SettingsTab._(page: page, deepLink: deepLink);
     replace(_$result);
     return _$result;
   }

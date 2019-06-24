@@ -11,7 +11,7 @@ import 'package:diet_driven/models/serializers.dart';
 /// Firebase Firestore provider.
 /// https://cloud.google.com/firestore/
 class FirestoreProvider {
-  Firestore _firestore = Firestore.instance;
+  final Firestore _firestore = Firestore.instance;
 
   String userPath(String userId) => "users/$userId";
 

@@ -1,3 +1,4 @@
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:logging/logging.dart';
@@ -136,5 +137,19 @@ class UserRepository {
     );
 
     _firestoreProvider.replaceSettings(userId, settingsBuilder.build());
+  }
+
+  ///
+  /// Uses authenticated user's userId
+  Future<void> subscribe(SubscriptionType subscriptionType) async {
+    assert(subscriptionType != null);
+
+    // TODO: move to provider
+    final HttpsCallable updateSubscription = CloudFunctions.instance.getHttpsCallable(
+        functionName: 'updateSubscription'
+    )..timeout = Duration(seconds: 10);
+
+//   Cloud function parameters CANNOT be defined as <String, dynamic>{}
+    return updateSubscription({"subscriptionType": subscriptionType.toString()});
   }
 }

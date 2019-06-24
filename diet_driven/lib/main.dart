@@ -137,7 +137,7 @@ class App extends StatelessWidget {
     );
   }
 
-  /// Global navigator's routes.
+  /// Global navigator routes.
   Route generateRoute(BuildContext context, RouteSettings settings) {
     final arguments = settings.arguments;
 

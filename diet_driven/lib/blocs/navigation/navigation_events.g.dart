@@ -13,9 +13,98 @@ abstract class NavigationEventBuilder {
   set onlyIfUninitialized(bool onlyIfUninitialized);
 }
 
+class _$ClearDeepLink extends ClearDeepLink {
+  @override
+  final bool onlyIfUninitialized;
+
+  factory _$ClearDeepLink([void Function(ClearDeepLinkBuilder) updates]) =>
+      (new ClearDeepLinkBuilder()..update(updates)).build() as _$ClearDeepLink;
+
+  _$ClearDeepLink._({this.onlyIfUninitialized}) : super._() {
+    if (onlyIfUninitialized == null) {
+      throw new BuiltValueNullFieldError(
+          'ClearDeepLink', 'onlyIfUninitialized');
+    }
+  }
+
+  @override
+  ClearDeepLink rebuild(void Function(ClearDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  _$ClearDeepLinkBuilder toBuilder() =>
+      new _$ClearDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is ClearDeepLink &&
+        onlyIfUninitialized == other.onlyIfUninitialized;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, onlyIfUninitialized.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('ClearDeepLink')
+          ..add('onlyIfUninitialized', onlyIfUninitialized))
+        .toString();
+  }
+}
+
+class _$ClearDeepLinkBuilder extends ClearDeepLinkBuilder {
+  _$ClearDeepLink _$v;
+
+  @override
+  bool get onlyIfUninitialized {
+    _$this;
+    return super.onlyIfUninitialized;
+  }
+
+  @override
+  set onlyIfUninitialized(bool onlyIfUninitialized) {
+    _$this;
+    super.onlyIfUninitialized = onlyIfUninitialized;
+  }
+
+  _$ClearDeepLinkBuilder() : super._();
+
+  ClearDeepLinkBuilder get _$this {
+    if (_$v != null) {
+      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant ClearDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$ClearDeepLink;
+  }
+
+  @override
+  void update(void Function(ClearDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$ClearDeepLink build() {
+    final _$result =
+        _$v ?? new _$ClearDeepLink._(onlyIfUninitialized: onlyIfUninitialized);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$NavigateToDiary extends NavigateToDiary {
   @override
-  final int date;
+  final DiaryDeepLink deepLink;
   @override
   final bool onlyIfUninitialized;
 
@@ -23,7 +112,7 @@ class _$NavigateToDiary extends NavigateToDiary {
       (new NavigateToDiaryBuilder()..update(updates)).build()
           as _$NavigateToDiary;
 
-  _$NavigateToDiary._({this.date, this.onlyIfUninitialized}) : super._() {
+  _$NavigateToDiary._({this.deepLink, this.onlyIfUninitialized}) : super._() {
     if (onlyIfUninitialized == null) {
       throw new BuiltValueNullFieldError(
           'NavigateToDiary', 'onlyIfUninitialized');
@@ -42,19 +131,19 @@ class _$NavigateToDiary extends NavigateToDiary {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is NavigateToDiary &&
-        date == other.date &&
+        deepLink == other.deepLink &&
         onlyIfUninitialized == other.onlyIfUninitialized;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, date.hashCode), onlyIfUninitialized.hashCode));
+    return $jf($jc($jc(0, deepLink.hashCode), onlyIfUninitialized.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('NavigateToDiary')
-          ..add('date', date)
+          ..add('deepLink', deepLink)
           ..add('onlyIfUninitialized', onlyIfUninitialized))
         .toString();
   }
@@ -64,15 +153,15 @@ class _$NavigateToDiaryBuilder extends NavigateToDiaryBuilder {
   _$NavigateToDiary _$v;
 
   @override
-  int get date {
+  DiaryDeepLink get deepLink {
     _$this;
-    return super.date;
+    return super.deepLink;
   }
 
   @override
-  set date(int date) {
+  set deepLink(DiaryDeepLink deepLink) {
     _$this;
-    super.date = date;
+    super.deepLink = deepLink;
   }
 
   @override
@@ -91,7 +180,7 @@ class _$NavigateToDiaryBuilder extends NavigateToDiaryBuilder {
 
   NavigateToDiaryBuilder get _$this {
     if (_$v != null) {
-      super.date = _$v.date;
+      super.deepLink = _$v.deepLink;
       super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
     }
@@ -115,7 +204,84 @@ class _$NavigateToDiaryBuilder extends NavigateToDiaryBuilder {
   _$NavigateToDiary build() {
     final _$result = _$v ??
         new _$NavigateToDiary._(
-            date: date, onlyIfUninitialized: onlyIfUninitialized);
+            deepLink: deepLink, onlyIfUninitialized: onlyIfUninitialized);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$DateDeepLink extends DateDeepLink {
+  @override
+  final int date;
+
+  factory _$DateDeepLink([void Function(DateDeepLinkBuilder) updates]) =>
+      (new DateDeepLinkBuilder()..update(updates)).build();
+
+  _$DateDeepLink._({this.date}) : super._() {
+    if (date == null) {
+      throw new BuiltValueNullFieldError('DateDeepLink', 'date');
+    }
+  }
+
+  @override
+  DateDeepLink rebuild(void Function(DateDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DateDeepLinkBuilder toBuilder() => new DateDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DateDeepLink && date == other.date;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, date.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('DateDeepLink')..add('date', date))
+        .toString();
+  }
+}
+
+class DateDeepLinkBuilder
+    implements Builder<DateDeepLink, DateDeepLinkBuilder> {
+  _$DateDeepLink _$v;
+
+  int _date;
+  int get date => _$this._date;
+  set date(int date) => _$this._date = date;
+
+  DateDeepLinkBuilder();
+
+  DateDeepLinkBuilder get _$this {
+    if (_$v != null) {
+      _date = _$v.date;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(DateDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DateDeepLink;
+  }
+
+  @override
+  void update(void Function(DateDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DateDeepLink build() {
+    final _$result = _$v ?? new _$DateDeepLink._(date: date);
     replace(_$result);
     return _$result;
   }
@@ -211,33 +377,34 @@ class _$NavigateToTrackBuilder extends NavigateToTrackBuilder {
   }
 }
 
-class _$NavigateToDiet extends NavigateToDiet {
+class _$NavigateToReports extends NavigateToReports {
   @override
   final bool onlyIfUninitialized;
 
-  factory _$NavigateToDiet([void Function(NavigateToDietBuilder) updates]) =>
-      (new NavigateToDietBuilder()..update(updates)).build()
-          as _$NavigateToDiet;
+  factory _$NavigateToReports(
+          [void Function(NavigateToReportsBuilder) updates]) =>
+      (new NavigateToReportsBuilder()..update(updates)).build()
+          as _$NavigateToReports;
 
-  _$NavigateToDiet._({this.onlyIfUninitialized}) : super._() {
+  _$NavigateToReports._({this.onlyIfUninitialized}) : super._() {
     if (onlyIfUninitialized == null) {
       throw new BuiltValueNullFieldError(
-          'NavigateToDiet', 'onlyIfUninitialized');
+          'NavigateToReports', 'onlyIfUninitialized');
     }
   }
 
   @override
-  NavigateToDiet rebuild(void Function(NavigateToDietBuilder) updates) =>
+  NavigateToReports rebuild(void Function(NavigateToReportsBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigateToDietBuilder toBuilder() =>
-      new _$NavigateToDietBuilder()..replace(this);
+  _$NavigateToReportsBuilder toBuilder() =>
+      new _$NavigateToReportsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToDiet &&
+    return other is NavigateToReports &&
         onlyIfUninitialized == other.onlyIfUninitialized;
   }
 
@@ -248,14 +415,14 @@ class _$NavigateToDiet extends NavigateToDiet {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToDiet')
+    return (newBuiltValueToStringHelper('NavigateToReports')
           ..add('onlyIfUninitialized', onlyIfUninitialized))
         .toString();
   }
 }
 
-class _$NavigateToDietBuilder extends NavigateToDietBuilder {
-  _$NavigateToDiet _$v;
+class _$NavigateToReportsBuilder extends NavigateToReportsBuilder {
+  _$NavigateToReports _$v;
 
   @override
   bool get onlyIfUninitialized {
@@ -269,9 +436,9 @@ class _$NavigateToDietBuilder extends NavigateToDietBuilder {
     super.onlyIfUninitialized = onlyIfUninitialized;
   }
 
-  _$NavigateToDietBuilder() : super._();
+  _$NavigateToReportsBuilder() : super._();
 
-  NavigateToDietBuilder get _$this {
+  NavigateToReportsBuilder get _$this {
     if (_$v != null) {
       super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
@@ -280,107 +447,90 @@ class _$NavigateToDietBuilder extends NavigateToDietBuilder {
   }
 
   @override
-  void replace(covariant NavigateToDiet other) {
+  void replace(covariant NavigateToReports other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$NavigateToDiet;
+    _$v = other as _$NavigateToReports;
   }
 
   @override
-  void update(void Function(NavigateToDietBuilder) updates) {
+  void update(void Function(NavigateToReportsBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$NavigateToDiet build() {
-    final _$result =
-        _$v ?? new _$NavigateToDiet._(onlyIfUninitialized: onlyIfUninitialized);
+  _$NavigateToReports build() {
+    final _$result = _$v ??
+        new _$NavigateToReports._(onlyIfUninitialized: onlyIfUninitialized);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$NavigateToProfile extends NavigateToProfile {
+class _$NavigateToSettings extends NavigateToSettings {
   @override
-  final String setting;
-  @override
-  final SubscriptionType subscriptionType;
+  final SettingsDeepLink deepLink;
   @override
   final bool onlyIfUninitialized;
 
-  factory _$NavigateToProfile(
-          [void Function(NavigateToProfileBuilder) updates]) =>
-      (new NavigateToProfileBuilder()..update(updates)).build()
-          as _$NavigateToProfile;
+  factory _$NavigateToSettings(
+          [void Function(NavigateToSettingsBuilder) updates]) =>
+      (new NavigateToSettingsBuilder()..update(updates)).build()
+          as _$NavigateToSettings;
 
-  _$NavigateToProfile._(
-      {this.setting, this.subscriptionType, this.onlyIfUninitialized})
+  _$NavigateToSettings._({this.deepLink, this.onlyIfUninitialized})
       : super._() {
     if (onlyIfUninitialized == null) {
       throw new BuiltValueNullFieldError(
-          'NavigateToProfile', 'onlyIfUninitialized');
+          'NavigateToSettings', 'onlyIfUninitialized');
     }
   }
 
   @override
-  NavigateToProfile rebuild(void Function(NavigateToProfileBuilder) updates) =>
+  NavigateToSettings rebuild(
+          void Function(NavigateToSettingsBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigateToProfileBuilder toBuilder() =>
-      new _$NavigateToProfileBuilder()..replace(this);
+  _$NavigateToSettingsBuilder toBuilder() =>
+      new _$NavigateToSettingsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToProfile &&
-        setting == other.setting &&
-        subscriptionType == other.subscriptionType &&
+    return other is NavigateToSettings &&
+        deepLink == other.deepLink &&
         onlyIfUninitialized == other.onlyIfUninitialized;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, setting.hashCode), subscriptionType.hashCode),
-        onlyIfUninitialized.hashCode));
+    return $jf($jc($jc(0, deepLink.hashCode), onlyIfUninitialized.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToProfile')
-          ..add('setting', setting)
-          ..add('subscriptionType', subscriptionType)
+    return (newBuiltValueToStringHelper('NavigateToSettings')
+          ..add('deepLink', deepLink)
           ..add('onlyIfUninitialized', onlyIfUninitialized))
         .toString();
   }
 }
 
-class _$NavigateToProfileBuilder extends NavigateToProfileBuilder {
-  _$NavigateToProfile _$v;
+class _$NavigateToSettingsBuilder extends NavigateToSettingsBuilder {
+  _$NavigateToSettings _$v;
 
   @override
-  String get setting {
+  SettingsDeepLink get deepLink {
     _$this;
-    return super.setting;
+    return super.deepLink;
   }
 
   @override
-  set setting(String setting) {
+  set deepLink(SettingsDeepLink deepLink) {
     _$this;
-    super.setting = setting;
-  }
-
-  @override
-  SubscriptionType get subscriptionType {
-    _$this;
-    return super.subscriptionType;
-  }
-
-  @override
-  set subscriptionType(SubscriptionType subscriptionType) {
-    _$this;
-    super.subscriptionType = subscriptionType;
+    super.deepLink = deepLink;
   }
 
   @override
@@ -395,12 +545,11 @@ class _$NavigateToProfileBuilder extends NavigateToProfileBuilder {
     super.onlyIfUninitialized = onlyIfUninitialized;
   }
 
-  _$NavigateToProfileBuilder() : super._();
+  _$NavigateToSettingsBuilder() : super._();
 
-  NavigateToProfileBuilder get _$this {
+  NavigateToSettingsBuilder get _$this {
     if (_$v != null) {
-      super.setting = _$v.setting;
-      super.subscriptionType = _$v.subscriptionType;
+      super.deepLink = _$v.deepLink;
       super.onlyIfUninitialized = _$v.onlyIfUninitialized;
       _$v = null;
     }
@@ -408,25 +557,218 @@ class _$NavigateToProfileBuilder extends NavigateToProfileBuilder {
   }
 
   @override
-  void replace(covariant NavigateToProfile other) {
+  void replace(covariant NavigateToSettings other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$NavigateToProfile;
+    _$v = other as _$NavigateToSettings;
   }
 
   @override
-  void update(void Function(NavigateToProfileBuilder) updates) {
+  void update(void Function(NavigateToSettingsBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$NavigateToProfile build() {
+  _$NavigateToSettings build() {
     final _$result = _$v ??
-        new _$NavigateToProfile._(
-            setting: setting,
-            subscriptionType: subscriptionType,
-            onlyIfUninitialized: onlyIfUninitialized);
+        new _$NavigateToSettings._(
+            deepLink: deepLink, onlyIfUninitialized: onlyIfUninitialized);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$ProfileDeepLink extends ProfileDeepLink {
+  factory _$ProfileDeepLink([void Function(ProfileDeepLinkBuilder) updates]) =>
+      (new ProfileDeepLinkBuilder()..update(updates)).build();
+
+  _$ProfileDeepLink._() : super._();
+
+  @override
+  ProfileDeepLink rebuild(void Function(ProfileDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  ProfileDeepLinkBuilder toBuilder() =>
+      new ProfileDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is ProfileDeepLink;
+  }
+
+  @override
+  int get hashCode {
+    return 999881030;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('ProfileDeepLink').toString();
+  }
+}
+
+class ProfileDeepLinkBuilder
+    implements Builder<ProfileDeepLink, ProfileDeepLinkBuilder> {
+  _$ProfileDeepLink _$v;
+
+  ProfileDeepLinkBuilder();
+
+  @override
+  void replace(ProfileDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$ProfileDeepLink;
+  }
+
+  @override
+  void update(void Function(ProfileDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$ProfileDeepLink build() {
+    final _$result = _$v ?? new _$ProfileDeepLink._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SubscriptionDeepLink extends SubscriptionDeepLink {
+  @override
+  final SubscriptionType subscriptionType;
+
+  factory _$SubscriptionDeepLink(
+          [void Function(SubscriptionDeepLinkBuilder) updates]) =>
+      (new SubscriptionDeepLinkBuilder()..update(updates)).build();
+
+  _$SubscriptionDeepLink._({this.subscriptionType}) : super._();
+
+  @override
+  SubscriptionDeepLink rebuild(
+          void Function(SubscriptionDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SubscriptionDeepLinkBuilder toBuilder() =>
+      new SubscriptionDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SubscriptionDeepLink &&
+        subscriptionType == other.subscriptionType;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, subscriptionType.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('SubscriptionDeepLink')
+          ..add('subscriptionType', subscriptionType))
+        .toString();
+  }
+}
+
+class SubscriptionDeepLinkBuilder
+    implements Builder<SubscriptionDeepLink, SubscriptionDeepLinkBuilder> {
+  _$SubscriptionDeepLink _$v;
+
+  SubscriptionType _subscriptionType;
+  SubscriptionType get subscriptionType => _$this._subscriptionType;
+  set subscriptionType(SubscriptionType subscriptionType) =>
+      _$this._subscriptionType = subscriptionType;
+
+  SubscriptionDeepLinkBuilder();
+
+  SubscriptionDeepLinkBuilder get _$this {
+    if (_$v != null) {
+      _subscriptionType = _$v.subscriptionType;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(SubscriptionDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SubscriptionDeepLink;
+  }
+
+  @override
+  void update(void Function(SubscriptionDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SubscriptionDeepLink build() {
+    final _$result =
+        _$v ?? new _$SubscriptionDeepLink._(subscriptionType: subscriptionType);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$ThemeDeepLink extends ThemeDeepLink {
+  factory _$ThemeDeepLink([void Function(ThemeDeepLinkBuilder) updates]) =>
+      (new ThemeDeepLinkBuilder()..update(updates)).build();
+
+  _$ThemeDeepLink._() : super._();
+
+  @override
+  ThemeDeepLink rebuild(void Function(ThemeDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  ThemeDeepLinkBuilder toBuilder() => new ThemeDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is ThemeDeepLink;
+  }
+
+  @override
+  int get hashCode {
+    return 165948376;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('ThemeDeepLink').toString();
+  }
+}
+
+class ThemeDeepLinkBuilder
+    implements Builder<ThemeDeepLink, ThemeDeepLinkBuilder> {
+  _$ThemeDeepLink _$v;
+
+  ThemeDeepLinkBuilder();
+
+  @override
+  void replace(ThemeDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$ThemeDeepLink;
+  }
+
+  @override
+  void update(void Function(ThemeDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$ThemeDeepLink build() {
+    final _$result = _$v ?? new _$ThemeDeepLink._();
     replace(_$result);
     return _$result;
   }

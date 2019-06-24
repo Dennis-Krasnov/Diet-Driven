@@ -9,10 +9,9 @@ import 'package:meta/meta.dart';
 
 class SubscriptionEditBloc extends Bloc<SubscriptionEditEvent, SubscriptionEditState> {
   final Logger _log = Logger("subscription edit bloc");
-  final String userId;
   final UserRepository userRepository;
 
-  SubscriptionEditBloc({@required this.userId, this.userRepository}) : assert(userId != null);
+  SubscriptionEditBloc({this.userRepository});
 
   @override
   SubscriptionEditState get initialState => SubscriptionEditState();
@@ -26,6 +25,7 @@ class SubscriptionEditBloc extends Bloc<SubscriptionEditEvent, SubscriptionEditS
 
       try {
 //        userRepository.updateDarkMode(userId, event.darkMode);
+        await userRepository.subscribe(event.subscriptionType);
         event.completer?.complete();
         _log.info("subscribed to ${event.subscriptionType}");
       } on Exception catch(e) {

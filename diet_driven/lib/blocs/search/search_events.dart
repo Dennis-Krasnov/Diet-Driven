@@ -8,8 +8,8 @@ abstract class FoodSearchEvent {}
 abstract class UpdateQuery with FoodSearchEvent implements Built<UpdateQuery, UpdateQueryBuilder> {
   String get query;
 
-  UpdateQuery._();
   factory UpdateQuery([void Function(UpdateQueryBuilder b)]) = _$UpdateQuery;
+  UpdateQuery._();
 }
 
 ///// Shows error page. // OPTIMIZE: no need when no reactive flow (logic in simple catch statement)
@@ -26,6 +26,6 @@ abstract class UpdateQuery with FoodSearchEvent implements Built<UpdateQuery, Up
 abstract class SearchFoods with FoodSearchEvent implements Built<SearchFoods, SearchFoodsBuilder> {
   String get query;
 
-  SearchFoods._();
   factory SearchFoods([void Function(SearchFoodsBuilder b)]) = _$SearchFoods;
+  SearchFoods._();
 }

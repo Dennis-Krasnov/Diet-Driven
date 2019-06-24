@@ -1,38 +1,25 @@
-import * as functions from 'firebase-functions';
-import * as admin from "firebase-admin";
-// import 'firebase-functions';
+// export const helloWorld = functions.https.onRequest((request, response) => {
+//     response.send(`Hello: ${functions.config().someservice.key}`);
+// });
+
 
 // Google cloud functions using typescript
 // https://firebase.google.com/docs/functions/typescript
 
-//
-admin.initializeApp(functions.config().firebase);
+export * from "./authentication";
+export * from "./angolia";
 
 
-// https://firebase.google.com/docs/functions/config-env
-// firebase functions:config:set someservice.key="THE API KEY" someservice.id="THE CLIENT ID"
-// After running `functions:config:set`, you must redeploy functions to make the new configuration available.
-// firebase functions:config:get
-// functions.config().someservice.key
 
-// const fetch = require('node-fetch');
-
-
-// const db = admin.firestore();
-
-
-export const helloWorld = functions.https.onRequest((request, response) => {
- response.send(`Hello: ${functions.config().someservice.key}`);
-});
-// gcloud functions deploy helloWorld --runtime nodejs8 --trigger-http
-// TODO: make external tool with
-
+// function edamamFailure(error) {
+    // throw new functions.https.HttpsError('internal', 'Edamam failed: ' + error);
+// }
 
 // Runs at instance cold-start
 // const secretKeys = decryptKeys();
 
 //
-// const edamamBaseUrl = "https://api.edamam.com/";
+//
 
 // gcloud functions deploy FUNCTION_NAME --env-vars-file .env.yaml
 // gcloud functions deploy foodSuggestions --env-vars-file .env.yaml
@@ -49,65 +36,11 @@ export const helloWorld = functions.https.onRequest((request, response) => {
 //     return response.json();
 // });
 //
-// function verifyAuthenticated(context) {
-//     if (!context.auth) {
-//         throw new functions.https.HttpsError('unauthenticated', 'The function must be called while authenticated.');
-//     }
-// }
-//
-// function verifyString(data, field) {
-//     if (!(typeof data[field] === 'string') || data[field].length === 0) {
-//         throw new functions.https.HttpsError("invalid-argument", "The function requires argument:" + field);
-//     }
-// }
+
 //
 // function edamamFailure(error) {
 //     throw new functions.https.HttpsError('internal', 'Edamam failed: ' + error);
 // }
-//
-// async function decryptKeys(
-//     projectId = 'diet-driven-app',
-//     keyRingId = 'diet_driven_key_ring',
-//     cryptoKeyId = 'edamam_key',
-//     ciphertextFileName = './path/to/plaintext.txt.encrypted', // TODO: read from environment variable!
-//     plaintextFileName = './path/to/plaintext.txt.decrypted'
-// ) {
-//
-//     const appKey = "88fbceb07e4fa287b47fefa3db2004f3";
-//     const appId = "1c25cea1";
-//
-//     const fs = require('fs');
-//     const {promisify} = require('util');
-//
-//     // Import the library and create a client
-//     const kms = require('@google-cloud/kms');
-//     const client = new kms.KeyManagementServiceClient();
-//
-//     // The location of the crypto key's key ring, e.g. "global"
-//     const locationId = 'global';
-//
-//     // Reads the file to be decrypted
-//     const readFile = promisify(fs.readFile);
-//     const contentsBuffer = await readFile("mysecret.txt.encrypted");
-//     const name = client.cryptoKeyPath(
-//         projectId,
-//         locationId,
-//         keyRingId,
-//         cryptoKeyId
-//     );
-//     const ciphertext = contentsBuffer.toString("base64");
-//
-//     // Decrypts the file using the specified crypto key
-//     const [result] = await client.decrypt({name, ciphertext});
-//
-//     // Writes the decrypted file to disk TODO: remove this
-//     // const writeFile = promisify(fs.writeFile);
-//     // await writeFile(plaintextFileName, Buffer.from(result.plaintext, 'base64'));
-//     console.log(
-//         `Decrypted ${ciphertextFileName}` //, result saved to ${plaintextFileName}.`
-//     );
-// }
-
 
 //////////////////////////////////////////////////////////
 

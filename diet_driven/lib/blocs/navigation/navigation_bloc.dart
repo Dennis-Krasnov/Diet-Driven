@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:logging/logging.dart';
@@ -32,7 +31,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       .distinct();
 
     _navigationSettingsSubscription = _navigationSettingsStream.listen((navSettings) {
-      // Go to default page if navigation bloc hasn't been initialized
+      // Go to default page if navigation bloc hasn't yet been initialized
       // Uninitialization check must be in `mapEventToState(event)` since currentState is uninitialized in constructor
       dispatch(pageToEvent(navSettings.defaultPage).rebuild((b) => b..onlyIfUninitialized = true));
     });
@@ -47,29 +46,38 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   @override
   NavigationState get initialState => NavigationUninitialized();
 
-//  analyticsRepository.navigateToScreen(transition.event.page.name); // FIXME
+//  analyticsRepository.navigateToScreen(transition.event.page.name); // FIXME logging
 
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
+    if (event is ClearDeepLink) {
+      yield currentState.rebuild((b) => b
+        ..deepLink = null
+      );
+
+      _log.info("cleared deep link");
+    }
+
     // Switching users re-instantiates navigation bloc, thus checking navigation uninitialized is sufficient
     // Semantically equivalent to implication (event.onlyIfUninitialized -> currentState is NavigationUninitialized)
     if (!event.onlyIfUninitialized || currentState is NavigationUninitialized) {
       if (event is NavigateToDiary) {
-        yield DiaryTab((b) => b..date = event.date);
+        yield DiaryTab((b) => b
+          ..deepLink = event.deepLink
+        );
       }
 
       if (event is NavigateToTrack) {
         yield TrackTab();
       }
 
-      if (event is NavigateToDiet) {
-        yield DietTab();
+      if (event is NavigateToReports) {
+        yield ReportsTab();
       }
 
-      if (event is NavigateToProfile) {
-        yield ProfileTab((b) => b
-          ..setting = event.setting
-          ..subscriptionType = event.subscriptionType
+      if (event is NavigateToSettings) {
+        yield SettingsTab((b) => b
+          ..deepLink = event.deepLink
         );
       }
 
@@ -85,11 +93,11 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       case Page.track:
         return NavigateToTrack();
         break;
-      case Page.diet:
-        return NavigateToDiet();
+      case Page.reports:
+        return NavigateToReports();
         break;
-      case Page.profile:
-        return NavigateToProfile();
+      case Page.settings:
+        return NavigateToSettings();
         break;
     }
   }

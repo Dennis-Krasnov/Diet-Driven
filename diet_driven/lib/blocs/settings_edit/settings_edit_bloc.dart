@@ -23,7 +23,7 @@ class SettingsEditBloc extends Bloc<SettingsEditEvent, SettingsEditState> {
   Stream<SettingsEditState> mapEventToState(SettingsEditEvent event) async* {
     if (event is UpdateDarkMode) {
       try {
-        userRepository.updateDarkMode(userId, event.darkMode);
+        await userRepository.updateDarkMode(userId, event.darkMode);
         event.completer?.complete();
         _log.info("updated dark mode");
       } on Exception catch(e) {

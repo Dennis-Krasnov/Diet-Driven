@@ -49,6 +49,7 @@ class EdamamProvider {
     final Map<String, dynamic> parsed = response.data["parsed"];
     final List<dynamic> hints = response.data["hints"];
 
+    // FIXME: use jsonSerializers!!!
     return BuiltList<FoodRecord>(
       hints.map<FoodRecord>((dynamic hint) {
         final Map<String, dynamic> foodRecord = hint["food"];

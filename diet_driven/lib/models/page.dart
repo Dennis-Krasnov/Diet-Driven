@@ -15,13 +15,14 @@ class Page extends EnumClass {
   static const Page track = _$track;
 
   /// ...
-  static const Page diet = _$diet;
-
-  /// ...
-  static const Page profile = _$profile;
+  static const Page reports = _$reports;
 
   /// ...
   static const Page recipes = _$recipes;
+
+  /// ...
+  static const Page settings = _$settings;
+
 
   const Page._(String name) : super(name);
 

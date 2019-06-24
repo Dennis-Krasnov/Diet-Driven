@@ -1,11 +1,11 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/screens/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/screens/diary_page.dart';
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:diet_driven/screens/profile_page.dart';
 import 'package:diet_driven/screens/under_construction.dart';
 
 // TODO: ensure scroll is also persisted
@@ -61,7 +61,7 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
             return Scaffold(
               // Need to specify custom back button behaviour
               // Otherwise app is dismissed and we are back to the home screen
-              body: WillPopScope(
+              body: WillPopScope( // FIXME: this broke...
                 onWillPop: () async {
                   final Page currentPage = Page.values.toList()[tabIndex];
                   // Page doesn't have nested navigation
@@ -111,11 +111,11 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
       case Page.track:
         return const UnderConstruction(page: "Tracking");
         break;
-      case Page.diet:
-        return const UnderConstruction(page: "Diet");
+      case Page.reports:
+        return const UnderConstruction(page: "Reports");
         break;
-      case Page.profile:
-        return ProfilePage(navigationKey: navigationKey);
+      case Page.settings:
+        return SettingsPage(navigationKey: navigationKey);
         break;
       default:
         return Container(child: Center(child: Text("couldn't find your $page"))); // OPTIMIZE
@@ -131,11 +131,11 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
       case Page.track:
         return const Icon(Icons.list);
         break;
-      case Page.diet:
-        return const Icon(Icons.local_grocery_store);
+      case Page.reports:
+        return const Icon(Icons.trending_up);
         break;
-      case Page.profile:
-        return const Icon(Icons.person);
+      case Page.settings:
+        return const Icon(Icons.settings);
         break;
       default:
         return const Icon(Icons.error_outline);
