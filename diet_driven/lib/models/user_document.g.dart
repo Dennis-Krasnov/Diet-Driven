@@ -18,50 +18,21 @@ class _$UserDocumentSerializer implements StructuredSerializer<UserDocument> {
   @override
   Iterable serialize(Serializers serializers, UserDocument object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[
-      'currentSubscription',
-      serializers.serialize(object.currentSubscription,
-          specifiedType: const FullType(SubscriptionType)),
-    ];
-
-    return result;
+    return <Object>[];
   }
 
   @override
   UserDocument deserialize(Serializers serializers, Iterable serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new UserDocumentBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current as String;
-      iterator.moveNext();
-      final dynamic value = iterator.current;
-      switch (key) {
-        case 'currentSubscription':
-          result.currentSubscription = serializers.deserialize(value,
-                  specifiedType: const FullType(SubscriptionType))
-              as SubscriptionType;
-          break;
-      }
-    }
-
-    return result.build();
+    return new UserDocumentBuilder().build();
   }
 }
 
 class _$UserDocument extends UserDocument {
-  @override
-  final SubscriptionType currentSubscription;
-
   factory _$UserDocument([void Function(UserDocumentBuilder) updates]) =>
       (new UserDocumentBuilder()..update(updates)).build();
 
-  _$UserDocument._({this.currentSubscription}) : super._() {
-    if (currentSubscription == null) {
-      throw new BuiltValueNullFieldError('UserDocument', 'currentSubscription');
-    }
-  }
+  _$UserDocument._() : super._();
 
   @override
   UserDocument rebuild(void Function(UserDocumentBuilder) updates) =>
@@ -73,20 +44,17 @@ class _$UserDocument extends UserDocument {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is UserDocument &&
-        currentSubscription == other.currentSubscription;
+    return other is UserDocument;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, currentSubscription.hashCode));
+    return 189037343;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('UserDocument')
-          ..add('currentSubscription', currentSubscription))
-        .toString();
+    return newBuiltValueToStringHelper('UserDocument').toString();
   }
 }
 
@@ -94,20 +62,7 @@ class UserDocumentBuilder
     implements Builder<UserDocument, UserDocumentBuilder> {
   _$UserDocument _$v;
 
-  SubscriptionType _currentSubscription;
-  SubscriptionType get currentSubscription => _$this._currentSubscription;
-  set currentSubscription(SubscriptionType currentSubscription) =>
-      _$this._currentSubscription = currentSubscription;
-
   UserDocumentBuilder();
-
-  UserDocumentBuilder get _$this {
-    if (_$v != null) {
-      _currentSubscription = _$v.currentSubscription;
-      _$v = null;
-    }
-    return this;
-  }
 
   @override
   void replace(UserDocument other) {
@@ -124,8 +79,7 @@ class UserDocumentBuilder
 
   @override
   _$UserDocument build() {
-    final _$result =
-        _$v ?? new _$UserDocument._(currentSubscription: currentSubscription);
+    final _$result = _$v ?? new _$UserDocument._();
     replace(_$result);
     return _$result;
   }

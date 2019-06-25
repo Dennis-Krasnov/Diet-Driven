@@ -27,13 +27,16 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       // Load user data only if user exists
       .where((user) => user != null && user.uid != null)
       .switchMap<UserDataEvent>((user) =>
-        CombineLatestStream.combine2(
+        CombineLatestStream.combine3(
           userRepository.userDocumentStream(user.uid),
           userRepository.settingsStream(user.uid),
-          (UserDocument userDocument, Settings settings) => RemoteUserDataArrived((b) => b
+          // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
+          Observable<SubscriptionType>.just(SubscriptionType.all_access),
+          (UserDocument userDocument, Settings settings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
             ..authentication = user
             ..userDocument = userDocument.toBuilder()
             ..settings = settings.toBuilder()
+            ..subscription = subscriptionType
           ),
         )
       )
@@ -65,6 +68,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..authentication = event.authentication
         ..userDocument = event.userDocument.toBuilder()
         ..settings = event.settings.toBuilder()
+        ..subscription = event.subscription
       );
 
       _log.info("loaded user data");

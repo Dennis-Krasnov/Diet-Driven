@@ -24,7 +24,18 @@ class DiaryPage extends StatelessWidget {
         }
         if (state is FoodDiaryLoaded) {
           return Scaffold(
-            appBar: AppBar(title: const Text("Diary")), // TODO: date!! // TODO: click to go to info!
+            appBar: AppBar(
+              title: const Text("Diary"),
+              actions: <Widget>[
+                IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
+                    ..deepLink = DiarySettingsDeepLink()
+                  )),
+                )
+              ],
+            ),
+            // TODO: date!! // TODO: click to go to info!
             body: Center(
               child: Column(
                 children: [

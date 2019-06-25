@@ -637,86 +637,6 @@ class ProfileDeepLinkBuilder
   }
 }
 
-class _$SubscriptionDeepLink extends SubscriptionDeepLink {
-  @override
-  final SubscriptionType subscriptionType;
-
-  factory _$SubscriptionDeepLink(
-          [void Function(SubscriptionDeepLinkBuilder) updates]) =>
-      (new SubscriptionDeepLinkBuilder()..update(updates)).build();
-
-  _$SubscriptionDeepLink._({this.subscriptionType}) : super._();
-
-  @override
-  SubscriptionDeepLink rebuild(
-          void Function(SubscriptionDeepLinkBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  SubscriptionDeepLinkBuilder toBuilder() =>
-      new SubscriptionDeepLinkBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is SubscriptionDeepLink &&
-        subscriptionType == other.subscriptionType;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, subscriptionType.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('SubscriptionDeepLink')
-          ..add('subscriptionType', subscriptionType))
-        .toString();
-  }
-}
-
-class SubscriptionDeepLinkBuilder
-    implements Builder<SubscriptionDeepLink, SubscriptionDeepLinkBuilder> {
-  _$SubscriptionDeepLink _$v;
-
-  SubscriptionType _subscriptionType;
-  SubscriptionType get subscriptionType => _$this._subscriptionType;
-  set subscriptionType(SubscriptionType subscriptionType) =>
-      _$this._subscriptionType = subscriptionType;
-
-  SubscriptionDeepLinkBuilder();
-
-  SubscriptionDeepLinkBuilder get _$this {
-    if (_$v != null) {
-      _subscriptionType = _$v.subscriptionType;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(SubscriptionDeepLink other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$SubscriptionDeepLink;
-  }
-
-  @override
-  void update(void Function(SubscriptionDeepLinkBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$SubscriptionDeepLink build() {
-    final _$result =
-        _$v ?? new _$SubscriptionDeepLink._(subscriptionType: subscriptionType);
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$ThemeDeepLink extends ThemeDeepLink {
   factory _$ThemeDeepLink([void Function(ThemeDeepLinkBuilder) updates]) =>
       (new ThemeDeepLinkBuilder()..update(updates)).build();
@@ -769,6 +689,66 @@ class ThemeDeepLinkBuilder
   @override
   _$ThemeDeepLink build() {
     final _$result = _$v ?? new _$ThemeDeepLink._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$DiarySettingsDeepLink extends DiarySettingsDeepLink {
+  factory _$DiarySettingsDeepLink(
+          [void Function(DiarySettingsDeepLinkBuilder) updates]) =>
+      (new DiarySettingsDeepLinkBuilder()..update(updates)).build();
+
+  _$DiarySettingsDeepLink._() : super._();
+
+  @override
+  DiarySettingsDeepLink rebuild(
+          void Function(DiarySettingsDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DiarySettingsDeepLinkBuilder toBuilder() =>
+      new DiarySettingsDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DiarySettingsDeepLink;
+  }
+
+  @override
+  int get hashCode {
+    return 736479308;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('DiarySettingsDeepLink').toString();
+  }
+}
+
+class DiarySettingsDeepLinkBuilder
+    implements Builder<DiarySettingsDeepLink, DiarySettingsDeepLinkBuilder> {
+  _$DiarySettingsDeepLink _$v;
+
+  DiarySettingsDeepLinkBuilder();
+
+  @override
+  void replace(DiarySettingsDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DiarySettingsDeepLink;
+  }
+
+  @override
+  void update(void Function(DiarySettingsDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DiarySettingsDeepLink build() {
+    final _$result = _$v ?? new _$DiarySettingsDeepLink._();
     replace(_$result);
     return _$result;
   }

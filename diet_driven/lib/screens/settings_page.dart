@@ -1,3 +1,4 @@
+import 'package:diet_driven/screens/settings/diary_settings_page.dart';
 import 'package:diet_driven/screens/settings/general_settings_page.dart';
 import 'package:diet_driven/screens/settings/theme_settings_page.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class SettingsPage extends StatelessWidget {
   /// Profile page's navigator routes.
   Route generateRoute(BuildContext context, RouteSettings settings) {
     final userId = (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid;
+    final bool withAnimation = settings?.arguments ?? true;
 
     WidgetBuilder builder;
     switch (settings.name) {
@@ -46,7 +48,7 @@ class SettingsPage extends StatelessWidget {
         );
         break;
       case 'settings/diary':
-        builder = (BuildContext _) => GeneralSettingsPage();
+        builder = (BuildContext _) => DiarySettingsPage();
         break;
         // ,,,
       case 'settings/theme':
@@ -62,6 +64,33 @@ class SettingsPage extends StatelessWidget {
     }
 
     // TODO: make global navigator follow this builder pattern as well
-    return MaterialPageRoute<void>(builder: builder, settings: settings);
+
+    // Animate only if coming from same page
+    if (withAnimation) {
+      return MaterialPageRoute<void>(builder: builder, settings: settings);
+    }
+    else {
+      return NoAnimationMaterialPageRoute<void>(builder: builder, settings: settings);
+    }
+    // TODO: debug back button!! - unmute breakpoints, document all these decisions!
+  }
+}
+
+class NoAnimationMaterialPageRoute<T> extends MaterialPageRoute<T> {
+  NoAnimationMaterialPageRoute({
+    @required WidgetBuilder builder,
+    RouteSettings settings,
+    bool maintainState = true,
+    bool fullscreenDialog = false,
+  }) : super(
+      builder: builder,
+      maintainState: maintainState,
+      settings: settings,
+      fullscreenDialog: fullscreenDialog);
+
+  @override
+  Widget buildTransitions(BuildContext context, Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) {
+    return child;
   }
 }

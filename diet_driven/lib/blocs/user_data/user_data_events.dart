@@ -15,6 +15,8 @@ abstract class RemoteUserDataArrived with UserDataEvent implements Built<RemoteU
 
   Settings get settings;
 
+  SubscriptionType get subscription;
+
   factory RemoteUserDataArrived([void Function(RemoteUserDataArrivedBuilder b)]) = _$RemoteUserDataArrived;
   RemoteUserDataArrived._();
 }

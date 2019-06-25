@@ -14,7 +14,7 @@ class SubscriptionEditBloc extends Bloc<SubscriptionEditEvent, SubscriptionEditS
   SubscriptionEditBloc({this.userRepository});
 
   @override
-  SubscriptionEditState get initialState => SubscriptionEditState();
+  SubscriptionEditState get initialState => SubscriptionLoaded();
 
   @override
   Stream<SubscriptionEditState> mapEventToState(SubscriptionEditEvent event) async* {
@@ -25,11 +25,17 @@ class SubscriptionEditBloc extends Bloc<SubscriptionEditEvent, SubscriptionEditS
 
       try {
 //        userRepository.updateDarkMode(userId, event.darkMode);
+        yield SubscriptionLoading();
+
         await userRepository.subscribe(event.subscriptionType);
         event.completer?.complete();
         _log.info("subscribed to ${event.subscriptionType}");
       } on Exception catch(e) {
         event.completer?.completeError(e);
+//        yield SubscriptionFailed();
+      } finally {
+        // FIXME: create error state instead
+        yield SubscriptionLoaded();
       }
     }
     // TODO: switch subscriptions!

@@ -12,43 +12,24 @@ class MainSettingsPage extends StatelessWidget {
     return BlocListener<NavigationEvent, NavigationState>(
       bloc: navigationBloc,
       listener: (BuildContext context, NavigationState state) {
-        // Deep link handler
+        // Settings deep link handler
         if (state is SettingsTab && state.deepLink != null) {
+          // Guarantee root page of settings navigation
+          Navigator.of(context).popUntil(ModalRoute.withName('settings')); // TODO: without animation
+
           if (state.deepLink is ProfileDeepLink) {
-            final SettingsDeepLink link = state.deepLink;
 
-
-            // TODO: push to 'profile/settings'
-
-//            if (link.setting != null) {
-            // TODO: then push to 'profile/settings/...' (so that back button works)
-//            }
-
-
-//            print("SETTING IS ${link.setting}");
-
-            // TODO: reusable method
-//            if (Navigator.of(context).canPop())
-//              Navigator.of(context).popUntil(ModalRoute.withName('/'));
-//            Navigator.of(context).pushNamed("settings/profile");
           }
 
-          if (state.deepLink is SubscriptionDeepLink) {
-            final SubscriptionDeepLink link = state.deepLink;
-
-            print("SUBSCRIPTION IS ${link.subscriptionType}");
-            if (Navigator.of(context).canPop())
-              Navigator.of(context).popUntil(ModalRoute.withName('/'));
-            Navigator.of(context).pushNamed("settings/subscription");
+          if (state.deepLink is DiarySettingsDeepLink) {
+            Navigator.of(context).pushNamed("settings/diary", arguments: false); // FIXME state is SettingsTab doesn't work as already in settings TODO pass as argument in deep link!!
           }
 
           if (state.deepLink is ThemeDeepLink) {
-            if (Navigator.of(context).canPop())
-              Navigator.of(context).popUntil(ModalRoute.withName('/'));
-            Navigator.of(context).pushNamed("settings/theme");
+            Navigator.of(context).pushNamed("settings/theme", arguments: false);
           }
 
-          // Clearing deep link to ensure it's only called once
+          // Ensuring deep link is used exactly once
           navigationBloc.dispatch(ClearDeepLink());
         }
       },
@@ -58,15 +39,7 @@ class MainSettingsPage extends StatelessWidget {
         builder: (BuildContext context, UserDataState userDataState) {
           if (userDataState is UserDataLoaded) {
             return Scaffold(
-              appBar: AppBar(
-                title: const Text("Settings"),
-                actions: <Widget>[
-                  IconButton(
-                    icon: const Icon(Icons.search),
-                    onPressed: () => null,
-                  )
-                ],
-              ),
+              appBar: AppBar(),
               body: SafeArea(
                 child: ListView(
                   children: <Widget>[
@@ -78,43 +51,37 @@ class MainSettingsPage extends StatelessWidget {
                     ),
                     ListTile(
                       leading: Image.asset("assets/profile.png"),
-                      title: const Text("Profile"),
-                      subtitle: const Text("Goals, "),
+                      title: const Text("Account"),
+                      subtitle: const Text("Profile, Subscriptions, Import/Export data"),
                       onTap: () => null,
-                    ),
-                    ListTile(
-                      leading: Image.asset("assets/wallet.png"),
-                      title: const Text("Subscription"),
-                      subtitle: Text(userDataState.userDocument.currentSubscription == SubscriptionType.none
-                          ? "Not currently subscribed"
-                          : "Subscribed to ${userDataState.userDocument.currentSubscription.toString()}"
-                      ),
-                      onTap: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
-                        ..deepLink = SubscriptionDeepLink((b) => b..subscriptionType = SubscriptionType.diet_driven_yearly)
-                      )),
+                      enabled: false,
                     ),
                     ListTile(
                       leading: Image.asset("assets/food.png"),
                       title: const Text("Diary"),
-                      subtitle: const Text("..."),
-                      onTap: () => null,
+                      subtitle: const Text("Calories, Nutrients, Meals, Logging"),
+                      onTap: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
+                        ..deepLink = DiarySettingsDeepLink()
+                      )),
                     ),
                     ListTile(
                       leading: Image.asset("assets/track.png"),
                       title: const Text("Track"),
-                      subtitle: const Text("Under development..."),
+                      subtitle: const Text("Measurements, Goals"),
                       onTap: () => null,
+                      enabled: false,
                     ),
                     ListTile(
                       leading: Image.asset("assets/graph.png"),
                       title: const Text("Reports"),
-                      subtitle: const Text("Under development..."),
+                      subtitle: const Text("Time intervals, "),
                       onTap: () => null,
+                      enabled: false,
                     ),
                     ListTile(
                       leading: Image.asset("assets/colour.png"),
-                      title: const Text("Theme"),
-                      subtitle: const Text("Dark mode, Colour scheme"),
+                      title: const Text("Theme"), // TODO: rename bloc, from theme to visuals?
+                      subtitle: const Text("Navigation, Dark mode, Colour scheme"),
                       onTap: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
                         ..deepLink = ThemeDeepLink()
                       )),
@@ -122,15 +89,33 @@ class MainSettingsPage extends StatelessWidget {
                     ListTile(
                       leading: Image.asset("assets/sync.png"),
                       title: const Text("Integrations"),
-                      subtitle: const Text("Under development..."),
+                      subtitle: const Text("Google Fit, Fitbit"),
                       onTap: () => null,
+                      enabled: false,
+                    ),
+                    ListTile(
+                      leading: Image.asset("assets/mail.png"),
+                      title: const Text("Notifications"),
+                      subtitle: const Text("None"),
+                      onTap: () => null,
+                      enabled: false,
+                    ),
+                    ListTile(
+                      leading: Image.asset("assets/track.png"),
+                      title: const Text("Coaching"),
+                      subtitle: const Text("None"),
+                      onTap: () => null,
+                      enabled: false,
                     ),
                     ListTile(
                       leading: Image.asset("assets/cart.png"),
                       title: const Text("About"),
-                      subtitle: const Text("Under development..."),
+                      subtitle: const Text("Help, MIT license, Feedback"),
                       onTap: () => null,
+                      enabled: false,
                     ),
+                    // TODO: notifications
+                    // TODO: coaching
                   ],
                 )
               )
@@ -141,20 +126,3 @@ class MainSettingsPage extends StatelessWidget {
     );
   }
 }
-
-//                      IconButton(
-//                          icon: const Icon(Icons.settings),
-//                          onPressed: () {
-// TODO: dispatch event in order to clear previous deep links!!!
-//                      Navigator.of(context).pushNamed("profile/settings");
-//                            BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToProfile((b) => b
-//                              ..deepLink = SettingsDeepLink()
-//                            ));
-//                          }
-//                      ),
-//                          RaisedButton(
-//                            child: const Text("go to settings parameterized"),
-//                            onPressed: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
-//                              ..deepLink = SettingsDeepLink((b) => b..setting = Random().nextInt(10000).toString())
-//                            )),
-//                          ),

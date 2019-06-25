@@ -51,6 +51,8 @@ abstract class UserDataLoaded with UserDataState implements Built<UserDataLoaded
 
   Settings get settings;
 
+  SubscriptionType get subscription;
+
 ////  TODO: accepted terms (defaults to false), subscribedToEmails, etc!
 
   factory UserDataLoaded([void Function(UserDataLoadedBuilder b)]) = _$UserDataLoaded;

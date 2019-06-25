@@ -144,24 +144,30 @@ abstract class NavigateToSettingsBuilder implements NavigationEventBuilder, Buil
 /// Settings-specific deep link
 abstract class SettingsDeepLink implements DeepLink {}
 
-/// Deep link to [profile] under settings tab.
+/// Deep link to [profile] settings.
 abstract class ProfileDeepLink implements SettingsDeepLink, Built<ProfileDeepLink, ProfileDeepLinkBuilder> {
   factory ProfileDeepLink([void Function(ProfileDeepLinkBuilder) updates]) = _$ProfileDeepLink;
   ProfileDeepLink._();
 }
 
 
-/// Deep link to [subscriptionType] under settings tab.
-abstract class SubscriptionDeepLink implements SettingsDeepLink, Built<SubscriptionDeepLink, SubscriptionDeepLinkBuilder> {
-  @nullable
-  SubscriptionType get subscriptionType;
+/// Deep link to [subscriptionType] settings.
+//abstract class SubscriptionDeepLink implements SettingsDeepLink, Built<SubscriptionDeepLink, SubscriptionDeepLinkBuilder> {
+//  @nullable
+//  SubscriptionType get subscriptionType;
+//
+//  factory SubscriptionDeepLink([void Function(SubscriptionDeepLinkBuilder) updates]) = _$SubscriptionDeepLink;
+//  SubscriptionDeepLink._();
+//}
 
-  factory SubscriptionDeepLink([void Function(SubscriptionDeepLinkBuilder) updates]) = _$SubscriptionDeepLink;
-  SubscriptionDeepLink._();
-}
-
-/// Deep link to [theme] under settings tab.
+/// Deep link to [theme] settings.
 abstract class ThemeDeepLink implements SettingsDeepLink, Built<ThemeDeepLink, ThemeDeepLinkBuilder> {
   factory ThemeDeepLink([void Function(ThemeDeepLinkBuilder) updates]) = _$ThemeDeepLink;
   ThemeDeepLink._();
+}
+
+/// Deep link to [diary] settings.
+abstract class DiarySettingsDeepLink implements SettingsDeepLink, Built<DiarySettingsDeepLink, DiarySettingsDeepLinkBuilder> {
+  factory DiarySettingsDeepLink([void Function(DiarySettingsDeepLinkBuilder) updates]) = _$DiarySettingsDeepLink;
+  DiarySettingsDeepLink._();
 }

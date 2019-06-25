@@ -12,6 +12,7 @@ class SubscriptionSettingsPage extends StatelessWidget {
     return BlocBuilder<UserDataEvent, UserDataState>(
       bloc: BlocProvider.of<UserDataBloc>(context),
       builder: (BuildContext context, UserDataState userDataState) {
+        // TODO: also build off of subscription bloc, show loading, etc
         return Scaffold(
           appBar: AppBar(title: const Text("Subscription")),
           body: SafeArea(
@@ -29,7 +30,8 @@ class SubscriptionSettingsPage extends StatelessWidget {
                     ..subscriptionType = newValue
                     ..completer = infoSnackBarCompleter(context, "subscribed to $newValue") // TODO: welcome to pro / sorry to see you go screen
                   )),
-                  value: (userDataState as UserDataLoaded).userDocument.currentSubscription,
+                  value: (userDataState as UserDataLoaded).subscription,
+                  // TODO: loading state!
                 )
               ],
             )

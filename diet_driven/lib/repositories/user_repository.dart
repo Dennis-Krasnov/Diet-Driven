@@ -136,20 +136,21 @@ class UserRepository {
       ..darkMode = darkMode
     );
 
-    _firestoreProvider.replaceSettings(userId, settingsBuilder.build());
+    return _firestoreProvider.replaceSettings(userId, settingsBuilder.build());
   }
 
   ///
   /// Uses authenticated user's userId
   Future<void> subscribe(SubscriptionType subscriptionType) async {
-    assert(subscriptionType != null);
-
-    // TODO: move to provider
-    final HttpsCallable updateSubscription = CloudFunctions.instance.getHttpsCallable(
-        functionName: 'updateSubscription'
-    )..timeout = Duration(seconds: 10);
-
-//   Cloud function parameters CANNOT be defined as <String, dynamic>{}
-    return updateSubscription({"subscriptionType": subscriptionType.toString()});
+    // TODO: use IAP library
+//    assert(subscriptionType != null);
+//
+//    // TODO: move to provider
+//    final HttpsCallable updateSubscription = CloudFunctions.instance.getHttpsCallable(
+//        functionName: 'updateSubscription'
+//    )..timeout = Duration(seconds: 10);
+//
+////   Cloud function parameters CANNOT be defined as <String, dynamic>{}
+//    return updateSubscription({"subscriptionType": subscriptionType.toString()});
   }
 }

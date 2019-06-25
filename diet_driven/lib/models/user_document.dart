@@ -9,7 +9,7 @@ part 'user_document.g.dart';
 abstract class UserDocument implements Built<UserDocument, UserDocumentBuilder> {
   static Serializer<UserDocument> get serializer => _$userDocumentSerializer;
 
-  SubscriptionType get currentSubscription;
+//  SubscriptionType get currentSubscription;
 
   factory UserDocument([void Function(UserDocumentBuilder b)]) = _$UserDocument;
   UserDocument._();

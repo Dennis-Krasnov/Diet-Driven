@@ -6,61 +6,121 @@ part of 'subscription_edit_state.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-class _$SubscriptionEditState extends SubscriptionEditState {
-  factory _$SubscriptionEditState(
-          [void Function(SubscriptionEditStateBuilder) updates]) =>
-      (new SubscriptionEditStateBuilder()..update(updates)).build();
+class _$SubscriptionLoading extends SubscriptionLoading {
+  factory _$SubscriptionLoading(
+          [void Function(SubscriptionLoadingBuilder) updates]) =>
+      (new SubscriptionLoadingBuilder()..update(updates)).build();
 
-  _$SubscriptionEditState._() : super._();
+  _$SubscriptionLoading._() : super._();
 
   @override
-  SubscriptionEditState rebuild(
-          void Function(SubscriptionEditStateBuilder) updates) =>
+  SubscriptionLoading rebuild(
+          void Function(SubscriptionLoadingBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  SubscriptionEditStateBuilder toBuilder() =>
-      new SubscriptionEditStateBuilder()..replace(this);
+  SubscriptionLoadingBuilder toBuilder() =>
+      new SubscriptionLoadingBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SubscriptionEditState;
+    return other is SubscriptionLoading;
   }
 
   @override
   int get hashCode {
-    return 240260161;
+    return 64726859;
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('SubscriptionEditState').toString();
+    return newBuiltValueToStringHelper('SubscriptionLoading').toString();
   }
 }
 
-class SubscriptionEditStateBuilder
-    implements Builder<SubscriptionEditState, SubscriptionEditStateBuilder> {
-  _$SubscriptionEditState _$v;
+class SubscriptionLoadingBuilder
+    implements Builder<SubscriptionLoading, SubscriptionLoadingBuilder> {
+  _$SubscriptionLoading _$v;
 
-  SubscriptionEditStateBuilder();
+  SubscriptionLoadingBuilder();
 
   @override
-  void replace(SubscriptionEditState other) {
+  void replace(SubscriptionLoading other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$SubscriptionEditState;
+    _$v = other as _$SubscriptionLoading;
   }
 
   @override
-  void update(void Function(SubscriptionEditStateBuilder) updates) {
+  void update(void Function(SubscriptionLoadingBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$SubscriptionEditState build() {
-    final _$result = _$v ?? new _$SubscriptionEditState._();
+  _$SubscriptionLoading build() {
+    final _$result = _$v ?? new _$SubscriptionLoading._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SubscriptionLoaded extends SubscriptionLoaded {
+  factory _$SubscriptionLoaded(
+          [void Function(SubscriptionLoadedBuilder) updates]) =>
+      (new SubscriptionLoadedBuilder()..update(updates)).build();
+
+  _$SubscriptionLoaded._() : super._();
+
+  @override
+  SubscriptionLoaded rebuild(
+          void Function(SubscriptionLoadedBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SubscriptionLoadedBuilder toBuilder() =>
+      new SubscriptionLoadedBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SubscriptionLoaded;
+  }
+
+  @override
+  int get hashCode {
+    return 827105314;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('SubscriptionLoaded').toString();
+  }
+}
+
+class SubscriptionLoadedBuilder
+    implements Builder<SubscriptionLoaded, SubscriptionLoadedBuilder> {
+  _$SubscriptionLoaded _$v;
+
+  SubscriptionLoadedBuilder();
+
+  @override
+  void replace(SubscriptionLoaded other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SubscriptionLoaded;
+  }
+
+  @override
+  void update(void Function(SubscriptionLoadedBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SubscriptionLoaded build() {
+    final _$result = _$v ?? new _$SubscriptionLoaded._();
     replace(_$result);
     return _$result;
   }
