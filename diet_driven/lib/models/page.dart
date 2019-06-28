@@ -24,6 +24,25 @@ class Page extends EnumClass {
   static const Page settings = _$settings;
 
 
+  int toFontAwesomeIcon() {
+    switch (this) {
+      case Page.diary:
+        return 0xf5d1;
+        break;
+      case Page.track:
+        return 0xf496;
+        break;
+      case Page.reports:
+        return 0xf201;
+        break;
+      case Page.settings:
+        return 0xf013; // cog
+        break;
+      default:
+        return null;
+    }
+  }
+  
   const Page._(String name) : super(name);
 
   static BuiltSet<Page> get values => _$values;

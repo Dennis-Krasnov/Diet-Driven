@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/settings_edit/settings_edit.dart';
-import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
 
 class SettingsEditBloc extends Bloc<SettingsEditEvent, SettingsEditState> {
   final Logger _log = Logger("settings edit bloc");
@@ -17,7 +15,7 @@ class SettingsEditBloc extends Bloc<SettingsEditEvent, SettingsEditState> {
   SettingsEditBloc({@required this.userId, this.userRepository}) : assert(userId != null);
 
   @override
-  SettingsEditState get initialState => SettingsEditState(); // TODO: cycle between 'ready' and 'loading', store big form fields
+  SettingsEditState get initialState => SettingsEditState();
 
   @override
   Stream<SettingsEditState> mapEventToState(SettingsEditEvent event) async* {
@@ -25,12 +23,30 @@ class SettingsEditBloc extends Bloc<SettingsEditEvent, SettingsEditState> {
       try {
         await userRepository.updateDarkMode(userId, event.darkMode);
         event.completer?.complete();
-        _log.info("updated dark mode");
+        _log.info("dark mode now ${event.darkMode}");
       } on Exception catch(e) {
         event.completer?.completeError(e);
       }
     }
+
+//    if (event is UpdateDarkMode && currentState.updateDarkModeState != "loading") {
+//      try {
+//        yield SettingsEditState((b) => b..updateDarkModeState = "loading");
+//        await Future<void>.delayed(Duration(seconds: 3));
+//        await userRepository.updateDarkMode(userId, event.darkMode);
+//        event.completer?.complete();
+//        yield SettingsEditState((b) => b..updateDarkModeState = "loaded");
+//        _log.info("updated dark mode");
+//      } on Exception catch(e) {
+//        event.completer?.completeError(e);
+//        yield SettingsEditState((b) => b..updateDarkModeState = "failed");
+//      } finally {
+//        // FIXME: decide on whether to use completers (works individually) or error state (global load)
+//        yield SettingsEditState();
+//      }
+//    }
   }
 }
+
 
 

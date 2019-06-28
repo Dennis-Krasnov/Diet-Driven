@@ -1,5 +1,6 @@
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/screens/tabbed_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -39,25 +40,27 @@ class MainSettingsPage extends StatelessWidget {
         builder: (BuildContext context, UserDataState userDataState) {
           if (userDataState is UserDataLoaded) {
             return Scaffold(
-              appBar: AppBar(),
+              appBar: AppBar(
+                title: const Text("Settings"),
+              ),
               body: SafeArea(
                 child: ListView(
                   children: <Widget>[
                     ListTile(
-                      leading: Image.asset("assets/settings.png"),
-                      title: const Text("General"),
-                      subtitle: const Text("Language, Units, Time"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf013)), backgroundColor: Colors.white,), //, foregroundColor: Colors.green
+                      title: Text("General", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Language, Units, Time", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                     ),
                     ListTile(
-                      leading: Image.asset("assets/profile.png"),
-                      title: const Text("Account"),
-                      subtitle: const Text("Profile, Subscriptions, Import/Export data"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf007)), backgroundColor: Colors.white,),
+                      title: Text("Account", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Profile, Subscriptions, Import/Export data", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                       enabled: false,
                     ),
                     ListTile(
-                      leading: Image.asset("assets/food.png"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf5d1)), backgroundColor: Colors.white,),
                       title: const Text("Diary"),
                       subtitle: const Text("Calories, Nutrients, Meals, Logging"),
                       onTap: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
@@ -65,57 +68,55 @@ class MainSettingsPage extends StatelessWidget {
                       )),
                     ),
                     ListTile(
-                      leading: Image.asset("assets/track.png"),
-                      title: const Text("Track"),
-                      subtitle: const Text("Measurements, Goals"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf496)), backgroundColor: Colors.white,),
+                      title: Text("Track", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Measurements, Goals", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                       enabled: false,
                     ),
                     ListTile(
-                      leading: Image.asset("assets/graph.png"),
-                      title: const Text("Reports"),
-                      subtitle: const Text("Time intervals, "),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf201)), backgroundColor: Colors.white,),
+                      title: Text("Reports", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Time intervals, ", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                       enabled: false,
                     ),
                     ListTile(
-                      leading: Image.asset("assets/colour.png"),
-                      title: const Text("Theme"), // TODO: rename bloc, from theme to visuals?
-                      subtitle: const Text("Navigation, Dark mode, Colour scheme"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf53f)), backgroundColor: Colors.white,),
+                      title: Text("Theme", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Navigation, Dark mode, Colour scheme", style: Theme.of(context).textTheme.body1),
                       onTap: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
-                        ..deepLink = ThemeDeepLink()
+                        ..deepLink = ThemeDeepLink() // TODO: rename bloc, from theme to visuals?
                       )),
                     ),
                     ListTile(
-                      leading: Image.asset("assets/sync.png"),
-                      title: const Text("Integrations"),
-                      subtitle: const Text("Google Fit, Fitbit"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf021)), backgroundColor: Colors.white,),
+                      title: Text("Integrations", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Google Fit, Fitbit", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                       enabled: false,
                     ),
                     ListTile(
-                      leading: Image.asset("assets/mail.png"),
-                      title: const Text("Notifications"),
-                      subtitle: const Text("None"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf0f3)), backgroundColor: Colors.white,),
+                      title: Text("Notifications", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Google Fit, Fitbit", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                       enabled: false,
                     ),
                     ListTile(
-                      leading: Image.asset("assets/track.png"),
-                      title: const Text("Coaching"),
-                      subtitle: const Text("None"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf460)), backgroundColor: Colors.white,),
+                      title: Text("Coaching", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("None", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                       enabled: false,
                     ),
                     ListTile(
-                      leading: Image.asset("assets/cart.png"),
-                      title: const Text("About"),
-                      subtitle: const Text("Help, MIT license, Feedback"),
+                      leading: const CircleAvatar(child: Icon(FaRegular(0xf059)), backgroundColor: Colors.white,),
+                      title: Text("About", style: Theme.of(context).textTheme.body2),
+                      subtitle: Text("Help, MIT license, Feedback", style: Theme.of(context).textTheme.body1),
                       onTap: () => null,
                       enabled: false,
                     ),
-                    // TODO: notifications
-                    // TODO: coaching
                   ],
                 )
               )

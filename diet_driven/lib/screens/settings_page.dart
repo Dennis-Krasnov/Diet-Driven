@@ -40,13 +40,6 @@ class SettingsPage extends StatelessWidget {
       case 'settings/profile':
         builder = (BuildContext _) => GeneralSettingsPage();
         break;
-      case 'settings/subscription':
-        builder = (BuildContext _) => BlocProvider<SubscriptionEditBloc>(
-          builder: (BuildContext context) => SubscriptionEditBloc(userRepository: Repository().user),
-          dispose: (BuildContext context, SubscriptionEditBloc subscriptionEditBloc) => subscriptionEditBloc.dispose(),
-          child: SubscriptionSettingsPage()
-        );
-        break;
       case 'settings/diary':
         builder = (BuildContext _) => DiarySettingsPage();
         break;

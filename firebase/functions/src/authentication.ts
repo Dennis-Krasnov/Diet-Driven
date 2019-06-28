@@ -9,7 +9,7 @@ export const createUserHook = functions.auth.user().onCreate(async (user) => {
     // Creates user document
     await db.doc(`users/${user.uid}`).set({
         $: "UserDocument",
-        currentSubscription: "none",
+        currentSubscription: "none", // not in use
         staleRemoteConfig: false // not in use
     });
 

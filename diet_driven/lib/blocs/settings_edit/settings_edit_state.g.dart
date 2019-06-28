@@ -9,7 +9,8 @@ part of 'settings_edit_state.dart';
 class _$SettingsEditState extends SettingsEditState {
   factory _$SettingsEditState(
           [void Function(SettingsEditStateBuilder) updates]) =>
-      (new SettingsEditStateBuilder()..update(updates)).build();
+      (new SettingsEditStateBuilder()..update(updates)).build()
+          as _$SettingsEditState;
 
   _$SettingsEditState._() : super._();
 
@@ -18,8 +19,8 @@ class _$SettingsEditState extends SettingsEditState {
       (toBuilder()..update(updates)).build();
 
   @override
-  SettingsEditStateBuilder toBuilder() =>
-      new SettingsEditStateBuilder()..replace(this);
+  _$SettingsEditStateBuilder toBuilder() =>
+      new _$SettingsEditStateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -38,11 +39,10 @@ class _$SettingsEditState extends SettingsEditState {
   }
 }
 
-class SettingsEditStateBuilder
-    implements Builder<SettingsEditState, SettingsEditStateBuilder> {
+class _$SettingsEditStateBuilder extends SettingsEditStateBuilder {
   _$SettingsEditState _$v;
 
-  SettingsEditStateBuilder();
+  _$SettingsEditStateBuilder() : super._();
 
   @override
   void replace(SettingsEditState other) {

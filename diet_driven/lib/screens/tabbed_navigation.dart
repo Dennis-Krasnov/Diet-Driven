@@ -85,8 +85,17 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
                   // Displaying current bottom navigation buttons, no duplicates allowed
                   for(var page in bottomNavPages)
                     BottomNavigationBarItem(
-                      icon: pageToIcon(page),
-                      title: Text(page.name),
+                      title: Text(page.name, style: TextStyle(fontWeight: FontWeight.w600,)),
+                      icon: Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+//                        child: Icon(FaSolid(page.toFontAwesomeIcon())),
+                        child: Icon(FaRegular(page.toFontAwesomeIcon()),),
+                      ),
+                      activeIcon: Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Icon(FaSolid(page.toFontAwesomeIcon()),),
+                      ),
+//                      backgroundColor: Colors.red
                     )
                 ],
                 currentIndex: tabIndex,
@@ -94,6 +103,30 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
                   final NavigationBloc navigationBloc = BlocProvider.of<NavigationBloc>(context);
                   navigationBloc.dispatch(navigationBloc.pageToEvent(bottomNavPages[index]));
                 },
+//                backgroundColor: Colors.red,
+//                unselectedItemColor: Colors.purple,
+//                unselectedFontSize: 12,
+//                iconSize: 22,
+                elevation: 4,
+                iconSize: 24,
+//                selectedItemColor: Colors.redAccent,
+                selectedItemColor: Colors.indigo,
+                unselectedItemColor: Colors.black.withOpacity(0.6),
+                selectedFontSize: 15,
+                unselectedFontSize: 14,
+
+//                  this.onTap,
+//                  this.currentIndex = 0,
+//                  this.elevation = 8.0,
+//                  BottomNavigationBarType type,
+//                  Color fixedColor,
+//                  this.backgroundColor,
+//                  this.iconSize = 24.0,
+//                  Color selectedItemColor,
+//                  this.unselectedItemColor,
+//                  this.selectedFontSize = 14.0,
+//                  this.unselectedFontSize = 12.0,
+//                  this.showSelectedLabels = true,,
               ),
             );
           }
@@ -122,23 +155,34 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
     }
   }
 
-  /// Creates respective icon widget based on page enum.
-  Icon pageToIcon(Page page) {
-    switch (page) {
-      case Page.diary:
-        return const Icon(Icons.fastfood);
-        break;
-      case Page.track:
-        return const Icon(Icons.list);
-        break;
-      case Page.reports:
-        return const Icon(Icons.trending_up);
-        break;
-      case Page.settings:
-        return const Icon(Icons.settings);
-        break;
-      default:
-        return const Icon(Icons.error_outline);
-    }
-  }
+}
+// TODO: move to own file
+// document that you need to load up your own icons
+
+class FaBrands extends IconData {
+  const FaBrands(int codePoint) : super(
+    codePoint,
+    fontFamily: 'FontAwesomeBrands',
+  );
+}
+
+class FaSolid extends IconData {
+  const FaSolid(int codePoint) : super(
+    codePoint,
+    fontFamily: 'FontAwesomeSolid',
+  );
+}
+
+class FaRegular extends IconData {
+  const FaRegular(int codePoint) : super(
+    codePoint,
+    fontFamily: 'FontAwesomeRegular',
+  );
+}
+
+class FaLight extends IconData {
+  const FaLight(int codePoint) : super(
+    codePoint,
+    fontFamily: 'FontAwesomeLight',
+  );
 }

@@ -195,6 +195,170 @@ class App extends StatelessWidget {
 
   /// Creates Flutter theme data from theme settings.
   ThemeData generateThemeSettings(ThemeSettings themeSettings) {
-    return themeSettings.darkMode ? ThemeData.dark() : ThemeData.light();
+//    return ThemeData.raw(brightness: null,
+//        primaryColor: null,
+//        primaryColorBrightness: null,
+//        primaryColorLight: null,
+//        primaryColorDark: null,
+//        canvasColor: null,
+//        accentColor: null,
+//        accentColorBrightness: null,
+//        scaffoldBackgroundColor: null,
+//        bottomAppBarColor: null,
+//        cardColor: null,
+//        dividerColor: null,
+//        highlightColor: null,
+//        splashColor: null,
+//        splashFactory: null,
+//        selectedRowColor: null,
+//        unselectedWidgetColor: null,
+//        disabledColor: null,
+//        buttonTheme: null,
+//        buttonColor: null,
+//        secondaryHeaderColor: null,
+//        textSelectionColor: null,
+//        cursorColor: null,
+//        textSelectionHandleColor: null,
+//        backgroundColor: null,
+//        dialogBackgroundColor: null,
+//        indicatorColor: null,
+//        hintColor: null,
+//        errorColor: null,
+//        toggleableActiveColor: null,
+//        textTheme: null,
+//        primaryTextTheme: null,
+//        accentTextTheme: null,
+//        inputDecorationTheme: null,
+//        iconTheme: null,
+//        primaryIconTheme: null,
+//        accentIconTheme: null,
+//        sliderTheme: null,
+//        tabBarTheme: null,
+//        cardTheme: null,
+//        chipTheme: null,
+//        platform: null,
+//        materialTapTargetSize: null,
+//        pageTransitionsTheme: null,
+//        appBarTheme: null,
+//        bottomAppBarTheme: null,
+//        colorScheme: null,
+//        dialogTheme: null,
+//        floatingActionButtonTheme: null,
+//        typography: null,
+//        cupertinoOverrideTheme: null
+//    );
+//    if (themeSettings.darkMode) {
+//      return ThemeData.dark().copyWith(
+//
+//      );
+//    }
+//
+//    return ThemeData.light().copyWith(
+//
+//    );
+
+    return ThemeData(
+//      brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
+
+      // App bar
+      appBarTheme: AppBarTheme(
+//        brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
+        color: Colors.white, // TODO: ternary on dark mode!?
+        elevation: 1.5,
+        textTheme: TextTheme(
+          title: TextStyle(
+            fontSize: 20, // 18
+            color: Colors.black87,
+            fontWeight: FontWeight.w600
+//            fontWeight: FontWeight.w400
+          ),
+        ),
+        actionsIconTheme: const IconThemeData(
+          color: Colors.black54,
+        ),
+        iconTheme: const IconThemeData(
+          color: Colors.black54,
+        ),
+      ),
+
+//      disabledColor: Colors.red,
+      textTheme: TextTheme(
+        body2: TextStyle(
+//          fontWeight: FontWeight.w600,
+          fontSize: 15,
+          color: Colors.black87
+//          color: Colors.black.withOpacity(80)
+        ),
+        body1: TextStyle(
+          fontSize: 12,
+          color: Colors.black54
+//            color: Colors.black.withOpacity(60)
+        )
+//        title: TextStyle(
+////          fontWeight: FontWeight.w600,
+//        ),
+//        subtitle: TextStyle(
+//
+//        ),
+//        caption: TextStyle(
+//          fontSize: 14,
+////          fontWeight: FontWeight.w600
+//        )
+      )
+//
+//        display4   : TextStyle(debugLabel: 'englishLike display4 2018', fontSize: 96.0, fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic, letterSpacing: -1.5),
+//    display3   : TextStyle(debugLabel: 'englishLike display3 2018', fontSize: 60.0, fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic, letterSpacing: -0.5),
+//    display2   : TextStyle(debugLabel: 'englishLike display2 2018', fontSize: 48.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.0),
+//    display1   : TextStyle(debugLabel: 'englishLike display1 2018', fontSize: 34.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.25),
+//    headline   : TextStyle(debugLabel: 'englishLike headline 2018', fontSize: 24.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.0),
+//    title      : TextStyle(debugLabel: 'englishLike title 2018',    fontSize: 20.0, fontWeight: FontWeight.w500, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.15),
+//    subhead    : TextStyle(debugLabel: 'englishLike subhead 2018',  fontSize: 16.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.15),
+//    body2      : TextStyle(debugLabel: 'englishLike body2 2018',    fontSize: 14.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.25),
+//    body1      : TextStyle(debugLabel: 'englishLike body1 2018',    fontSize: 16.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.5),
+//    button     : TextStyle(debugLabel: 'englishLike button 2018',   fontSize: 14.0, fontWeight: FontWeight.w500, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.75),
+//    caption    : TextStyle(debugLabel: 'englishLike caption 2018',  fontSize: 12.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.4),
+//    subtitle   : TextStyle(debugLabel: 'englishLike subtitle 2018', fontSize: 14.0, fontWeight: FontWeight.w500, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.1),
+//    overline   : TextStyle(debugLabel: 'englishLike overline 2018', fontSize: 10.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 1.5),
+
+
+      // Colours
+//      colorScheme: ColorScheme.fromSwatch(
+//        primarySwatch: Colors.red,
+////        accentColor: Colors.yellowAccent
+//        errorColor: Colors.purple,
+//        backgroundColor: Colors.lightGreen
+//      )
+
+//      colorScheme: ColorScheme(primary: null, primaryVariant: null, secondary: null, secondaryVariant: null, surface: null, background: null, error: null, onPrimary: null, onSecondary: null, onSurface: null, onBackground: null, onError: null, brightness: null)
+//    floatingActionButtonTheme: FloatingActionButtonThemeData(
+
+//    )
+    );
   }
+
+//    return ThemeData(
+//      // Dark mode
+//      brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
+//
+//      // Typography
+//      fontFamily: 'SourceSansPro',
+//      // Define the default TextTheme. Use this to specify the default
+//      // text styling for headlines, titles, bodies of text, and more.
+////      textTheme: TextTheme(
+////        headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
+////        title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
+////        body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+////      ),
+////
+////      primarySwatch: Colors.red,
+//////      primaryColor: Colors.lightGreen[800],
+//////      primaryColorBrightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
+//////      primaryColorLight: Colors.lightGreen[800],
+//////      primaryColorDark: Colors.lightGreen[400],
+//////      secondaryHeaderColor: Colors.lightGreenAccent
+//////      accentColor: Colors.purple[600],
+////    );
+//    // TODO: custom font
+////    return themeSettings.darkMode ? ThemeData.dark() : ThemeData.light();
+//  }
 }
