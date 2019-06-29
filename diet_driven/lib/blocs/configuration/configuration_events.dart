@@ -1,13 +1,28 @@
 import 'package:built_value/built_value.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:package_info/package_info.dart' show PackageInfo;
 
 part 'configuration_events.g.dart';
 
 abstract class ConfigurationEvent {}
 
-/// Fetches Firebase Remote Config data.
-abstract class FetchConfiguration with ConfigurationEvent implements Built<FetchConfiguration, FetchConfigurationBuilder> {
-  FetchConfiguration._();
-  factory FetchConfiguration([void Function(FetchConfigurationBuilder b)]) = _$FetchConfiguration;
+/// Reactively updates current [RemoteConfiguration], [PackageInfo]; shows application.
+abstract class RemoteConfigurationArrived implements ConfigurationEvent, Built<RemoteConfigurationArrived, RemoteConfigurationArrivedBuilder> {
+  RemoteConfiguration get remoteConfiguration;
 
-  @override String toString() => runtimeType.toString();
+  PackageInfo get packageInfo;
+
+  factory RemoteConfigurationArrived([void Function(RemoteConfigurationArrivedBuilder) updates]) = _$RemoteConfigurationArrived;
+  RemoteConfigurationArrived._();
+}
+
+/// Shows global error page.
+abstract class ConfigurationError implements ConfigurationEvent, Built<ConfigurationError, ConfigurationErrorBuilder> {
+  String get error;
+
+  @nullable
+  String get trace;
+
+  factory ConfigurationError([void Function(ConfigurationErrorBuilder) updates]) = _$ConfigurationError;
+  ConfigurationError._();
 }

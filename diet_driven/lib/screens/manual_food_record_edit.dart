@@ -1,7 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repository_singleton.dart';
+import 'package:diet_driven/repositories/repository_singleton.dart';
 import 'package:diet_driven/widgets/number_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

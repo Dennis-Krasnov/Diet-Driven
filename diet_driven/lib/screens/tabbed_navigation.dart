@@ -85,7 +85,7 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
                   // Displaying current bottom navigation buttons, no duplicates allowed
                   for(var page in bottomNavPages)
                     BottomNavigationBarItem(
-                      title: Text(page.name, style: TextStyle(fontWeight: FontWeight.w600,)),
+                      title: Text(page.name),//, style: TextStyle(fontWeight: FontWeight.w600,)),
                       icon: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
 //                        child: Icon(FaSolid(page.toFontAwesomeIcon())),
@@ -110,8 +110,8 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
                 elevation: 4,
                 iconSize: 24,
 //                selectedItemColor: Colors.redAccent,
-                selectedItemColor: Colors.indigo,
-                unselectedItemColor: Colors.black.withOpacity(0.6),
+                selectedItemColor: Theme.of(context).primaryColor,
+                unselectedItemColor: Theme.of(context).unselectedWidgetColor, // disabledColor, // Colors.black.withOpacity(0.6),
                 selectedFontSize: 15,
                 unselectedFontSize: 14,
 

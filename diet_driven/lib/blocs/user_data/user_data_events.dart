@@ -21,14 +21,6 @@ abstract class RemoteUserDataArrived with UserDataEvent implements Built<RemoteU
   RemoteUserDataArrived._();
 }
 
-/// Reactively shows loading screen for every authentication state change.
-abstract class StartLoadingUserData with UserDataEvent implements Built<StartLoadingUserData, StartLoadingUserDataBuilder> {
-  factory StartLoadingUserData([void Function(StartLoadingUserDataBuilder b)]) = _$StartLoadingUserData;
-  StartLoadingUserData._();
-
-  @override String toString() => runtimeType.toString();
-}
-
 /// Shows global error page.
 abstract class UserDataError with UserDataEvent implements Built<UserDataError, UserDataErrorBuilder> {
   String get error;

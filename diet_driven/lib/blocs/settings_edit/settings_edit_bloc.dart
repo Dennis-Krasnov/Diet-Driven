@@ -8,11 +8,12 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 class SettingsEditBloc extends Bloc<SettingsEditEvent, SettingsEditState> {
-  final Logger _log = Logger("settings edit bloc");
+  final _log = Logger("settings edit bloc");
   final String userId;
-  final UserRepository userRepository;
+  final SettingsRepository settingsRepository;
 
-  SettingsEditBloc({@required this.userId, this.userRepository}) : assert(userId != null);
+  SettingsEditBloc({@required this.userId, @required this.settingsRepository})
+      : assert(userId != null), assert(settingsRepository != null);
 
   @override
   SettingsEditState get initialState => SettingsEditState();
@@ -21,7 +22,7 @@ class SettingsEditBloc extends Bloc<SettingsEditEvent, SettingsEditState> {
   Stream<SettingsEditState> mapEventToState(SettingsEditEvent event) async* {
     if (event is UpdateDarkMode) {
       try {
-        await userRepository.updateDarkMode(userId, event.darkMode);
+        await settingsRepository.updateDarkMode(userId, event.darkMode);
         event.completer?.complete();
         _log.info("dark mode now ${event.darkMode}");
       } on Exception catch(e) {

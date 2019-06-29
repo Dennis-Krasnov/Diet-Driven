@@ -9,7 +9,7 @@ import 'package:built_collection/built_collection.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repository_singleton.dart';
+import 'package:diet_driven/repositories/repository_singleton.dart';
 
 
 class FoodLogging extends StatefulWidget {

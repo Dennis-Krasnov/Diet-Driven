@@ -46,77 +46,77 @@ class MainSettingsPage extends StatelessWidget {
               body: SafeArea(
                 child: ListView(
                   children: <Widget>[
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf013)), backgroundColor: Colors.white,), //, foregroundColor: Colors.green
-                      title: Text("General", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Language, Units, Time", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf013),
+                      titleText: "General",
+                      subtitleText: "Language, Units, Time",
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf007)), backgroundColor: Colors.white,),
-                      title: Text("Account", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Profile, Subscriptions, Import/Export data", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
-                      enabled: false,
+                    
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf007),
+                      titleText: "Account",
+                      subtitleText: "Profile, Subscriptions, Import/Export data",
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf5d1)), backgroundColor: Colors.white,),
-                      title: const Text("Diary"),
-                      subtitle: const Text("Calories, Nutrients, Meals, Logging"),
-                      onTap: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
-                        ..deepLink = DiarySettingsDeepLink()
-                      )),
+                    
+                    SettingsListTile(
+                      iconData: const FaRegular(0xf5d1),
+                      titleText: "Diary",
+                      subtitleText: "Calories, Nutrients, Meals, Logging",
+                      navigationEvent: NavigateToSettings((b) => b..deepLink = DiarySettingsDeepLink()),
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf496)), backgroundColor: Colors.white,),
-                      title: Text("Track", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Measurements, Goals", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
-                      enabled: false,
+                    
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf496),
+                      titleText: "Track",
+                      subtitleText: "Measurements, Goals",
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf201)), backgroundColor: Colors.white,),
-                      title: Text("Reports", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Time intervals, ", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
-                      enabled: false,
+                    
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf201),
+                      titleText: "Reports",
+                      subtitleText: "Time intervals, ",
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf53f)), backgroundColor: Colors.white,),
-                      title: Text("Theme", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Navigation, Dark mode, Colour scheme", style: Theme.of(context).textTheme.body1),
-                      onTap: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
-                        ..deepLink = ThemeDeepLink() // TODO: rename bloc, from theme to visuals?
-                      )),
+                    
+                    SettingsListTile(
+                      iconData: const FaRegular(0xf53f),
+                      titleText: "Theme",  // TODO: rename bloc, from theme to visuals?
+                      subtitleText: "Navigation, Dark mode, Colour scheme",
+                      chipText: "NEW",
+                      navigationEvent: NavigateToSettings((b) => b..deepLink = ThemeDeepLink()),
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf021)), backgroundColor: Colors.white,),
-                      title: Text("Integrations", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Google Fit, Fitbit", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
-                      enabled: false,
+                    
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf021),
+                      titleText: "Integrations",
+                      subtitleText: "Google Fit, Fitbit",
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf0f3)), backgroundColor: Colors.white,),
-                      title: Text("Notifications", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Google Fit, Fitbit", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
-                      enabled: false,
+                    
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf0f3),
+                      titleText: "Notifications",
+                      subtitleText: "Google Fit, Fitbit",
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf460)), backgroundColor: Colors.white,),
-                      title: Text("Coaching", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("None", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
-                      enabled: false,
+                    
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf460),
+                      titleText: "Coaching",
+                      subtitleText: "None",
                     ),
-                    ListTile(
-                      leading: const CircleAvatar(child: Icon(FaRegular(0xf059)), backgroundColor: Colors.white,),
-                      title: Text("About", style: Theme.of(context).textTheme.body2),
-                      subtitle: Text("Help, MIT license, Feedback", style: Theme.of(context).textTheme.body1),
-                      onTap: () => null,
-                      enabled: false,
+                    
+                    const SettingsListTile(
+                      iconData: FaRegular(0xf059),
+                      titleText: "About",
+                      subtitleText: "Help, MIT license, Feedback",
                     ),
+
+                    BlocBuilder<ConfigurationEvent, ConfigurationState>(
+                      bloc: BlocProvider.of<ConfigurationBloc>(context),
+                      condition: (previous, current) => true,
+                      builder: (BuildContext context, ConfigurationState configurationState) {
+                        final packageInfo = (configurationState as ConfigurationLoaded).packageInfo;
+                        return Text("${packageInfo.appName} ${packageInfo.version}; bonus is ${(configurationState as ConfigurationLoaded).remoteConfiguration.bonus}");
+                      }
+                    )
                   ],
                 )
               )
@@ -124,6 +124,42 @@ class MainSettingsPage extends StatelessWidget {
           }
         }
       )
+    );
+  }
+}
+
+
+class SettingsListTile extends StatelessWidget {
+  final IconData iconData;
+  final String titleText;
+  final String subtitleText;
+  final String chipText;
+  final NavigationEvent navigationEvent;
+
+  const SettingsListTile({Key key, @required this.iconData, @required this.titleText, this.subtitleText, this.chipText, this.navigationEvent})
+      : assert(iconData != null), assert(titleText != null), super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: iconData != null ? CircleAvatar(
+        child: Icon(iconData), 
+        backgroundColor: Colors.transparent, 
+        foregroundColor: Theme.of(context).unselectedWidgetColor
+      ) : null,
+      title: Text(titleText, style: Theme.of(context).textTheme.body2),
+      subtitle: subtitleText != null ? Text(subtitleText, style: Theme.of(context).textTheme.body1) : null,
+      onTap: navigationEvent != null ? () => BlocProvider.of<NavigationBloc>(context).dispatch(navigationEvent) : null,
+      trailing: chipText != null ? Transform(
+        transform: Matrix4.identity()..scale(0.75),
+        child: Chip(
+          label: const Text("NEW"),
+          labelStyle: TextStyle(fontSize: 14, color: Colors.white, fontWeight: FontWeight.w600, letterSpacing: 1.5),
+          shape: BeveledRectangleBorder(borderRadius: const BorderRadius.all(Radius.circular(2))),
+          backgroundColor: Theme.of(context).primaryColorDark,
+          labelPadding: const EdgeInsets.symmetric(horizontal: 5),
+        ),
+      ) : null,
     );
   }
 }

@@ -16,7 +16,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 /// update skips...
 /// TODO: rename all `edit` to `update` and `add` to `insert`
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
-  final Logger _log = new Logger("food diary bloc");
+  final _log = Logger("food diary bloc");
   final DiaryRepository diaryRepository;
   final String userId;
   final int daysSinceEpoch;

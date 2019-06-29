@@ -20,15 +20,6 @@ abstract class Settings implements Built<Settings, SettingsBuilder> {
   Settings._();
 }
 
-/// Default settings.
-abstract class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
-  NavigationSettings navigationSettings;
-  ThemeSettings themeSettings = ThemeSettings();
-
-  factory SettingsBuilder() = _$SettingsBuilder;
-  SettingsBuilder._();
-}
-
 /// Everything must be nullable due implicit settings.
 abstract class NavigationSettings implements Built<NavigationSettings, NavigationSettingsBuilder> {
   static Serializer<NavigationSettings> get serializer => _$navigationSettingsSerializer;
@@ -52,12 +43,4 @@ abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilde
 
   factory ThemeSettings([void Function(ThemeSettingsBuilder b)]) = _$ThemeSettings;
   ThemeSettings._();
-}
-
-/// Default theme settings.
-abstract class ThemeSettingsBuilder implements Builder<ThemeSettings, ThemeSettingsBuilder> {
-  bool darkMode = false;
-
-  factory ThemeSettingsBuilder() = _$ThemeSettingsBuilder;
-  ThemeSettingsBuilder._();
 }

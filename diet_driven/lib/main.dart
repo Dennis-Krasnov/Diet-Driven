@@ -8,7 +8,7 @@ import 'package:logging/logging.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repository_singleton.dart';
+import 'package:diet_driven/repositories/repository_singleton.dart';
 import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/screens/food_logging.dart';
 import 'package:diet_driven/screens/food_record_search.dart';
@@ -25,19 +25,19 @@ void main() {
     print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
   });
 
-  // Logs every BLoC state transition
+  // Logs every BLoC event and state transition
   BlocSupervisor.delegate = SimpleBlocDelegate();
 
   runApp(
-    // Inject blocs into context
+    // Inject global blocs into context
     BlocProviderTree(
       blocProviders: [
         BlocProvider<ConfigurationBloc>(
-          builder: (BuildContext context) => ConfigurationBloc(userRepository: Repository().user),
+          builder: (BuildContext context) => ConfigurationBloc(configurationRepository: Repository().config),
           dispose: (BuildContext context, ConfigurationBloc configurationBloc) => configurationBloc.dispose(),
         ),
         BlocProvider<UserDataBloc>(
-          builder: (BuildContext context) => UserDataBloc(userRepository: Repository().user),
+          builder: (BuildContext context) => UserDataBloc(userRepository: Repository().user, settingsRepository: Repository().settings),
           dispose: (BuildContext context, UserDataBloc userDataBloc) => userDataBloc.dispose(),
         ),
       ],
@@ -53,12 +53,13 @@ void main() {
 }
 
 class App extends StatelessWidget {
+  final _log = Logger("app widget");
+
+  // TODO: separate stless widget
   /// Reactively builds app based on user and configuration state.
   Widget appLoadingLogic(ConfigurationState configurationState, UserDataState userDataState) {
     // Initial splash screen
-    if (configurationState is ConfigurationUninitialized ||
-        configurationState is ConfigurationLoading ||
-        userDataState is UserDataUninitialized) {
+    if (configurationState is ConfigurationUninitialized || userDataState is UserDataUninitialized) {
       return SplashPage();
     }
 
@@ -70,6 +71,7 @@ class App extends StatelessWidget {
       );
     }
 
+    // Configuration loaded from now on
     assert(configurationState is ConfigurationLoaded);
 
     // Loading user data failed
@@ -105,29 +107,28 @@ class App extends StatelessWidget {
       bloc: BlocProvider.of<ConfigurationBloc>(context),
       condition: (previous, current) => true,
       builder: (BuildContext context, ConfigurationState configurationState) {
-        print("CONFIGURATION REBUILD");
+        _log.info("configuration rebuild");
+
         // User data builder
         return BlocBuilder<UserDataEvent, UserDataState>(
           bloc: BlocProvider.of<UserDataBloc>(context),
           condition: (previous, current) {
-            // User data not loaded
-            if (previous is! UserDataLoaded || current is! UserDataLoaded) {
-              print("UNCONDITIONAL MAIN USER DATA UPDATE");
+            // Unconditionally build if state changed to/from loaded
+            if (previous is! UserDataLoaded || current is! UserDataLoaded)
               return true;
-            }
-            // Theme settings changed
-            print((previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings ? "MAIN USER DATA UPDATE" : "");
+
+            // Build only if theme settings changed
+            // Type-safe cast due to catch above
             return (previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings;
           },
           builder: (BuildContext context, UserDataState userDataState) {
+            _log.info("user data rebuild");
+
             return MaterialApp(
               // Overrides `/` navigator route
               home: appLoadingLogic(configurationState, userDataState),
-              // Use default settings while user data is being loaded
-              theme: generateThemeSettings(userDataState is UserDataLoaded
-                ? userDataState.settings.themeSettings
-                : ThemeSettings()
-              ),
+              // Use default theme while user data is being loaded
+              theme: userDataState is UserDataLoaded ? generateThemeSettings(userDataState.settings.themeSettings) : ThemeData.light(),
               onGenerateRoute: (settings) => generateRoute(context, settings),
               onUnknownRoute: (RouteSettings setting) => MaterialPageRoute<dynamic>(builder: (BuildContext context) => ErrorPage(error: "${setting.name} route not found")),
             );
@@ -137,6 +138,7 @@ class App extends StatelessWidget {
     );
   }
 
+  // TODO: global navigator bloc!
   /// Global navigator routes.
   Route generateRoute(BuildContext context, RouteSettings settings) {
     final arguments = settings.arguments;
@@ -260,17 +262,16 @@ class App extends StatelessWidget {
     return ThemeData(
 //      brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
 
-      // App bar
+      // APP BAR
       appBarTheme: AppBarTheme(
 //        brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
         color: Colors.white, // TODO: ternary on dark mode!?
         elevation: 1.5,
         textTheme: TextTheme(
           title: TextStyle(
-            fontSize: 20, // 18
+            fontSize: 18, // 20
             color: Colors.black87,
-            fontWeight: FontWeight.w600
-//            fontWeight: FontWeight.w400
+            fontWeight: FontWeight.w600 // FontWeight.w400
           ),
         ),
         actionsIconTheme: const IconThemeData(
@@ -281,14 +282,29 @@ class App extends StatelessWidget {
         ),
       ),
 
+      // TYPOGRAPHY
 //      disabledColor: Colors.red,
       textTheme: TextTheme(
+        // Heading
+        headline: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+          color: Colors.black.withOpacity(0.6),
+        ),
+        //  // FIXME: affects all built-in listtiles !! - MAKE THIS THE HEADER INSTEAD OF HEADER 2 and use everywhere, // TODO: find the style that naturally styles subtitle too!
+//        subhead: TextStyle(
+//          fontWeight: FontWeight.w600,
+//          fontSize: 12,
+//          color: Colors.black.withOpacity(0.2),
+//        ),
+        // List tile title
         body2: TextStyle(
 //          fontWeight: FontWeight.w600,
           fontSize: 15,
-          color: Colors.black87
-//          color: Colors.black.withOpacity(80)
+//          color: Colors.black87
+          color: Colors.black.withOpacity(0.8)
         ),
+        // List tile subtitle
         body1: TextStyle(
           fontSize: 12,
           color: Colors.black54
@@ -304,7 +320,16 @@ class App extends StatelessWidget {
 //          fontSize: 14,
 ////          fontWeight: FontWeight.w600
 //        )
-      )
+      ),
+
+      // Colours
+      primaryColor: Colors.deepOrange,
+      primaryColorDark: Colors.deepOrange,
+//      colorScheme: ColorScheme.light(
+//        primary: Colors.deepOrange,
+//        primaryVariant: Colors.yellow,
+//        onPrimary: Colors.pink
+//      ),
 //
 //        display4   : TextStyle(debugLabel: 'englishLike display4 2018', fontSize: 96.0, fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic, letterSpacing: -1.5),
 //    display3   : TextStyle(debugLabel: 'englishLike display3 2018', fontSize: 60.0, fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic, letterSpacing: -0.5),

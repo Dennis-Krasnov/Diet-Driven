@@ -3,7 +3,7 @@ import 'package:logging/logging.dart';
 
 /// Wrapper for Firebase Analytics tracking.
 class AnalyticsRepository {
-  final Logger _log = new Logger("authentication bloc");
+  final _log = Logger("authentication bloc");
   FirebaseAnalytics _analytics = FirebaseAnalytics();
 
   // TODO: call analytics from user data bloc/login bloc (doOnAction side effects)

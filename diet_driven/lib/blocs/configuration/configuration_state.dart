@@ -1,5 +1,6 @@
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:package_info/package_info.dart' show PackageInfo;
 
 part 'configuration_state.g.dart';
 
@@ -7,8 +8,8 @@ abstract class ConfigurationState {}
 
 /// Splash page.
 abstract class ConfigurationUninitialized with ConfigurationState implements Built<ConfigurationUninitialized, ConfigurationUninitializedBuilder> {
-  ConfigurationUninitialized._();
   factory ConfigurationUninitialized([void Function(ConfigurationUninitializedBuilder b)]) = _$ConfigurationUninitialized;
+  ConfigurationUninitialized._();
 
   @override String toString() => runtimeType.toString();
 }
@@ -20,22 +21,16 @@ abstract class ConfigurationFailed with ConfigurationState implements Built<Conf
   @nullable
   String get trace;
 
-  ConfigurationFailed._();
   factory ConfigurationFailed([void Function(ConfigurationFailedBuilder b)]) = _$ConfigurationFailed;
+  ConfigurationFailed._();
 }
 
-/// Application, stores current [RemoteConfiguration].
+/// Application, stores current [RemoteConfiguration], [PackageInfo].
 abstract class ConfigurationLoaded with ConfigurationState implements Built<ConfigurationLoaded, ConfigurationLoadedBuilder> {
-  RemoteConfiguration get configuration;
+  RemoteConfiguration get remoteConfiguration;
 
-  ConfigurationLoaded._();
+  PackageInfo get packageInfo;
+
   factory ConfigurationLoaded([void Function(ConfigurationLoadedBuilder b)]) = _$ConfigurationLoaded;
-}
-
-/// Splash page, redundant state.
-abstract class ConfigurationLoading with ConfigurationState implements Built<ConfigurationLoading, ConfigurationLoadingBuilder> {
-  ConfigurationLoading._();
-  factory ConfigurationLoading([void Function(ConfigurationLoadingBuilder b)]) = _$ConfigurationLoading;
-
-  @override String toString() => runtimeType.toString();
+  ConfigurationLoaded._();
 }

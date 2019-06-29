@@ -156,16 +156,22 @@ class ConfigurationFailedBuilder
 
 class _$ConfigurationLoaded extends ConfigurationLoaded {
   @override
-  final RemoteConfiguration configuration;
+  final RemoteConfiguration remoteConfiguration;
+  @override
+  final PackageInfo packageInfo;
 
   factory _$ConfigurationLoaded(
           [void Function(ConfigurationLoadedBuilder) updates]) =>
       (new ConfigurationLoadedBuilder()..update(updates)).build();
 
-  _$ConfigurationLoaded._({this.configuration}) : super._() {
-    if (configuration == null) {
+  _$ConfigurationLoaded._({this.remoteConfiguration, this.packageInfo})
+      : super._() {
+    if (remoteConfiguration == null) {
       throw new BuiltValueNullFieldError(
-          'ConfigurationLoaded', 'configuration');
+          'ConfigurationLoaded', 'remoteConfiguration');
+    }
+    if (packageInfo == null) {
+      throw new BuiltValueNullFieldError('ConfigurationLoaded', 'packageInfo');
     }
   }
 
@@ -181,18 +187,21 @@ class _$ConfigurationLoaded extends ConfigurationLoaded {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ConfigurationLoaded && configuration == other.configuration;
+    return other is ConfigurationLoaded &&
+        remoteConfiguration == other.remoteConfiguration &&
+        packageInfo == other.packageInfo;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, configuration.hashCode));
+    return $jf($jc($jc(0, remoteConfiguration.hashCode), packageInfo.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ConfigurationLoaded')
-          ..add('configuration', configuration))
+          ..add('remoteConfiguration', remoteConfiguration)
+          ..add('packageInfo', packageInfo))
         .toString();
   }
 }
@@ -201,17 +210,22 @@ class ConfigurationLoadedBuilder
     implements Builder<ConfigurationLoaded, ConfigurationLoadedBuilder> {
   _$ConfigurationLoaded _$v;
 
-  RemoteConfigurationBuilder _configuration;
-  RemoteConfigurationBuilder get configuration =>
-      _$this._configuration ??= new RemoteConfigurationBuilder();
-  set configuration(RemoteConfigurationBuilder configuration) =>
-      _$this._configuration = configuration;
+  RemoteConfigurationBuilder _remoteConfiguration;
+  RemoteConfigurationBuilder get remoteConfiguration =>
+      _$this._remoteConfiguration ??= new RemoteConfigurationBuilder();
+  set remoteConfiguration(RemoteConfigurationBuilder remoteConfiguration) =>
+      _$this._remoteConfiguration = remoteConfiguration;
+
+  PackageInfo _packageInfo;
+  PackageInfo get packageInfo => _$this._packageInfo;
+  set packageInfo(PackageInfo packageInfo) => _$this._packageInfo = packageInfo;
 
   ConfigurationLoadedBuilder();
 
   ConfigurationLoadedBuilder get _$this {
     if (_$v != null) {
-      _configuration = _$v.configuration?.toBuilder();
+      _remoteConfiguration = _$v.remoteConfiguration?.toBuilder();
+      _packageInfo = _$v.packageInfo;
       _$v = null;
     }
     return this;
@@ -235,73 +249,20 @@ class ConfigurationLoadedBuilder
     _$ConfigurationLoaded _$result;
     try {
       _$result = _$v ??
-          new _$ConfigurationLoaded._(configuration: configuration.build());
+          new _$ConfigurationLoaded._(
+              remoteConfiguration: remoteConfiguration.build(),
+              packageInfo: packageInfo);
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'configuration';
-        configuration.build();
+        _$failedField = 'remoteConfiguration';
+        remoteConfiguration.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'ConfigurationLoaded', _$failedField, e.toString());
       }
       rethrow;
     }
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$ConfigurationLoading extends ConfigurationLoading {
-  factory _$ConfigurationLoading(
-          [void Function(ConfigurationLoadingBuilder) updates]) =>
-      (new ConfigurationLoadingBuilder()..update(updates)).build();
-
-  _$ConfigurationLoading._() : super._();
-
-  @override
-  ConfigurationLoading rebuild(
-          void Function(ConfigurationLoadingBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  ConfigurationLoadingBuilder toBuilder() =>
-      new ConfigurationLoadingBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is ConfigurationLoading;
-  }
-
-  @override
-  int get hashCode {
-    return 259598194;
-  }
-}
-
-class ConfigurationLoadingBuilder
-    implements Builder<ConfigurationLoading, ConfigurationLoadingBuilder> {
-  _$ConfigurationLoading _$v;
-
-  ConfigurationLoadingBuilder();
-
-  @override
-  void replace(ConfigurationLoading other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$ConfigurationLoading;
-  }
-
-  @override
-  void update(void Function(ConfigurationLoadingBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$ConfigurationLoading build() {
-    final _$result = _$v ?? new _$ConfigurationLoading._();
     replace(_$result);
     return _$result;
   }

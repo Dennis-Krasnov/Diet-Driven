@@ -159,61 +159,6 @@ class RemoteUserDataArrivedBuilder
   }
 }
 
-class _$StartLoadingUserData extends StartLoadingUserData {
-  factory _$StartLoadingUserData(
-          [void Function(StartLoadingUserDataBuilder) updates]) =>
-      (new StartLoadingUserDataBuilder()..update(updates)).build();
-
-  _$StartLoadingUserData._() : super._();
-
-  @override
-  StartLoadingUserData rebuild(
-          void Function(StartLoadingUserDataBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  StartLoadingUserDataBuilder toBuilder() =>
-      new StartLoadingUserDataBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is StartLoadingUserData;
-  }
-
-  @override
-  int get hashCode {
-    return 184832232;
-  }
-}
-
-class StartLoadingUserDataBuilder
-    implements Builder<StartLoadingUserData, StartLoadingUserDataBuilder> {
-  _$StartLoadingUserData _$v;
-
-  StartLoadingUserDataBuilder();
-
-  @override
-  void replace(StartLoadingUserData other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$StartLoadingUserData;
-  }
-
-  @override
-  void update(void Function(StartLoadingUserDataBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$StartLoadingUserData build() {
-    final _$result = _$v ?? new _$StartLoadingUserData._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$UserDataError extends UserDataError {
   @override
   final String error;

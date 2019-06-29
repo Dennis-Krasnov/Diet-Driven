@@ -12,24 +12,30 @@ import 'package:diet_driven/models/models.dart';
 /// Aggregates and manages authentication and settings.
 /// [UserDataBloc] shows loading or onboarding until loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
-  final Logger _log = Logger("user data bloc");
+  final _log = Logger("user data bloc");
   final UserRepository userRepository;
+  final SettingsRepository settingsRepository;
 
   StreamSubscription<UserDataEvent> _userDataEventSubscription;
 
-  UserDataBloc({@required this.userRepository}) {
+  UserDataBloc({@required this.userRepository, @required this.settingsRepository}) {
     assert(userRepository != null);
+    assert(settingsRepository != null);
 
-    final Observable<UserDataEvent> _userDataEventStream = userRepository.authStateChangedStream
+    final Observable<UserDataEvent> userDataEvent$ = userRepository.authStateChangedStream
       .doOnData((user) => _log.fine("USER: $user"))
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user
-      .doOnData((user) => dispatch(user == null ? OnboardUser() : StartLoadingUserData()))
+      .doOnData((user) {
+        if (user == null) {
+          dispatch(OnboardUser());
+        }
+      })
       // Load user data only if user exists
       .where((user) => user != null && user.uid != null)
       .switchMap<UserDataEvent>((user) =>
         CombineLatestStream.combine3(
           userRepository.userDocumentStream(user.uid),
-          userRepository.settingsStream(user.uid),
+          settingsRepository.settingsStream(user.uid),
           // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
           Observable<SubscriptionType>.just(SubscriptionType.all_access),
           (UserDocument userDocument, Settings settings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
@@ -42,7 +48,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       )
       .distinct();
 
-    _userDataEventSubscription = _userDataEventStream.listen(
+    _userDataEventSubscription = userDataEvent$.listen(
       (userDataEvent) => dispatch(userDataEvent),
       onError: (Object error, Object trace) => dispatch(UserDataError((b) => b // FIXME
         ..error = error.toString()
@@ -63,7 +69,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
     if (event is RemoteUserDataArrived) {
-      // OPTIMIZE: pass builders into events, they're directly inserted into state?
       yield UserDataLoaded((b) => b
         ..authentication = event.authentication
         ..userDocument = event.userDocument.toBuilder()
@@ -71,14 +76,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..subscription = event.subscription
       );
 
-      _log.info("loaded user data");
-      _log.fine("uid: ${event.authentication.uid}");
-    }
-    if (event is StartLoadingUserData) {
-      yield UserDataLoading();
-      // TODO: add throttle-based timeout => retry / error
-      
-      _log.info("loading user data");
+      _log.info("loaded user data ${event.authentication.uid}");
     }
     if (event is OnboardUser) {
       yield UserDataUnauthenticated();

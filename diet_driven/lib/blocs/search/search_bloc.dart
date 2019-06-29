@@ -13,7 +13,7 @@ import 'package:diet_driven/blocs/search/search.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
-  final Logger _log = Logger("food record search bloc");
+  final _log = Logger("food record search bloc");
   final FoodLoggingState foodLoggingState;
   final FoodRepository foodRepository;
 

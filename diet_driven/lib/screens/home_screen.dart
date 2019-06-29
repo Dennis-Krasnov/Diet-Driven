@@ -2,7 +2,7 @@ import 'package:diet_driven/screens/tabbed_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:diet_driven/repository_singleton.dart';
+import 'package:diet_driven/repositories/repository_singleton.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
 class HomePage extends StatelessWidget {

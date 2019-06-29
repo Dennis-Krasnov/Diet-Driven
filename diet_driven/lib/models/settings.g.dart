@@ -49,13 +49,13 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
       final dynamic value = iterator.current;
       switch (key) {
         case 'navigationSettings':
-          result.navigationSettings = serializers.deserialize(value,
+          result.navigationSettings.replace(serializers.deserialize(value,
                   specifiedType: const FullType(NavigationSettings))
-              as NavigationSettings;
+              as NavigationSettings);
           break;
         case 'themeSettings':
-          result.themeSettings = serializers.deserialize(value,
-              specifiedType: const FullType(ThemeSettings)) as ThemeSettings;
+          result.themeSettings.replace(serializers.deserialize(value,
+              specifiedType: const FullType(ThemeSettings)) as ThemeSettings);
           break;
       }
     }
@@ -167,7 +167,7 @@ class _$Settings extends Settings {
   final ThemeSettings themeSettings;
 
   factory _$Settings([void Function(SettingsBuilder) updates]) =>
-      (new SettingsBuilder()..update(updates)).build() as _$Settings;
+      (new SettingsBuilder()..update(updates)).build();
 
   _$Settings._({this.navigationSettings, this.themeSettings}) : super._();
 
@@ -176,7 +176,7 @@ class _$Settings extends Settings {
       (toBuilder()..update(updates)).build();
 
   @override
-  _$SettingsBuilder toBuilder() => new _$SettingsBuilder()..replace(this);
+  SettingsBuilder toBuilder() => new SettingsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -201,39 +201,27 @@ class _$Settings extends Settings {
   }
 }
 
-class _$SettingsBuilder extends SettingsBuilder {
+class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
   _$Settings _$v;
 
-  @override
-  NavigationSettings get navigationSettings {
-    _$this;
-    return super.navigationSettings;
-  }
+  NavigationSettingsBuilder _navigationSettings;
+  NavigationSettingsBuilder get navigationSettings =>
+      _$this._navigationSettings ??= new NavigationSettingsBuilder();
+  set navigationSettings(NavigationSettingsBuilder navigationSettings) =>
+      _$this._navigationSettings = navigationSettings;
 
-  @override
-  set navigationSettings(NavigationSettings navigationSettings) {
-    _$this;
-    super.navigationSettings = navigationSettings;
-  }
+  ThemeSettingsBuilder _themeSettings;
+  ThemeSettingsBuilder get themeSettings =>
+      _$this._themeSettings ??= new ThemeSettingsBuilder();
+  set themeSettings(ThemeSettingsBuilder themeSettings) =>
+      _$this._themeSettings = themeSettings;
 
-  @override
-  ThemeSettings get themeSettings {
-    _$this;
-    return super.themeSettings;
-  }
-
-  @override
-  set themeSettings(ThemeSettings themeSettings) {
-    _$this;
-    super.themeSettings = themeSettings;
-  }
-
-  _$SettingsBuilder() : super._();
+  SettingsBuilder();
 
   SettingsBuilder get _$this {
     if (_$v != null) {
-      super.navigationSettings = _$v.navigationSettings;
-      super.themeSettings = _$v.themeSettings;
+      _navigationSettings = _$v.navigationSettings?.toBuilder();
+      _themeSettings = _$v.themeSettings?.toBuilder();
       _$v = null;
     }
     return this;
@@ -254,10 +242,25 @@ class _$SettingsBuilder extends SettingsBuilder {
 
   @override
   _$Settings build() {
-    final _$result = _$v ??
-        new _$Settings._(
-            navigationSettings: navigationSettings,
-            themeSettings: themeSettings);
+    _$Settings _$result;
+    try {
+      _$result = _$v ??
+          new _$Settings._(
+              navigationSettings: _navigationSettings?.build(),
+              themeSettings: _themeSettings?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'navigationSettings';
+        _navigationSettings?.build();
+        _$failedField = 'themeSettings';
+        _themeSettings?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'Settings', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
@@ -375,7 +378,7 @@ class _$ThemeSettings extends ThemeSettings {
   final bool darkMode;
 
   factory _$ThemeSettings([void Function(ThemeSettingsBuilder) updates]) =>
-      (new ThemeSettingsBuilder()..update(updates)).build() as _$ThemeSettings;
+      (new ThemeSettingsBuilder()..update(updates)).build();
 
   _$ThemeSettings._({this.darkMode}) : super._();
 
@@ -384,8 +387,7 @@ class _$ThemeSettings extends ThemeSettings {
       (toBuilder()..update(updates)).build();
 
   @override
-  _$ThemeSettingsBuilder toBuilder() =>
-      new _$ThemeSettingsBuilder()..replace(this);
+  ThemeSettingsBuilder toBuilder() => new ThemeSettingsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -406,26 +408,19 @@ class _$ThemeSettings extends ThemeSettings {
   }
 }
 
-class _$ThemeSettingsBuilder extends ThemeSettingsBuilder {
+class ThemeSettingsBuilder
+    implements Builder<ThemeSettings, ThemeSettingsBuilder> {
   _$ThemeSettings _$v;
 
-  @override
-  bool get darkMode {
-    _$this;
-    return super.darkMode;
-  }
+  bool _darkMode;
+  bool get darkMode => _$this._darkMode;
+  set darkMode(bool darkMode) => _$this._darkMode = darkMode;
 
-  @override
-  set darkMode(bool darkMode) {
-    _$this;
-    super.darkMode = darkMode;
-  }
-
-  _$ThemeSettingsBuilder() : super._();
+  ThemeSettingsBuilder();
 
   ThemeSettingsBuilder get _$this {
     if (_$v != null) {
-      super.darkMode = _$v.darkMode;
+      _darkMode = _$v.darkMode;
       _$v = null;
     }
     return this;

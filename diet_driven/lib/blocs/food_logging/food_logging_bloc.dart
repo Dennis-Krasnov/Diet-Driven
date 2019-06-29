@@ -12,7 +12,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 
 ///
 class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
-  final Logger _log = Logger("food logging bloc");
+  final _log = Logger("food logging bloc");
   final FoodRepository foodRepository;
   final String userId;
   final int mealIndex;

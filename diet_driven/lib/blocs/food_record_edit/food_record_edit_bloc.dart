@@ -9,7 +9,7 @@ import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> {
-  final Logger _log = new Logger("food record edit bloc");
+  final _log = Logger("food record edit bloc");
   final FoodRecord initialFoodRecord;
   final String userId;
   final int daysSinceEpoch;

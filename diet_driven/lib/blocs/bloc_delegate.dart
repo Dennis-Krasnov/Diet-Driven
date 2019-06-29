@@ -3,7 +3,7 @@ import 'package:logging/logging.dart';
 
 
 class SimpleBlocDelegate extends BlocDelegate {
-  final Logger _log = Logger("BloC delegate");
+  final _log = Logger("BloC delegate");
 
   @override
   void onTransition(Bloc bloc, Transition transition) {

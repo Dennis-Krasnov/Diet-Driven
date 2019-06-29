@@ -12,7 +12,7 @@ import 'package:diet_driven/blocs/food_logging_tab/food_logging_tab.dart';
 import 'package:diet_driven/models/models.dart';
 
 class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> {
-  final Logger _log = new Logger("food logging tab bloc");
+  final _log = Logger("food logging tab bloc");
   final LoggingTab loggingTab;
   final Future<BuiltList<FoodRecord>> futureResultRecords;
   final FoodLoggingBloc foodLoggingBloc;

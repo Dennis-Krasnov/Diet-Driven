@@ -8,7 +8,7 @@
 //import 'package:meta/meta.dart';
 //
 //class SubscriptionEditBloc extends Bloc<SubscriptionEditEvent, SubscriptionEditState> {
-//  final Logger _log = Logger("subscription edit bloc");
+//  final _log = Logger("subscription edit bloc");
 //  final UserRepository userRepository;
 //
 //  SubscriptionEditBloc({this.userRepository});

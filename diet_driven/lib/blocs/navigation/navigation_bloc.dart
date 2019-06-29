@@ -13,7 +13,7 @@ import 'package:diet_driven/blocs/navigation/navigation.dart';
 /// Manages bottom navigation's current page.
 /// [NavigationBloc] shows skeleton bottom menu and app bar until loaded.
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
-  final Logger _log = Logger("navigation bloc");
+  final _log = Logger("navigation bloc");
   final AnalyticsRepository analyticsRepository;
   final UserDataBloc userDataBloc;
 

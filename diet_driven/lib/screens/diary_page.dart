@@ -37,9 +37,13 @@ class DiaryPage extends StatelessWidget {
             ),
             // TODO: date!! // TODO: click to go to info!
             body: Center(
-              child: Column(
+              child: Column( // TODO: sliver
                 children: [
                   Text("You've eaten ${state.foodDiaryDay.foodRecords.fold<num>(0, (prev, e) => prev + (e?.calories ?? 0))} out of ${state.diet.calories} calories"),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8.0),
+                    child: Text("Breakfast", style: Theme.of(context).textTheme.headline),
+                  ),
                   for (var foodRecord in state.foodDiaryDay.foodRecords)
                     FoodRecordTile(
                       foodRecord,
