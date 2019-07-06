@@ -23,6 +23,9 @@ class Page extends EnumClass {
   /// ...
   static const Page settings = _$settings;
 
+  /// ...
+  static const Page logging = _$logging;
+
 
   int toFontAwesomeIcon() {
     switch (this) {
@@ -37,6 +40,9 @@ class Page extends EnumClass {
         break;
       case Page.settings:
         return 0xf013; // cog
+        break;
+      case Page.logging:
+        return 0xf03a; // list
         break;
       default:
         return null;

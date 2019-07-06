@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:diet_driven/screens/food_record_search.dart';
-import 'package:diet_driven/widgets/food_logging_tab.dart';
+import 'package:diet_driven/widgets/food_logging_tab_bar.dart';
 import 'package:diet_driven/widgets/food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,14 +26,14 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
   TabController _tabController;
 
   String userId;
-  BuiltList<LoggingTab> loggingTabs;
+  BuiltList<FoodLoggingTab> loggingTabs;
 
   @override
   void initState() {
     super.initState();
 
     userId = (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid;
-    loggingTabs = BuiltList(<LoggingTab>[LoggingTab.recent, LoggingTab.popular, LoggingTab.favorite]); // TODO: take tabs from settings!
+    loggingTabs = BuiltList(<FoodLoggingTab>[FoodLoggingTab.recent, FoodLoggingTab.popular, FoodLoggingTab.favorite]); // TODO: take tabs from settings!
 
     _foodLoggingBloc = FoodLoggingBloc(
       userId: userId,
@@ -146,9 +146,9 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
             controller: _tabController,
             children: [
               for (var tab in loggingTabs)
-                FoodLoggingTab(
+                FoodLoggingTabBar(
                   foodLoggingBloc: _foodLoggingBloc,
-                  loggingTab: tab,
+                  foodLoggingTab: tab,
                 )
             ],
           ),
@@ -173,25 +173,25 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
 //  });
 //}
 
-IconData loggingTabToIcon(LoggingTab loggingTab) {
-  switch (loggingTab) {
-    case LoggingTab.recent:
+IconData loggingTabToIcon(FoodLoggingTab foodLoggingTab) {
+  switch (foodLoggingTab) {
+    case FoodLoggingTab.recent:
       return Icons.timer;
       break;
-    case LoggingTab.frequent:
+    case FoodLoggingTab.frequent:
       return Icons.repeat;
       break;
-    case LoggingTab.popular:
+    case FoodLoggingTab.popular:
       return Icons.whatshot;
       break;
-    case LoggingTab.favorite:
+    case FoodLoggingTab.favorite:
       return Icons.favorite;
       break;
-    case LoggingTab.recipes:
+    case FoodLoggingTab.recipes:
       return Icons.list;
       break;
     default:
-      throw Exception("no icon was defiend for $loggingTab in loggingTabToIcon");
+      throw Exception("no icon was defiend for $foodLoggingTab in loggingTabToIcon");
   }
 }
 

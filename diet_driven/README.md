@@ -24,3 +24,5 @@ Android Licenses
 https://github.com/flutter/flutter/issues/16025
 
 
+Removes initial `I/flutter ( 4439):` from logs for readability
+flutter logs | cut -d ' ' -f4-

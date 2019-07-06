@@ -1,4 +1,5 @@
 import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/screens/food_diary_page.dart';
 import 'package:diet_driven/screens/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,8 @@ class TabbedNavigation extends StatefulWidget {
 
 class _TabbedNavigationState extends State<TabbedNavigation> {
   // Storing navigator keys for every potential page to persist navigation state
-  Map<Page, GlobalKey<NavigatorState>> navigatorKeys = Map<Page, GlobalKey<NavigatorState>>.fromIterable(Page.values,
+  Map<Page, GlobalKey<NavigatorState>> navigatorKeys = Map<Page, GlobalKey<NavigatorState>>.fromIterable(
+    Page.values,
     key: (dynamic page) => page,
     value: (dynamic page) => GlobalKey<NavigatorState>(),
   );
@@ -43,7 +45,7 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
       // Navigation builder
       builder: (BuildContext context, UserDataState userDataState) {
         // ...
-        final BuiltList<Page> bottomNavPages = (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages;
+        final bottomNavPages = (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages.rebuild((b) => b.add(Page.logging)); // FIXME: only add logging if enabled in navigation settings
         print("BOTTOM NAV PAGES $bottomNavPages");
 
         return BlocBuilder<NavigationEvent, NavigationState>(
@@ -139,7 +141,8 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
   Widget pageToWidget(Page page, GlobalKey<NavigatorState> navigationKey) {
     switch (page) {
       case Page.diary:
-        return DiaryPage();
+        return FoodDiaryPage();
+        // TODO: can place bloc provider here?!
         break;
       case Page.track:
         return const UnderConstruction(page: "Tracking");
@@ -149,6 +152,9 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
         break;
       case Page.settings:
         return SettingsPage(navigationKey: navigationKey);
+        break;
+      case Page.logging:
+        return LoggingPage();
         break;
       default:
         return Container(child: Center(child: Text("couldn't find your $page"))); // OPTIMIZE
@@ -186,3 +192,117 @@ class FaLight extends IconData {
     fontFamily: 'FontAwesomeLight',
   );
 }
+
+class LoggingPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // Logging builder
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Logging"),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.cloud_upload),
+            onPressed: () => null,
+          )
+        ],
+      ),
+      body: BlocBuilder<LoggingEvent, LoggingState>(
+        bloc: LoggingBloc(),
+        condition: (previous, current) => true,
+        builder: (BuildContext context, LoggingState loggingState) {
+          // List of all logs
+          return ListView.builder(
+            itemCount: loggingState.logs.length,
+            itemBuilder: (BuildContext context, int index) {
+              final log = loggingState.logs[index];
+
+              if (log is BlocTransitionLog) {
+
+                return ExpansionTile(
+                  key: PageStorageKey<Log>(log),
+                  title: Column(
+                    children: <Widget>[
+                      Text(
+                        "${log.currentState.runtimeType} => ${log.nextState.runtimeType}",
+                        style: TextStyle(
+                          fontSize: 12
+                        ),
+//                    style: Theme.of(context).textTheme.subhead, // FIXME
+                      ),
+                      const SizedBox(height: 3,),
+                      Text(
+                        "??? Bloc - ${log.event.runtimeType}",
+                        style: TextStyle(
+                            fontSize: 10,
+                        ),
+                      ),
+                    ],
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                  ),
+                  leading: log.event is NavigationEvent ? const Icon(Icons.navigation) : const Icon(Icons.arrow_forward),
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        child: Column(
+                          children: <Widget>[
+                            Text(log.datetime.toString()),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
+                              child: Text("Before", style: Theme.of(context).textTheme.headline),
+                            ),
+                            Text(log.currentState.toString()),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
+                              child: Text("Event", style: Theme.of(context).textTheme.headline),
+                            ),
+                            Text(log.event.toString()),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
+                              child: Text("After", style: Theme.of(context).textTheme.headline),
+                            ),
+                            Text(log.nextState.toString()),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                      ),
+                    )
+                  ],
+                );
+                  // TODO: icon depends on bloc type, pass as argument!
+              }
+
+              if (log is MessageLog) {
+                return ListTile(
+                  title: Text(log.text),
+                  subtitle: Text(log.datetime.toString()),
+                  leading: const Icon(Icons.info),
+                  // TODO: icon depends on level
+                );
+              }
+
+              if (log is ErrorLog) {
+                return ListTile(
+                  title: Text(log.error),
+                  subtitle: Text(log.datetime.toString()),
+                  // TODO: icon depends on level
+                );
+              }
+            },
+          );
+        }
+      ),
+    );
+  }
+}
+/// ListView.separated(
+///   itemCount: 25,
+///   separatorBuilder: (BuildContext context, int index) => Divider(),
+///   itemBuilder: (BuildContext context, int index) {
+///     return ListTile(
+///       title: Text('item $index'),
+///     );
+///   },
+/// )

@@ -39,8 +39,8 @@ class FirestoreProvider {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
-    return ref.delete();
+    final docRef = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+    return docRef.delete();
   }
 
   /// Fetches [Observable] of [userId]'s [FoodDiaryDay] at [daysSinceEpoch].
@@ -53,8 +53,8 @@ class FirestoreProvider {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    DocumentReference ref = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
-    return fsDiaryDay.deserializeDocument(ref.snapshots());
+    final docRef = _firestore.document(foodDiaryPath(userId, daysSinceEpoch));
+    return fsDiaryDay.deserializeDocument(docRef.snapshots());
   }
 
   /// Fetches [Observable] of [userId]'s all-time [FoodDiaryDay].
@@ -66,8 +66,8 @@ class FirestoreProvider {
   Observable<BuiltList<FoodDiaryDay>> streamAllFoodDiary(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    CollectionReference ref = _firestore.collection("${userPath(userId)}/food_diary");
-    return fsDiaryDay.deserializeCollection(ref.snapshots());
+    final colRef = _firestore.collection("${userPath(userId)}/food_diary");
+    return fsDiaryDay.deserializeCollection(colRef.snapshots());
   }
 
   /// Adds [FoodRecord] to [FoodDiaryDay] in Firestore.

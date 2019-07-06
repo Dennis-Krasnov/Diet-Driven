@@ -1,15 +1,15 @@
 import 'package:bloc/bloc.dart';
-import 'dart:async';
 
 // TODO: change other blocs to only import their own export file
 import 'package:diet_driven/blocs/food_record_edit/food_record_edit.dart';
+import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 
 class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> {
-  final _log = Logger("food record edit bloc");
+  final logger = getLogger("food record edit bloc");
   final FoodRecord initialFoodRecord;
   final String userId;
   final int daysSinceEpoch;
@@ -48,7 +48,7 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
           ).toBuilder()
           ..quantityError = null
         );
-        _log.info("Grams updated to ${event.grams}");
+        logger.i("Grams updated to ${event.grams}");
       }
     }
 
@@ -57,14 +57,14 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
         diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, currentState.foodRecord);
         event.completer?.complete();
 
-        _log.info("${currentState.foodRecord} deleted");
+        logger.i("${currentState.foodRecord} deleted");
       } on Exception catch(e) {
         event.completer?.completeError(e);
       }
     }
 
     if (event is SaveFoodRecord) {
-      _log.info("save food record does nothing!");
+      logger.i("save food record does nothing!");
       // Can't edit unchanged food record
 //      if (initialFoodRecord != currentState.foodRecord) {
 //        saveAction(currentState.foodRecord);

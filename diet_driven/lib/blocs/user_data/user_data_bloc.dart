@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:logging/logging.dart';
+import 'package:diet_driven/log_printer.dart';
+import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -9,10 +10,14 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/models/models.dart';
 
+//class CustomLogPrinter extends LogPrinter {
+//
+//}
+
 /// Aggregates and manages authentication and settings.
 /// [UserDataBloc] shows loading or onboarding until loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
-  final _log = Logger("user data bloc");
+  final logger = getLogger("user data bloc");
   final UserRepository userRepository;
   final SettingsRepository settingsRepository;
 
@@ -22,8 +27,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     assert(userRepository != null);
     assert(settingsRepository != null);
 
-    final Observable<UserDataEvent> userDataEvent$ = userRepository.authStateChangedStream
-      .doOnData((user) => _log.fine("USER: $user"))
+    final userDataEvent$ = userRepository.authStateChangedStream // .delay(Duration(seconds: 20))
+      .doOnData((user) => logger.d("USER: $user"))
       // Side effect ensures user is authenticated and new user doesn't see userData from previous user
       .doOnData((user) {
         if (user == null) {
@@ -76,12 +81,12 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..subscription = event.subscription
       );
 
-      _log.info("loaded user data ${event.authentication.uid}");
+      logger.i("loaded user data ${event.authentication.uid}");
     }
     if (event is OnboardUser) {
       yield UserDataUnauthenticated();
 
-      _log.info("onboarding user");
+      logger.i("onboarding user");
     }
     if (event is UserDataError) {
       yield UserDataFailed((b) => b
@@ -89,7 +94,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..trace = event.trace
       );
 
-      _log.info("user data failed");
+      logger.i("user data failed");
     }
   }
 }

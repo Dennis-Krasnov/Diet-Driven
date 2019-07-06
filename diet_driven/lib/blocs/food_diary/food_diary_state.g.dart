@@ -158,24 +158,16 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   final FoodDiaryDay foodDiaryDay;
   @override
   final Diet diet;
-  @override
-  final int skipNextNArrivals;
 
   factory _$FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder) updates]) =>
-      (new FoodDiaryLoadedBuilder()..update(updates)).build()
-          as _$FoodDiaryLoaded;
+      (new FoodDiaryLoadedBuilder()..update(updates)).build();
 
-  _$FoodDiaryLoaded._({this.foodDiaryDay, this.diet, this.skipNextNArrivals})
-      : super._() {
+  _$FoodDiaryLoaded._({this.foodDiaryDay, this.diet}) : super._() {
     if (foodDiaryDay == null) {
       throw new BuiltValueNullFieldError('FoodDiaryLoaded', 'foodDiaryDay');
     }
     if (diet == null) {
       throw new BuiltValueNullFieldError('FoodDiaryLoaded', 'diet');
-    }
-    if (skipNextNArrivals == null) {
-      throw new BuiltValueNullFieldError(
-          'FoodDiaryLoaded', 'skipNextNArrivals');
     }
   }
 
@@ -184,80 +176,51 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
       (toBuilder()..update(updates)).build();
 
   @override
-  _$FoodDiaryLoadedBuilder toBuilder() =>
-      new _$FoodDiaryLoadedBuilder()..replace(this);
+  FoodDiaryLoadedBuilder toBuilder() =>
+      new FoodDiaryLoadedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is FoodDiaryLoaded &&
         foodDiaryDay == other.foodDiaryDay &&
-        diet == other.diet &&
-        skipNextNArrivals == other.skipNextNArrivals;
+        diet == other.diet;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc($jc(0, foodDiaryDay.hashCode), diet.hashCode),
-        skipNextNArrivals.hashCode));
+    return $jf($jc($jc(0, foodDiaryDay.hashCode), diet.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryLoaded')
           ..add('foodDiaryDay', foodDiaryDay)
-          ..add('diet', diet)
-          ..add('skipNextNArrivals', skipNextNArrivals))
+          ..add('diet', diet))
         .toString();
   }
 }
 
-class _$FoodDiaryLoadedBuilder extends FoodDiaryLoadedBuilder {
+class FoodDiaryLoadedBuilder
+    implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   _$FoodDiaryLoaded _$v;
 
-  @override
-  FoodDiaryDay get foodDiaryDay {
-    _$this;
-    return super.foodDiaryDay;
-  }
+  FoodDiaryDayBuilder _foodDiaryDay;
+  FoodDiaryDayBuilder get foodDiaryDay =>
+      _$this._foodDiaryDay ??= new FoodDiaryDayBuilder();
+  set foodDiaryDay(FoodDiaryDayBuilder foodDiaryDay) =>
+      _$this._foodDiaryDay = foodDiaryDay;
 
-  @override
-  set foodDiaryDay(FoodDiaryDay foodDiaryDay) {
-    _$this;
-    super.foodDiaryDay = foodDiaryDay;
-  }
+  DietBuilder _diet;
+  DietBuilder get diet => _$this._diet ??= new DietBuilder();
+  set diet(DietBuilder diet) => _$this._diet = diet;
 
-  @override
-  Diet get diet {
-    _$this;
-    return super.diet;
-  }
-
-  @override
-  set diet(Diet diet) {
-    _$this;
-    super.diet = diet;
-  }
-
-  @override
-  int get skipNextNArrivals {
-    _$this;
-    return super.skipNextNArrivals;
-  }
-
-  @override
-  set skipNextNArrivals(int skipNextNArrivals) {
-    _$this;
-    super.skipNextNArrivals = skipNextNArrivals;
-  }
-
-  _$FoodDiaryLoadedBuilder() : super._();
+  FoodDiaryLoadedBuilder();
 
   FoodDiaryLoadedBuilder get _$this {
     if (_$v != null) {
-      super.foodDiaryDay = _$v.foodDiaryDay;
-      super.diet = _$v.diet;
-      super.skipNextNArrivals = _$v.skipNextNArrivals;
+      _foodDiaryDay = _$v.foodDiaryDay?.toBuilder();
+      _diet = _$v.diet?.toBuilder();
       _$v = null;
     }
     return this;
@@ -278,11 +241,24 @@ class _$FoodDiaryLoadedBuilder extends FoodDiaryLoadedBuilder {
 
   @override
   _$FoodDiaryLoaded build() {
-    final _$result = _$v ??
-        new _$FoodDiaryLoaded._(
-            foodDiaryDay: foodDiaryDay,
-            diet: diet,
-            skipNextNArrivals: skipNextNArrivals);
+    _$FoodDiaryLoaded _$result;
+    try {
+      _$result = _$v ??
+          new _$FoodDiaryLoaded._(
+              foodDiaryDay: foodDiaryDay.build(), diet: diet.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'foodDiaryDay';
+        foodDiaryDay.build();
+        _$failedField = 'diet';
+        diet.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'FoodDiaryLoaded', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

@@ -7,20 +7,20 @@ import 'package:diet_driven/widgets/selection_food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class FoodLoggingTab extends StatefulWidget {
+class FoodLoggingTabBar extends StatefulWidget {
   final FoodLoggingBloc foodLoggingBloc;
-  final LoggingTab loggingTab;
+  final FoodLoggingTab foodLoggingTab;
 
-  const FoodLoggingTab({Key key, @required this.foodLoggingBloc, @required this.loggingTab})
+  const FoodLoggingTabBar({Key key, @required this.foodLoggingBloc, @required this.foodLoggingTab})
     : assert(foodLoggingBloc != null),
-      assert(loggingTab != null),
+      assert(foodLoggingTab != null),
       super(key: key);
 
   @override
-  _FoodLoggingTabState createState() => _FoodLoggingTabState();
+  _FoodLoggingTabBarState createState() => _FoodLoggingTabBarState();
 }
 
-class _FoodLoggingTabState extends State<FoodLoggingTab> with AutomaticKeepAliveClientMixin<FoodLoggingTab> {
+class _FoodLoggingTabBarState extends State<FoodLoggingTabBar> with AutomaticKeepAliveClientMixin<FoodLoggingTabBar> {
   FoodLoggingTabBloc _tabBloc;
 
   String userId;
@@ -35,8 +35,8 @@ class _FoodLoggingTabState extends State<FoodLoggingTab> with AutomaticKeepAlive
     userId = (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid;
 
     _tabBloc = FoodLoggingTabBloc(
-      loggingTab: widget.loggingTab,
-      futureResultRecords: Repository().food.futureFoodRecordResultsFor(widget.loggingTab, userId), // OPTIMIZE: bloc should access repository itself, also pass userId
+      foodLoggingTab: widget.foodLoggingTab,
+      futureResultRecords: Repository().food.futureFoodRecordResultsFor(widget.foodLoggingTab, userId), // OPTIMIZE: bloc should access repository itself, also pass userId
       foodLoggingBloc: widget.foodLoggingBloc
     );
   }

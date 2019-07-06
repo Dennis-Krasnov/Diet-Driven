@@ -127,3 +127,24 @@ abstract class SettingsTabBuilder implements NavigationStateBuilder, Builder<Set
   factory SettingsTabBuilder() = _$SettingsTabBuilder;
   SettingsTabBuilder._();
 }
+
+
+
+
+abstract class LoggingTab implements NavigationState, Built<LoggingTab, LoggingTabBuilder> {
+  factory LoggingTab([void Function(LoggingTabBuilder) updates]) = _$LoggingTab;
+  LoggingTab._();
+}
+
+
+abstract class LoggingTabBuilder implements NavigationStateBuilder, Builder<LoggingTab, LoggingTabBuilder> {
+  @override
+  Page page = Page.logging;
+
+  @override
+  @nullable
+  DeepLink deepLink;
+
+  factory LoggingTabBuilder() = _$LoggingTabBuilder;
+  LoggingTabBuilder._();
+}

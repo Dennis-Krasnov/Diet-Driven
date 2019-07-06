@@ -754,4 +754,95 @@ class DiarySettingsDeepLinkBuilder
   }
 }
 
+class _$NavigateToLogging extends NavigateToLogging {
+  @override
+  final bool onlyIfUninitialized;
+
+  factory _$NavigateToLogging(
+          [void Function(NavigateToLoggingBuilder) updates]) =>
+      (new NavigateToLoggingBuilder()..update(updates)).build()
+          as _$NavigateToLogging;
+
+  _$NavigateToLogging._({this.onlyIfUninitialized}) : super._() {
+    if (onlyIfUninitialized == null) {
+      throw new BuiltValueNullFieldError(
+          'NavigateToLogging', 'onlyIfUninitialized');
+    }
+  }
+
+  @override
+  NavigateToLogging rebuild(void Function(NavigateToLoggingBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  _$NavigateToLoggingBuilder toBuilder() =>
+      new _$NavigateToLoggingBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is NavigateToLogging &&
+        onlyIfUninitialized == other.onlyIfUninitialized;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, onlyIfUninitialized.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('NavigateToLogging')
+          ..add('onlyIfUninitialized', onlyIfUninitialized))
+        .toString();
+  }
+}
+
+class _$NavigateToLoggingBuilder extends NavigateToLoggingBuilder {
+  _$NavigateToLogging _$v;
+
+  @override
+  bool get onlyIfUninitialized {
+    _$this;
+    return super.onlyIfUninitialized;
+  }
+
+  @override
+  set onlyIfUninitialized(bool onlyIfUninitialized) {
+    _$this;
+    super.onlyIfUninitialized = onlyIfUninitialized;
+  }
+
+  _$NavigateToLoggingBuilder() : super._();
+
+  NavigateToLoggingBuilder get _$this {
+    if (_$v != null) {
+      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant NavigateToLogging other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$NavigateToLogging;
+  }
+
+  @override
+  void update(void Function(NavigateToLoggingBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$NavigateToLogging build() {
+    final _$result = _$v ??
+        new _$NavigateToLogging._(onlyIfUninitialized: onlyIfUninitialized);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

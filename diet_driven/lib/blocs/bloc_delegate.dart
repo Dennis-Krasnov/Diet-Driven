@@ -1,25 +1,31 @@
 import 'package:bloc/bloc.dart';
-import 'package:logging/logging.dart';
+
+import 'package:diet_driven/blocs/blocs.dart';
 
 
 class SimpleBlocDelegate extends BlocDelegate {
-  final _log = Logger("BloC delegate");
-
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-//    _log.fine("");
-    _log.finest("////////////////////");
-    _log.info("${transition.event}");
-    _log.finest("BEFORE: ${transition.currentState}");
-    _log.finest("AFTER: ${transition.nextState}");
-    _log.finest("\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\");
-//    _log.fine("");
+
+    // Prevent recursion
+    if (bloc is! LoggingBloc) {
+      LoggingBloc().dispatch(LogBlocTransition((b) => b
+//      ..blocName = bloc.runtimeType
+        ..currentState = transition.currentState
+        ..event = transition.event
+        ..nextState = transition.nextState
+      ));
+    }
   }
 
   @override
   void onError(Bloc bloc, Object error, Object stacktrace) {
     super.onError(bloc, error, stacktrace);
-    _log.severe(error);
+
+    // Prevent recursion
+    if (bloc is! LoggingBloc) {
+      LoggingBloc().unexpectedError(error, stacktrace);
+    }
   }
 }

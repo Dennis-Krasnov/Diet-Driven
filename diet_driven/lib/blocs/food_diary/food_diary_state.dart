@@ -8,8 +8,8 @@ abstract class FoodDiaryState {}
 
 /// Skeleton meals and food records.
 abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
-  FoodDiaryUninitialized._();
   factory FoodDiaryUninitialized([void Function(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
+  FoodDiaryUninitialized._();
 
   @override String toString() => runtimeType.toString();
 }
@@ -20,8 +20,8 @@ abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFai
 
   String get trace;
 
-  FoodDiaryFailed._();
   factory FoodDiaryFailed([void Function(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;
+  FoodDiaryFailed._();
 }
 
 /// Food diary day, stores current [FoodDiaryDay].
@@ -32,23 +32,11 @@ abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoa
   ///
   Diet get diet;
 
-  ///
-  int get skipNextNArrivals;
-
-  FoodDiaryLoaded._();
   factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
+  FoodDiaryLoaded._();
 }
 
-abstract class FoodDiaryLoadedBuilder implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-  FoodDiaryDay foodDiaryDay;
 
-  Diet diet;
-
-  int skipNextNArrivals = 0;
-
-  factory FoodDiaryLoadedBuilder() = _$FoodDiaryLoadedBuilder;
-  FoodDiaryLoadedBuilder._();
-}
 
 // TODO: create generic diary wrapper! (for pageview)
 //  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays;

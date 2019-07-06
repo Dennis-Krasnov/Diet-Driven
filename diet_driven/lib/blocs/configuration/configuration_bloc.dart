@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart' show FetchThrottledException;
 
 import 'package:diet_driven/blocs/configuration/configuration.dart';
+import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:package_info/package_info.dart';
@@ -17,7 +17,8 @@ import 'package:package_info/package_info.dart';
 /// Fetches and manages app-wide configuration.
 /// [ConfigurationBloc] shows splash page until loaded.
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
-  final _log = Logger("configuration bloc");
+  final logger = getLogger("configuration bloc");
+
   final ConfigurationRepository configurationRepository;
 
   StreamSubscription<ConfigurationEvent> _configurationEventSubscription;
@@ -34,7 +35,8 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         ..remoteConfiguration = remoteConfiguration.toBuilder()
         ..packageInfo = packageInfo
       ),
-    ));//.distinct();
+    )).distinct();
+    // TODO: .sample this immediately and on userData.staleConfiguration == True, then update userData to indicate not stale config
 
     _configurationEventSubscription = configurationEvent$.listen(
       (configurationEvent) => dispatch(configurationEvent),
@@ -46,6 +48,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   }
 
   // Poll for fresh configurations every few hours
+  // + .startWith
   // Observable<void>.periodic(Duration(seconds: 60)).switchMap<RemoteConfiguration>((_) =>)
 
   @override
@@ -65,7 +68,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         ..packageInfo = event.packageInfo
       );
 
-      _log.info("loaded configuration");
+      logger.i("loaded configuration");
     }
 
     if (event is ConfigurationError) {
@@ -74,7 +77,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         ..trace = event.trace
       );
 
-      _log.info("configuration failed");
+      logger.i("configuration failed");
     }
   }
 }

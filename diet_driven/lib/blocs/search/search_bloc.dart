@@ -1,8 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:dio/dio.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -13,7 +14,7 @@ import 'package:diet_driven/blocs/search/search.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
-  final _log = Logger("food record search bloc");
+  final logger = getLogger("food search bloc");
   final FoodLoggingState foodLoggingState;
   final FoodRepository foodRepository;
 
@@ -54,11 +55,11 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
   @override
   Stream<FoodSearchState> mapEventToState(FoodSearchEvent event) async* {
     if (event is UpdateQuery) {
-      _log.info("updated query to ${event.query}, state used to be ${currentState.runtimeType}");
+      logger.i("updated query to ${event.query}, state used to be ${currentState.runtimeType}");
 
       try {
         final BuiltList<String> suggestions = await foodRepository.foodSuggestions(event.query);
-        _log.fine(suggestions);
+        logger.d(suggestions);
 
         yield FoodSearchQuery((b) => b
           ..query = event.query
@@ -94,14 +95,14 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
       try {
         // TODO: memoize results!
         final BuiltList<FoodRecord> results = await foodRepository.searchForFood(event.query);
-        _log.fine(results);
+        logger.d(results);
 
         yield FoodSearchLoaded((b) => b
           // TODO: extract to method
           ..results = ListBuilder(results.map<FoodRecordResult>((foodRecord) =>
             FoodRecordResult((b) => b
               ..foodRecord = foodRecord.toBuilder()
-              ..resultType = LoggingTab.popular // FIXME: none of the above!
+              ..resultType = FoodLoggingTab.popular // FIXME: none of the above!
               // FIXME: compare by edamam id!!!
               ..existsInDiary = foodLoggingState.diaryFoodRecords.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid)
               ..existsInSelection = foodLoggingState.selectedFoodRecords.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid)
@@ -110,7 +111,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
         );
 
 //        assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
-        _log.fine("${event.query} was searched!");
+        logger.d("${event.query} was searched!");
       } on DioError catch (error, trace) {
         yield FoodSearchFailed((b) => b
 //          ..error = error.toString()

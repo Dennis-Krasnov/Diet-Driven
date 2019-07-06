@@ -11,7 +11,7 @@ abstract class FoodRecordResult implements Built<FoodRecordResult, FoodRecordRes
   FoodRecord get foodRecord;
 
   ///
-  LoggingTab get resultType; // TODO: store list of where it's appeared? would have to update all results when a new one comes in - recursion?!
+  FoodLoggingTab get resultType; // TODO: store list of where it's appeared? would have to update all results when a new one comes in - recursion?!
 
   ///
   bool get existsInDiary;
@@ -19,6 +19,6 @@ abstract class FoodRecordResult implements Built<FoodRecordResult, FoodRecordRes
   ///
   bool get existsInSelection;
 
-  FoodRecordResult._();
   factory FoodRecordResult([void Function(FoodRecordResultBuilder b)]) = _$FoodRecordResult;
+  FoodRecordResult._();
 }

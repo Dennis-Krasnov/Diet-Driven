@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/log_printer.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:bloc/bloc.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
@@ -16,35 +17,36 @@ import 'package:diet_driven/repositories/repositories.dart';
 /// update skips...
 /// TODO: rename all `edit` to `update` and `add` to `insert`
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
-  final _log = Logger("food diary bloc");
+  final logger = getLogger("food diary bloc");
   final DiaryRepository diaryRepository;
   final String userId;
   final int daysSinceEpoch;
 
-  StreamSubscription<FoodDiaryEvent> _foodDiaryDaySubscription;
+  StreamSubscription<FoodDiaryEvent> _foodDiaryEventSubscription;
 
   FoodDiaryBloc({@required this.diaryRepository, @required this.userId, @required this.daysSinceEpoch}) {
     assert(diaryRepository != null);
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    final Observable<FoodDiaryEvent> _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch)
-      .switchMap<FoodDiaryEvent>((foodDiaryDay) =>
-        Observable<Diet>.just(Diet((b) => b..calories = 2520)) // TODO: call repo with date field from day
-          .map<FoodDiaryEvent>((diet) => RemoteDiaryDayArrived((b) => b
-            ..foodDiaryDay = foodDiaryDay.toBuilder()
-            ..diet = diet.toBuilder()
-          ))
-      );
 
-    _foodDiaryDaySubscription = _foodDiaryDayStream.listen(
+    final _foodDiaryEvent$ = Observable<FoodDiaryEvent>(CombineLatestStream.combine2(
+      diaryRepository.streamDiaryDay(userId, daysSinceEpoch),
+      Observable<Diet>.just(Diet((b) => b..calories = 2520)), // TODO: call repo with daysSinceEpoch
+      (FoodDiaryDay foodDiaryDay, Diet diet) => RemoteDiaryDayArrived((b) => b
+        ..foodDiaryDay = foodDiaryDay.toBuilder()
+        ..diet = diet.toBuilder()
+      ),
+    ));
+
+    _foodDiaryEventSubscription = _foodDiaryEvent$.listen(
       (foodDiaryEvent) => dispatch(foodDiaryEvent),
       onError: (Object error, Object trace) => dispatch(FoodDiaryError((b) => b
         ..error = error.toString()
         ..trace = trace.toString()
       )),
     );
-
+  }
 //    Observable<FoodDiaryDay> _foodDiaryDayStream = diaryRepository.streamDiaryDay(userId, daysSinceEpoch);//.doOnData((data) => print(" DATA: $data"));
 //
 //    // TODO: diet! -> merge together into event stream -> listen(dispatch)
@@ -56,67 +58,28 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 //      onError: (Error error, StackTrace trace) => dispatch(FoodDiaryError((b) => b..error = error.toString())),
 //        // TODO .switchIfEmpty(fallbackStream) for caching and loading historical configs
 //    );
-  }
+//  }
 
   @override
   FoodDiaryState get initialState => FoodDiaryUninitialized();
 
   @override
   void dispose() {
-    _foodDiaryDaySubscription?.cancel();
+    _foodDiaryEventSubscription?.cancel();
+    logger.i("$daysSinceEpoch disposed!");
     super.dispose();
   }
 
-  @override
-  Stream<FoodDiaryState> transform(Stream<FoodDiaryEvent> events, Stream<FoodDiaryState> Function(FoodDiaryEvent event) next) {
-    return super.transform(
-      (events as Observable<FoodDiaryEvent>),
-//        .debounce(Duration(milliseconds: 500)),
-      next,
-    );
-    // FIXME: use updated transform contract
-    // Distinct stream for each event type // TODO: make this a reusable observable transformation
-//    Observable<FoodDiaryEvent>(events)
-//      .groupBy((event) => event.runtimeType)
-//      .flatMap((eventType) {
-//        // TODO: stop spamming of expensive actions
-////        if (eventType.key is Completable) {
-////          return eventType.distinct();
-////        }
-//        return eventType;
-//      });
-//    return events;
-  }
 
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
     if (event is RemoteDiaryDayArrived) {
-      if (currentState is FoodDiaryLoaded) {
-        var state = currentState as FoodDiaryLoaded;
+      yield FoodDiaryLoaded((b) => b
+        ..foodDiaryDay = event.foodDiaryDay.toBuilder()
+        ..diet = event.diet.toBuilder()
+      );
 
-        // Skip next data arrival if performed a food record edit
-        // ...
-        if (state.skipNextNArrivals > 0) {
-          yield state.rebuild((b) => b
-            ..skipNextNArrivals = state.skipNextNArrivals - 1
-          );
-          _log.info("SKIPPING DATA ARRIVAL");
-        }
-        // Update food diary day
-        else {
-          yield state.rebuild((b) => b
-            ..foodDiaryDay = event.foodDiaryDay
-          );
-        }
-      }
-      else {
-        yield FoodDiaryLoaded((b) => b
-          ..foodDiaryDay = event.foodDiaryDay
-          ..diet = event.diet
-        );
-      }
-
-      _log.info("food diary day #${event.foodDiaryDay.date} arrived");
+      logger.i("food diary day #${event.foodDiaryDay.date} loaded");
     }
 
     if (event is AddFoodRecords) {
@@ -128,7 +91,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
           }
           event.completer?.complete();  // TOTEST
 
-          _log.info("${event.foodRecords.length} food records added");
+          logger.i("${event.foodRecords.length} food records added");
         } on Exception catch(e) {
           event.completer?.completeError(e);  // TOTEST
         }
@@ -144,7 +107,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
           }
           event.completer?.complete();  // TOTEST
 
-          _log.info("${event.foodRecords.length} food records deleted");
+          logger.i("${event.foodRecords.length} food records deleted");
         } on Exception catch(e) {
           event.completer?.completeError(e);  // TOTEST
         }
@@ -157,21 +120,21 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       if (currentState is FoodDiaryLoaded && event.oldRecord != event.newRecord) {
         var state = currentState as FoodDiaryLoaded;
 
-        try {
-          // Skip next data arrival. TODOCUMENT
-          _log.info("ADDING SKIPPED ARRIVED (going to be ${state.skipNextNArrivals + 1})");
-          yield state.rebuild((b) => b
-            ..skipNextNArrivals = state.skipNextNArrivals + 1
-          );
-
-          diaryRepository.replaceFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
-
-          event.completer?.complete();
-
-          _log.info("${event.oldRecord} changed to ${event.newRecord}");
-        } on Exception catch(e) {
-          event.completer?.completeError(e);
-        }
+//        try {
+//          // Skip next data arrival. TODOCUMENT
+//          logger.i("ADDING SKIPPED ARRIVED (going to be ${state.skipNextNArrivals + 1})");
+//          yield state.rebuild((b) => b
+//            ..skipNextNArrivals = state.skipNextNArrivals + 1
+//          );
+//
+//          diaryRepository.replaceFoodRecord(userId, daysSinceEpoch, event.oldRecord, event.newRecord);
+//
+//          event.completer?.complete();
+//
+//          logger.i("${event.oldRecord} changed to ${event.newRecord}");
+//        } on Exception catch(e) {
+//          event.completer?.completeError(e);
+//        }
       }
     }
   }

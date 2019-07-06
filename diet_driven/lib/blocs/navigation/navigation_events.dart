@@ -171,3 +171,23 @@ abstract class DiarySettingsDeepLink implements SettingsDeepLink, Built<DiarySet
   factory DiarySettingsDeepLink([void Function(DiarySettingsDeepLinkBuilder) updates]) = _$DiarySettingsDeepLink;
   DiarySettingsDeepLink._();
 }
+
+
+
+
+
+
+
+
+abstract class NavigateToLogging implements NavigationEvent, Built<NavigateToLogging, NavigateToLoggingBuilder> {
+  factory NavigateToLogging([void Function(NavigateToLoggingBuilder) updates]) = _$NavigateToLogging;
+  NavigateToLogging._();
+}
+
+abstract class NavigateToLoggingBuilder implements NavigationEventBuilder, Builder<NavigateToLogging, NavigateToLoggingBuilder> {
+  @override
+  bool onlyIfUninitialized = false;
+
+  factory NavigateToLoggingBuilder() = _$NavigateToLoggingBuilder;
+  NavigateToLoggingBuilder._();
+}

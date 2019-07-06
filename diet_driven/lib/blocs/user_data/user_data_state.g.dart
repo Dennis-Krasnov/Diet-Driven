@@ -150,59 +150,6 @@ class UserDataFailedBuilder
   }
 }
 
-class _$UserDataLoading extends UserDataLoading {
-  factory _$UserDataLoading([void Function(UserDataLoadingBuilder) updates]) =>
-      (new UserDataLoadingBuilder()..update(updates)).build();
-
-  _$UserDataLoading._() : super._();
-
-  @override
-  UserDataLoading rebuild(void Function(UserDataLoadingBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  UserDataLoadingBuilder toBuilder() =>
-      new UserDataLoadingBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is UserDataLoading;
-  }
-
-  @override
-  int get hashCode {
-    return 780040618;
-  }
-}
-
-class UserDataLoadingBuilder
-    implements Builder<UserDataLoading, UserDataLoadingBuilder> {
-  _$UserDataLoading _$v;
-
-  UserDataLoadingBuilder();
-
-  @override
-  void replace(UserDataLoading other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$UserDataLoading;
-  }
-
-  @override
-  void update(void Function(UserDataLoadingBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$UserDataLoading build() {
-    final _$result = _$v ?? new _$UserDataLoading._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$UserDataUnauthenticated extends UserDataUnauthenticated {
   factory _$UserDataUnauthenticated(
           [void Function(UserDataUnauthenticatedBuilder) updates]) =>

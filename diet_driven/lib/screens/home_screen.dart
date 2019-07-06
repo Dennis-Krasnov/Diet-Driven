@@ -14,13 +14,17 @@ class HomePage extends StatelessWidget {
           builder: (BuildContext context) => NavigationBloc(analyticsRepository: Repository().analytics, userDataBloc: BlocProvider.of<UserDataBloc>(context)),
           dispose: (BuildContext context, NavigationBloc navigationBloc) => navigationBloc.dispose(),
         ),
-        // TODO: diary switcher
-        BlocProvider<FoodDiaryBloc>(
-          builder: (BuildContext context) => FoodDiaryBloc(diaryRepository: Repository().diary, userId: "Z1TAAZu1jDMn0VbSAyKXUO1qc5z2", daysSinceEpoch: 124),
-          dispose: (BuildContext context, FoodDiaryBloc tempFoodDiaryBloc) => tempFoodDiaryBloc.dispose(),
-        ),
+//        BlocProvider<FoodDiaryBloc>(
+//          builder: (BuildContext context) => FoodDiaryBloc(
+//            diaryRepository: Repository().diary,
+//            userId: (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid,
+//            daysSinceEpoch: 124
+//          ),
+//          dispose: (BuildContext context, FoodDiaryBloc tempFoodDiaryBloc) => tempFoodDiaryBloc.dispose(),
+//        ),
       ],
       child: TabbedNavigation(),
+      // TODO: tracking...
     );
   }
 }

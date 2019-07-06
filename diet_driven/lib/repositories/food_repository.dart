@@ -1,6 +1,7 @@
+import 'package:diet_driven/log_printer.dart';
 import 'package:dio/dio.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 import 'package:built_collection/built_collection.dart';
 
 import 'package:diet_driven/models/models.dart';
@@ -8,7 +9,8 @@ import 'package:diet_driven/providers/providers.dart';
 
 /// Data access object for food searching and nutritional information.
 class FoodRepository {
-  final Logger log = new Logger("food repository");
+//  final Logger log = new Logger("food repository");
+  final logger = getLogger("food repository");
   final EdamamProvider _edamamProvider = EdamamProvider();
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
 
@@ -30,34 +32,34 @@ class FoodRepository {
     return _edamamProvider.searchForFood(search);
   }
 
-  /// Returns food record results for [userId]'s [loggingTab].
+  /// Returns food record results for [userId]'s [foodLoggingTab].
   /// Used to avoid passing down [foodRepository] and [userId] to every [FoodLoggingTabBloc].
   ///
   /// Throws ... TODOCUMENT
-  Future<BuiltList<FoodRecord>> futureFoodRecordResultsFor(LoggingTab loggingTab, String userId) {
-    switch(loggingTab) {
-      case LoggingTab.recent:
+  Future<BuiltList<FoodRecord>> futureFoodRecordResultsFor(FoodLoggingTab foodLoggingTab, String userId) {
+    switch(foodLoggingTab) {
+      case FoodLoggingTab.recent:
         return recentFoodRecords(userId);
         break;
 
-      case LoggingTab.favorite:
+      case FoodLoggingTab.favorite:
         return recentFoodRecords(userId);
         break;
 
-      case LoggingTab.popular:
+      case FoodLoggingTab.popular:
         return recentFoodRecords(userId);
         break;
 
-      case LoggingTab.frequent:
+      case FoodLoggingTab.frequent:
         return recentFoodRecords(userId);
         break;
 
-      case LoggingTab.recipes:
+      case FoodLoggingTab.recipes:
         return recentFoodRecords(userId);
         break;
 
       default:
-        throw Exception("$loggingTab isn't defined for futureFoodRecordResultsFor");
+        throw Exception("$foodLoggingTab isn't defined for futureFoodRecordResultsFor");
     }
   }
 

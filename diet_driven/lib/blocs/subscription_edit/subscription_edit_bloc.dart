@@ -4,11 +4,11 @@
 //import 'package:diet_driven/blocs/subscription_edit/subscription_edit.dart';
 //
 //import 'package:diet_driven/repositories/repositories.dart';
-//import 'package:logging/logging.dart';
+//import 'package:logger/logger.dart';
 //import 'package:meta/meta.dart';
 //
 //class SubscriptionEditBloc extends Bloc<SubscriptionEditEvent, SubscriptionEditState> {
-//  final _log = Logger("subscription edit bloc");
+//  final logger = getLogger();
 //  final UserRepository userRepository;
 //
 //  SubscriptionEditBloc({this.userRepository});
@@ -29,7 +29,7 @@
 //
 //        await userRepository.subscribe(event.subscriptionType);
 //        event.completer?.complete();
-//        _log.info("subscribed to ${event.subscriptionType}");
+//        logger.i("subscribed to ${event.subscriptionType}");
 //      } on Exception catch(e) {
 //        event.completer?.completeError(e);
 ////        yield SubscriptionFailed();
@@ -40,7 +40,7 @@
 //    }
 //    // TODO: switch subscriptions!
 //    if (event is Unsubscribe) {
-//      _log.info("unsubscribed");
+//      logger.i("unsubscribed");
 //    }
 //  }
 //}

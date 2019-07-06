@@ -114,7 +114,7 @@ class MainSettingsPage extends StatelessWidget {
                       condition: (previous, current) => true,
                       builder: (BuildContext context, ConfigurationState configurationState) {
                         final packageInfo = (configurationState as ConfigurationLoaded).packageInfo;
-                        return Text("${packageInfo.appName} ${packageInfo.version}; bonus is ${(configurationState as ConfigurationLoaded).remoteConfiguration.bonus}");
+                        return Text("${packageInfo.appName} ${packageInfo.version}+${packageInfo.buildNumber}; bonus is ${(configurationState as ConfigurationLoaded).remoteConfiguration.bonus}");
                       }
                     )
                   ],

@@ -10,7 +10,7 @@ class _$FoodRecordResult extends FoodRecordResult {
   @override
   final FoodRecord foodRecord;
   @override
-  final LoggingTab resultType;
+  final FoodLoggingTab resultType;
   @override
   final bool existsInDiary;
   @override
@@ -88,9 +88,9 @@ class FoodRecordResultBuilder
   set foodRecord(FoodRecordBuilder foodRecord) =>
       _$this._foodRecord = foodRecord;
 
-  LoggingTab _resultType;
-  LoggingTab get resultType => _$this._resultType;
-  set resultType(LoggingTab resultType) => _$this._resultType = resultType;
+  FoodLoggingTab _resultType;
+  FoodLoggingTab get resultType => _$this._resultType;
+  set resultType(FoodLoggingTab resultType) => _$this._resultType = resultType;
 
   bool _existsInDiary;
   bool get existsInDiary => _$this._existsInDiary;

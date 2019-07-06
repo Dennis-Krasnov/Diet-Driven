@@ -1,10 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/log_printer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:logging/logging.dart';
+//import 'package:logger/logger.dart';
+
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
@@ -17,13 +19,17 @@ import 'package:diet_driven/screens/loading_indicator.dart';
 import 'package:diet_driven/screens/login.dart';
 import 'package:diet_driven/screens/manual_food_record_edit.dart';
 import 'package:diet_driven/screens/splash_screen.dart';
+import 'package:logger/logger.dart';
 
 void main() {
+//  Logger.level = Level.info;
+  // todo: clear past logs!!
+
   // Configure logger
-  Logger.root.level = Level.FINE; // [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
-  Logger.root.onRecord.listen((LogRecord rec) {
-    print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
-  });
+//  Logger.root.level = Level.FINE; // [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
+//  Logger.root.onRecord.listen((LogRecord rec) {
+//    print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
+//  });
 
   // Logs every BLoC event and state transition
   BlocSupervisor.delegate = SimpleBlocDelegate();
@@ -40,6 +46,11 @@ void main() {
           builder: (BuildContext context) => UserDataBloc(userRepository: Repository().user, settingsRepository: Repository().settings),
           dispose: (BuildContext context, UserDataBloc userDataBloc) => userDataBloc.dispose(),
         ),
+        // Used to dispose singleton logging bloc
+//        BlocProvider<LoggingBloc>(
+//          builder: (BuildContext context) => LoggingBloc(),
+//          dispose: (BuildContext context, LoggingBloc loggingBloc) => loggingBloc.dispose(),
+//        ),
       ],
       child: App(),
     )
@@ -53,12 +64,12 @@ void main() {
 }
 
 class App extends StatelessWidget {
-  final _log = Logger("app widget");
+  final logger = getLogger("app widget");
 
   // TODO: separate stless widget
   /// Reactively builds app based on user and configuration state.
   Widget appLoadingLogic(ConfigurationState configurationState, UserDataState userDataState) {
-    // Initial splash screen
+    // Initial splash screen while loading critical configuration and user data
     if (configurationState is ConfigurationUninitialized || userDataState is UserDataUninitialized) {
       return SplashPage();
     }
@@ -87,13 +98,9 @@ class App extends StatelessWidget {
       return LoginPage(userRepository: Repository().user);
     }
 
-    // Loading critical user settings
-    if (userDataState is UserDataLoading) {
-      return LoadingIndicator();
-    }
-
     // Start application when user is loaded
     if (userDataState is UserDataLoaded) {
+      // OPTIMIZE: AnimatedCrossFade from splash to home page
       return HomePage();
     }
 
@@ -102,12 +109,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.wtf("app started");
+    LoggingBloc().verbose("app started");
+
     // Configuration builder
     return BlocBuilder<ConfigurationEvent, ConfigurationState>(
       bloc: BlocProvider.of<ConfigurationBloc>(context),
       condition: (previous, current) => true,
       builder: (BuildContext context, ConfigurationState configurationState) {
-        _log.info("configuration rebuild");
+        logger.i("configuration rebuild");
 
         // User data builder
         return BlocBuilder<UserDataEvent, UserDataState>(
@@ -122,13 +132,13 @@ class App extends StatelessWidget {
             return (previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings;
           },
           builder: (BuildContext context, UserDataState userDataState) {
-            _log.info("user data rebuild");
+            logger.i("user data rebuild");
 
             return MaterialApp(
               // Overrides `/` navigator route
               home: appLoadingLogic(configurationState, userDataState),
               // Use default theme while user data is being loaded
-              theme: userDataState is UserDataLoaded ? generateThemeSettings(userDataState.settings.themeSettings) : ThemeData.light(),
+              theme: generateThemeSettings(userDataState is UserDataLoaded ? userDataState.settings.themeSettings : null),
               onGenerateRoute: (settings) => generateRoute(context, settings),
               onUnknownRoute: (RouteSettings setting) => MaterialPageRoute<dynamic>(builder: (BuildContext context) => ErrorPage(error: "${setting.name} route not found")),
             );

@@ -6,6 +6,7 @@ import 'package:diet_driven/blocs/blocs.dart';
 class ErrorPage extends StatelessWidget {
   final String error;
   final String trace;
+  // TODO: also take arbitary state!
 
   const ErrorPage({Key key, this.error, this.trace}) : super(key: key);
 

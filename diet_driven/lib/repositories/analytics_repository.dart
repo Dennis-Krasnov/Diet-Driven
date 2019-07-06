@@ -1,9 +1,10 @@
+import 'package:diet_driven/log_printer.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 
 /// Wrapper for Firebase Analytics tracking.
 class AnalyticsRepository {
-  final _log = Logger("authentication bloc");
+  final logger = getLogger("analytics repository");
   FirebaseAnalytics _analytics = FirebaseAnalytics();
 
   // TODO: call analytics from user data bloc/login bloc (doOnAction side effects)
@@ -14,32 +15,32 @@ class AnalyticsRepository {
     _analytics.logEvent(
       name: "anonymous_login"
     );
-    _log.finest("anonymous session $userId");
+    logger.v("anonymous session $userId");
   }
 
   /// Logs sign up event with [signUpMethod].
   void signUp(String signUpMethod) {
     _analytics.logSignUp(signUpMethod: signUpMethod);
-    _log.finest("user signed up with $signUpMethod");
+    logger.v("user signed up with $signUpMethod");
   }
 
   /// Logs sign in event and updates [userId].
   void signIn(String userId) {
     _analytics.setUserId(userId);
     _analytics.logLogin();
-    _log.finest("login $userId");
+    logger.v("login $userId");
   }
 
   /// Logs sign out event.
   void signOut() {
     // FIXME
-    _log.finest("sign out");
+    logger.v("sign out");
   }
 
   /// Logs navigation to [screenName].
   void navigateToScreen(String screenName) {
     _analytics.setCurrentScreen(screenName: screenName);
-    _log.finest("navigated to $screenName");
+    logger.v("navigated to $screenName");
   }
 
 }

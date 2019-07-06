@@ -11,6 +11,7 @@ const Page _$track = const Page._('track');
 const Page _$reports = const Page._('reports');
 const Page _$recipes = const Page._('recipes');
 const Page _$settings = const Page._('settings');
+const Page _$logging = const Page._('logging');
 
 Page _$valueOf(String name) {
   switch (name) {
@@ -24,6 +25,8 @@ Page _$valueOf(String name) {
       return _$recipes;
     case 'settings':
       return _$settings;
+    case 'logging':
+      return _$logging;
     default:
       throw new ArgumentError(name);
   }
@@ -35,6 +38,7 @@ final BuiltSet<Page> _$values = new BuiltSet<Page>(const <Page>[
   _$reports,
   _$recipes,
   _$settings,
+  _$logging,
 ]);
 
 Serializer<Page> _$pageSerializer = new _$PageSerializer();

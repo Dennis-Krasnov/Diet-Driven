@@ -25,14 +25,6 @@ abstract class UserDataFailed with UserDataState implements Built<UserDataFailed
   UserDataFailed._();
 }
 
-/// Loading screen.
-abstract class UserDataLoading with UserDataState implements Built<UserDataLoading, UserDataLoadingBuilder> {
-  factory UserDataLoading([void Function(UserDataLoadingBuilder b)]) = _$UserDataLoading;
-  UserDataLoading._();
-
-  @override String toString() => runtimeType.toString();
-}
-
 /// Unauthenticated user onboarding / sign in.
 abstract class UserDataUnauthenticated with UserDataState implements Built<UserDataUnauthenticated, UserDataUnauthenticatedBuilder> {
   // TODO: create separate onboarding bloc

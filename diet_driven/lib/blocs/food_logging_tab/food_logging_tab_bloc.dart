@@ -1,7 +1,8 @@
 import 'dart:async';
 
+import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:logging/logging.dart';
+import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
@@ -12,19 +13,19 @@ import 'package:diet_driven/blocs/food_logging_tab/food_logging_tab.dart';
 import 'package:diet_driven/models/models.dart';
 
 class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> {
-  final _log = Logger("food logging tab bloc");
-  final LoggingTab loggingTab;
+  final logger = getLogger("food logging tab bloc");
+  final FoodLoggingTab foodLoggingTab;
   final Future<BuiltList<FoodRecord>> futureResultRecords;
   final FoodLoggingBloc foodLoggingBloc;
 
   StreamSubscription<BuiltList<FoodRecordResult>> _selectionEventSubscription;
 
   FoodLoggingTabBloc({
-    @required this.loggingTab,
+    @required this.foodLoggingTab,
     @required this.futureResultRecords,
     @required this.foodLoggingBloc
   }) {
-    assert(loggingTab != null);
+    assert(foodLoggingTab != null);
     assert(futureResultRecords != null);
     assert(foodLoggingBloc != null);
 
@@ -50,7 +51,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
 
           return FoodRecordResult((b) => b
             ..foodRecord = mergedBuilder
-            ..resultType = loggingTab
+            ..resultType = foodLoggingTab
             ..existsInDiary = existsInDiary
             ..existsInSelection = existsInSelection
           );
@@ -86,7 +87,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
         ..results = event.results.toBuilder()
       );
 
-      _log.info("$loggingTab - ${event.results} loaded");
+      logger.i("$foodLoggingTab - ${event.results} loaded");
     }
 
     // TODO: filters similar to filtered todos - do an 'ifEven' filter for testing purposes

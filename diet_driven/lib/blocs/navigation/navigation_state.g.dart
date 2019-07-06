@@ -494,4 +494,103 @@ class _$SettingsTabBuilder extends SettingsTabBuilder {
   }
 }
 
+class _$LoggingTab extends LoggingTab {
+  @override
+  final Page page;
+  @override
+  final DeepLink deepLink;
+
+  factory _$LoggingTab([void Function(LoggingTabBuilder) updates]) =>
+      (new LoggingTabBuilder()..update(updates)).build() as _$LoggingTab;
+
+  _$LoggingTab._({this.page, this.deepLink}) : super._();
+
+  @override
+  LoggingTab rebuild(void Function(LoggingTabBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  _$LoggingTabBuilder toBuilder() => new _$LoggingTabBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is LoggingTab &&
+        page == other.page &&
+        deepLink == other.deepLink;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('LoggingTab')
+          ..add('page', page)
+          ..add('deepLink', deepLink))
+        .toString();
+  }
+}
+
+class _$LoggingTabBuilder extends LoggingTabBuilder {
+  _$LoggingTab _$v;
+
+  @override
+  Page get page {
+    _$this;
+    return super.page;
+  }
+
+  @override
+  set page(Page page) {
+    _$this;
+    super.page = page;
+  }
+
+  @override
+  DeepLink get deepLink {
+    _$this;
+    return super.deepLink;
+  }
+
+  @override
+  set deepLink(DeepLink deepLink) {
+    _$this;
+    super.deepLink = deepLink;
+  }
+
+  _$LoggingTabBuilder() : super._();
+
+  LoggingTabBuilder get _$this {
+    if (_$v != null) {
+      super.page = _$v.page;
+      super.deepLink = _$v.deepLink;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant LoggingTab other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$LoggingTab;
+  }
+
+  @override
+  void update(void Function(LoggingTabBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$LoggingTab build() {
+    final _$result = _$v ?? new _$LoggingTab._(page: page, deepLink: deepLink);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new
