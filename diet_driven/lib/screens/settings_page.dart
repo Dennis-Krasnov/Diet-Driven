@@ -1,3 +1,4 @@
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/screens/settings/diary_settings_page.dart';
 import 'package:diet_driven/screens/settings/general_settings_page.dart';
 import 'package:diet_driven/screens/settings/theme_settings_page.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/screens/main_settings_page.dart';
-import 'package:diet_driven/repositories/repository_singleton.dart';
 import 'package:diet_driven/screens/settings/subscription_settings_page.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -46,8 +46,10 @@ class SettingsPage extends StatelessWidget {
         // ,,,
       case 'settings/theme':
         builder = (BuildContext _) => BlocProvider<SettingsEditBloc>(
-          builder: (BuildContext context) => SettingsEditBloc(userId: userId, settingsRepository: Repository().settings),
-          dispose: (BuildContext context, SettingsEditBloc settingsEditBloc) => settingsEditBloc.dispose(),
+          builder: (BuildContext context) => SettingsEditBloc(
+            userId: userId,
+            settingsRepository: RepositoryProvider.of<SettingsRepository>(context)
+          ),
           child: ThemeSettingsPage()
         );
         break;

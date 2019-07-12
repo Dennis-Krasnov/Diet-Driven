@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/log_printer.dart';
+//import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:logger/logger.dart';
+//import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
@@ -13,7 +13,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 
 ///
 class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
-  final logger = getLogger("food logging bloc");
+//  final logger = getLogger("food logging bloc");
   final FoodRepository foodRepository;
   final String userId;
   final int mealIndex;
@@ -39,7 +39,7 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
     ..mealIndex = mealIndex
     ..multiSelect = startWithMultiSelect
     ..selectedFoodRecords = SetBuilder(<FoodRecord>[])
-    ..diaryFoodRecords = foodDiaryLoaded.foodDiaryDay.foodRecords.toBuilder()
+//    ..diaryFoodRecords = foodDiaryLoaded.foodDiaryDay.foodRecords.toBuilder() FIXME
   );
 
   @override

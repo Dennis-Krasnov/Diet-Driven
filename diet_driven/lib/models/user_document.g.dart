@@ -16,13 +16,13 @@ class _$UserDocumentSerializer implements StructuredSerializer<UserDocument> {
   final String wireName = 'UserDocument';
 
   @override
-  Iterable serialize(Serializers serializers, UserDocument object,
+  Iterable<Object> serialize(Serializers serializers, UserDocument object,
       {FullType specifiedType = FullType.unspecified}) {
     return <Object>[];
   }
 
   @override
-  UserDocument deserialize(Serializers serializers, Iterable serialized,
+  UserDocument deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     return new UserDocumentBuilder().build();
   }

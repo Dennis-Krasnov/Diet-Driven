@@ -1,15 +1,11 @@
-import 'dart:math';
-
-import 'package:diet_driven/screens/food_record_search.dart';
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/widgets/food_logging_tab_bar.dart';
-import 'package:diet_driven/widgets/food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:built_collection/built_collection.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/repository_singleton.dart';
 
 
 class FoodLogging extends StatefulWidget {
@@ -40,7 +36,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
       mealIndex: 0, // TODO: take as optional widget parameter!
       startWithMultiSelect: false, // TODO: take from settings!
       foodDiaryLoaded: widget.foodDiaryLoaded,
-      foodRepository: Repository().food
+      foodRepository: RepositoryProvider.of<FoodRepository>(context)
     );
 
     _tabController = TabController(vsync: this, length: loggingTabs.length, initialIndex: 0); // TODO: initialIndex from settings
@@ -61,9 +57,10 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
       builder: (BuildContext context, FoodLoggingState state) {
         String selectionType = state.multiSelect ? "multi-select" : "single-select";
 
-        String title = state.multiSelect
-          ? "Add (${state.selectedFoodRecords.length}) to #${state.mealIndex} (${widget.foodDiaryLoaded.foodDiaryDay.foodRecords.length})"
-          : "Add to #${state.mealIndex} (${widget.foodDiaryLoaded.foodDiaryDay.foodRecords.length})"; // TODO: of that meal
+        String title = "fixme";
+//        String title = state.multiSelect
+//          ? "Add (${state.selectedFoodRecords.length}) to #${state.mealIndex} (${widget.foodDiaryLoaded.foodDiaryDay.foodRecords.length})"
+//          : "Add to #${state.mealIndex} (${widget.foodDiaryLoaded.foodDiaryDay.foodRecords.length})"; // TODO: of that meal
         // access list of meal names from BlocProvider<FoodDiary> of context 's diet field!
 
         return Scaffold(

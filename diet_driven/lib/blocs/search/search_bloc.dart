@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/log_printer.dart';
+//import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:dio/dio.dart';
-import 'package:logger/logger.dart';
+//import 'package:logger/logger.dart';
 import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -14,7 +14,7 @@ import 'package:diet_driven/blocs/search/search.dart';
 import 'package:rxdart/rxdart.dart';
 
 class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
-  final logger = getLogger("food search bloc");
+//  final logger = getLogger("food search bloc");
   final FoodLoggingState foodLoggingState;
   final FoodRepository foodRepository;
 
@@ -55,11 +55,11 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
   @override
   Stream<FoodSearchState> mapEventToState(FoodSearchEvent event) async* {
     if (event is UpdateQuery) {
-      logger.i("updated query to ${event.query}, state used to be ${currentState.runtimeType}");
+//      logger.i("updated query to ${event.query}, state used to be ${currentState.runtimeType}");
 
       try {
         final BuiltList<String> suggestions = await foodRepository.foodSuggestions(event.query);
-        logger.d(suggestions);
+//        logger.d(suggestions);
 
         yield FoodSearchQuery((b) => b
           ..query = event.query
@@ -95,7 +95,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
       try {
         // TODO: memoize results!
         final BuiltList<FoodRecord> results = await foodRepository.searchForFood(event.query);
-        logger.d(results);
+//        logger.d(results);
 
         yield FoodSearchLoaded((b) => b
           // TODO: extract to method
@@ -111,7 +111,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
         );
 
 //        assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
-        logger.d("${event.query} was searched!");
+//        logger.d("${event.query} was searched!");
       } on DioError catch (error, trace) {
         yield FoodSearchFailed((b) => b
 //          ..error = error.toString()

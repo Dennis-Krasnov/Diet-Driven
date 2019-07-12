@@ -1,3 +1,4 @@
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
 import 'package:diet_driven/models/models.dart';
@@ -6,8 +7,8 @@ part 'food_diary_state.g.dart';
 
 abstract class FoodDiaryState {}
 
-/// Skeleton meals and food records.
-abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
+/// Skeleton page.
+abstract class FoodDiaryUninitialized implements FoodDiaryState, Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
   factory FoodDiaryUninitialized([void Function(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
   FoodDiaryUninitialized._();
 
@@ -15,30 +16,28 @@ abstract class FoodDiaryUninitialized with FoodDiaryState implements Built<FoodD
 }
 
 /// Error page.
-abstract class FoodDiaryFailed with FoodDiaryState implements Built<FoodDiaryFailed, FoodDiaryFailedBuilder> {
-  String get error;
+abstract class FoodDiaryFailed implements FoodDiaryState, Built<FoodDiaryFailed, FoodDiaryFailedBuilder> {
+  Object get error;
 
-  String get trace;
+  StackTrace get trace;
 
   factory FoodDiaryFailed([void Function(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;
   FoodDiaryFailed._();
 }
 
 /// Food diary day, stores current [FoodDiaryDay].
-abstract class FoodDiaryLoaded with FoodDiaryState implements Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
+abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   ///
-  FoodDiaryDay get foodDiaryDay;
+  int get currentDate;
 
   ///
-  Diet get diet;
+  BuiltMap<int, FoodDiaryDay> get diaryDays;
+
+  ///
+  BuiltList<Diet> get diets;
+
+//  ongoingDaysSubscription, historicalDaysSubscription
 
   factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
   FoodDiaryLoaded._();
 }
-
-
-
-// TODO: create generic diary wrapper! (for pageview)
-//  ValueObservable<BuiltList<FoodDiaryDay>> get diaryDays;
-//  int get currentDate;
-//  String get timeFrame; // daily vs. weekly

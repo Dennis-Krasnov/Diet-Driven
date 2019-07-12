@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 
-
+/// Middleware to log transitions and errors from all blocs.
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onTransition(Bloc bloc, Transition transition) {
@@ -11,7 +11,7 @@ class SimpleBlocDelegate extends BlocDelegate {
     // Prevent recursion
     if (bloc is! LoggingBloc) {
       LoggingBloc().dispatch(LogBlocTransition((b) => b
-//      ..blocName = bloc.runtimeType
+        ..message = bloc.runtimeType.toString()
         ..currentState = transition.currentState
         ..event = transition.event
         ..nextState = transition.nextState
@@ -25,7 +25,7 @@ class SimpleBlocDelegate extends BlocDelegate {
 
     // Prevent recursion
     if (bloc is! LoggingBloc) {
-      LoggingBloc().unexpectedError(error, stacktrace);
+      LoggingBloc().unexpectedError("${bloc.runtimeType} error", error, stacktrace);
     }
   }
 }

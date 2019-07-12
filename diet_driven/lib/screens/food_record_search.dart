@@ -1,9 +1,9 @@
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/repository_singleton.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/food_record_tile.dart';
 
@@ -41,7 +41,7 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
 
     _foodSearchBloc = FoodSearchBloc(
       foodLoggingState: widget.foodLoggingState,
-      foodRepository: Repository().food,
+      foodRepository: RepositoryProvider.of<FoodRepository>(context)
     );
 
     queryTextController = TextEditingController();
@@ -85,7 +85,7 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
 
         if (state is FoodSearchFailed) {
           body = Column(children: <Widget>[
-            Text("AN ERROR OCCURED"),
+            const Text("AN ERROR OCCURED"),
             Text(state.error),
             Divider(),
             Text(state.error),
@@ -93,7 +93,7 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
         }
 
         if (state is FoodSearchLoading) {
-          body = Center(child: CircularProgressIndicator());
+          body = Center(child: const CircularProgressIndicator());
         }
 
         if (state is FoodSearchLoaded) {

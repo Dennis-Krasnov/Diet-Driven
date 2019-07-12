@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 class LoginPage extends StatefulWidget {
-  final UserRepository userRepository;
-
-  LoginPage({Key key, @required this.userRepository}): assert(userRepository != null), super(key: key);
+//  final UserRepository userRepository;
+//
+//  LoginPage({Key key, @required this.userRepository}): assert(userRepository != null), super(key: key);
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -18,14 +19,14 @@ class _LoginPageState extends State<LoginPage> {
   LoginBloc _loginBloc;
 //  AuthenticationBloc _authenticationBloc;
 
-  UserRepository get _userRepository => widget.userRepository;
+//  UserRepository get _userRepository => widget.userRepository;
 
   @override
   void initState() {
 //    _authenticationBloc = BlocProvider.of<AuthenticationBloc>(context);
 
     _loginBloc = LoginBloc(
-      authenticationRepository: _userRepository,
+      authenticationRepository: RepositoryProvider.of<UserRepository>(context),
 //      authenticationBloc: _authenticationBloc,
     );
     super.initState();

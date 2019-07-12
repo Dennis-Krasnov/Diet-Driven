@@ -64,15 +64,15 @@ class ConfigurationUninitializedBuilder
 
 class _$ConfigurationFailed extends ConfigurationFailed {
   @override
-  final String error;
+  final Object error;
   @override
-  final String trace;
+  final StackTrace stacktrace;
 
   factory _$ConfigurationFailed(
           [void Function(ConfigurationFailedBuilder) updates]) =>
       (new ConfigurationFailedBuilder()..update(updates)).build();
 
-  _$ConfigurationFailed._({this.error, this.trace}) : super._() {
+  _$ConfigurationFailed._({this.error, this.stacktrace}) : super._() {
     if (error == null) {
       throw new BuiltValueNullFieldError('ConfigurationFailed', 'error');
     }
@@ -92,48 +92,50 @@ class _$ConfigurationFailed extends ConfigurationFailed {
     if (identical(other, this)) return true;
     return other is ConfigurationFailed &&
         error == other.error &&
-        trace == other.trace;
+        stacktrace == other.stacktrace;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, error.hashCode), trace.hashCode));
+    return $jf($jc($jc(0, error.hashCode), stacktrace.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ConfigurationFailed')
           ..add('error', error)
-          ..add('trace', trace))
+          ..add('stacktrace', stacktrace))
         .toString();
   }
 }
 
 class ConfigurationFailedBuilder
-    implements Builder<ConfigurationFailed, ConfigurationFailedBuilder> {
+    implements
+        Builder<ConfigurationFailed, ConfigurationFailedBuilder>,
+        BuiltErrorBuilder {
   _$ConfigurationFailed _$v;
 
-  String _error;
-  String get error => _$this._error;
-  set error(String error) => _$this._error = error;
+  Object _error;
+  Object get error => _$this._error;
+  set error(Object error) => _$this._error = error;
 
-  String _trace;
-  String get trace => _$this._trace;
-  set trace(String trace) => _$this._trace = trace;
+  StackTrace _stacktrace;
+  StackTrace get stacktrace => _$this._stacktrace;
+  set stacktrace(StackTrace stacktrace) => _$this._stacktrace = stacktrace;
 
   ConfigurationFailedBuilder();
 
   ConfigurationFailedBuilder get _$this {
     if (_$v != null) {
       _error = _$v.error;
-      _trace = _$v.trace;
+      _stacktrace = _$v.stacktrace;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(ConfigurationFailed other) {
+  void replace(covariant ConfigurationFailed other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -147,8 +149,8 @@ class ConfigurationFailedBuilder
 
   @override
   _$ConfigurationFailed build() {
-    final _$result =
-        _$v ?? new _$ConfigurationFailed._(error: error, trace: trace);
+    final _$result = _$v ??
+        new _$ConfigurationFailed._(error: error, stacktrace: stacktrace);
     replace(_$result);
     return _$result;
   }
@@ -159,12 +161,15 @@ class _$ConfigurationLoaded extends ConfigurationLoaded {
   final RemoteConfiguration remoteConfiguration;
   @override
   final PackageInfo packageInfo;
+  @override
+  final ConnectivityResult connectivity;
 
   factory _$ConfigurationLoaded(
           [void Function(ConfigurationLoadedBuilder) updates]) =>
       (new ConfigurationLoadedBuilder()..update(updates)).build();
 
-  _$ConfigurationLoaded._({this.remoteConfiguration, this.packageInfo})
+  _$ConfigurationLoaded._(
+      {this.remoteConfiguration, this.packageInfo, this.connectivity})
       : super._() {
     if (remoteConfiguration == null) {
       throw new BuiltValueNullFieldError(
@@ -172,6 +177,9 @@ class _$ConfigurationLoaded extends ConfigurationLoaded {
     }
     if (packageInfo == null) {
       throw new BuiltValueNullFieldError('ConfigurationLoaded', 'packageInfo');
+    }
+    if (connectivity == null) {
+      throw new BuiltValueNullFieldError('ConfigurationLoaded', 'connectivity');
     }
   }
 
@@ -189,19 +197,23 @@ class _$ConfigurationLoaded extends ConfigurationLoaded {
     if (identical(other, this)) return true;
     return other is ConfigurationLoaded &&
         remoteConfiguration == other.remoteConfiguration &&
-        packageInfo == other.packageInfo;
+        packageInfo == other.packageInfo &&
+        connectivity == other.connectivity;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, remoteConfiguration.hashCode), packageInfo.hashCode));
+    return $jf($jc(
+        $jc($jc(0, remoteConfiguration.hashCode), packageInfo.hashCode),
+        connectivity.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ConfigurationLoaded')
           ..add('remoteConfiguration', remoteConfiguration)
-          ..add('packageInfo', packageInfo))
+          ..add('packageInfo', packageInfo)
+          ..add('connectivity', connectivity))
         .toString();
   }
 }
@@ -220,12 +232,18 @@ class ConfigurationLoadedBuilder
   PackageInfo get packageInfo => _$this._packageInfo;
   set packageInfo(PackageInfo packageInfo) => _$this._packageInfo = packageInfo;
 
+  ConnectivityResult _connectivity;
+  ConnectivityResult get connectivity => _$this._connectivity;
+  set connectivity(ConnectivityResult connectivity) =>
+      _$this._connectivity = connectivity;
+
   ConfigurationLoadedBuilder();
 
   ConfigurationLoadedBuilder get _$this {
     if (_$v != null) {
       _remoteConfiguration = _$v.remoteConfiguration?.toBuilder();
       _packageInfo = _$v.packageInfo;
+      _connectivity = _$v.connectivity;
       _$v = null;
     }
     return this;
@@ -251,7 +269,8 @@ class ConfigurationLoadedBuilder
       _$result = _$v ??
           new _$ConfigurationLoaded._(
               remoteConfiguration: remoteConfiguration.build(),
-              packageInfo: packageInfo);
+              packageInfo: packageInfo,
+              connectivity: connectivity);
     } catch (_) {
       String _$failedField;
       try {

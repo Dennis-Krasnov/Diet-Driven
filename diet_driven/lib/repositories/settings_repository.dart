@@ -19,24 +19,22 @@ class SettingsRepository {
   Observable<Settings> settingsStream(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    return Observable<Settings>(
-        CombineLatestStream.combine2(
-          // Combine latest user settings and default settings
-            _firestoreProvider.settingsStream(userId),
-            _firestoreProvider.defaultSettings(),
-                (Settings settings, Settings defaultSettings) {
-              // Serialize settings into JSON
-              final jsonSettings = jsonSerializers.serialize(settings);
-              final jsonDefaultSettings = jsonSerializers.serialize(defaultSettings);
+    return Observable<Settings>(CombineLatestStream.combine2(
+      // Combine latest user settings and default settings
+      _firestoreProvider.settingsStream(userId),
+      _firestoreProvider.defaultSettings(),
+      (Settings settings, Settings defaultSettings) {
+        // Serialize settings into JSON
+        final jsonSettings = jsonSerializers.serialize(settings);
+        final jsonDefaultSettings = jsonSerializers.serialize(defaultSettings);
 
-              // Deep merge JSON using merge_map library
-              final mergedJsonSettings = mergeMap<String, dynamic>([jsonDefaultSettings, jsonSettings]);
+        // Deep merge JSON using `merge_map` library
+        final mergedJsonSettings = mergeMap<String, dynamic>([jsonDefaultSettings, jsonSettings]);
 
-              // Deserialize user's settings
-              return jsonSerializers.deserialize(mergedJsonSettings);
-            }
-        )
-    );
+        // Deserialize user's settings
+        return jsonSerializers.deserialize(mergedJsonSettings);
+      }
+    ));
 
     // TOTEST: one stream returns Observable<Settings>.empty() - should time out
     // TOTEST: Observable<Settings>.just(null), for my settings should return default settings!

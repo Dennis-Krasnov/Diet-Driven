@@ -11,6 +11,7 @@ abstract class RemoteConfiguration implements Built<RemoteConfiguration, RemoteC
   RemoteConfiguration._();
 }
 
+/// Default values
 abstract class RemoteConfigurationBuilder implements Builder<RemoteConfiguration, RemoteConfigurationBuilder> {
   bool liveConfiguration = false;
   int bonus = 0;

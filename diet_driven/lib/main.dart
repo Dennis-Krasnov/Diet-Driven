@@ -1,123 +1,76 @@
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/log_printer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-//import 'package:logger/logger.dart';
-
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/repository_singleton.dart';
 import 'package:diet_driven/screens/error_screen.dart';
 import 'package:diet_driven/screens/food_logging.dart';
 import 'package:diet_driven/screens/food_record_search.dart';
 import 'package:diet_driven/screens/home_screen.dart';
-import 'package:diet_driven/screens/loading_indicator.dart';
-import 'package:diet_driven/screens/login.dart';
 import 'package:diet_driven/screens/manual_food_record_edit.dart';
-import 'package:diet_driven/screens/splash_screen.dart';
-import 'package:logger/logger.dart';
+
+import 'repositories/repositories.dart';
 
 void main() {
-//  Logger.level = Level.info;
-  // todo: clear past logs!!
+  // Configure global logger
+  // TODO: set LoggingBloc() logging level
+  // OPTIMIZE: dispose LoggingBloc in global BlocProvider?
 
-  // Configure logger
-//  Logger.root.level = Level.FINE; // [ALL, FINEST, FINER, FINE, CONFIG, INFO, WARNING, SEVERE, SHOUT, OFF]
-//  Logger.root.onRecord.listen((LogRecord rec) {
-//    print("${rec.loggerName} ~ ${rec.level.name} ~ ${DateFormat("jms").format(rec.time)} ~ ${rec.message}");
-//  });
-
-  // Logs every BLoC event and state transition
+  // Logs every bloc event and state transition
   BlocSupervisor.delegate = SimpleBlocDelegate();
 
-  runApp(
-    // Inject global blocs into context
-    BlocProviderTree(
-      blocProviders: [
-        BlocProvider<ConfigurationBloc>(
-          builder: (BuildContext context) => ConfigurationBloc(configurationRepository: Repository().config),
-          dispose: (BuildContext context, ConfigurationBloc configurationBloc) => configurationBloc.dispose(),
-        ),
-        BlocProvider<UserDataBloc>(
-          builder: (BuildContext context) => UserDataBloc(userRepository: Repository().user, settingsRepository: Repository().settings),
-          dispose: (BuildContext context, UserDataBloc userDataBloc) => userDataBloc.dispose(),
-        ),
-        // Used to dispose singleton logging bloc
-//        BlocProvider<LoggingBloc>(
-//          builder: (BuildContext context) => LoggingBloc(),
-//          dispose: (BuildContext context, LoggingBloc loggingBloc) => loggingBloc.dispose(),
-//        ),
-      ],
-      child: App(),
-    )
-  );
-
-  // Lock to portrait mode
+  // Locks to portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  runApp(
+    // Inject global repositories into context
+    MultiRepositoryProvider(
+      providers: [
+        RepositoryProvider<AnalyticsRepository>(builder: (context) => AnalyticsRepository()),
+        RepositoryProvider<ConfigurationRepository>(builder: (context) => ConfigurationRepository()),
+        RepositoryProvider<DiaryRepository>(builder: (context) => DiaryRepository()),
+        RepositoryProvider<FoodRepository>(builder: (context) => FoodRepository()),
+        RepositoryProvider<SettingsRepository>(builder: (context) => SettingsRepository()),
+        RepositoryProvider<UserRepository>(builder: (context) => UserRepository()),
+      ],
+      // Inject global blocs into context
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<ConfigurationBloc>(builder: (context) =>
+            ConfigurationBloc(
+              configurationRepository: RepositoryProvider.of<ConfigurationRepository>(context),
+            )..dispatch(InitConfiguration()),
+          ),
+          BlocProvider<UserDataBloc>(builder: (context) =>
+            UserDataBloc(
+              userRepository: RepositoryProvider.of<UserRepository>(context),
+              settingsRepository: RepositoryProvider.of<SettingsRepository>(context),
+            )
+          ),
+        ],
+        child: App(),
+      ),
+    )
+  );
 }
 
 class App extends StatelessWidget {
-  final logger = getLogger("app widget");
-
-  // TODO: separate stless widget
-  /// Reactively builds app based on user and configuration state.
-  Widget appLoadingLogic(ConfigurationState configurationState, UserDataState userDataState) {
-    // Initial splash screen while loading critical configuration and user data
-    if (configurationState is ConfigurationUninitialized || userDataState is UserDataUninitialized) {
-      return SplashPage();
-    }
-
-    // Loading configuration failed
-    if (configurationState is ConfigurationFailed) {
-      return ErrorPage(
-        error: configurationState.error,
-        trace: configurationState.trace
-      );
-    }
-
-    // Configuration loaded from now on
-    assert(configurationState is ConfigurationLoaded);
-
-    // Loading user data failed
-    if (userDataState is UserDataFailed) {
-      return ErrorPage(
-        error: userDataState.error,
-        trace: userDataState.trace
-      );
-    }
-
-    // Onboarding / sign in / sign up
-    if (userDataState is UserDataUnauthenticated) {
-      return LoginPage(userRepository: Repository().user);
-    }
-
-    // Start application when user is loaded
-    if (userDataState is UserDataLoaded) {
-      // OPTIMIZE: AnimatedCrossFade from splash to home page
-      return HomePage();
-    }
-
-    return ErrorPage(error: "Invalid user data state: $userDataState}");
-  }
-
   @override
   Widget build(BuildContext context) {
-    logger.wtf("app started");
-    LoggingBloc().verbose("app started");
+    LoggingBloc().verbose("App start");
 
     // Configuration builder
     return BlocBuilder<ConfigurationEvent, ConfigurationState>(
       bloc: BlocProvider.of<ConfigurationBloc>(context),
       condition: (previous, current) => true,
       builder: (BuildContext context, ConfigurationState configurationState) {
-        logger.i("configuration rebuild");
+        LoggingBloc().verbose("Configuration rebuild");
 
         // User data builder
         return BlocBuilder<UserDataEvent, UserDataState>(
@@ -127,16 +80,15 @@ class App extends StatelessWidget {
             if (previous is! UserDataLoaded || current is! UserDataLoaded)
               return true;
 
-            // Build only if theme settings changed
-            // Type-safe cast due to catch above
+            // Rebuild only if theme settings changed
             return (previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings;
           },
           builder: (BuildContext context, UserDataState userDataState) {
-            logger.i("user data rebuild");
+            LoggingBloc().verbose("Theme rebuild");
 
             return MaterialApp(
               // Overrides `/` navigator route
-              home: appLoadingLogic(configurationState, userDataState),
+              home: HomePage(configurationState: configurationState, userDataState: userDataState),
               // Use default theme while user data is being loaded
               theme: generateThemeSettings(userDataState is UserDataLoaded ? userDataState.settings.themeSettings : null),
               onGenerateRoute: (settings) => generateRoute(context, settings),

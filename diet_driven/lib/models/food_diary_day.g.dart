@@ -16,7 +16,7 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
   final String wireName = 'FoodDiaryDay';
 
   @override
-  Iterable serialize(Serializers serializers, FoodDiaryDay object,
+  Iterable<Object> serialize(Serializers serializers, FoodDiaryDay object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'date',
@@ -31,7 +31,7 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
   }
 
   @override
-  FoodDiaryDay deserialize(Serializers serializers, Iterable serialized,
+  FoodDiaryDay deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new FoodDiaryDayBuilder();
 
@@ -47,8 +47,9 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
           break;
         case 'foodRecords':
           result.foodRecords.replace(serializers.deserialize(value,
-              specifiedType: const FullType(
-                  BuiltList, const [const FullType(FoodRecord)])) as BuiltList);
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(FoodRecord)]))
+              as BuiltList<dynamic>);
           break;
       }
     }

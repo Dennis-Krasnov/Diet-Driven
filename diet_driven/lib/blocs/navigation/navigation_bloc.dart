@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:diet_driven/log_printer.dart';
-import 'package:logger/logger.dart';
+//import 'package:diet_driven/log_printer.dart';
+//import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
@@ -14,7 +14,7 @@ import 'package:diet_driven/blocs/navigation/navigation.dart';
 /// Manages bottom navigation's current page.
 /// [NavigationBloc] shows skeleton bottom menu and app bar until loaded.
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
-  final logger = getLogger("navigation bloc");
+//  final logger = getLogger("navigation bloc");
   final AnalyticsRepository analyticsRepository;
   final UserDataBloc userDataBloc;
 
@@ -56,7 +56,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
         ..deepLink = null
       );
 
-      logger.i("cleared deep link");
+//      logger.i("cleared deep link");
     }
 
     // Switching users re-instantiates navigation bloc, thus checking navigation uninitialized is sufficient
@@ -86,7 +86,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
         yield LoggingTab();
       }
 
-      logger.i("navigated to page ${currentState.page}");
+//      logger.i("navigated to page ${currentState.page}");
     }
   }
 

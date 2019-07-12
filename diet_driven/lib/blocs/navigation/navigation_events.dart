@@ -172,12 +172,13 @@ abstract class DiarySettingsDeepLink implements SettingsDeepLink, Built<DiarySet
   DiarySettingsDeepLink._();
 }
 
-
-
-
-
-
-
+///   ##        #######   ######    ######   #### ##    ##  ######
+///   ##       ##     ## ##    ##  ##    ##   ##  ###   ## ##    ##
+///   ##       ##     ## ##        ##         ##  ####  ## ##
+///   ##       ##     ## ##   #### ##   ####  ##  ## ## ## ##   ####
+///   ##       ##     ## ##    ##  ##    ##   ##  ##  #### ##    ##
+///   ##       ##     ## ##    ##  ##    ##   ##  ##   ### ##    ##
+///   ########  #######   ######    ######   #### ##    ##  ######
 
 abstract class NavigateToLogging implements NavigationEvent, Built<NavigateToLogging, NavigateToLoggingBuilder> {
   factory NavigateToLogging([void Function(NavigateToLoggingBuilder) updates]) = _$NavigateToLogging;

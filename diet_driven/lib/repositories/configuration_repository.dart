@@ -1,18 +1,38 @@
-import 'package:rxdart/rxdart.dart';
+import 'package:connectivity/connectivity.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:package_info/package_info.dart';
 
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/providers/providers.dart';
 
-/// Data access object for global configuration.
+/// Data access object for runtime configuration.
 class ConfigurationRepository {
-  final _remoteConfigProvider = RemoteConfigProvider();
 
-  /// Fetches [Observable] of [RemoteConfiguration].
-  /// `remoteConfigStream()` is called from [ConfigurationBloc].
+  /// Fetches [RemoteConfiguration] using `firebase_remote_config` library.
+  /// `Future.sync()` runs future immediately, enables proper exception handling.
   ///
-  /// Throws [FetchThrottledException] or [Exception] if failed to fetch live Firebase Remote Config data.
-  /// Throws [BuiltValueNullFieldError] if remote config is missing parameters.
-  Future<RemoteConfiguration> fetchRemoteConfig() {
-      return _remoteConfigProvider.fetchRemoteConfig();
-  }
+  /// Throws [FetchThrottledException] or [Exception] on failure to fetch live Firebase Remote Config data.
+  /// Throws [BuiltValueNullFieldError] on failure to create built object due to missing fields.
+  Future<RemoteConfiguration> fetchRemoteConfig() => Future.sync(() async {
+    final config = await RemoteConfig.instance;
+
+    // Developer mode to relax fetch throttling (> 5 requests per hour)
+    await config.setConfigSettings(RemoteConfigSettings(debugMode: true));
+
+    // Defaults to 12h expiration
+    await config.fetch();
+
+    // Makes fetched key-values take effect
+    await config.activateFetched();
+
+    return RemoteConfiguration((b) => b
+      ..liveConfiguration = true
+      ..bonus = config.getInt("bonus")
+    );
+  });
+
+  /// Fetches [PackageInfo] using `package_info` library.
+  Future<PackageInfo> fetchPackageInfo() => PackageInfo.fromPlatform();
+
+  /// Streams [ConnectivityResult] using `connectivity` library.
+  Stream<ConnectivityResult> connectivity$() => Connectivity().onConnectivityChanged;
 }

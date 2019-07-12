@@ -128,8 +128,13 @@ abstract class SettingsTabBuilder implements NavigationStateBuilder, Builder<Set
   SettingsTabBuilder._();
 }
 
-
-
+///   ##        #######   ######    ######   #### ##    ##  ######
+///   ##       ##     ## ##    ##  ##    ##   ##  ###   ## ##    ##
+///   ##       ##     ## ##        ##         ##  ####  ## ##
+///   ##       ##     ## ##   #### ##   ####  ##  ## ## ## ##   ####
+///   ##       ##     ## ##    ##  ##    ##   ##  ##  #### ##    ##
+///   ##       ##     ## ##    ##  ##    ##   ##  ##   ### ##    ##
+///   ########  #######   ######    ######   #### ##    ##  ######
 
 abstract class LoggingTab implements NavigationState, Built<LoggingTab, LoggingTabBuilder> {
   factory LoggingTab([void Function(LoggingTabBuilder) updates]) = _$LoggingTab;

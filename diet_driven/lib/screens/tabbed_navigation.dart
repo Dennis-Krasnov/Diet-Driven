@@ -45,7 +45,13 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
       // Navigation builder
       builder: (BuildContext context, UserDataState userDataState) {
         // ...
-        final bottomNavPages = (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages.rebuild((b) => b.add(Page.logging)); // FIXME: only add logging if enabled in navigation settings
+//        final bottomNavPages = (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages.rebuild((b) => b.add(Page.logging));
+        // FIXME: alternatively add this page directly though navigation settings!
+        final bottomNavPages = <Page>[
+          ...(userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages,
+          if (true) // FIXME: only add logging if enabled in navigation settings
+            Page.logging,
+        ];
         print("BOTTOM NAV PAGES $bottomNavPages");
 
         return BlocBuilder<NavigationEvent, NavigationState>(
@@ -218,27 +224,14 @@ class LoggingPage extends StatelessWidget {
               final log = loggingState.logs[index];
 
               if (log is BlocTransitionLog) {
-
                 return ExpansionTile(
                   key: PageStorageKey<Log>(log),
-                  title: Column(
-                    children: <Widget>[
-                      Text(
-                        "${log.currentState.runtimeType} => ${log.nextState.runtimeType}",
-                        style: TextStyle(
-                          fontSize: 12
-                        ),
+                  title: Text(
+                    "${log.message} - ${log.event.runtimeType}",
+                    style: TextStyle(
+                        fontSize: 12
+                    ),
 //                    style: Theme.of(context).textTheme.subhead, // FIXME
-                      ),
-                      const SizedBox(height: 3,),
-                      Text(
-                        "??? Bloc - ${log.event.runtimeType}",
-                        style: TextStyle(
-                            fontSize: 10,
-                        ),
-                      ),
-                    ],
-                    crossAxisAlignment: CrossAxisAlignment.start,
                   ),
                   leading: log.event is NavigationEvent ? const Icon(Icons.navigation) : const Icon(Icons.arrow_forward),
                   children: [
@@ -276,7 +269,7 @@ class LoggingPage extends StatelessWidget {
 
               if (log is MessageLog) {
                 return ListTile(
-                  title: Text(log.text),
+                  title: Text(log.message),
                   subtitle: Text(log.datetime.toString()),
                   leading: const Icon(Icons.info),
                   // TODO: icon depends on level
@@ -284,12 +277,56 @@ class LoggingPage extends StatelessWidget {
               }
 
               if (log is ErrorLog) {
-                return ListTile(
-                  title: Text(log.error),
-                  subtitle: Text(log.datetime.toString()),
-                  // TODO: icon depends on level
+                // TODO: error expansion tile - extends!!! or composes expansion tile
+                return ExpansionTile(
+                  key: PageStorageKey<Log>(log),
+                  title: Text(
+                    log.message,
+                    style: TextStyle(
+                        fontSize: 12
+                    ),
+//                    style: Theme.of(context).textTheme.subhead, // FIXME
+                  ),
+                  leading: log.level == ErrorLoggingLevel.expected ? const Icon(Icons.bug_report) : const Icon(Icons.bug_report), // FIXME
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                        child: Column(
+                          children: <Widget>[
+                            Text(log.datetime.toString()),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
+                              child: Text("Error", style: Theme.of(context).textTheme.headline),
+                            ),
+                            Text(log.error.toString()),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
+                              child: Text("Severity", style: Theme.of(context).textTheme.headline),
+                            ),
+                            Text(log.level.toString()),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
+                              child: Text("Stack trace", style: Theme.of(context).textTheme.headline),
+                            ),
+                            Text(log?.stacktrace.toString() ?? ""),
+                          ],
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                        ),
+                      ),
+                    )
+                  ],
                 );
+//                return ListTile(
+//                  title: Text(log.error.toString()),
+//                  subtitle: Text(log.datetime.toString()),
+////                  log?.stacktrace
+//                  // TODO: icon depends on level
+//                );
               }
+
+              return null; // FIXME
             },
           );
         }

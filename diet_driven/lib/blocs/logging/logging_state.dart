@@ -1,4 +1,5 @@
 //abstract class LoggingState {}
+import 'package:bloc/bloc.dart' show Bloc;
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
@@ -19,6 +20,9 @@ abstract class LoggingState implements Built<LoggingState, LoggingStateBuilder> 
 
 @BuiltValue(instantiable: false)
 abstract class Log {
+  /// Log description
+  String get message;
+
   /// Time log was created
   DateTime get datetime;
 
@@ -30,21 +34,19 @@ abstract class MessageLog implements Log, Built<MessageLog, MessageLogBuilder> {
   /// Severity of message
   MessageLoggingLevel get level;
 
-  /// Text of log
-  String get text;
-
   factory MessageLog([void Function(MessageLogBuilder) updates]) = _$MessageLog;
   MessageLog._();
 }
 
 abstract class ErrorLog implements Log, Built<ErrorLog, ErrorLogBuilder> {
-  /// ...
+  /// Severity of error
   ErrorLoggingLevel get level;
 
   /// ...
   Object get error;
 
   /// ...
+  @nullable
   StackTrace get stacktrace;
 
   factory ErrorLog([void Function(ErrorLogBuilder) updates]) = _$ErrorLog;

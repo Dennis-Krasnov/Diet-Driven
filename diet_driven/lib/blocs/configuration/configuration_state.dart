@@ -1,13 +1,16 @@
 import 'package:built_value/built_value.dart';
-import 'package:diet_driven/models/models.dart';
+import 'package:connectivity/connectivity.dart' show ConnectivityResult;
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:package_info/package_info.dart' show PackageInfo;
+
+import 'package:diet_driven/models/models.dart';
 
 part 'configuration_state.g.dart';
 
 abstract class ConfigurationState {}
 
-/// Splash page.
-abstract class ConfigurationUninitialized with ConfigurationState implements Built<ConfigurationUninitialized, ConfigurationUninitializedBuilder> {
+/// Splash page blocks rest of application.
+abstract class ConfigurationUninitialized implements ConfigurationState, Built<ConfigurationUninitialized, ConfigurationUninitializedBuilder> {
   factory ConfigurationUninitialized([void Function(ConfigurationUninitializedBuilder b)]) = _$ConfigurationUninitialized;
   ConfigurationUninitialized._();
 
@@ -15,21 +18,21 @@ abstract class ConfigurationUninitialized with ConfigurationState implements Bui
 }
 
 /// Global error page.
-abstract class ConfigurationFailed with ConfigurationState implements Built<ConfigurationFailed, ConfigurationFailedBuilder> {
-  String get error;
-
-  @nullable
-  String get trace;
-
+abstract class ConfigurationFailed implements BuiltError, ConfigurationState, Built<ConfigurationFailed, ConfigurationFailedBuilder> {
   factory ConfigurationFailed([void Function(ConfigurationFailedBuilder b)]) = _$ConfigurationFailed;
   ConfigurationFailed._();
 }
 
-/// Application, stores current [RemoteConfiguration], [PackageInfo].
-abstract class ConfigurationLoaded with ConfigurationState implements Built<ConfigurationLoaded, ConfigurationLoadedBuilder> {
+/// Application.
+abstract class ConfigurationLoaded implements ConfigurationState, Built<ConfigurationLoaded, ConfigurationLoadedBuilder> {
+  /// Firebase remote config data.
   RemoteConfiguration get remoteConfiguration;
 
+  /// App information.
   PackageInfo get packageInfo;
+
+  /// Internet connection status.
+  ConnectivityResult get connectivity;
 
   factory ConfigurationLoaded([void Function(ConfigurationLoadedBuilder b)]) = _$ConfigurationLoaded;
   ConfigurationLoaded._();

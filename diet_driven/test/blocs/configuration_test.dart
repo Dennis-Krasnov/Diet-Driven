@@ -1,10 +1,11 @@
-import 'package:built_value/built_value.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+import 'package:package_info/package_info.dart';
 
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:diet_driven/blocs/blocs.dart';
 
 import '../test_utils.dart';
 
@@ -12,81 +13,125 @@ void main() {
   ConfigurationBloc configurationBloc;
   
   /// Mocks
-  UserRepository userRepository;
+  ConfigurationRepository configurationRepository;
 
   /// Data
-  final RemoteConfiguration defaultConfig = RemoteConfiguration();
-  final RemoteConfiguration remoteConfig = RemoteConfiguration((b) => b
-    ..bonus = 2
+  final defaultConfig = RemoteConfiguration();
+  final remoteConfig = RemoteConfiguration((b) => b
     ..liveConfiguration = true
+    ..bonus = 35
   );
 
+  final packageInfo = PackageInfo(
+    appName: "Diet Driven",
+    packageName : "diet_driven",
+    version : "1.2.3",
+    buildNumber : "14",
+  );
+
+  final connectivityList = [
+    ConnectivityResult.wifi,
+    ConnectivityResult.none,
+    ConnectivityResult.mobile,
+  ];
+
+  /// Configuration
   setUp(() {
-    userRepository = MockUserRepository();
-    configurationBloc = ConfigurationBloc(userRepository: userRepository);
+    configurationRepository = MockConfigurationRepository();
+    configurationBloc = ConfigurationBloc(configurationRepository: configurationRepository);
   });
-  
+
+  tearDown(() {
+    configurationBloc?.dispose();
+  });
+
+  /// Tests
   test("Initialize properly", () {
     expect(configurationBloc.initialState, ConfigurationUninitialized());
   });
   
-  test("Fetch remote configuration on success", () {
-    when(userRepository.fetchRemoteConfig()).thenAnswer((_) =>
-      Future.value(remoteConfig)
-    );
+  test("React to streams", () {
+    // TODO: create helpers / live templates / postfix completers
+    // TODO: mockFutureValue(configurationRepository.fetchRemoteConfig, remoteConfig)
+    // TODO: mockFutureError(configurationRepository.fetchRemoteConfig, ...)
+    // TODO: mockStreamValues(configurationRepository.fetchRemoteConfig, [...])
+    // TODO: mockStreamError(configurationRepository.fetchRemoteConfig, ...)
+
+    when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
+    when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
+    when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));
 
     expectLater(
       configurationBloc.state,
       emitsInOrder(<ConfigurationState>[
         ConfigurationUninitialized(),
-        ConfigurationLoading(),
-        ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()),
+        for (var conn in connectivityList)
+          ConfigurationLoaded((b) => b
+            ..remoteConfiguration = remoteConfig.toBuilder()
+            ..packageInfo = packageInfo
+            ..connectivity = conn
+          ),
       ])
     );
 
-    configurationBloc.dispatch(FetchConfiguration());  
-  });
-  
-  test("Fetch default configuration on failure", () {
-    when(userRepository.fetchRemoteConfig()).thenThrow(BuiltValueNullFieldError('RemoteConfiguration', 'bonus'));
-
-    expectLater(
-      configurationBloc.state,
-      emitsInOrder(<ConfigurationState>[
-        ConfigurationUninitialized(),
-        ConfigurationLoading(),
-        ConfigurationLoaded((b) => b..configuration = defaultConfig.toBuilder()),
-      ])
-    );
-
-    configurationBloc.dispatch(FetchConfiguration());  
+    configurationBloc.dispatch(InitConfiguration());
   });
 
-  test("Fetch existing configuration on success then failure", () async {
-    // fetchRemoteConfig first returning a value, then failing.
-    bool firstTime = true;
-    when(userRepository.fetchRemoteConfig()).thenAnswer((_) {
-      if (firstTime) {
-        firstTime = false;
-        return Future.value(remoteConfig);
-      }
+  group("Handle runtime exceptions", () {
+    test("Fallback to default remote configuration", () {
+      when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future.error(Exception("Remote configuration failed")));
+      when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
+      when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));
 
-      return Future.error("fail :(");
+      expectLater(
+        configurationBloc.state,
+        emitsInOrder(<ConfigurationState>[
+          ConfigurationUninitialized(),
+          for (var conn in connectivityList)
+            ConfigurationLoaded((b) => b
+              ..remoteConfiguration = defaultConfig.toBuilder()
+              ..packageInfo = packageInfo
+              ..connectivity = conn
+            ),
+        ])
+      );
+
+      configurationBloc.dispatch(InitConfiguration());
     });
 
-    expectLater(
-      configurationBloc.state,
-      emitsInOrder(<ConfigurationState>[
-        ConfigurationUninitialized(),
-        ConfigurationLoading(),
-        ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()), // initial configuration
-        ConfigurationLoaded((b) => b..configuration = remoteConfig.rebuild((b) => b..liveConfiguration = false).toBuilder()),
-      ])
-    );
+    test("Show package info error page", () {
+      when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
+      when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future.error(Exception("Package info failed")));
+      when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));
 
-    // Need time for asynchronous default page event to run
-    await Future<dynamic>.delayed(Duration(milliseconds: 10)); // FIXME: this broke because I moved initial fetch to constructor instead of main.
-    configurationBloc.dispatch(FetchConfiguration());
-//    configurationBloc.dispatch(FetchConfiguration());
+      expectLater(
+        configurationBloc.state,
+        emitsInOrder(<dynamic>[ // <ConfigurationState>
+          ConfigurationUninitialized(),
+          BuiltErrorMatcher("Package info failed"),
+        ])
+      );
+
+      configurationBloc.dispatch(InitConfiguration());
+    });
+
+    test("Show connecitivity error page", () {
+      when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
+      when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
+      when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromFuture(Future.error(Exception("Connectivity failed"))));
+      // OPTIMIZE: dart 2.4.? Stream.error in future release
+      //  https://github.com/dart-lang/sdk/blob/master/CHANGELOG.md#dartasync
+
+      expectLater(
+          configurationBloc.state,
+          emitsInOrder(<dynamic>[ // <ConfigurationState>
+            ConfigurationUninitialized(),
+            BuiltErrorMatcher("Connectivity failed"),
+          ])
+      );
+
+      configurationBloc.dispatch(InitConfiguration());
+    });
   });
 }
+

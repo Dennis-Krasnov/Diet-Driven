@@ -15,7 +15,7 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
   final String wireName = 'FoodRecord';
 
   @override
-  Iterable serialize(Serializers serializers, FoodRecord object,
+  Iterable<Object> serialize(Serializers serializers, FoodRecord object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
       'uuid',
@@ -64,7 +64,7 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
   }
 
   @override
-  FoodRecord deserialize(Serializers serializers, Iterable serialized,
+  FoodRecord deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new FoodRecordBuilder();
 

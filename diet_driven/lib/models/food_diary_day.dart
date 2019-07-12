@@ -12,6 +12,6 @@ abstract class FoodDiaryDay implements Built<FoodDiaryDay, FoodDiaryDayBuilder> 
   int get date;
   BuiltList<FoodRecord> get foodRecords;
 
-  FoodDiaryDay._();
   factory FoodDiaryDay([void Function(FoodDiaryDayBuilder b)]) = _$FoodDiaryDay;
+  FoodDiaryDay._();
 }

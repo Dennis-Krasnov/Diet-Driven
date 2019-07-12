@@ -1,55 +1,24 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:diet_driven/blocs/blocs.dart';
+import 'package:connectivity/connectivity.dart' show ConnectivityResult;
+import 'package:meta/meta.dart';
+import 'package:package_info/package_info.dart' show PackageInfo;
+import 'package:rxdart/rxdart.dart';
 
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/configuration/configuration.dart';
-import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:logger/logger.dart';
-import 'package:meta/meta.dart';
-import 'package:rxdart/rxdart.dart';
-import 'package:package_info/package_info.dart';
-//import 'package:package_info/package_info.dart' show PackageInfo; TODO
 
-
-/// Fetches and manages app-wide configuration.
-/// [ConfigurationBloc] shows splash page until loaded.
+/// Fetches and manages app-wide runtime configuration.
+/// App shows splash page until [ConfigurationBloc] is loaded.
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
-  final logger = getLogger("configuration bloc");
-
   final ConfigurationRepository configurationRepository;
 
   StreamSubscription<ConfigurationEvent> _configurationEventSubscription;
 
-  ConfigurationBloc({@required this.configurationRepository}) {
-    assert(configurationRepository != null);
-
-    final configurationEvent$ = Observable<ConfigurationEvent>(CombineLatestStream.combine2(
-      // Return default configuration on failure
-      // TODO: log failures, consider reusing last valid configuration if it exists (do in mapEventToState to get initialized currentState)
-      Observable<RemoteConfiguration>.fromFuture(configurationRepository.fetchRemoteConfig()).onErrorReturn(RemoteConfiguration()),
-      Observable<PackageInfo>.fromFuture(PackageInfo.fromPlatform()), // TODO: use repository
-      (RemoteConfiguration remoteConfiguration, PackageInfo packageInfo) => RemoteConfigurationArrived((b) => b
-        ..remoteConfiguration = remoteConfiguration.toBuilder()
-        ..packageInfo = packageInfo
-      ),
-    )).distinct();
-    // TODO: .sample this immediately and on userData.staleConfiguration == True, then update userData to indicate not stale config
-
-    _configurationEventSubscription = configurationEvent$.listen(
-      (configurationEvent) => dispatch(configurationEvent),
-      onError: (Object error, Object trace) => dispatch(ConfigurationError((b) => b
-        ..error = error.toString()
-        ..trace = trace.toString()
-      )),
-    );
-  }
-
-  // Poll for fresh configurations every few hours
-  // + .startWith
-  // Observable<void>.periodic(Duration(seconds: 60)).switchMap<RemoteConfiguration>((_) =>)
+  ConfigurationBloc({@required this.configurationRepository}) : assert(configurationRepository != null);
 
   @override
   ConfigurationState get initialState => ConfigurationUninitialized();
@@ -62,22 +31,54 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
 
   @override
   Stream<ConfigurationState> mapEventToState(ConfigurationEvent event) async* {
+    if (event is InitConfiguration) {
+      assert(currentState is ConfigurationUninitialized);
+      // Maintain single instance of stream subscriptions
+      _configurationEventSubscription ??= Observable<ConfigurationEvent>(CombineLatestStream.combine3(
+        Observable<RemoteConfiguration>.fromFuture(configurationRepository.fetchRemoteConfig())
+          .doOnError((Object error, StackTrace trace) => LoggingBloc().expectedError("Default configuration used", error, trace))
+          .onErrorReturn(RemoteConfiguration()),
+        Observable<PackageInfo>.fromFuture(configurationRepository.fetchPackageInfo()),
+        Observable<ConnectivityResult>(configurationRepository.connectivity$()),
+        // Success event
+        (RemoteConfiguration remoteConfiguration, PackageInfo packageInfo, ConnectivityResult connectivity) => RemoteConfigurationArrived((b) => b
+          ..remoteConfiguration = remoteConfiguration.toBuilder()
+          ..packageInfo = packageInfo
+          ..connectivity = connectivity
+        ),
+      ))
+      .distinct()
+      // Failure event
+      .transform(StreamTransformer<ConfigurationEvent, ConfigurationEvent>.fromHandlers(
+        handleError: (Object error, StackTrace stacktrace, EventSink<ConfigurationEvent> sink) =>
+          sink.add(ConfigurationError((b) => b
+            ..error = error
+            ..stacktrace = stacktrace
+          ))
+      ))
+      .listen(dispatch);
+    }
+
     if (event is RemoteConfigurationArrived) {
       yield ConfigurationLoaded((b) => b
         ..remoteConfiguration = event.remoteConfiguration.toBuilder()
         ..packageInfo = event.packageInfo
+        ..connectivity = event.connectivity
       );
 
-      logger.i("loaded configuration");
+      LoggingBloc().info("Configuration loaded");
     }
 
     if (event is ConfigurationError) {
-      yield ConfigurationFailed((b) => b
-        ..error = event.error
-        ..trace = event.trace
-      );
+      // Show first of consecutive errors
+      if (currentState is! ConfigurationFailed) {
+        yield ConfigurationFailed((b) => b
+          ..error = event.error
+          ..stacktrace = event.stacktrace
+        );
+      }
 
-      logger.i("configuration failed");
+      LoggingBloc().unexpectedError("Configuration failed", event.error, event.stacktrace);
     }
   }
 }

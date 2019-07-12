@@ -1,52 +1,48 @@
+import 'package:bloc/bloc.dart' show Bloc;
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/blocs/logging/logging_state.dart';
 
 part 'logging_events.g.dart';
 
-//abstract class LoggingEvent implements Built<LoggingEvent, LoggingEventBuilder> {
-//  /// Severity of log
-//  LoggingLevel get level;
-//
-//  /// Text of log
-//  String get text;
-//
-//  factory LoggingEvent([void Function(LoggingEventBuilder) updates]) = _$LoggingEvent;
-//  LoggingEvent._();
-//}
+@BuiltValue(instantiable: false)
+abstract class LoggingEvent {
+  /// Log description
+  String get message;
 
-abstract class LoggingEvent {}
-
-///
-abstract class SendAnonymousLogsToDeveloper implements LoggingEvent, Built<SendAnonymousLogsToDeveloper, SendAnonymousLogsToDeveloperBuilder> {
-  factory SendAnonymousLogsToDeveloper([void Function(SendAnonymousLogsToDeveloperBuilder) updates]) = _$SendAnonymousLogsToDeveloper;
-  SendAnonymousLogsToDeveloper._();
+  LoggingEvent rebuild(void Function(LoggingEventBuilder) updates);
+  LoggingEventBuilder toBuilder();
 }
 
+///
+abstract class SendLogsToDeveloper implements LoggingEvent, Built<SendLogsToDeveloper, SendLogsToDeveloperBuilder> {
+  factory SendLogsToDeveloper([void Function(SendLogsToDeveloperBuilder) updates]) = _$SendLogsToDeveloper;
+  SendLogsToDeveloper._();
+}
+
+///
 abstract class LogError implements LoggingEvent, Built<LogError, LogErrorBuilder> {
-  /// Severity of log
+  /// Severity of error
   ErrorLoggingLevel get level;
 
-  /// ...
   Object get error;
 
-  /// ...
+  @nullable
   StackTrace get stacktrace;
 
   factory LogError([void Function(LogErrorBuilder) updates]) = _$LogError;
   LogError._();
 }
 
+///
 abstract class LogMessage implements LoggingEvent, Built<LogMessage, LogMessageBuilder> {
-  /// Severity of log
+  /// Severity of message
   MessageLoggingLevel get level;
-
-  /// Text of log
-  String get text;
 
   factory LogMessage([void Function(LogMessageBuilder) updates]) = _$LogMessage;
   LogMessage._();
 }
 
+///
 abstract class LogBlocTransition implements LoggingEvent, Built<LogBlocTransition, LogBlocTransitionBuilder> {
   /// Assumes state and event are created using built value
   Built get currentState;

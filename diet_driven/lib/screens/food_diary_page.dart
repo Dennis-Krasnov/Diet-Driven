@@ -1,5 +1,4 @@
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:diet_driven/repositories/repository_singleton.dart';
 import 'package:diet_driven/screens/error_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,16 +36,17 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
       body: PageView.builder(
         controller: controller,
         itemBuilder: (BuildContext context, int position) {
-          return BlocProvider<FoodDiaryBloc>(
-            key: ValueKey(position),
-            builder: (BuildContext context) => FoodDiaryBloc(
-              daysSinceEpoch: position,
-              diaryRepository: Repository().diary,
-              userId: userId
-            ),
-            dispose: null, // (BuildContext context, FoodDiaryBloc foodDiaryBloc) => foodDiaryBloc.dispose(),
-            child: FoodDiaryDay(),
-          );
+          return const FlutterLogo();
+//          return BlocProvider<FoodDiaryBloc>(
+//            key: ValueKey(position),
+//            builder: (BuildContext context) => FoodDiaryBloc(
+//              daysSinceEpoch: position,
+//              diaryRepository: Repository().diary,
+//              userId: userId
+//            ),
+//            dispose: null, // (BuildContext context, FoodDiaryBloc foodDiaryBloc) => foodDiaryBloc.dispose(),
+//            child: FoodDiaryDay(),
+//          );
         },
         // TODO: call generic DaySwitcherBloc with debounce!
         onPageChanged: (int date) => setState(() {

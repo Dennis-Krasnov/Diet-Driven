@@ -24,5 +24,7 @@ Android Licenses
 https://github.com/flutter/flutter/issues/16025
 
 
+flutter packages pub run build_runner watch --delete-conflicting-outputs
+
 Removes initial `I/flutter ( 4439):` from logs for readability
 flutter logs | cut -d ' ' -f4-

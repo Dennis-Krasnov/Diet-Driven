@@ -1,7 +1,7 @@
-import 'package:diet_driven/log_printer.dart';
+//import 'package:diet_driven/log_printer.dart';
 import 'package:dio/dio.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:logger/logger.dart';
+//import 'package:logger/logger.dart';
 import 'package:built_collection/built_collection.dart';
 
 import 'package:diet_driven/models/models.dart';
@@ -10,7 +10,7 @@ import 'package:diet_driven/providers/providers.dart';
 /// Data access object for food searching and nutritional information.
 class FoodRepository {
 //  final Logger log = new Logger("food repository");
-  final logger = getLogger("food repository");
+//  final logger = getLogger("food repository");
   final EdamamProvider _edamamProvider = EdamamProvider();
   final FirestoreProvider _firestoreProvider = FirestoreProvider();
 

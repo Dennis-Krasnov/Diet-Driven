@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:diet_driven/log_printer.dart';
+//import 'package:diet_driven/log_printer.dart';
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:logger/logger.dart';
+//import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
@@ -13,7 +13,7 @@ import 'package:diet_driven/blocs/food_logging_tab/food_logging_tab.dart';
 import 'package:diet_driven/models/models.dart';
 
 class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> {
-  final logger = getLogger("food logging tab bloc");
+//  final logger = getLogger("food logging tab bloc");
   final FoodLoggingTab foodLoggingTab;
   final Future<BuiltList<FoodRecord>> futureResultRecords;
   final FoodLoggingBloc foodLoggingBloc;
@@ -87,7 +87,7 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
         ..results = event.results.toBuilder()
       );
 
-      logger.i("$foodLoggingTab - ${event.results} loaded");
+//      logger.i("$foodLoggingTab - ${event.results} loaded");
     }
 
     // TODO: filters similar to filtered todos - do an 'ifEven' filter for testing purposes

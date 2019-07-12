@@ -19,7 +19,7 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
   final String wireName = 'Settings';
 
   @override
-  Iterable serialize(Serializers serializers, Settings object,
+  Iterable<Object> serialize(Serializers serializers, Settings object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[];
     if (object.navigationSettings != null) {
@@ -38,7 +38,7 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
   }
 
   @override
-  Settings deserialize(Serializers serializers, Iterable serialized,
+  Settings deserialize(Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new SettingsBuilder();
 
@@ -72,7 +72,7 @@ class _$NavigationSettingsSerializer
   final String wireName = 'NavigationSettings';
 
   @override
-  Iterable serialize(Serializers serializers, NavigationSettings object,
+  Iterable<Object> serialize(Serializers serializers, NavigationSettings object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[];
     if (object.defaultPage != null) {
@@ -92,7 +92,8 @@ class _$NavigationSettingsSerializer
   }
 
   @override
-  NavigationSettings deserialize(Serializers serializers, Iterable serialized,
+  NavigationSettings deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new NavigationSettingsBuilder();
 
@@ -110,7 +111,7 @@ class _$NavigationSettingsSerializer
           result.bottomNavigationPages.replace(serializers.deserialize(value,
                   specifiedType:
                       const FullType(BuiltList, const [const FullType(Page)]))
-              as BuiltList);
+              as BuiltList<dynamic>);
           break;
       }
     }
@@ -126,7 +127,7 @@ class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
   final String wireName = 'ThemeSettings';
 
   @override
-  Iterable serialize(Serializers serializers, ThemeSettings object,
+  Iterable<Object> serialize(Serializers serializers, ThemeSettings object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[];
     if (object.darkMode != null) {
@@ -139,7 +140,8 @@ class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
   }
 
   @override
-  ThemeSettings deserialize(Serializers serializers, Iterable serialized,
+  ThemeSettings deserialize(
+      Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
     final result = new ThemeSettingsBuilder();
 

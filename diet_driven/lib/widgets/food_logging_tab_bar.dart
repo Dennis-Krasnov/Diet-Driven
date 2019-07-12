@@ -1,7 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/repository_singleton.dart';
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/widgets/food_record_tile.dart';
 import 'package:diet_driven/widgets/selection_food_record_tile.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +36,7 @@ class _FoodLoggingTabBarState extends State<FoodLoggingTabBar> with AutomaticKee
 
     _tabBloc = FoodLoggingTabBloc(
       foodLoggingTab: widget.foodLoggingTab,
-      futureResultRecords: Repository().food.futureFoodRecordResultsFor(widget.foodLoggingTab, userId), // OPTIMIZE: bloc should access repository itself, also pass userId
+      futureResultRecords: RepositoryProvider.of<FoodRepository>(context).futureFoodRecordResultsFor(widget.foodLoggingTab, userId), // OPTIMIZE: bloc should access repository itself, also pass userId
       foodLoggingBloc: widget.foodLoggingBloc
     );
   }

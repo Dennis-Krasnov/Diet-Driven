@@ -2,12 +2,25 @@ import 'dart:async';
 
 import 'package:built_value/built_value.dart';
 
-//part 'bloc_utils.g.dart';
+part 'bloc_utils.g.dart';
 
 // TODO: implements instead of with !? => do uninstantiable thing!
 abstract class Completable {
   @nullable
   Completer<void> get completer;
+}
+
+@BuiltValue(instantiable: false)
+abstract class BuiltError {
+  ///
+  Object get error;
+
+  ///
+  @nullable
+  StackTrace get stacktrace;
+
+  BuiltError rebuild(void Function(BuiltErrorBuilder) updates);
+  BuiltErrorBuilder toBuilder();
 }
 
 //@BuiltValue(instantiable: false)
