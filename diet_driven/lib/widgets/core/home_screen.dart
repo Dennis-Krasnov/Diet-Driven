@@ -1,12 +1,12 @@
-import 'package:diet_driven/repositories/repositories.dart';
-import 'package:diet_driven/screens/error_screen.dart';
-import 'package:diet_driven/screens/login.dart';
-import 'package:diet_driven/screens/splash_screen.dart';
-import 'package:diet_driven/screens/tabbed_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/widgets/core/core.dart';
+import 'package:diet_driven/widgets/loading/loading.dart';
+import 'package:diet_driven/widgets/message/message.dart';
+import 'package:diet_driven/widgets/onboarding/login.dart';
 
 /// Reactively builds app based on [userDataState] and [configurationState].
 class HomePage extends StatelessWidget {
@@ -38,7 +38,7 @@ class HomePage extends StatelessWidget {
     if (userDataState is UserDataFailed) {
       return ErrorPage(
         error: (userDataState as UserDataFailed).error.toString(),
-        trace: (userDataState as UserDataFailed).trace.toString()
+        trace: (userDataState as UserDataFailed).stacktrace.toString()
       );
     }
 

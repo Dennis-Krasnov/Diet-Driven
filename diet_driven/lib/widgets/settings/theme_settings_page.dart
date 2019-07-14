@@ -1,4 +1,4 @@
-import 'package:diet_driven/screens/tabbed_navigation.dart';
+import 'package:diet_driven/widgets/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';

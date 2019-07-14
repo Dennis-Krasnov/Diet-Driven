@@ -1,13 +1,12 @@
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/screens/food_diary_page.dart';
-import 'package:diet_driven/screens/settings_page.dart';
+import 'package:diet_driven/widgets/food_diary/food_diary.dart';
+import 'package:diet_driven/widgets/message/message.dart';
+import 'package:diet_driven/widgets/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/screens/diary_page.dart';
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:diet_driven/screens/under_construction.dart';
 
 // TODO: ensure scroll is also persisted
 //  https://api.flutter.dev/flutter/widgets/PageStorageKey-class.html

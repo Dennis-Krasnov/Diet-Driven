@@ -1,4 +1,4 @@
 library providers;
 
-export 'edamam.dart';
+export 'cloud_functions.dart';
 export 'firestore.dart';

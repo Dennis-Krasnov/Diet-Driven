@@ -58,7 +58,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
 //      logger.i("updated query to ${event.query}, state used to be ${currentState.runtimeType}");
 
       try {
-        final BuiltList<String> suggestions = await foodRepository.foodSuggestions(event.query);
+        final BuiltList<String> suggestions = await foodRepository.fetchFoodSearchSuggestions(event.query);
 //        logger.d(suggestions);
 
         yield FoodSearchQuery((b) => b
@@ -92,33 +92,33 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
     if (event is SearchFoods) {
       yield FoodSearchLoading();
 
-      try {
-        // TODO: memoize results!
-        final BuiltList<FoodRecord> results = await foodRepository.searchForFood(event.query);
-//        logger.d(results);
-
-        yield FoodSearchLoaded((b) => b
-          // TODO: extract to method
-          ..results = ListBuilder(results.map<FoodRecordResult>((foodRecord) =>
-            FoodRecordResult((b) => b
-              ..foodRecord = foodRecord.toBuilder()
-              ..resultType = FoodLoggingTab.popular // FIXME: none of the above!
-              // FIXME: compare by edamam id!!!
-              ..existsInDiary = foodLoggingState.diaryFoodRecords.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid)
-              ..existsInSelection = foodLoggingState.selectedFoodRecords.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid)
-            )
-          ))
-        );
-
-//        assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
-//        logger.d("${event.query} was searched!");
-      } on DioError catch (error, trace) {
-        yield FoodSearchFailed((b) => b
-//          ..error = error.toString()
-          ..error = _handleError(error)
-          ..trace = trace.toString()
-        );
-      }
+//      try {
+//        // TODO: memoize results!
+//        final BuiltList<FoodRecord> results = await foodRepository.searchForFood(event.query); // FIXME!!!!!
+////        logger.d(results);
+//
+//        yield FoodSearchLoaded((b) => b
+//          // TODO: extract to method
+//          ..results = ListBuilder(results.map<FoodRecordResult>((foodRecord) =>
+//            FoodRecordResult((b) => b
+//              ..foodRecord = foodRecord.toBuilder()
+//              ..resultType = FoodLoggingTab.popular // FIXME: none of the above!
+//              // FIXME: compare by edamam id!!!
+//              ..existsInDiary = foodLoggingState.diaryFoodRecords.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid)
+//              ..existsInSelection = foodLoggingState.selectedFoodRecords.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid)
+//            )
+//          ))
+//        );
+//
+////        assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
+////        logger.d("${event.query} was searched!");
+//      } on DioError catch (error, trace) {
+//        yield FoodSearchFailed((b) => b
+////          ..error = error.toString()
+//          ..error = _handleError(error)
+//          ..trace = trace.toString()
+//        );
+//      }
     }
   }
 }

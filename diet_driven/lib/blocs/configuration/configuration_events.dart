@@ -9,7 +9,7 @@ part 'configuration_events.g.dart';
 
 abstract class ConfigurationEvent {}
 
-/// Subscribe to data streams.
+/// Subscribes to data streams.
 abstract class InitConfiguration implements ConfigurationEvent, Built<InitConfiguration, InitConfigurationBuilder> {
   factory InitConfiguration([void Function(InitConfigurationBuilder) updates]) = _$InitConfiguration;
   InitConfiguration._();

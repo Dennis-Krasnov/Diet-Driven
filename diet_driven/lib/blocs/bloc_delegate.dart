@@ -3,7 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
 /// Middleware to log transitions and errors from all blocs.
-class SimpleBlocDelegate extends BlocDelegate {
+class LoggingBlocDelegate extends BlocDelegate {
   @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);

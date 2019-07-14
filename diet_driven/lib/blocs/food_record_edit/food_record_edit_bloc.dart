@@ -53,14 +53,14 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
     }
 
     if (event is DeleteFoodRecord) {
-      try {
-        diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, currentState.foodRecord);
-        event.completer?.complete();
-
-//        logger.i("${currentState.foodRecord} deleted");
-      } on Exception catch(e) {
-        event.completer?.completeError(e);
-      }
+//      try {
+//        diaryRepository.deleteFoodRecord(userId, daysSinceEpoch, currentState.foodRecord);
+//        event.completer?.complete();
+//
+////        logger.i("${currentState.foodRecord} deleted");
+//      } on Exception catch(e) {
+//        event.completer?.completeError(e);
+//      }
     }
 
     if (event is SaveFoodRecord) {

@@ -16,6 +16,8 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   /// [today] stays constant regardless of real-world time.
   final int today = 23626; // DateTime.now().TO_DAYS_SINCE_EPOCH
 
+  // TODO: diets.where(diet.date <= today).min(diet.date) - or firstWhere less and assume its sorted (more efficient)
+
   StreamSubscription<FoodDiaryEvent> _foodDiaryEventSubscription;
 
   FoodDiaryBloc() {

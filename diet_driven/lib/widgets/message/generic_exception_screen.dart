@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
 class ErrorPage extends StatelessWidget {
-  final String error;
+  final String error; // TODO: take Object and StackTrace! - another widget for builtError!
   final String trace;
   // TODO: also take arbitary state!
 

@@ -8,21 +8,19 @@ import 'package:rxdart/rxdart.dart';
 class SettingsRepository {
   final _firestoreProvider = FirestoreProvider();
 
-  /// Fetches [Observable] of [userId]'s [Settings].
-  /// 'settingsStream(userId)` is called for every user from [UserDataBloc].
-  ///
-  /// Default user settings are used unless explicitly overwritten the user's settings document.
-  /// The latest from both are combined into a single [Settings] stream.
+  /// Streams [userId]'s custom [Settings] combined with default [Settings] field-by-field.
+  /// Default settings are used unless explicitly overwritten by user's custom settings.
   ///
   /// Throws [PlatformException] if [userId] is empty.
-  /// Returns [null] if both Firestore documents doesn't exist.
-  Observable<Settings> settingsStream(String userId) {
+  /// Returns empty stream if Firestore document doesn't exist.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Stream<Settings> settings$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    return Observable<Settings>(CombineLatestStream.combine2(
-      // Combine latest user settings and default settings
-      _firestoreProvider.settingsStream(userId),
-      _firestoreProvider.defaultSettings(),
+    return CombineLatestStream.combine2(
+      // Combine latest user's custom settings and default settings
+      _firestoreProvider.settings$(userId),
+      _firestoreProvider.defaultSettings$(),
       (Settings settings, Settings defaultSettings) {
         // Serialize settings into JSON
         final jsonSettings = jsonSerializers.serialize(settings);
@@ -31,13 +29,10 @@ class SettingsRepository {
         // Deep merge JSON using `merge_map` library
         final mergedJsonSettings = mergeMap<String, dynamic>([jsonDefaultSettings, jsonSettings]);
 
-        // Deserialize user's settings
+        // Deserialize settings
         return jsonSerializers.deserialize(mergedJsonSettings);
       }
-    ));
-
-    // TOTEST: one stream returns Observable<Settings>.empty() - should time out
-    // TOTEST: Observable<Settings>.just(null), for my settings should return default settings!
+    );
   }
 
   /// Replaces [userId]'s [Settings].
@@ -57,14 +52,15 @@ class SettingsRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(darkMode != null);
 
-    // Build user's settings (not merged with global defaults)
-    final settings = await _firestoreProvider.settingsStream(userId).first;
+    // Build user's custom settings
+    final settings = await _firestoreProvider.settings$(userId).first;
     final settingsBuilder = settings.toBuilder();
 
-    settingsBuilder.themeSettings.update((b) => b // TODO: use this nested update pattern everywhere!
+    settingsBuilder.themeSettings.update((b) => b
       ..darkMode = darkMode
     );
 
     return _firestoreProvider.replaceSettings(userId, settingsBuilder.build());
   }
+
 }

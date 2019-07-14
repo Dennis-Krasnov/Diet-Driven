@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:meta/meta.dart';
 
 import 'package:diet_driven/providers/providers.dart';
 import 'package:diet_driven/models/models.dart';
@@ -8,65 +8,51 @@ import 'package:diet_driven/models/models.dart';
 class UserRepository {
   final _firestoreProvider = FirestoreProvider();
 
-  /// Fetches [Observable] of [FirebaseUser] authentication status.
-  /// 'authStateChangedStream` is called from [UserDataBloc].
+  /// Streams [FirebaseUser] authentication status using `firebase_auth` library.
   ///
   /// Returns [null] if unauthenticated.
-  /// Always returns an initial value upon subscribing.
-  Observable<FirebaseUser> get authStateChangedStream => Observable(FirebaseAuth.instance.onAuthStateChanged);
+  Stream<FirebaseUser> get authStateChanged$ => FirebaseAuth.instance.onAuthStateChanged;
 
-  /// Signs in anonymously with Firebase Authentication.
-  /// TODO: where called from
+  /// Signs in anonymously using `firebase_auth` library.
   ///
   /// Returns authenticated [FirebaseUser].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
   Future<FirebaseUser> signInAnonymously() => FirebaseAuth.instance.signInAnonymously();
 
-  /// Signs in with email and password with Firebase Authentication.
-  /// TODO: where called from
+  /// Signs in with email and password using `firebase_auth` library.
   ///
   /// Returns authenticated [FirebaseUser].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
-  Future<FirebaseUser> signInWithEmail(String email, String password) =>
-      FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+  Future<FirebaseUser> signInWithEmail({@required String email, @required String password}) {
+    assert(email != null && email.isNotEmpty);
+    assert(password != null && password.isNotEmpty);
 
-  /// Creates account with email and password with Firebase Authentication.
-  /// TODO: where called from
+    return FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+  }
+
+  /// Creates email-password account using `firebase_auth` library.
   ///
   /// Returns authenticated [FirebaseUser].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
-  Future<void> createAccountWithEmail(String email, String password) =>
-      FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+  Future<void> createAccountWithEmail({@required String email, @required String password}) {
+    assert(email != null && email.isNotEmpty);
+    assert(password != null && password.isNotEmpty);
 
-  /// Signs out of Firebase Authentication session.
-  /// TODO: where called from
+    return FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+  }
+
+  /// Signs out using `firebase_auth` library.
   Future<void> signOut() => FirebaseAuth.instance.signOut();
 
 
-  /// Fetches [Observable] of [userId]'s [UserDocument].
-  /// 'userDocumentStream(userId)` is called for every user from [UserDataBloc].
+  /// Streams [userId]'s [UserDocument].
   ///
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns [null] if Firestore document doesn't exist.
   /// Throws [DeserializationError] if Firestore data is corrupt.
-  Observable<UserDocument> userDocumentStream(String userId) {
+  Stream<UserDocument> userDocument$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    return _firestoreProvider.userDocument(userId);
-  }
-
-  ///
-  /// Uses authenticated user's userId
-  Future<void> subscribe(SubscriptionType subscriptionType) async {
-    // TODO: use IAP library
-//    assert(subscriptionType != null);
-//
-//    // TODO: move to provider
-//    final HttpsCallable updateSubscription = CloudFunctions.instance.getHttpsCallable(
-//        functionName: 'updateSubscription'
-//    )..timeout = Duration(seconds: 10);
-//
-////   Cloud function parameters CANNOT be defined as <String, dynamic>{}
-//    return updateSubscription({"subscriptionType": subscriptionType.toString()});
+    return _firestoreProvider.userDocument$(userId);
   }
 }

@@ -8,7 +8,7 @@ import 'package:diet_driven/models/models.dart';
 class ConfigurationRepository {
 
   /// Fetches [RemoteConfiguration] using `firebase_remote_config` library.
-  /// `Future.sync()` runs future immediately, enables proper exception handling.
+  /// `Future.sync()` runs future immediately to enable proper exception handling.
   ///
   /// Throws [FetchThrottledException] or [Exception] on failure to fetch live Firebase Remote Config data.
   /// Throws [BuiltValueNullFieldError] on failure to create built object due to missing fields.

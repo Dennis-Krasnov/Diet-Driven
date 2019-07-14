@@ -42,7 +42,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         // ignore: unused_local_variable
-        final FirebaseUser user = await authenticationRepository.signInWithEmail(event.username, event.password);
+        final FirebaseUser user = await authenticationRepository.signInWithEmail(email: event.username, password: event.password);
 //        authenticationBloc.dispatch(LoggedIn((b) => b..user = user)); // OPTIMIZE: not necessary with auth subscription
         yield LoginInitial();
       } catch (error) {

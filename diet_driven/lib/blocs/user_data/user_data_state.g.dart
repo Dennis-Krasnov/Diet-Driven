@@ -63,14 +63,14 @@ class UserDataUninitializedBuilder
 
 class _$UserDataFailed extends UserDataFailed {
   @override
-  final String error;
+  final Object error;
   @override
-  final String trace;
+  final StackTrace stacktrace;
 
   factory _$UserDataFailed([void Function(UserDataFailedBuilder) updates]) =>
       (new UserDataFailedBuilder()..update(updates)).build();
 
-  _$UserDataFailed._({this.error, this.trace}) : super._() {
+  _$UserDataFailed._({this.error, this.stacktrace}) : super._() {
     if (error == null) {
       throw new BuiltValueNullFieldError('UserDataFailed', 'error');
     }
@@ -89,48 +89,50 @@ class _$UserDataFailed extends UserDataFailed {
     if (identical(other, this)) return true;
     return other is UserDataFailed &&
         error == other.error &&
-        trace == other.trace;
+        stacktrace == other.stacktrace;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, error.hashCode), trace.hashCode));
+    return $jf($jc($jc(0, error.hashCode), stacktrace.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('UserDataFailed')
           ..add('error', error)
-          ..add('trace', trace))
+          ..add('stacktrace', stacktrace))
         .toString();
   }
 }
 
 class UserDataFailedBuilder
-    implements Builder<UserDataFailed, UserDataFailedBuilder> {
+    implements
+        Builder<UserDataFailed, UserDataFailedBuilder>,
+        BuiltErrorBuilder {
   _$UserDataFailed _$v;
 
-  String _error;
-  String get error => _$this._error;
-  set error(String error) => _$this._error = error;
+  Object _error;
+  Object get error => _$this._error;
+  set error(Object error) => _$this._error = error;
 
-  String _trace;
-  String get trace => _$this._trace;
-  set trace(String trace) => _$this._trace = trace;
+  StackTrace _stacktrace;
+  StackTrace get stacktrace => _$this._stacktrace;
+  set stacktrace(StackTrace stacktrace) => _$this._stacktrace = stacktrace;
 
   UserDataFailedBuilder();
 
   UserDataFailedBuilder get _$this {
     if (_$v != null) {
       _error = _$v.error;
-      _trace = _$v.trace;
+      _stacktrace = _$v.stacktrace;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(UserDataFailed other) {
+  void replace(covariant UserDataFailed other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -144,7 +146,8 @@ class UserDataFailedBuilder
 
   @override
   _$UserDataFailed build() {
-    final _$result = _$v ?? new _$UserDataFailed._(error: error, trace: trace);
+    final _$result =
+        _$v ?? new _$UserDataFailed._(error: error, stacktrace: stacktrace);
     replace(_$result);
     return _$result;
   }

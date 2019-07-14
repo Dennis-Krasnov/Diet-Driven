@@ -1,14 +1,23 @@
 import 'package:built_value/built_value.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
 
 part 'user_data_events.g.dart';
 
 abstract class UserDataEvent {}
 
-/// Reactively updates current [FirebaseUser], [UserDocument], [Settings]; shows application.
-abstract class RemoteUserDataArrived with UserDataEvent implements Built<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
+/// Subscribes to data streams.
+abstract class InitUserData implements UserDataEvent, Built<InitUserData, InitUserDataBuilder> {
+  factory InitUserData([void Function(InitUserDataBuilder) updates]) = _$InitUserData;
+  InitUserData._();
+
+  @override String toString() => runtimeType.toString();
+}
+
+/// Reactively updates current [FirebaseUser], [UserDocument], [Settings], [Subscription].
+abstract class RemoteUserDataArrived implements UserDataEvent, Built<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
   FirebaseUser get authentication;
 
   UserDocument get userDocument;
@@ -21,19 +30,14 @@ abstract class RemoteUserDataArrived with UserDataEvent implements Built<RemoteU
   RemoteUserDataArrived._();
 }
 
-/// Shows global error page.
-abstract class UserDataError with UserDataEvent implements Built<UserDataError, UserDataErrorBuilder> {
-  String get error;
-
-  @nullable
-  String get trace;
-
+/// Throws unrecoverable exception.
+abstract class UserDataError implements BuiltError, UserDataEvent, Built<UserDataError, UserDataErrorBuilder> {
   factory UserDataError([void Function(UserDataErrorBuilder b)]) = _$UserDataError;
   UserDataError._();
 }
 
-/// Shows unauthenticated user onboarding / sign in.
-abstract class OnboardUser with UserDataEvent implements Built<OnboardUser, OnboardUserBuilder> {
+/// Onboards unauthenticated users.
+abstract class OnboardUser implements UserDataEvent, Built<OnboardUser, OnboardUserBuilder> {
   factory OnboardUser([void Function(OnboardUserBuilder b)]) = _$OnboardUser;
   OnboardUser._();
 

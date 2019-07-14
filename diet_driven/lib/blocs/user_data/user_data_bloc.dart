@@ -1,66 +1,24 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-//import 'package:diet_driven/log_printer.dart';
-//import 'package:logger/logger.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/models/models.dart';
-
-//class CustomLogPrinter extends LogPrinter {
-//
-//}
+import 'package:diet_driven/repositories/repositories.dart';
 
 /// Aggregates and manages authentication and settings.
-/// [UserDataBloc] shows loading or onboarding until loaded.
+/// App shows splash page until [UserDataBloc] is loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
-//  final logger = getLogger("user data bloc");
   final UserRepository userRepository;
   final SettingsRepository settingsRepository;
 
   StreamSubscription<UserDataEvent> _userDataEventSubscription;
 
-  UserDataBloc({@required this.userRepository, @required this.settingsRepository}) {
-    assert(userRepository != null);
-    assert(settingsRepository != null);
-
-    final userDataEvent$ = userRepository.authStateChangedStream // .delay(Duration(seconds: 20))
-//      .doOnData((user) => logger.d("USER: $user"))
-      // Side effect ensures user is authenticated and new user doesn't see userData from previous user
-      .doOnData((user) {
-        if (user == null) {
-          dispatch(OnboardUser());
-        }
-      })
-      // Load user data only if user exists
-      .where((user) => user != null && user.uid != null)
-      .switchMap<UserDataEvent>((user) =>
-        CombineLatestStream.combine3(
-          userRepository.userDocumentStream(user.uid),
-          settingsRepository.settingsStream(user.uid),
-          // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
-          Observable<SubscriptionType>.just(SubscriptionType.all_access),
-          (UserDocument userDocument, Settings settings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
-            ..authentication = user
-            ..userDocument = userDocument.toBuilder()
-            ..settings = settings.toBuilder()
-            ..subscription = subscriptionType
-          ),
-        )
-      )
-      .distinct();
-
-    _userDataEventSubscription = userDataEvent$.listen(
-      (userDataEvent) => dispatch(userDataEvent),
-      onError: (Object error, Object trace) => dispatch(UserDataError((b) => b // FIXME
-        ..error = error.toString()
-        ..trace = trace.toString()
-      )),
-    );
-  }
+  UserDataBloc({@required this.userRepository, @required this.settingsRepository})
+    : assert(userRepository != null), assert(settingsRepository != null);
 
   @override
   UserDataState get initialState => UserDataUninitialized();
@@ -73,6 +31,47 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
+    if (event is InitUserData) {
+      assert(currentState is UserDataUninitialized);
+
+      final auth$ = Observable<FirebaseUser>(userRepository.authStateChanged$);
+
+      final onboard$ = auth$
+        .where((user) => user == null)
+        // Onboarding event
+        .mapTo<UserDataEvent>(OnboardUser());
+
+      final dataArrival$ = auth$
+        .where((user) => user != null)
+        .switchMap<UserDataEvent>((user) => CombineLatestStream.combine3(
+          userRepository.userDocument$(user.uid),
+          settingsRepository.settings$(user.uid),
+          Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
+          // Success event
+          (UserDocument userDocument, Settings settings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
+            ..authentication = user
+            ..userDocument = userDocument.toBuilder()
+            ..settings = settings.toBuilder()
+            ..subscription = subscriptionType
+          ),
+        ))
+        .distinct()
+        // Failure event
+        .transform(StreamTransformer<UserDataEvent, UserDataEvent>.fromHandlers(
+          handleError: (Object error, StackTrace stacktrace, EventSink<UserDataEvent> sink) =>
+            sink.add(UserDataError((b) => b
+              ..error = error
+              ..stacktrace = stacktrace
+            ))
+        ));
+
+      // Maintain single instance of stream subscription
+      _userDataEventSubscription ??= MergeStream<UserDataEvent>([
+        onboard$,
+        dataArrival$
+      ]).listen(dispatch);
+    }
+
     if (event is RemoteUserDataArrived) {
       yield UserDataLoaded((b) => b
         ..authentication = event.authentication
@@ -81,20 +80,22 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..subscription = event.subscription
       );
 
-//      logger.i("loaded user data ${event.authentication.uid}");
+      LoggingBloc().info("User data loaded");
     }
+
     if (event is OnboardUser) {
       yield UserDataUnauthenticated();
 
-//      logger.i("onboarding user");
+      LoggingBloc().info("Onboarded user");
     }
+
     if (event is UserDataError) {
       yield UserDataFailed((b) => b
         ..error = event.error
-        ..trace = event.trace
+        ..stacktrace = event.stacktrace
       );
 
-//      logger.i("user data failed");
+      LoggingBloc().unexpectedError("User data failed", event.error, event.stacktrace);
     }
   }
 }

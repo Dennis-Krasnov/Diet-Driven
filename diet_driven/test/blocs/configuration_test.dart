@@ -51,12 +51,6 @@ void main() {
   });
   
   test("React to streams", () {
-    // TODO: create helpers / live templates / postfix completers
-    // TODO: mockFutureValue(configurationRepository.fetchRemoteConfig, remoteConfig)
-    // TODO: mockFutureError(configurationRepository.fetchRemoteConfig, ...)
-    // TODO: mockStreamValues(configurationRepository.fetchRemoteConfig, [...])
-    // TODO: mockStreamError(configurationRepository.fetchRemoteConfig, ...)
-
     when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
     when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
     when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));

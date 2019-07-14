@@ -1,97 +1,81 @@
-//import 'package:diet_driven/log_printer.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
-//import 'package:logger/logger.dart';
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
-/// Wrapper for Firebase Analytics tracking.
+/// Firebase Analytics logging interface.
 class AnalyticsRepository {
-//  final logger = getLogger("analytics repository");
-  FirebaseAnalytics _analytics = FirebaseAnalytics();
+  final _analytics = FirebaseAnalytics();
 
-  // TODO: call analytics from user data bloc/login bloc (doOnAction side effects)
+  // TODO: log custom event (similar to bloc transition) for every analytics log (special filter in logging tab)
+  // TODO: bloc tests ensure proper analytics event was called
+  // TODO: https://medium.com/flutterpub/using-firebase-analytics-in-flutter-2da5be205e4
 
-  /// Logs start of anonymous user session.
-  void anonymousSession(String userId) {
-    _analytics.setUserId(userId);
-    _analytics.logEvent(
-      name: "anonymous_login"
-    );
-//    logger.v("anonymous session $userId");
+  /// ... using `firebase_analytics` library.
+  Future<void> startOnboarding() => _analytics.logTutorialBegin();
+
+  /// ... using `firebase_analytics` library.
+  Future<void> finishOnboarding() => _analytics.logTutorialComplete();
+
+  /// ... using `firebase_analytics` library.
+  Future<void> updateUser(FirebaseUser user) async {
+    assert(user != null);
+
+//    _analytics.logEvent(name: null, parameters: {})
+    await _analytics.setUserId(user.uid);
+    return await _analytics.setUserProperty(name: "auth_type", value: user.isAnonymous ? "anonymous" : "authenticated");
   }
 
-  /// Logs sign up event with [signUpMethod].
-  void signUp(String signUpMethod) {
-    _analytics.logSignUp(signUpMethod: signUpMethod);
-//    logger.v("user signed up with $signUpMethod");
+  /// ... using `firebase_analytics` library.
+  Future<void> signUp(String signUpMethod) {
+    assert(signUpMethod != null);
+
+    return _analytics.logSignUp(signUpMethod: signUpMethod);
   }
 
-  /// Logs sign in event and updates [userId].
-  void signIn(String userId) {
-    _analytics.setUserId(userId);
-    _analytics.logLogin();
-//    logger.v("login $userId");
+  /// ... using `firebase_analytics` library.
+  Future<void> login(String loginMethod) {
+    assert(loginMethod != null);
+
+    return _analytics.logLogin(loginMethod: loginMethod);
   }
 
-  /// Logs sign out event.
-  void signOut() {
-    // FIXME
-//    logger.v("sign out");
+  /// ... using `firebase_analytics` library.
+  /// TODO: include deep link
+  Future<void> goToPage(String pageName) {
+    assert(pageName != null);
+
+    return _analytics.setCurrentScreen(screenName: pageName);
   }
 
-  /// Logs navigation to [screenName].
-  void navigateToScreen(String screenName) {
-    _analytics.setCurrentScreen(screenName: screenName);
-//    logger.v("navigated to $screenName");
+  /// ... using `firebase_analytics` library.
+  Future<void> openFoodRecord(String foodId) {
+    assert(foodId != null);
+
+    return _analytics.logEvent(name: "edit_food_record", parameters: <String, dynamic>{
+      "food_id": foodId,
+    });
   }
+
+  /// ... using `firebase_analytics` library.
+  Future<void> saveFoodRecord(String foodId) {
+    assert(foodId != null);
+
+    return _analytics.logEvent(name: "save_food_record", parameters: <String, dynamic>{
+      "food_id": foodId,
+    });
+  }
+
+  /// ... using `firebase_analytics` library.
+  Future<void> viewFoodDiaryDay(int deltaDays) {
+    assert(deltaDays != null);
+
+    return _analytics.logEvent(name: "view_food_diary_day", parameters: <String, dynamic>{
+      "delta_days": deltaDays,
+    });
+  }
+
+  ///
+  // TODO: search
+  // TODO: deep links
+  // TODO: setting/report viewed
 
 }
-
-// TODO:
-//view_search_results
-
-//Future<void> setCurrentScreen ({
-//@required String screenName,
-//String screenClassOverride: 'Flutter'
-//})
-
-//Future<void> logEvent ({
-//  @required String name,
-//  Map<String, dynamic> parameters
-//})
-
-// EVENTS
-// tutorial_start
-// tutorial_end
-
-// view_food_diary_day(int delta) // int day
-// view_food_record(String id)
-// open_food_bottom_sheet(screen)
-// log_food(Enum entryType, int numberOfFoods, DateTime delta (estimated, based on day, meal) - to see whether people track before or after
-// search_food(String query)
-
-// selections!!
-// start selection
-// end selection?
-// copies
-// other operations...
-
-// opened_dynamic_link(url, page, params)
-// wrote_rfid_tag (...)
-
-// viewed_settings(page) // TODO: make go to screen capture this! (tabs + navigator observer)
-// changed_settings (to filter for advanced users)
-
-// view_body_record(String type)
-// track_body_record(String type, delta) // deltaTime - can see in analytics!
-// body_record_filter
-
-// reports_filter
-//
-
-// USER PROPERTIES (up to 25)
-//Future<void> setUserProperty ({
-//@required String name,
-//@required String value
-//})
-
-// weight_goal: gain/lose/maintain
-//

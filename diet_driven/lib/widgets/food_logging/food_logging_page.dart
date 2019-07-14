@@ -1,5 +1,5 @@
 import 'package:diet_driven/repositories/repositories.dart';
-import 'package:diet_driven/widgets/food_logging_tab_bar.dart';
+import 'package:diet_driven/widgets/food_logging/food_logging_tab_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:built_collection/built_collection.dart';

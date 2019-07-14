@@ -6,6 +6,58 @@ part of 'user_data_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
+class _$InitUserData extends InitUserData {
+  factory _$InitUserData([void Function(InitUserDataBuilder) updates]) =>
+      (new InitUserDataBuilder()..update(updates)).build();
+
+  _$InitUserData._() : super._();
+
+  @override
+  InitUserData rebuild(void Function(InitUserDataBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  InitUserDataBuilder toBuilder() => new InitUserDataBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is InitUserData;
+  }
+
+  @override
+  int get hashCode {
+    return 437658457;
+  }
+}
+
+class InitUserDataBuilder
+    implements Builder<InitUserData, InitUserDataBuilder> {
+  _$InitUserData _$v;
+
+  InitUserDataBuilder();
+
+  @override
+  void replace(InitUserData other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$InitUserData;
+  }
+
+  @override
+  void update(void Function(InitUserDataBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$InitUserData build() {
+    final _$result = _$v ?? new _$InitUserData._();
+    replace(_$result);
+    return _$result;
+  }
+}
+
 class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   @override
   final FirebaseUser authentication;
@@ -161,14 +213,14 @@ class RemoteUserDataArrivedBuilder
 
 class _$UserDataError extends UserDataError {
   @override
-  final String error;
+  final Object error;
   @override
-  final String trace;
+  final StackTrace stacktrace;
 
   factory _$UserDataError([void Function(UserDataErrorBuilder) updates]) =>
       (new UserDataErrorBuilder()..update(updates)).build();
 
-  _$UserDataError._({this.error, this.trace}) : super._() {
+  _$UserDataError._({this.error, this.stacktrace}) : super._() {
     if (error == null) {
       throw new BuiltValueNullFieldError('UserDataError', 'error');
     }
@@ -186,48 +238,48 @@ class _$UserDataError extends UserDataError {
     if (identical(other, this)) return true;
     return other is UserDataError &&
         error == other.error &&
-        trace == other.trace;
+        stacktrace == other.stacktrace;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, error.hashCode), trace.hashCode));
+    return $jf($jc($jc(0, error.hashCode), stacktrace.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('UserDataError')
           ..add('error', error)
-          ..add('trace', trace))
+          ..add('stacktrace', stacktrace))
         .toString();
   }
 }
 
 class UserDataErrorBuilder
-    implements Builder<UserDataError, UserDataErrorBuilder> {
+    implements Builder<UserDataError, UserDataErrorBuilder>, BuiltErrorBuilder {
   _$UserDataError _$v;
 
-  String _error;
-  String get error => _$this._error;
-  set error(String error) => _$this._error = error;
+  Object _error;
+  Object get error => _$this._error;
+  set error(Object error) => _$this._error = error;
 
-  String _trace;
-  String get trace => _$this._trace;
-  set trace(String trace) => _$this._trace = trace;
+  StackTrace _stacktrace;
+  StackTrace get stacktrace => _$this._stacktrace;
+  set stacktrace(StackTrace stacktrace) => _$this._stacktrace = stacktrace;
 
   UserDataErrorBuilder();
 
   UserDataErrorBuilder get _$this {
     if (_$v != null) {
       _error = _$v.error;
-      _trace = _$v.trace;
+      _stacktrace = _$v.stacktrace;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(UserDataError other) {
+  void replace(covariant UserDataError other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -241,7 +293,8 @@ class UserDataErrorBuilder
 
   @override
   _$UserDataError build() {
-    final _$result = _$v ?? new _$UserDataError._(error: error, trace: trace);
+    final _$result =
+        _$v ?? new _$UserDataError._(error: error, stacktrace: stacktrace);
     replace(_$result);
     return _$result;
   }

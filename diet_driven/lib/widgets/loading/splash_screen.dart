@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
-import 'package:shimmer/shimmer.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/widgets/loading/loading.dart';
 
 class SplashPage extends StatelessWidget {
   final int bottomNavPages = 4;
@@ -66,47 +66,4 @@ class SplashPage extends StatelessWidget {
   }
 }
 
-class ShimmerRectangle extends StatelessWidget {
-  final double width;
-  final double height;
 
-  const ShimmerRectangle({Key key, this.width, this.height}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      child: Container(
-        width: width,
-        height: height,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.rectangle,
-        ),
-      ),
-      baseColor: Colors.grey[200],
-      highlightColor: Colors.grey[100],
-    );
-  }
-}
-
-class ShimmerCircle extends StatelessWidget {
-  final double radius;
-
-  const ShimmerCircle({Key key, this.radius}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Shimmer.fromColors(
-      child: Container(
-        width: radius,
-        height: radius,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          shape: BoxShape.circle,
-        ),
-      ),
-      baseColor: Colors.grey[200],
-      highlightColor: Colors.grey[100],
-    );
-  }
-}
