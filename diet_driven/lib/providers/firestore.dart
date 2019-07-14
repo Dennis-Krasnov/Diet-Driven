@@ -27,7 +27,7 @@ class FirestoreProvider {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    final docRef = _firestore.document(FirestorePaths.foodDiary(userId, daysSinceEpoch));
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
     return docRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeDocumentTransform());
   }
 
@@ -39,7 +39,7 @@ class FirestoreProvider {
   Stream<BuiltList<FoodDiaryDay>> allTimeFoodDiary$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final colRef = _firestore.collection("${FirestorePaths.user(userId)}/food_diary");
+    final colRef = _firestore.collection(FirestorePaths.foodDiary(userId));
     return colRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeCollectionTransform());
   }
 
@@ -54,7 +54,7 @@ class FirestoreProvider {
     assert(foodDiaryDay != null);
     assert(foodDiaryDay.date >= 0);
 
-    final docRef = _firestore.document(FirestorePaths.foodDiary(userId, foodDiaryDay.date));
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
     return docRef.setData(FirestoreSerializer<FoodDiaryDay>().serializeDocument(foodDiaryDay), merge: false);
   }
 
@@ -70,7 +70,7 @@ class FirestoreProvider {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch >= 0);
 
-    final docRef = _firestore.document(FirestorePaths.foodDiary(userId, daysSinceEpoch));
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
     return docRef.delete();
   }
 
@@ -87,7 +87,7 @@ class FirestoreProvider {
   /// Returns empty stream if Firestore document doesn't exist.
   /// Throws [DeserializationError] if Firestore data is corrupt.
   Stream<Settings> defaultSettings$() {
-    final docRef = _firestore.document("config/default_settings");
+    final docRef = _firestore.document(FirestorePaths.defaultSettings());
     return docRef.snapshots().transform(FirestoreSerializer<Settings>().deserializeDocumentTransform());
   }
 
@@ -99,7 +99,7 @@ class FirestoreProvider {
   Stream<Settings> settings$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final docRef = _firestore.document("${FirestorePaths.user(userId)}/metadata/settings");
+    final docRef = _firestore.document(FirestorePaths.userSettings(userId));
     return docRef.snapshots().transform(FirestoreSerializer<Settings>().deserializeDocumentTransform());
   }
 
@@ -113,7 +113,7 @@ class FirestoreProvider {
     assert(userId != null && userId.isNotEmpty);
     assert(settings != null);
 
-    final docRef = _firestore.document("${FirestorePaths.user(userId)}/metadata/settings");
+    final docRef = _firestore.document(FirestorePaths.userSettings(userId));
     return docRef.setData(FirestoreSerializer<Settings>().serializeDocument(settings), merge: false);
   }
 

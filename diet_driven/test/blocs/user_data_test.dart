@@ -1,233 +1,197 @@
-//import 'package:diet_driven/models/models.dart';
-//import 'package:firebase_auth/firebase_auth.dart';
-//import 'package:flutter_test/flutter_test.dart';
-//import 'package:meta/meta.dart';
-//import 'package:mockito/mockito.dart';
-//
-//import 'package:diet_driven/repositories/repositories.dart';
-//import 'package:diet_driven/blocs/blocs.dart';
-//import 'package:rxdart/rxdart.dart';
-//
-//import '../test_utils.dart';
-//
-//void main() {
-//  UserDataBloc userDataBloc;
-//
-//  /// Mocks
-//  UserRepository userRepository;
-//
-//  /// Data
-//  final Settings settings = Settings();
-//
-//  /// Signed in user
-//  final FirebaseUser userA = FirebaseUserMock();
-//  final UserDocument userDocumentA = UserDocument((b) => b
-//    ..currentSubscription = "all"
-//  );
-//
-//  /// Anonymous user
-//  final FirebaseUser userB = FirebaseUserMock();
-//  final UserDocument userDocumentB = UserDocument((b) => b
-//    ..currentSubscription = "none"
-//  );
-//
-//  ///
-//  void mockAuthenticationRepositoryStream({
-//    List<FirebaseUser> authStream = const []
-//  }) {
-//    when(userRepository.authStateChangedStream).thenAnswer((_) =>
-//      Observable<FirebaseUser>.fromIterable(authStream)
-//    );
-//  }
-//
-//  ///
-//  void mockUserRepositoryStream({
-//    @required String userId,
-//    List<UserDocument> userDocumentStream = const [],
-//    List<Settings> settingsStream = const []
-//  }) {
-//    when(userRepository.userDocumentStream(userId)).thenAnswer((_) =>
-//      Observable<UserDocument>.fromIterable(userDocumentStream)
-//    );
-//    when(userRepository.settingsStream(userId)).thenAnswer((_) =>
-//      Observable<Settings>.fromIterable(settingsStream)
-//    );
-//  }
-//
-//  setUp(() {
-//    userRepository = MockUserRepository();
-//
-//    // User stubs
-//    when(userA.uid).thenReturn("1234");
-//    when(userA.email).thenReturn("example@gmail.com");
-//    when(userA.displayName).thenReturn("John Smith");
-//
-//    when(userB.uid).thenReturn("4321");
-//    when(userB.email).thenReturn(null);
-//    when(userB.displayName).thenReturn(null);
-//
-//    // No authentication state changes by default
-//    mockAuthenticationRepositoryStream();
-//
-//    userDataBloc = UserDataBloc(userRepository: userRepository);
-//  });
-//
-//  test("Initialize properly", () {
-//    expect(userDataBloc.initialState, UserDataUninitialized());
-//  });
-//
-//  group("Manual", () {
-//    test("Load user data", () {
-//      expectLater(
-//        userDataBloc.state,
-//        emitsInOrder(<UserDataState>[
-//          UserDataUninitialized(),
-//          UserDataLoaded((b) => b
-//            ..authentication = userA
-//            ..userDocument = userDocumentA.toBuilder()
-//            ..settings = settings.toBuilder()
-//          )
-//        ])
-//      );
-//
-//      userDataBloc.dispatch(RemoteUserDataArrived((b) => b
-//        ..authentication = userA
-//        ..userDocument = userDocumentA.toBuilder()
-//        ..settings = settings.toBuilder()
-//      ));
-//    });
-//
-//    test("Fail on loading error", () {
-//      expectLater(
-//        userDataBloc.state,
-//        emitsInOrder(<UserDataState>[
-//          UserDataUninitialized(),
-//          UserDataFailed((b) => b..error = "oops")
-//        ])
-//      );
-//
-//      userDataBloc.dispatch(UserDataError((b) => b..error = "oops"));
-//    });
-//  });
-//
-//  group("Reactive auth state changed triggers", () {
-//    test("Onboard unauthenticated user", () {
-//      mockAuthenticationRepositoryStream(authStream: [null, userA, null]);
-//      mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA]);
-//      userDataBloc = UserDataBloc(userRepository: userRepository);
-//
-//      expectLater(
-//        userDataBloc.state,
-//        emitsInOrder(<UserDataState>[
-//          UserDataUninitialized(),
-//          UserDataUnauthenticated(),
-//          UserDataLoading(),
-//          UserDataLoaded((b) => b
-//            ..authentication = userA
-//            ..userDocument = userDocumentA.toBuilder()
-//            ..settings = settings.toBuilder()
-//          ),
-//          UserDataUnauthenticated(),
-//        ])
-//      );
-//    });
-//
-//    test("Resubscribe on user change", () {
-//      mockAuthenticationRepositoryStream(authStream: [userA, userB]);
-//      mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA]);
-//      mockUserRepositoryStream(userId: userB.uid, settingsStream: [settings], userDocumentStream: [userDocumentB]);
-//      userDataBloc = UserDataBloc(userRepository: userRepository);
-//
-//      expectLater(
-//        userDataBloc.state,
-//        emitsInOrder(<UserDataState>[
-//          UserDataUninitialized(),
-//          UserDataLoading(),
-//          UserDataLoaded((b) => b
-//            ..authentication = userA
-//            ..userDocument = userDocumentA.toBuilder()
-//            ..settings = settings.toBuilder()
-//          ),
-//          UserDataLoading(),
-//          UserDataLoaded((b) => b
-//            ..authentication = userB
-//            ..userDocument = userDocumentB.toBuilder()
-//            ..settings = settings.toBuilder()
-//          ),
-//        ])
-//      );
-//    });
-//  });
-//
-//  group("Reactive userDocument and settings triggers", () {
-//    test("Update user document", () {
-//      mockAuthenticationRepositoryStream(authStream: [userA]);
-//      mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings], userDocumentStream: [userDocumentA, userDocumentB]);
-//      userDataBloc = UserDataBloc(userRepository: userRepository);
-//
-//      expectLater(
-//        userDataBloc.state,
-//        emitsInOrder(<UserDataState>[
-//          UserDataUninitialized(),
-//          UserDataLoading(),
-//          UserDataLoaded((b) => b
-//            ..authentication = userA
-//            ..userDocument = userDocumentA.toBuilder()
-//            ..settings = settings.toBuilder()
-//          ),
-//          UserDataLoaded((b) => b
-//            ..authentication = userA
-//            ..userDocument = userDocumentA.rebuild((b) => b..currentSubscription = "none").toBuilder()
-//            ..settings = settings.toBuilder()
-//          ),
-//        ])
-//      );
-//    });
-//
-//    test("Update settings", () {
-//      Settings settingsB = Settings((b) => b
-//        ..navigationSettings = NavigationSettings((b) => b..defaultPage = Page.profile)
-//      );
-//
-//      mockAuthenticationRepositoryStream(authStream: [userA]);
-//      mockUserRepositoryStream(userId: userA.uid, settingsStream: [settings, settingsB], userDocumentStream: [userDocumentA]);
-//      userDataBloc = UserDataBloc(userRepository: userRepository);
-//
-//      expectLater(
-//        userDataBloc.state,
-//        emitsInOrder(<UserDataState>[
-//          UserDataUninitialized(),
-//          UserDataLoading(),
-//          UserDataLoaded((b) => b
-//            ..authentication = userA
-//            ..userDocument = userDocumentA.toBuilder()
-//            ..settings = settings.toBuilder()
-//          ),
-//          UserDataLoaded((b) => b
-//            ..authentication = userA
-//            ..userDocument = userDocumentA.toBuilder()
-//            ..settings = settingsB.toBuilder()
-//          ),
-//        ])
-//      );
-//    });
-//
-//    // FIXME
-////    test("Fail on error", () {
-////      mockAuthenticationRepositoryStream(authStream: [userA]);
-////      when(settingsRepository.userDocumentStream(userA.uid)).thenThrow(Exception("oops"));
-////      when(settingsRepository.settingsStream(userA.uid)).thenThrow(Exception("oops 2"));
-////      userDataBloc = UserDataBloc(userRepository: userRepository);
-////
-////      expectLater(
-////        userDataBloc.state,
-////        emitsInOrder([
-////          UserDataUninitialized(),
-////          UserDataLoading(),
-////          UserDataFailed((b) => b..error = "oops"),
-////          UserDataFailed((b) => b..error = "oops 2"),
-////        ])
-////      );
-////    });
-//  });
-//}
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+
+import '../test_utils.dart';
+
+void main() {
+  UserDataBloc userDataBloc;
+
+  /// Mocks
+  UserRepository userRepository;
+  SettingsRepository settingsRepository;
+
+  /// Data
+  final userA = FirebaseUserMock();
+  final userB = FirebaseUserMock();
+
+  final settingsLight = Settings((b) => b
+    ..themeSettings = ThemeSettings((b) => b
+      ..darkMode = false
+    ).toBuilder()
+  );
+
+  final settingsDark = Settings((b) => b
+    ..themeSettings = ThemeSettings((b) => b
+      ..darkMode = true
+    ).toBuilder()
+  );
+
+  /// Configuration
+  setUp(() {
+    userRepository = MockUserRepository();
+    settingsRepository = MockSettingsRepository();
+
+    when(userA.uid).thenReturn("Jimmy");
+    when(userB.uid).thenReturn("Bobby");
+
+    userDataBloc = UserDataBloc(
+      userRepository: userRepository,
+      settingsRepository: settingsRepository,
+    );
+  });
+
+  tearDown(() {
+    userDataBloc?.dispose();
+  });
+
+  /// Tests
+  test("Initialize properly", () {
+    expect(userDataBloc.initialState, UserDataUninitialized());
+  });
+
+  group("React to streams", () {
+    test("Authentication stream", () {
+      when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA, null, userB]).asBroadcastStream());
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([UserDocument()]));
+      when(settingsRepository.settings$(any)).thenAnswer((_) => Stream.fromIterable([settingsLight]));
+
+      expectLater(
+        userDataBloc.state,
+        emitsInOrder(<UserDataState>[
+          UserDataUninitialized(),
+          UserDataUnauthenticated(),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsLight.toBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+          UserDataUnauthenticated(),
+          UserDataLoaded((b) => b
+            ..authentication = userB
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsLight.toBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+        ])
+      );
+
+      userDataBloc.dispatch(InitUserData());
+    });
+
+    test("Data arrival stream", () {
+      when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<FirebaseUser>>[
+        Future.value(),
+        Future.value(userA),
+        Future.delayed(ticks(3)),
+      ]).asBroadcastStream());
+      // TODO: different values for user document
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
+        Future.value(UserDocument()),
+        Future.delayed(ticks(2), () => UserDocument()), // Duplicate
+      ]));
+      when(settingsRepository.settings$(any)).thenAnswer((_) => Stream.fromFutures([
+        Future.value(settingsLight),
+        Future.delayed(ticks(1), () => settingsDark),
+        Future.delayed(ticks(2), () => settingsDark), // Duplicate
+      ]));
+
+      // TODO: also mock subscription arriving at different times
+
+      expectLater(
+          userDataBloc.state,
+          emitsInOrder(<UserDataState>[
+            UserDataUninitialized(),
+            UserDataUnauthenticated(),
+            UserDataLoaded((b) => b
+              ..authentication = userA
+              ..userDocument = UserDocumentBuilder()
+              ..settings = settingsLight.toBuilder()
+              ..subscription = SubscriptionType.all_access
+            ),
+            UserDataLoaded((b) => b
+              ..authentication = userA
+              ..userDocument = UserDocumentBuilder()
+              ..settings = settingsDark.toBuilder()
+              ..subscription = SubscriptionType.all_access
+            ),
+            UserDataUnauthenticated(),
+          ])
+      );
+
+      userDataBloc.dispatch(InitUserData());
+    });
+
+  });
+
+  group("Handle runtime exceptions", () {
+    test("Fail on user document error", () {
+      when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<FirebaseUser>>[
+        Future.value(),
+        Future.value(userA),
+        Future.delayed(ticks(3)),
+      ]).asBroadcastStream());
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
+        Future.value(UserDocument()),
+        Future.delayed(ticks(1), () => Future.error(Exception("User document failed"))), // Ends at first error
+        Future.delayed(ticks(2), () => Future.error(Exception("User document failed 2"))),
+      ]));
+      when(settingsRepository.settings$(any)).thenAnswer((_) => Stream.fromIterable([settingsLight]));
+
+      expectLater(
+        userDataBloc.state,
+        emitsInOrder(<dynamic>[
+          UserDataUninitialized(),
+          UserDataUnauthenticated(),
+          UserDataLoaded((b) => b
+            ..authentication = userA
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsLight.toBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+          BuiltErrorMatcher("User document failed"),
+          UserDataUnauthenticated(),
+        ])
+      );
+
+      userDataBloc.dispatch(InitUserData());
+    });
+
+    test("Fail on settings error", () {
+      when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<FirebaseUser>>[
+        Future.value(),
+        Future.value(userA),
+        Future.delayed(ticks(3)),
+      ]).asBroadcastStream());
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([UserDocument()]));
+      when(settingsRepository.settings$(any)).thenAnswer((_) => Stream.fromFutures([
+        Future.value(settingsLight),
+        Future.delayed(ticks(1), () => Future.error(Exception("Settings failed"))), // Ends at first error
+        Future.delayed(ticks(2), () => Future.error(Exception("Settings failed 2"))),
+      ]));
+
+      expectLater(
+          userDataBloc.state,
+          emitsInOrder(<dynamic>[
+            UserDataUninitialized(),
+            UserDataUnauthenticated(),
+            UserDataLoaded((b) => b
+              ..authentication = userA
+              ..userDocument = UserDocumentBuilder()
+              ..settings = settingsLight.toBuilder()
+              ..subscription = SubscriptionType.all_access
+            ),
+            BuiltErrorMatcher("Settings failed"),
+            UserDataUnauthenticated(),
+          ])
+      );
+
+      userDataBloc.dispatch(InitUserData());
+    });
+  });
+}

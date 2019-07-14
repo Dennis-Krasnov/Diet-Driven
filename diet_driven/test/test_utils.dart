@@ -10,12 +10,16 @@ import 'package:diet_driven/repositories/repositories.dart';
 
 final StreamMatcher doesNotEmit = emitsInOrder(<dynamic>[]);
 
+///
+Duration ticks(int ticks, {int tickDuration = 20}) => Duration(milliseconds: ticks * tickDuration);
+
 /// Mock repositories
 class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
 class MockConfigurationRepository extends Mock implements ConfigurationRepository {}
 class MockDiaryRepository extends Mock implements DiaryRepository {}
 class MockFoodRepository extends Mock implements FoodRepository {}
 class MockUserRepository extends Mock implements UserRepository {}
+class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 /// Mock blocs
 class MockUserDataBlock extends Mock implements UserDataBloc {}

@@ -34,20 +34,19 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     if (event is InitUserData) {
       assert(currentState is UserDataUninitialized);
 
-      final auth$ = Observable<FirebaseUser>(userRepository.authStateChanged$);
+      final auth$ = Observable<FirebaseUser>(userRepository.authStateChanged$());
 
       final onboard$ = auth$
         .where((user) => user == null)
-        // Onboarding event
         .mapTo<UserDataEvent>(OnboardUser());
 
+      // TODO: retry x times, with delay between each attempt
       final dataArrival$ = auth$
         .where((user) => user != null)
         .switchMap<UserDataEvent>((user) => CombineLatestStream.combine3(
           userRepository.userDocument$(user.uid),
           settingsRepository.settings$(user.uid),
           Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
-          // Success event
           (UserDocument userDocument, Settings settings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
             ..authentication = user
             ..userDocument = userDocument.toBuilder()
@@ -55,21 +54,12 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
             ..subscription = subscriptionType
           ),
         ))
-        .distinct()
-        // Failure event
-        .transform(StreamTransformer<UserDataEvent, UserDataEvent>.fromHandlers(
-          handleError: (Object error, StackTrace stacktrace, EventSink<UserDataEvent> sink) =>
-            sink.add(UserDataError((b) => b
-              ..error = error
-              ..stacktrace = stacktrace
-            ))
-        ));
+        // Unrecoverable failure
+        .onErrorReturnWith((dynamic error) => UserDataError((b) => b..error = error))
+        .distinct();
 
       // Maintain single instance of stream subscription
-      _userDataEventSubscription ??= MergeStream<UserDataEvent>([
-        onboard$,
-        dataArrival$
-      ]).listen(dispatch);
+      _userDataEventSubscription ??= Observable(MergeStream([onboard$, dataArrival$])).listen(dispatch);
     }
 
     if (event is RemoteUserDataArrived) {

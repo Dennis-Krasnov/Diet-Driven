@@ -49,26 +49,28 @@ void main() {
   test("Initialize properly", () {
     expect(configurationBloc.initialState, ConfigurationUninitialized());
   });
-  
-  test("React to streams", () {
-    when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
-    when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
-    when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));
 
-    expectLater(
-      configurationBloc.state,
-      emitsInOrder(<ConfigurationState>[
-        ConfigurationUninitialized(),
-        for (var conn in connectivityList)
-          ConfigurationLoaded((b) => b
-            ..remoteConfiguration = remoteConfig.toBuilder()
-            ..packageInfo = packageInfo
-            ..connectivity = conn
-          ),
-      ])
-    );
+  group("React to streams", () {
+    test("Data arrival stream", () {
+      when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
+      when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
+      when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));
 
-    configurationBloc.dispatch(InitConfiguration());
+      expectLater(
+        configurationBloc.state,
+        emitsInOrder(<ConfigurationState>[
+          ConfigurationUninitialized(),
+          for (var conn in connectivityList)
+            ConfigurationLoaded((b) => b
+              ..remoteConfiguration = remoteConfig.toBuilder()
+              ..packageInfo = packageInfo
+              ..connectivity = conn
+            ),
+        ])
+      );
+
+      configurationBloc.dispatch(InitConfiguration());
+    });
   });
 
   group("Handle runtime exceptions", () {
@@ -93,7 +95,7 @@ void main() {
       configurationBloc.dispatch(InitConfiguration());
     });
 
-    test("Show package info error page", () {
+    test("Fail on package info error", () {
       when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
       when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future.error(Exception("Package info failed")));
       when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));
@@ -109,19 +111,27 @@ void main() {
       configurationBloc.dispatch(InitConfiguration());
     });
 
-    test("Show connecitivity error page", () {
+    test("Fail on connectivity error", () {
       when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
       when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
-      when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromFuture(Future.error(Exception("Connectivity failed"))));
-      // OPTIMIZE: dart 2.4.? Stream.error in future release
-      //  https://github.com/dart-lang/sdk/blob/master/CHANGELOG.md#dartasync
+      when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromFutures([
+        Future.value(ConnectivityResult.wifi),
+        Future.error(Exception("Connectivity failed")),
+        Future.value(ConnectivityResult.none),
+      ]));
+      // OPTIMIZE: dart 2.4.? Stream.error in future release https://github.com/dart-lang/sdk/blob/master/CHANGELOG.md#dartasync
 
       expectLater(
-          configurationBloc.state,
-          emitsInOrder(<dynamic>[ // <ConfigurationState>
-            ConfigurationUninitialized(),
-            BuiltErrorMatcher("Connectivity failed"),
-          ])
+        configurationBloc.state,
+        emitsInOrder(<dynamic>[ // <ConfigurationState>
+          ConfigurationUninitialized(),
+          ConfigurationLoaded((b) => b
+            ..remoteConfiguration = remoteConfig.toBuilder()
+            ..packageInfo = packageInfo
+            ..connectivity = ConnectivityResult.wifi
+          ),
+          BuiltErrorMatcher("Connectivity failed"),
+        ])
       );
 
       configurationBloc.dispatch(InitConfiguration());

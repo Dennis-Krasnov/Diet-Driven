@@ -12,7 +12,7 @@ import 'package:diet_driven/widgets/message/message.dart';
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    LoggingBloc().verbose("App start");
+    LoggingBloc().verbose("App started");
 
     // Configuration builder
     return BlocBuilder<ConfigurationEvent, ConfigurationState>(

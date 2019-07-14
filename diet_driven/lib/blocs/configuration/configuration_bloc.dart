@@ -33,6 +33,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   Stream<ConfigurationState> mapEventToState(ConfigurationEvent event) async* {
     if (event is InitConfiguration) {
       assert(currentState is ConfigurationUninitialized);
+
       // Maintain single instance of stream subscriptions
       _configurationEventSubscription ??= Observable<ConfigurationEvent>(CombineLatestStream.combine3(
         Observable<RemoteConfiguration>.fromFuture(configurationRepository.fetchRemoteConfig())
@@ -40,7 +41,6 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
           .onErrorReturn(RemoteConfiguration()),
         Observable<PackageInfo>.fromFuture(configurationRepository.fetchPackageInfo()),
         Observable<ConnectivityResult>(configurationRepository.connectivity$()),
-        // Success event
         (RemoteConfiguration remoteConfiguration, PackageInfo packageInfo, ConnectivityResult connectivity) => RemoteConfigurationArrived((b) => b
           ..remoteConfiguration = remoteConfiguration.toBuilder()
           ..packageInfo = packageInfo
@@ -48,14 +48,8 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         ),
       ))
       .distinct()
-      // Failure event
-      .transform(StreamTransformer<ConfigurationEvent, ConfigurationEvent>.fromHandlers(
-        handleError: (Object error, StackTrace stacktrace, EventSink<ConfigurationEvent> sink) =>
-          sink.add(ConfigurationError((b) => b
-            ..error = error
-            ..stacktrace = stacktrace
-          ))
-      ))
+      // Unrecoverable failure
+      .onErrorReturnWith((dynamic error) => ConfigurationError((b) => b..error = error))
       .listen(dispatch);
     }
 
@@ -70,13 +64,10 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
     }
 
     if (event is ConfigurationError) {
-      // Show first of consecutive errors
-      if (currentState is! ConfigurationFailed) {
-        yield ConfigurationFailed((b) => b
-          ..error = event.error
-          ..stacktrace = event.stacktrace
-        );
-      }
+      yield ConfigurationFailed((b) => b
+        ..error = event.error
+        ..stacktrace = event.stacktrace
+      );
 
       LoggingBloc().unexpectedError("Configuration failed", event.error, event.stacktrace);
     }

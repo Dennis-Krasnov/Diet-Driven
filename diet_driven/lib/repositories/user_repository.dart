@@ -11,7 +11,7 @@ class UserRepository {
   /// Streams [FirebaseUser] authentication status using `firebase_auth` library.
   ///
   /// Returns [null] if unauthenticated.
-  Stream<FirebaseUser> get authStateChanged$ => FirebaseAuth.instance.onAuthStateChanged;
+  Stream<FirebaseUser> authStateChanged$() => FirebaseAuth.instance.onAuthStateChanged;
 
   /// Signs in anonymously using `firebase_auth` library.
   ///
@@ -48,7 +48,7 @@ class UserRepository {
   /// Streams [userId]'s [UserDocument].
   ///
   /// Throws [PlatformException] if [userId] is empty.
-  /// Returns [null] if Firestore document doesn't exist.
+  /// Returns empty stream if Firestore document doesn't exist.
   /// Throws [DeserializationError] if Firestore data is corrupt.
   Stream<UserDocument> userDocument$(String userId) {
     assert(userId != null && userId.isNotEmpty);
