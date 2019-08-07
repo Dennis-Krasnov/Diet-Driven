@@ -6,82 +6,102 @@ part of 'navigation_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-abstract class NavigationEventBuilder {
-  void replace(NavigationEvent other);
-  void update(void Function(NavigationEventBuilder) updates);
-  bool get onlyIfUninitialized;
-  set onlyIfUninitialized(bool onlyIfUninitialized);
+class _$InitNavigation extends InitNavigation {
+  factory _$InitNavigation([void Function(InitNavigationBuilder) updates]) =>
+      (new InitNavigationBuilder()..update(updates)).build();
+
+  _$InitNavigation._() : super._();
+
+  @override
+  InitNavigation rebuild(void Function(InitNavigationBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  InitNavigationBuilder toBuilder() =>
+      new InitNavigationBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is InitNavigation;
+  }
+
+  @override
+  int get hashCode {
+    return 596236327;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('InitNavigation').toString();
+  }
+}
+
+class InitNavigationBuilder
+    implements Builder<InitNavigation, InitNavigationBuilder> {
+  _$InitNavigation _$v;
+
+  InitNavigationBuilder();
+
+  @override
+  void replace(InitNavigation other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$InitNavigation;
+  }
+
+  @override
+  void update(void Function(InitNavigationBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$InitNavigation build() {
+    final _$result = _$v ?? new _$InitNavigation._();
+    replace(_$result);
+    return _$result;
+  }
 }
 
 class _$ClearDeepLink extends ClearDeepLink {
-  @override
-  final bool onlyIfUninitialized;
-
   factory _$ClearDeepLink([void Function(ClearDeepLinkBuilder) updates]) =>
-      (new ClearDeepLinkBuilder()..update(updates)).build() as _$ClearDeepLink;
+      (new ClearDeepLinkBuilder()..update(updates)).build();
 
-  _$ClearDeepLink._({this.onlyIfUninitialized}) : super._() {
-    if (onlyIfUninitialized == null) {
-      throw new BuiltValueNullFieldError(
-          'ClearDeepLink', 'onlyIfUninitialized');
-    }
-  }
+  _$ClearDeepLink._() : super._();
 
   @override
   ClearDeepLink rebuild(void Function(ClearDeepLinkBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$ClearDeepLinkBuilder toBuilder() =>
-      new _$ClearDeepLinkBuilder()..replace(this);
+  ClearDeepLinkBuilder toBuilder() => new ClearDeepLinkBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ClearDeepLink &&
-        onlyIfUninitialized == other.onlyIfUninitialized;
+    return other is ClearDeepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, onlyIfUninitialized.hashCode));
+    return 860407335;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('ClearDeepLink')
-          ..add('onlyIfUninitialized', onlyIfUninitialized))
-        .toString();
+    return newBuiltValueToStringHelper('ClearDeepLink').toString();
   }
 }
 
-class _$ClearDeepLinkBuilder extends ClearDeepLinkBuilder {
+class ClearDeepLinkBuilder
+    implements Builder<ClearDeepLink, ClearDeepLinkBuilder> {
   _$ClearDeepLink _$v;
 
-  @override
-  bool get onlyIfUninitialized {
-    _$this;
-    return super.onlyIfUninitialized;
-  }
+  ClearDeepLinkBuilder();
 
   @override
-  set onlyIfUninitialized(bool onlyIfUninitialized) {
-    _$this;
-    super.onlyIfUninitialized = onlyIfUninitialized;
-  }
-
-  _$ClearDeepLinkBuilder() : super._();
-
-  ClearDeepLinkBuilder get _$this {
-    if (_$v != null) {
-      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant ClearDeepLink other) {
+  void replace(ClearDeepLink other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -95,8 +115,7 @@ class _$ClearDeepLinkBuilder extends ClearDeepLinkBuilder {
 
   @override
   _$ClearDeepLink build() {
-    final _$result =
-        _$v ?? new _$ClearDeepLink._(onlyIfUninitialized: onlyIfUninitialized);
+    final _$result = _$v ?? new _$ClearDeepLink._();
     replace(_$result);
     return _$result;
   }
@@ -105,90 +124,59 @@ class _$ClearDeepLinkBuilder extends ClearDeepLinkBuilder {
 class _$NavigateToDiary extends NavigateToDiary {
   @override
   final DiaryDeepLink deepLink;
-  @override
-  final bool onlyIfUninitialized;
 
   factory _$NavigateToDiary([void Function(NavigateToDiaryBuilder) updates]) =>
-      (new NavigateToDiaryBuilder()..update(updates)).build()
-          as _$NavigateToDiary;
+      (new NavigateToDiaryBuilder()..update(updates)).build();
 
-  _$NavigateToDiary._({this.deepLink, this.onlyIfUninitialized}) : super._() {
-    if (onlyIfUninitialized == null) {
-      throw new BuiltValueNullFieldError(
-          'NavigateToDiary', 'onlyIfUninitialized');
-    }
-  }
+  _$NavigateToDiary._({this.deepLink}) : super._();
 
   @override
   NavigateToDiary rebuild(void Function(NavigateToDiaryBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigateToDiaryBuilder toBuilder() =>
-      new _$NavigateToDiaryBuilder()..replace(this);
+  NavigateToDiaryBuilder toBuilder() =>
+      new NavigateToDiaryBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToDiary &&
-        deepLink == other.deepLink &&
-        onlyIfUninitialized == other.onlyIfUninitialized;
+    return other is NavigateToDiary && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, deepLink.hashCode), onlyIfUninitialized.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('NavigateToDiary')
-          ..add('deepLink', deepLink)
-          ..add('onlyIfUninitialized', onlyIfUninitialized))
+          ..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class _$NavigateToDiaryBuilder extends NavigateToDiaryBuilder {
+class NavigateToDiaryBuilder
+    implements Builder<NavigateToDiary, NavigateToDiaryBuilder> {
   _$NavigateToDiary _$v;
 
-  @override
-  DiaryDeepLink get deepLink {
-    _$this;
-    return super.deepLink;
-  }
+  DiaryDeepLink _deepLink;
+  DiaryDeepLink get deepLink => _$this._deepLink;
+  set deepLink(DiaryDeepLink deepLink) => _$this._deepLink = deepLink;
 
-  @override
-  set deepLink(DiaryDeepLink deepLink) {
-    _$this;
-    super.deepLink = deepLink;
-  }
-
-  @override
-  bool get onlyIfUninitialized {
-    _$this;
-    return super.onlyIfUninitialized;
-  }
-
-  @override
-  set onlyIfUninitialized(bool onlyIfUninitialized) {
-    _$this;
-    super.onlyIfUninitialized = onlyIfUninitialized;
-  }
-
-  _$NavigateToDiaryBuilder() : super._();
+  NavigateToDiaryBuilder();
 
   NavigateToDiaryBuilder get _$this {
     if (_$v != null) {
-      super.deepLink = _$v.deepLink;
-      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
+      _deepLink = _$v.deepLink;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant NavigateToDiary other) {
+  void replace(NavigateToDiary other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -202,9 +190,7 @@ class _$NavigateToDiaryBuilder extends NavigateToDiaryBuilder {
 
   @override
   _$NavigateToDiary build() {
-    final _$result = _$v ??
-        new _$NavigateToDiary._(
-            deepLink: deepLink, onlyIfUninitialized: onlyIfUninitialized);
+    final _$result = _$v ?? new _$NavigateToDiary._(deepLink: deepLink);
     replace(_$result);
     return _$result;
   }
@@ -288,75 +274,44 @@ class DateDeepLinkBuilder
 }
 
 class _$NavigateToTrack extends NavigateToTrack {
-  @override
-  final bool onlyIfUninitialized;
-
   factory _$NavigateToTrack([void Function(NavigateToTrackBuilder) updates]) =>
-      (new NavigateToTrackBuilder()..update(updates)).build()
-          as _$NavigateToTrack;
+      (new NavigateToTrackBuilder()..update(updates)).build();
 
-  _$NavigateToTrack._({this.onlyIfUninitialized}) : super._() {
-    if (onlyIfUninitialized == null) {
-      throw new BuiltValueNullFieldError(
-          'NavigateToTrack', 'onlyIfUninitialized');
-    }
-  }
+  _$NavigateToTrack._() : super._();
 
   @override
   NavigateToTrack rebuild(void Function(NavigateToTrackBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigateToTrackBuilder toBuilder() =>
-      new _$NavigateToTrackBuilder()..replace(this);
+  NavigateToTrackBuilder toBuilder() =>
+      new NavigateToTrackBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToTrack &&
-        onlyIfUninitialized == other.onlyIfUninitialized;
+    return other is NavigateToTrack;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, onlyIfUninitialized.hashCode));
+    return 514238572;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToTrack')
-          ..add('onlyIfUninitialized', onlyIfUninitialized))
-        .toString();
+    return newBuiltValueToStringHelper('NavigateToTrack').toString();
   }
 }
 
-class _$NavigateToTrackBuilder extends NavigateToTrackBuilder {
+class NavigateToTrackBuilder
+    implements Builder<NavigateToTrack, NavigateToTrackBuilder> {
   _$NavigateToTrack _$v;
 
-  @override
-  bool get onlyIfUninitialized {
-    _$this;
-    return super.onlyIfUninitialized;
-  }
+  NavigateToTrackBuilder();
 
   @override
-  set onlyIfUninitialized(bool onlyIfUninitialized) {
-    _$this;
-    super.onlyIfUninitialized = onlyIfUninitialized;
-  }
-
-  _$NavigateToTrackBuilder() : super._();
-
-  NavigateToTrackBuilder get _$this {
-    if (_$v != null) {
-      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant NavigateToTrack other) {
+  void replace(NavigateToTrack other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -370,84 +325,52 @@ class _$NavigateToTrackBuilder extends NavigateToTrackBuilder {
 
   @override
   _$NavigateToTrack build() {
-    final _$result = _$v ??
-        new _$NavigateToTrack._(onlyIfUninitialized: onlyIfUninitialized);
+    final _$result = _$v ?? new _$NavigateToTrack._();
     replace(_$result);
     return _$result;
   }
 }
 
 class _$NavigateToReports extends NavigateToReports {
-  @override
-  final bool onlyIfUninitialized;
-
   factory _$NavigateToReports(
           [void Function(NavigateToReportsBuilder) updates]) =>
-      (new NavigateToReportsBuilder()..update(updates)).build()
-          as _$NavigateToReports;
+      (new NavigateToReportsBuilder()..update(updates)).build();
 
-  _$NavigateToReports._({this.onlyIfUninitialized}) : super._() {
-    if (onlyIfUninitialized == null) {
-      throw new BuiltValueNullFieldError(
-          'NavigateToReports', 'onlyIfUninitialized');
-    }
-  }
+  _$NavigateToReports._() : super._();
 
   @override
   NavigateToReports rebuild(void Function(NavigateToReportsBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigateToReportsBuilder toBuilder() =>
-      new _$NavigateToReportsBuilder()..replace(this);
+  NavigateToReportsBuilder toBuilder() =>
+      new NavigateToReportsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToReports &&
-        onlyIfUninitialized == other.onlyIfUninitialized;
+    return other is NavigateToReports;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, onlyIfUninitialized.hashCode));
+    return 785110345;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToReports')
-          ..add('onlyIfUninitialized', onlyIfUninitialized))
-        .toString();
+    return newBuiltValueToStringHelper('NavigateToReports').toString();
   }
 }
 
-class _$NavigateToReportsBuilder extends NavigateToReportsBuilder {
+class NavigateToReportsBuilder
+    implements Builder<NavigateToReports, NavigateToReportsBuilder> {
   _$NavigateToReports _$v;
 
-  @override
-  bool get onlyIfUninitialized {
-    _$this;
-    return super.onlyIfUninitialized;
-  }
+  NavigateToReportsBuilder();
 
   @override
-  set onlyIfUninitialized(bool onlyIfUninitialized) {
-    _$this;
-    super.onlyIfUninitialized = onlyIfUninitialized;
-  }
-
-  _$NavigateToReportsBuilder() : super._();
-
-  NavigateToReportsBuilder get _$this {
-    if (_$v != null) {
-      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant NavigateToReports other) {
+  void replace(NavigateToReports other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -461,8 +384,7 @@ class _$NavigateToReportsBuilder extends NavigateToReportsBuilder {
 
   @override
   _$NavigateToReports build() {
-    final _$result = _$v ??
-        new _$NavigateToReports._(onlyIfUninitialized: onlyIfUninitialized);
+    final _$result = _$v ?? new _$NavigateToReports._();
     replace(_$result);
     return _$result;
   }
@@ -471,21 +393,12 @@ class _$NavigateToReportsBuilder extends NavigateToReportsBuilder {
 class _$NavigateToSettings extends NavigateToSettings {
   @override
   final SettingsDeepLink deepLink;
-  @override
-  final bool onlyIfUninitialized;
 
   factory _$NavigateToSettings(
           [void Function(NavigateToSettingsBuilder) updates]) =>
-      (new NavigateToSettingsBuilder()..update(updates)).build()
-          as _$NavigateToSettings;
+      (new NavigateToSettingsBuilder()..update(updates)).build();
 
-  _$NavigateToSettings._({this.deepLink, this.onlyIfUninitialized})
-      : super._() {
-    if (onlyIfUninitialized == null) {
-      throw new BuiltValueNullFieldError(
-          'NavigateToSettings', 'onlyIfUninitialized');
-    }
-  }
+  _$NavigateToSettings._({this.deepLink}) : super._();
 
   @override
   NavigateToSettings rebuild(
@@ -493,71 +406,48 @@ class _$NavigateToSettings extends NavigateToSettings {
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigateToSettingsBuilder toBuilder() =>
-      new _$NavigateToSettingsBuilder()..replace(this);
+  NavigateToSettingsBuilder toBuilder() =>
+      new NavigateToSettingsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToSettings &&
-        deepLink == other.deepLink &&
-        onlyIfUninitialized == other.onlyIfUninitialized;
+    return other is NavigateToSettings && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, deepLink.hashCode), onlyIfUninitialized.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('NavigateToSettings')
-          ..add('deepLink', deepLink)
-          ..add('onlyIfUninitialized', onlyIfUninitialized))
+          ..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class _$NavigateToSettingsBuilder extends NavigateToSettingsBuilder {
+class NavigateToSettingsBuilder
+    implements Builder<NavigateToSettings, NavigateToSettingsBuilder> {
   _$NavigateToSettings _$v;
 
-  @override
-  SettingsDeepLink get deepLink {
-    _$this;
-    return super.deepLink;
-  }
+  SettingsDeepLink _deepLink;
+  SettingsDeepLink get deepLink => _$this._deepLink;
+  set deepLink(SettingsDeepLink deepLink) => _$this._deepLink = deepLink;
 
-  @override
-  set deepLink(SettingsDeepLink deepLink) {
-    _$this;
-    super.deepLink = deepLink;
-  }
-
-  @override
-  bool get onlyIfUninitialized {
-    _$this;
-    return super.onlyIfUninitialized;
-  }
-
-  @override
-  set onlyIfUninitialized(bool onlyIfUninitialized) {
-    _$this;
-    super.onlyIfUninitialized = onlyIfUninitialized;
-  }
-
-  _$NavigateToSettingsBuilder() : super._();
+  NavigateToSettingsBuilder();
 
   NavigateToSettingsBuilder get _$this {
     if (_$v != null) {
-      super.deepLink = _$v.deepLink;
-      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
+      _deepLink = _$v.deepLink;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant NavigateToSettings other) {
+  void replace(NavigateToSettings other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -571,9 +461,7 @@ class _$NavigateToSettingsBuilder extends NavigateToSettingsBuilder {
 
   @override
   _$NavigateToSettings build() {
-    final _$result = _$v ??
-        new _$NavigateToSettings._(
-            deepLink: deepLink, onlyIfUninitialized: onlyIfUninitialized);
+    final _$result = _$v ?? new _$NavigateToSettings._(deepLink: deepLink);
     replace(_$result);
     return _$result;
   }
@@ -755,76 +643,45 @@ class DiarySettingsDeepLinkBuilder
 }
 
 class _$NavigateToLogging extends NavigateToLogging {
-  @override
-  final bool onlyIfUninitialized;
-
   factory _$NavigateToLogging(
           [void Function(NavigateToLoggingBuilder) updates]) =>
-      (new NavigateToLoggingBuilder()..update(updates)).build()
-          as _$NavigateToLogging;
+      (new NavigateToLoggingBuilder()..update(updates)).build();
 
-  _$NavigateToLogging._({this.onlyIfUninitialized}) : super._() {
-    if (onlyIfUninitialized == null) {
-      throw new BuiltValueNullFieldError(
-          'NavigateToLogging', 'onlyIfUninitialized');
-    }
-  }
+  _$NavigateToLogging._() : super._();
 
   @override
   NavigateToLogging rebuild(void Function(NavigateToLoggingBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$NavigateToLoggingBuilder toBuilder() =>
-      new _$NavigateToLoggingBuilder()..replace(this);
+  NavigateToLoggingBuilder toBuilder() =>
+      new NavigateToLoggingBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToLogging &&
-        onlyIfUninitialized == other.onlyIfUninitialized;
+    return other is NavigateToLogging;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, onlyIfUninitialized.hashCode));
+    return 441653569;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToLogging')
-          ..add('onlyIfUninitialized', onlyIfUninitialized))
-        .toString();
+    return newBuiltValueToStringHelper('NavigateToLogging').toString();
   }
 }
 
-class _$NavigateToLoggingBuilder extends NavigateToLoggingBuilder {
+class NavigateToLoggingBuilder
+    implements Builder<NavigateToLogging, NavigateToLoggingBuilder> {
   _$NavigateToLogging _$v;
 
-  @override
-  bool get onlyIfUninitialized {
-    _$this;
-    return super.onlyIfUninitialized;
-  }
+  NavigateToLoggingBuilder();
 
   @override
-  set onlyIfUninitialized(bool onlyIfUninitialized) {
-    _$this;
-    super.onlyIfUninitialized = onlyIfUninitialized;
-  }
-
-  _$NavigateToLoggingBuilder() : super._();
-
-  NavigateToLoggingBuilder get _$this {
-    if (_$v != null) {
-      super.onlyIfUninitialized = _$v.onlyIfUninitialized;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant NavigateToLogging other) {
+  void replace(NavigateToLogging other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -838,8 +695,7 @@ class _$NavigateToLoggingBuilder extends NavigateToLoggingBuilder {
 
   @override
   _$NavigateToLogging build() {
-    final _$result = _$v ??
-        new _$NavigateToLogging._(onlyIfUninitialized: onlyIfUninitialized);
+    final _$result = _$v ?? new _$NavigateToLogging._();
     replace(_$result);
     return _$result;
   }

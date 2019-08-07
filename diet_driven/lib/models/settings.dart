@@ -41,7 +41,7 @@ abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilde
   @nullable
   bool get darkMode;
 
-  /// Hexadecimal string
+  /// Hexadecimal string starting with '0x'.
   @nullable
   String get primaryColour;
 

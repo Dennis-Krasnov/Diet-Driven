@@ -29,6 +29,8 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
   @override
   Stream<FoodDiaryDayState> mapEventToState(FoodDiaryDayEvent event) async* {
     if (event is InitFoodDiaryDay) {
+      assert(currentState is FoodDiaryDayUninitialized);
+
       _foodDiaryDayEventSubscription = Observable<FoodDiaryState>(foodDiaryBloc.state)
         .ofType(const TypeToken<FoodDiaryLoaded>()) // TODO: similarly implement FilteredLoggingBloc
         .where((loadedDiary) => loadedDiary.diaryDays.containsKey(date))

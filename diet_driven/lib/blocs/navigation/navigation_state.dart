@@ -5,6 +5,7 @@ import 'package:diet_driven/models/models.dart';
 
 part 'navigation_state.g.dart';
 
+
 @BuiltValue(instantiable: false)
 abstract class NavigationState {
   /// Associated page enum.
@@ -20,7 +21,7 @@ abstract class NavigationState {
 }
 
 
-/// White screen with skeleton menu and app bar
+/// White screen with skeleton menu and app bar.
 abstract class NavigationUninitialized implements NavigationState, Built<NavigationUninitialized, NavigationUninitializedBuilder> {
   factory NavigationUninitialized([void Function(NavigationUninitializedBuilder b)]) = _$NavigationUninitialized;
   NavigationUninitialized._();
@@ -35,7 +36,7 @@ abstract class NavigationUninitialized implements NavigationState, Built<Navigat
 ///   ##     ##  ##  ######### ##   ##      ##
 ///   ##     ##  ##  ##     ## ##    ##     ##
 ///   ########  #### ##     ## ##     ##    ##
-///
+
 abstract class DiaryTab implements NavigationState, Built<DiaryTab, DiaryTabBuilder> {
   factory DiaryTab([void Function(DiaryTabBuilder) updates]) = _$DiaryTab;
   DiaryTab._();

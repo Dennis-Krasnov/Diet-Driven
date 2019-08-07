@@ -9,13 +9,11 @@ import 'package:diet_driven/widgets/message/message.dart';
 import 'package:diet_driven/widgets/onboarding/login.dart';
 
 /// Reactively builds app based on [userDataState] and [configurationState].
-/// TODO: rename to ??? switcher
-// OPTIMIZE: AnimatedCrossFade from splash to home page
-class HomePage extends StatelessWidget {
+class ConfigurationSettingsDecision extends StatelessWidget {
   final ConfigurationState configurationState;
   final UserDataState userDataState;
 
-  const HomePage({Key key, @required this.configurationState, @required this.userDataState})
+  const ConfigurationSettingsDecision({Key key, @required this.configurationState, @required this.userDataState})
     : assert(configurationState != null), assert(userDataState != null), super(key: key);
 
   @override
@@ -58,7 +56,7 @@ class HomePage extends StatelessWidget {
             builder: (BuildContext context) => NavigationBloc(
               analyticsRepository: RepositoryProvider.of<AnalyticsRepository>(context),
               userDataBloc: BlocProvider.of<UserDataBloc>(context)
-            ), // TODO: InitNavigation to go to default page
+            )..dispatch(InitNavigation()),
           ),
           BlocProvider<FoodDiaryBloc>(
             builder: (BuildContext context) => FoodDiaryBloc(

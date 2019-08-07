@@ -1,22 +1,19 @@
-import 'package:built_collection/built_collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/widgets/core/core.dart';
-import 'package:diet_driven/widgets/food_diary/food_diary.dart';
-import 'package:diet_driven/widgets/food_logging/food_logging.dart';
 import 'package:diet_driven/widgets/message/message.dart';
 
-///
+/// Globally rebuilds app based on configuration and theme settings.
+/// Configures global theme and navigation routes.
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LoggingBloc().verbose("App started");
 
     return BlocBuilder<ConfigurationBloc, ConfigurationState>(
-      condition: (previous, current) => true,
       builder: (BuildContext context, ConfigurationState configurationState) {
         LoggingBloc().verbose("Configuration rebuild");
 
@@ -33,11 +30,9 @@ class App extends StatelessWidget {
               LoggingBloc().verbose("Theme rebuild");
 
               return MaterialApp(
-                // Overrides `/` navigator route
-                home: HomePage(configurationState: configurationState, userDataState: userDataState),
-                // Use default theme while user data is being loaded
+                home: ConfigurationSettingsDecision(configurationState: configurationState, userDataState: userDataState),
+                // Use default theme while user data is loading
                 theme: generateThemeSettings(userDataState is UserDataLoaded ? userDataState.settings.themeSettings : null),
-                onGenerateRoute: (settings) => generateRoute(context, settings),
                 onUnknownRoute: (RouteSettings setting) => MaterialPageRoute<dynamic>(builder: (BuildContext context) => ErrorPage(error: "${setting.name} route not found")),
               );
             }
@@ -46,133 +41,21 @@ class App extends StatelessWidget {
     );
   }
 
-  // TODO: global navigator bloc!
-  /// Global navigator routes.
-  Route generateRoute(BuildContext context, RouteSettings settings) {
-    final arguments = settings.arguments;
-
-    switch (settings.name) { // FIXME: use global constants
-      case "/manual_food_record_edit":
-        assert(arguments is FoodRecord);
-
-        // Returns edited food record
-        return MaterialPageRoute<FoodRecord>(
-          builder: (context) => ManualFoodRecordEdit(
-            foodRecord: arguments,
-            deletable: true, // TODO: diary should have two paths - live and manual, both deletable
-          ),
-          maintainState: true,
-        );
-        break;
-      case "/food_logging":
-      // TODO: if arguments != null => assert they're a valid meal
-        assert(arguments is FoodDiaryLoaded);
-
-        // Returns list of food records to add
-        return MaterialPageRoute<BuiltList<FoodRecord>>(
-          builder: (context) => FoodLogging(
-            foodDiaryLoaded: arguments,
-          ),
-          maintainState: true,
-        );
-        break;
-      case "/logging_food_record_edit": // TODO: reuse similar configuration for custom food creation, but with empty food record
-        assert(arguments is FoodRecord);
-
-        // Returns edited food record
-        return MaterialPageRoute<FoodRecord>(
-          builder: (context) => ManualFoodRecordEdit(
-            foodRecord: arguments,
-            deletable: false,
-          ),
-          maintainState: true,
-        );
-        break;
-      case "/food_search":
-        assert(arguments is FoodLoggingState);
-
-        // Returns food record search result
-        return MaterialPageRoute<FoodRecord>(
-          builder: (context) => FoodRecordSearch(
-            foodLoggingState: arguments,
-          ),
-          maintainState: true,
-        );
-        break;
-    }
-    return null;
-  }
 
   /// Creates Flutter theme data from theme settings.
   ThemeData generateThemeSettings(ThemeSettings themeSettings) {
-//    return ThemeData.raw(brightness: null,
-//        primaryColor: null,
-//        primaryColorBrightness: null,
-//        primaryColorLight: null,
-//        primaryColorDark: null,
-//        canvasColor: null,
-//        accentColor: null,
-//        accentColorBrightness: null,
-//        scaffoldBackgroundColor: null,
-//        bottomAppBarColor: null,
-//        cardColor: null,
-//        dividerColor: null,
-//        highlightColor: null,
-//        splashColor: null,
-//        splashFactory: null,
-//        selectedRowColor: null,
-//        unselectedWidgetColor: null,
-//        disabledColor: null,
-//        buttonTheme: null,
-//        buttonColor: null,
-//        secondaryHeaderColor: null,
-//        textSelectionColor: null,
-//        cursorColor: null,
-//        textSelectionHandleColor: null,
-//        backgroundColor: null,
-//        dialogBackgroundColor: null,
-//        indicatorColor: null,
-//        hintColor: null,
-//        errorColor: null,
-//        toggleableActiveColor: null,
-//        textTheme: null,
-//        primaryTextTheme: null,
-//        accentTextTheme: null,
-//        inputDecorationTheme: null,
-//        iconTheme: null,
-//        primaryIconTheme: null,
-//        accentIconTheme: null,
-//        sliderTheme: null,
-//        tabBarTheme: null,
-//        cardTheme: null,
-//        chipTheme: null,
-//        platform: null,
-//        materialTapTargetSize: null,
-//        pageTransitionsTheme: null,
-//        appBarTheme: null,
-//        bottomAppBarTheme: null,
-//        colorScheme: null,
-//        dialogTheme: null,
-//        floatingActionButtonTheme: null,
-//        typography: null,
-//        cupertinoOverrideTheme: null
-//    );
-//    if (themeSettings.darkMode) {
-//      return ThemeData.dark().copyWith(
-//
-//      );
-//    }
-//
-//    return ThemeData.light().copyWith(
-//
-//    );
 
+    // Primary colour
+    final Color defaultPrimaryColour = Colors.deepOrange;
     Color primaryColour;
+
     try {
-      primaryColour = Color(num.tryParse(themeSettings?.primaryColour) ?? Colors.deepOrange.value);
+      primaryColour = Color(num.tryParse(themeSettings?.primaryColour) ?? defaultPrimaryColour.value);
     } catch (e) {
-      primaryColour = Colors.deepOrange;
+      primaryColour = defaultPrimaryColour;
     }
+
+    // TODO: polish
 
     return ThemeData(
 //      brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
@@ -276,30 +159,4 @@ class App extends StatelessWidget {
 //    )
     );
   }
-
-//    return ThemeData(
-//      // Dark mode
-//      brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
-//
-//      // Typography
-//      fontFamily: 'SourceSansPro',
-//      // Define the default TextTheme. Use this to specify the default
-//      // text styling for headlines, titles, bodies of text, and more.
-////      textTheme: TextTheme(
-////        headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-////        title: TextStyle(fontSize: 36.0, fontStyle: FontStyle.italic),
-////        body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
-////      ),
-////
-////      primarySwatch: Colors.red,
-//////      primaryColor: Colors.lightGreen[800],
-//////      primaryColorBrightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
-//////      primaryColorLight: Colors.lightGreen[800],
-//////      primaryColorDark: Colors.lightGreen[400],
-//////      secondaryHeaderColor: Colors.lightGreenAccent
-//////      accentColor: Colors.purple[600],
-////    );
-//    // TODO: custom font
-////    return themeSettings.darkMode ? ThemeData.dark() : ThemeData.light();
-//  }
 }

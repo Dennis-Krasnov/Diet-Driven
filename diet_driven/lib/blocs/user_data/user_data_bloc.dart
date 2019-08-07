@@ -42,7 +42,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         .mapTo<UserDataEvent>(OnboardUser());
 
       // TODO: retry x times, with delay between each attempt
-      final dataArrival$ = auth$
+      final dataArrival$ = auth$.delay(Duration(seconds: 5)) // FIXME
         .where((user) => user != null)
         .switchMap<UserDataEvent>((user) => CombineLatestStream.combine4(
           userRepository.userDocument$(user.uid),
