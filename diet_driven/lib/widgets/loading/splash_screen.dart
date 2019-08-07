@@ -6,7 +6,10 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/loading/loading.dart';
 
 class SplashPage extends StatelessWidget {
-  final int bottomNavPages = 4;
+  final bool pulsating;
+  final int bottomNavPages;
+
+  const SplashPage({Key key, this.pulsating = false, this.bottomNavPages = 4}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +17,6 @@ class SplashPage extends StatelessWidget {
     final ConfigurationBloc _configurationBloc = BlocProvider.of<ConfigurationBloc>(context);
 
     return StreamBuilder<int>(
-//      stream: RepeatStream((iteration) => Observable<int>.periodic(Duration(milliseconds: 500), (i) => i).take(bottomNavPages), 9999),
       stream: Observable<int>.periodic(Duration(milliseconds: 500), (i) => i),
         builder: (context, snapshot) {
         return Scaffold(
@@ -25,7 +27,7 @@ class SplashPage extends StatelessWidget {
               IconButton(icon: ShimmerCircle(radius: 28), onPressed: null),
             ],
           ),
-          body: snapshot.hasData ? SafeArea( // TODO:
+          body: snapshot.hasData ? SafeArea( // TODO: in other scaffolds as well
             child: Center(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,7 +58,7 @@ class SplashPage extends StatelessWidget {
                   )
               ],
               // currentIndex makes respective title slightly bigger for shifting animation
-              currentIndex: snapshot.hasData ? snapshot.data % bottomNavPages : 0,
+              currentIndex: pulsating && snapshot.hasData ? snapshot.data % bottomNavPages : 0,
               elevation: 4,
             ),
           ),

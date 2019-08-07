@@ -1,28 +1,21 @@
-import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/widgets/food_diary/food_diary.dart';
-import 'package:diet_driven/widgets/message/message.dart';
-import 'package:diet_driven/widgets/settings/settings.dart';
+import 'package:diet_driven/widgets/loading/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/widgets/food_diary/food_diary.dart';
+import 'package:diet_driven/widgets/message/message.dart';
+import 'package:diet_driven/widgets/settings/settings.dart';
 
-// TODO: ensure scroll is also persisted
-//  https://api.flutter.dev/flutter/widgets/PageStorageKey-class.html
-//              https://medium.com/@boldijar.paul/flutter-keeping-list-view-index-while-changing-page-view-c260352f35f8
-//              https://www.youtube.com/watch?v=ht76lDzPgUQ
-
-/// ...
-/// TODO: rename to home_screen
-/// Must use stateful widget to persist navigator keys though builds.
-class TabbedNavigation extends StatefulWidget {
+/// Manages bottom navigation and displays respective page.
+class HomeScreen extends StatefulWidget {
   @override
-  _TabbedNavigationState createState() => _TabbedNavigationState();
+  _HomeScreenState createState() => _HomeScreenState();
 }
 
-class _TabbedNavigationState extends State<TabbedNavigation> {
-  /// Global navigator keys persist navigation state.
+class _HomeScreenState extends State<HomeScreen> {
+  /// Must be stateful widget to persist navigation state throughout builds.
   Map<Page, GlobalKey<NavigatorState>> navigatorKeys = Map<Page, GlobalKey<NavigatorState>>.fromIterable(
     Page.values,
     key: (dynamic page) => page,
@@ -31,39 +24,28 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
 
   @override
   Widget build(BuildContext context) {
-    // User data builder
     return BlocBuilder<UserDataBloc, UserDataState>(
-      condition: (previous, current) { // TODO: do >> everywhere
-        // User data not loaded
-        if (previous is! UserDataLoaded || current is! UserDataLoaded) { // OPTIMIZE: see main
-          print("UNCONDITIONAL TABBED NAV USER DATA UPDATE");
+      condition: (previous, current) {
+        // Unconditional rebuild
+        if (previous is! UserDataLoaded || current is! UserDataLoaded)
           return true;
-        }
-        // Navigation settings changed
+
+        // Rebuild only if theme settings changed
         return (previous as UserDataLoaded).settings.navigationSettings != (current as UserDataLoaded).settings.navigationSettings;
       },
-      // Navigation builder
       builder: (BuildContext context, UserDataState userDataState) {
-        // ...
-//        final bottomNavPages = (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages.rebuild((b) => b.add(Page.logging));
-        // FIXME: alternatively add this page directly though navigation settings!
-        final bottomNavPages = <Page>[
-          ...(userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages,
-          if (true) // FIXME: only add logging if enabled in navigation settings
-            Page.logging,
-        ];
-        print("BOTTOM NAV PAGES $bottomNavPages");
+        final bottomNavPages = (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages;
 
         return BlocBuilder<NavigationBloc, NavigationState>(
-          condition: (previous, current) => true,
           builder: (BuildContext context, NavigationState navigationState) {
-            // ...
-            final int tabIndex = bottomNavPages.indexWhere((page) => page == navigationState.page);
-
             // White screen with skeleton menu and app bar
             if (navigationState is NavigationUninitialized) {
-              return Scaffold(); // OPTIMIZE
+              return SplashPage();
             }
+
+            // Index of currently selected page
+            assert(bottomNavPages.contains(navigationState.page));
+            final int tabIndex = bottomNavPages.indexWhere((page) => page == navigationState.page);
 
             return Scaffold(
               // Need to specify custom back button behaviour

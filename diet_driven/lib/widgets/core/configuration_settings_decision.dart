@@ -66,7 +66,7 @@ class ConfigurationSettingsDecision extends StatelessWidget {
           ),
           // TODO: tracking bloc
         ],
-        child: TabbedNavigation(),
+        child: HomeScreen(),
       );
     }
 
