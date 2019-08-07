@@ -4,7 +4,7 @@ class FirestorePaths {
   static String configuration() => "config";
 
   /// Global default settings
-  static String defaultSettings() => "$configuration()/default_settings";
+  static String defaultSettings() => "${configuration()}/default_settings";
 
 
 

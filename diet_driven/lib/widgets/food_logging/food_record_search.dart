@@ -59,7 +59,7 @@ class _FoodRecordSearchState extends State<FoodRecordSearch> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FoodSearchEvent, FoodSearchState>(
+    return BlocBuilder<FoodSearchBloc, FoodSearchState>(
       bloc: _foodSearchBloc,
       builder: (BuildContext context, FoodSearchState state) {
         Widget body;

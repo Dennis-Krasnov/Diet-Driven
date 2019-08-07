@@ -42,6 +42,9 @@ abstract class UserDataLoaded implements UserDataState, Built<UserDataLoaded, Us
   /// Synchronized application settings.
   Settings get settings;
 
+  /// Unmerged user setting overrides.
+  Settings get userSettings;
+
   /// Paid subscription status.
   SubscriptionType get subscription;
 

@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
+import 'package:firebase_auth/firebase_auth.dart' show AuthResult;
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/blocs/login/login.dart';
@@ -42,7 +42,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       try {
         // ignore: unused_local_variable
-        final FirebaseUser user = await authenticationRepository.signInWithEmail(email: event.username, password: event.password);
+        final AuthResult result = await authenticationRepository.signInWithEmail(email: event.username, password: event.password);
 //        authenticationBloc.dispatch(LoggedIn((b) => b..user = user)); // OPTIMIZE: not necessary with auth subscription
         yield LoginInitial();
       } catch (error) {

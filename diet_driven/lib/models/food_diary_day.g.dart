@@ -21,10 +21,10 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
     final result = <Object>[
       'date',
       serializers.serialize(object.date, specifiedType: const FullType(int)),
-      'foodRecords',
-      serializers.serialize(object.foodRecords,
-          specifiedType:
-              const FullType(BuiltList, const [const FullType(FoodRecord)])),
+      'mealRecords',
+      serializers.serialize(object.mealRecords,
+          specifiedType: const FullType(BuiltListMultimap,
+              const [const FullType(int), const FullType(FoodRecord)])),
     ];
 
     return result;
@@ -45,11 +45,12 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
           result.date = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
           break;
-        case 'foodRecords':
-          result.foodRecords.replace(serializers.deserialize(value,
-                  specifiedType: const FullType(
-                      BuiltList, const [const FullType(FoodRecord)]))
-              as BuiltList<dynamic>);
+        case 'mealRecords':
+          result.mealRecords.replace(serializers.deserialize(value,
+              specifiedType: const FullType(BuiltListMultimap, const [
+                const FullType(int),
+                const FullType(FoodRecord)
+              ])) as BuiltListMultimap<dynamic, dynamic>);
           break;
       }
     }
@@ -62,17 +63,17 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   @override
   final int date;
   @override
-  final BuiltList<FoodRecord> foodRecords;
+  final BuiltListMultimap<int, FoodRecord> mealRecords;
 
   factory _$FoodDiaryDay([void Function(FoodDiaryDayBuilder) updates]) =>
       (new FoodDiaryDayBuilder()..update(updates)).build();
 
-  _$FoodDiaryDay._({this.date, this.foodRecords}) : super._() {
+  _$FoodDiaryDay._({this.date, this.mealRecords}) : super._() {
     if (date == null) {
       throw new BuiltValueNullFieldError('FoodDiaryDay', 'date');
     }
-    if (foodRecords == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryDay', 'foodRecords');
+    if (mealRecords == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryDay', 'mealRecords');
     }
   }
 
@@ -88,19 +89,19 @@ class _$FoodDiaryDay extends FoodDiaryDay {
     if (identical(other, this)) return true;
     return other is FoodDiaryDay &&
         date == other.date &&
-        foodRecords == other.foodRecords;
+        mealRecords == other.mealRecords;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, date.hashCode), foodRecords.hashCode));
+    return $jf($jc($jc(0, date.hashCode), mealRecords.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryDay')
           ..add('date', date)
-          ..add('foodRecords', foodRecords))
+          ..add('mealRecords', mealRecords))
         .toString();
   }
 }
@@ -113,18 +114,18 @@ class FoodDiaryDayBuilder
   int get date => _$this._date;
   set date(int date) => _$this._date = date;
 
-  ListBuilder<FoodRecord> _foodRecords;
-  ListBuilder<FoodRecord> get foodRecords =>
-      _$this._foodRecords ??= new ListBuilder<FoodRecord>();
-  set foodRecords(ListBuilder<FoodRecord> foodRecords) =>
-      _$this._foodRecords = foodRecords;
+  ListMultimapBuilder<int, FoodRecord> _mealRecords;
+  ListMultimapBuilder<int, FoodRecord> get mealRecords =>
+      _$this._mealRecords ??= new ListMultimapBuilder<int, FoodRecord>();
+  set mealRecords(ListMultimapBuilder<int, FoodRecord> mealRecords) =>
+      _$this._mealRecords = mealRecords;
 
   FoodDiaryDayBuilder();
 
   FoodDiaryDayBuilder get _$this {
     if (_$v != null) {
       _date = _$v.date;
-      _foodRecords = _$v.foodRecords?.toBuilder();
+      _mealRecords = _$v.mealRecords?.toBuilder();
       _$v = null;
     }
     return this;
@@ -148,12 +149,12 @@ class FoodDiaryDayBuilder
     _$FoodDiaryDay _$result;
     try {
       _$result = _$v ??
-          new _$FoodDiaryDay._(date: date, foodRecords: foodRecords.build());
+          new _$FoodDiaryDay._(date: date, mealRecords: mealRecords.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'foodRecords';
-        foodRecords.build();
+        _$failedField = 'mealRecords';
+        mealRecords.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'FoodDiaryDay', _$failedField, e.toString());

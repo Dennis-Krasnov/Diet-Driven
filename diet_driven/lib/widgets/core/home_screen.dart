@@ -9,6 +9,8 @@ import 'package:diet_driven/widgets/message/message.dart';
 import 'package:diet_driven/widgets/onboarding/login.dart';
 
 /// Reactively builds app based on [userDataState] and [configurationState].
+/// TODO: rename to ??? switcher
+// OPTIMIZE: AnimatedCrossFade from splash to home page
 class HomePage extends StatelessWidget {
   final ConfigurationState configurationState;
   final UserDataState userDataState;
@@ -49,25 +51,23 @@ class HomePage extends StatelessWidget {
 
     // Start application when user is loaded
     if (userDataState is UserDataLoaded) {
-      // OPTIMIZE: AnimatedCrossFade from splash to home page
+      // Inject user-specific blocs into application
       return MultiBlocProvider(
         providers: [
           BlocProvider<NavigationBloc>(
             builder: (BuildContext context) => NavigationBloc(
               analyticsRepository: RepositoryProvider.of<AnalyticsRepository>(context),
               userDataBloc: BlocProvider.of<UserDataBloc>(context)
-            ),
+            ), // TODO: InitNavigation to go to default page
           ),
-//        BlocProvider<FoodDiaryBloc>(
-//          builder: (BuildContext context) => FoodDiaryBloc(
-//            diaryRepository: Repository().diary,
-//            userId: (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid,
-//            daysSinceEpoch: 124
-//          ),
-//          dispose: (BuildContext context, FoodDiaryBloc tempFoodDiaryBloc) => tempFoodDiaryBloc.dispose(),
-//        ),
+          BlocProvider<FoodDiaryBloc>(
+            builder: (BuildContext context) => FoodDiaryBloc(
+              diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
+              userId: (userDataState as UserDataLoaded).authentication.uid,
+            )..dispatch(InitFoodDiary()),
+          ),
+          // TODO: tracking bloc
         ],
-        // TODO: tracking...
         child: TabbedNavigation(),
       );
     }

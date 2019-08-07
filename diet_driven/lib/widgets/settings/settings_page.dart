@@ -41,12 +41,18 @@ class SettingsPage extends StatelessWidget {
         break;
         // ,,,
       case 'settings/theme':
-        builder = (BuildContext _) => BlocProvider<SettingsEditBloc>(
-          builder: (BuildContext context) => SettingsEditBloc(
-            userId: userId,
-            settingsRepository: RepositoryProvider.of<SettingsRepository>(context)
-          ),
-          child: ThemeSettingsPage()
+        // TODO: own bloc if very complex logic!
+//        builder = (BuildContext _) => BlocProvider<SettingsEditBloc>(
+//          builder: (BuildContext context) => SettingsEditBloc(
+//            userId: userId,
+//            settingsRepository: RepositoryProvider.of<SettingsRepository>(context)
+//          ),
+//          child: ThemeSettingsPage()
+//        );
+
+        builder = (BuildContext _) => BlocProvider.value(
+          value: BlocProvider.of<UserDataBloc>(context),
+          child: ThemeSettingsPage(),
         );
         break;
         // ,,,

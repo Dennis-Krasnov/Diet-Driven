@@ -24,12 +24,6 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       serializers.serialize(object.foodName,
           specifiedType: const FullType(String)),
     ];
-    if (object.mealIndex != null) {
-      result
-        ..add('mealIndex')
-        ..add(serializers.serialize(object.mealIndex,
-            specifiedType: const FullType(int)));
-    }
     if (object.grams != null) {
       result
         ..add('grams')
@@ -82,10 +76,6 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
           result.foodName = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
-        case 'mealIndex':
-          result.mealIndex = serializers.deserialize(value,
-              specifiedType: const FullType(int)) as int;
-          break;
         case 'grams':
           result.grams = serializers.deserialize(value,
               specifiedType: const FullType(num)) as num;
@@ -119,8 +109,6 @@ class _$FoodRecord extends FoodRecord {
   @override
   final String foodName;
   @override
-  final int mealIndex;
-  @override
   final num grams;
   @override
   final num calories;
@@ -137,7 +125,6 @@ class _$FoodRecord extends FoodRecord {
   _$FoodRecord._(
       {this.uuid,
       this.foodName,
-      this.mealIndex,
       this.grams,
       this.calories,
       this.protein,
@@ -164,7 +151,6 @@ class _$FoodRecord extends FoodRecord {
     if (identical(other, this)) return true;
     return other is FoodRecord &&
         foodName == other.foodName &&
-        mealIndex == other.mealIndex &&
         grams == other.grams &&
         calories == other.calories &&
         protein == other.protein &&
@@ -177,9 +163,7 @@ class _$FoodRecord extends FoodRecord {
     return $jf($jc(
         $jc(
             $jc(
-                $jc(
-                    $jc($jc($jc(0, foodName.hashCode), mealIndex.hashCode),
-                        grams.hashCode),
+                $jc($jc($jc(0, foodName.hashCode), grams.hashCode),
                     calories.hashCode),
                 protein.hashCode),
             fat.hashCode),
@@ -191,7 +175,6 @@ class _$FoodRecord extends FoodRecord {
     return (newBuiltValueToStringHelper('FoodRecord')
           ..add('uuid', uuid)
           ..add('foodName', foodName)
-          ..add('mealIndex', mealIndex)
           ..add('grams', grams)
           ..add('calories', calories)
           ..add('protein', protein)
@@ -226,18 +209,6 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
   set foodName(String foodName) {
     _$this;
     super.foodName = foodName;
-  }
-
-  @override
-  int get mealIndex {
-    _$this;
-    return super.mealIndex;
-  }
-
-  @override
-  set mealIndex(int mealIndex) {
-    _$this;
-    super.mealIndex = mealIndex;
   }
 
   @override
@@ -306,7 +277,6 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
     if (_$v != null) {
       super.uuid = _$v.uuid;
       super.foodName = _$v.foodName;
-      super.mealIndex = _$v.mealIndex;
       super.grams = _$v.grams;
       super.calories = _$v.calories;
       super.protein = _$v.protein;
@@ -336,7 +306,6 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
         new _$FoodRecord._(
             uuid: uuid,
             foodName: foodName,
-            mealIndex: mealIndex,
             grams: grams,
             calories: calories,
             protein: protein,

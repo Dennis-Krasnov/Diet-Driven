@@ -9,7 +9,7 @@ class LoggingBlocDelegate extends BlocDelegate {
     super.onTransition(bloc, transition);
 
     // Prevent recursion
-    if (bloc is! LoggingBloc) {
+    if (bloc is! LoggingBloc) { // TODO: && bloc is! FilteredLoggingBloc
       LoggingBloc().dispatch(LogBlocTransition((b) => b
         ..message = bloc.runtimeType.toString()
         ..currentState = transition.currentState
@@ -24,7 +24,7 @@ class LoggingBlocDelegate extends BlocDelegate {
     super.onError(bloc, error, stacktrace);
 
     // Prevent recursion
-    if (bloc is! LoggingBloc) {
+    if (bloc is! LoggingBloc) { // TODO: && bloc is! FilteredLoggingBloc
       LoggingBloc().unexpectedError("${bloc.runtimeType} error", error, stacktrace);
     }
   }

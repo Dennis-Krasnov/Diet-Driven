@@ -52,7 +52,7 @@ class _FoodLoggingState extends State<FoodLogging> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<FoodLoggingEvent, FoodLoggingState>(
+    return BlocBuilder<FoodLoggingBloc, FoodLoggingState>(
       bloc: _foodLoggingBloc,
       builder: (BuildContext context, FoodLoggingState state) {
         String selectionType = state.multiSelect ? "multi-select" : "single-select";

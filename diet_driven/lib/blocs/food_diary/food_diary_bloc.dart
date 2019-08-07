@@ -2,55 +2,31 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:meta/meta.dart';
+
+import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/repositories/repositories.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
 import 'package:diet_driven/models/models.dart';
 
-/// Fetches and manages user's food diary days and diets.
-/// [FoodDiaryBloc] shows skeleton page until loaded.
+/// Aggregates and manages user's food diary days and diets.
+/// Diary tab shows skeleton records until [ConfigurationBloc] is loaded.
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
+  final DiaryRepository diaryRepository;
+
+  final String userId;
 
   /// Fixed point to distinguish 'ongoing' and 'historical' food diary subscriptions.
   /// [today] stays constant regardless of real-world time.
-  final int today = 23626; // DateTime.now().TO_DAYS_SINCE_EPOCH
-
-  // TODO: diets.where(diet.date <= today).min(diet.date) - or firstWhere less and assume its sorted (more efficient)
+  final int today = currentDaysSinceEpoch();
 
   StreamSubscription<FoodDiaryEvent> _foodDiaryEventSubscription;
 
-  FoodDiaryBloc() {
-    final _foodDiaryEvent$ = Observable<FoodDiaryEvent>(CombineLatestStream.combine2(
-      // TODO: load from repository
-      Observable<BuiltList<FoodDiaryDay>>.just(BuiltList(<FoodDiaryDay>[
-        FoodDiaryDay((b) => b
-          ..date = 12523
-          ..foodRecords = ListBuilder(<FoodRecord>[
-            FoodRecord((b) => b..foodName = "apple"),
-            FoodRecord((b) => b..foodName = "pear"),
-            FoodRecord((b) => b..foodName = "orange"),
-          ])
-        ),
-      ])),
-      Observable<BuiltList<Diet>>.just(BuiltList(<Diet>[
-        Diet((b) => b..calories = 2520),
-        Diet((b) => b..calories = 2125),
-      ])),
-      (BuiltList<FoodDiaryDay> diaryDays, BuiltList<Diet> diets) => RemoteFoodDiaryArrived((b) => b
-          ..diaryDays = diaryDays.toBuilder()
-          ..diets = diets.toBuilder()
-      )),
-    );
-
-    _foodDiaryEventSubscription = _foodDiaryEvent$.listen(
-      (foodDiaryEvent) => dispatch(foodDiaryEvent),
-      onError: (Object error, Object trace) => dispatch(FoodDiaryError((b) => b
-        ..error = error
-        ..trace = trace
-      )),
-    );
-  }
+  FoodDiaryBloc({@required this.diaryRepository, @required this.userId})
+    : assert(diaryRepository != null), assert(userId != null && userId.isNotEmpty);
 
   @override
   FoodDiaryState get initialState => FoodDiaryUninitialized();
@@ -61,35 +37,93 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     super.dispose();
   }
 
-
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
-    if (event is RemoteFoodDiaryArrived) {
-      MapBuilder<int, FoodDiaryDay> diaryDaysBuilder;
-      int currentDate = 125214; // TODO: DateTime.now().TO_DAYS_SINCE_EPOCH
+    if (event is InitFoodDiary) {
+      assert(currentState is FoodDiaryUninitialized);
 
-      // Load previous current date and food diary days
+      _foodDiaryEventSubscription ??= Observable<FoodDiaryEvent>(CombineLatestStream.combine2(
+        Observable<BuiltList<FoodDiaryDay>>(diaryRepository.allTimeFoodDiary$(userId)),
+        Observable<BuiltList<Diet>>(diaryRepository.allTimeDiet$(userId)),
+        (BuiltList<FoodDiaryDay> diaryDays, BuiltList<Diet> diets) => RemoteFoodDiaryArrived((b) => b
+          ..diaryDays = diaryDays.toBuilder()
+          ..diets = diets.toBuilder()
+        )
+      ))
+      .distinct()
+      // Unrecoverable failure
+      .onErrorReturnWith((dynamic error) => FoodDiaryError((b) => b..error = error))
+      .listen(dispatch);
+    }
+
+    if (event is RemoteFoodDiaryArrived) {
+      var currentDate = currentDaysSinceEpoch();
+      final diaryDaysBuilder = MapBuilder<int, FoodDiaryDay>();
+
+      // Load previous state
       if (currentState is FoodDiaryLoaded) {
         currentDate = (currentState as FoodDiaryLoaded).currentDate;
         diaryDaysBuilder.replace((currentState as FoodDiaryLoaded).diaryDays);
       }
 
-      // Override with new food diary days
+      // Combine with new food diary days (overrides)
       diaryDaysBuilder.addIterable(
         event.diaryDays,
         key: (FoodDiaryDay day) => day.date,
         value: (FoodDiaryDay day) => day
       );
 
-      FoodDiaryLoaded((b) => b
+      yield FoodDiaryLoaded((b) => b
         ..currentDate = currentDate
         ..diaryDays = diaryDaysBuilder
         ..diets = event.diets.toBuilder()
       );
 
-      LoggingBloc().info("${diaryDaysBuilder.length} food diary days loaded");
+      LoggingBloc().info("Food diary loaded with ${diaryDaysBuilder.length} days");
     }
 
+    if (event is FoodDiaryError) {
+      yield FoodDiaryFailed((b) => b
+        ..error = event.error
+        ..stacktrace = event.stacktrace
+      );
+
+      LoggingBloc().unexpectedError("Food diary failed", event.error, event.stacktrace);
+    }
+
+    if (event is AddFoodRecords) {
+      assert(currentState is FoodDiaryLoaded);
+      assert(event.foodRecords.isNotEmpty);
+
+      if (currentState is FoodDiaryLoaded && event.foodRecords.isNotEmpty) {
+        final state = currentState as FoodDiaryLoaded;
+
+        // OPTIMIZE: here or in each food diary day bloc? (instead use foodDiaryBloc.dispatch())
+        try {
+          // Build default day
+          FoodDiaryDayBuilder diaryDayBuilder;
+          diaryDayBuilder.date = event.date;
+
+          // Override with existing day
+          if (state.diaryDays.containsKey(event.date)) {
+            diaryDayBuilder.replace(state.diaryDays[event.date]);
+          }
+
+          // Add food records to respective mealIndex
+          diaryDayBuilder.mealRecords[event.mealIndex].addAll(event.foodRecords);
+
+          diaryRepository.replaceFoodDiaryDay(userId, diaryDayBuilder.build());
+
+          event?.completer?.complete();
+          LoggingBloc().info("Added ${event.foodRecords.length} foods to ${event.date}");
+        } on Exception catch(error, stacktrace) {
+          event?.completer?.completeError(error, stacktrace);
+          LoggingBloc().unexpectedError("Adding ${event.foodRecords.length} foods to ${event.date} failed", error, stacktrace);
+        }
+      }
+    }
+
+    // TODO: diets.where(diet.date <= today).min(diet.date) - or firstWhere less and assume its sorted (more efficient)
 //    if (event is AddFoodRecords) {
 //      assert(currentState is FoodDiaryLoaded);
 //      if (currentState is FoodDiaryLoaded) {

@@ -217,6 +217,8 @@ class _$UserDataLoaded extends UserDataLoaded {
   @override
   final Settings settings;
   @override
+  final Settings userSettings;
+  @override
   final SubscriptionType subscription;
 
   factory _$UserDataLoaded([void Function(UserDataLoadedBuilder) updates]) =>
@@ -226,6 +228,7 @@ class _$UserDataLoaded extends UserDataLoaded {
       {this.authentication,
       this.userDocument,
       this.settings,
+      this.userSettings,
       this.subscription})
       : super._() {
     if (authentication == null) {
@@ -236,6 +239,9 @@ class _$UserDataLoaded extends UserDataLoaded {
     }
     if (settings == null) {
       throw new BuiltValueNullFieldError('UserDataLoaded', 'settings');
+    }
+    if (userSettings == null) {
+      throw new BuiltValueNullFieldError('UserDataLoaded', 'userSettings');
     }
     if (subscription == null) {
       throw new BuiltValueNullFieldError('UserDataLoaded', 'subscription');
@@ -257,14 +263,17 @@ class _$UserDataLoaded extends UserDataLoaded {
         authentication == other.authentication &&
         userDocument == other.userDocument &&
         settings == other.settings &&
+        userSettings == other.userSettings &&
         subscription == other.subscription;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-        $jc($jc($jc(0, authentication.hashCode), userDocument.hashCode),
-            settings.hashCode),
+        $jc(
+            $jc($jc($jc(0, authentication.hashCode), userDocument.hashCode),
+                settings.hashCode),
+            userSettings.hashCode),
         subscription.hashCode));
   }
 
@@ -274,6 +283,7 @@ class _$UserDataLoaded extends UserDataLoaded {
           ..add('authentication', authentication)
           ..add('userDocument', userDocument)
           ..add('settings', settings)
+          ..add('userSettings', userSettings)
           ..add('subscription', subscription))
         .toString();
   }
@@ -298,6 +308,12 @@ class UserDataLoadedBuilder
   SettingsBuilder get settings => _$this._settings ??= new SettingsBuilder();
   set settings(SettingsBuilder settings) => _$this._settings = settings;
 
+  SettingsBuilder _userSettings;
+  SettingsBuilder get userSettings =>
+      _$this._userSettings ??= new SettingsBuilder();
+  set userSettings(SettingsBuilder userSettings) =>
+      _$this._userSettings = userSettings;
+
   SubscriptionType _subscription;
   SubscriptionType get subscription => _$this._subscription;
   set subscription(SubscriptionType subscription) =>
@@ -310,6 +326,7 @@ class UserDataLoadedBuilder
       _authentication = _$v.authentication;
       _userDocument = _$v.userDocument?.toBuilder();
       _settings = _$v.settings?.toBuilder();
+      _userSettings = _$v.userSettings?.toBuilder();
       _subscription = _$v.subscription;
       _$v = null;
     }
@@ -338,6 +355,7 @@ class UserDataLoadedBuilder
               authentication: authentication,
               userDocument: userDocument.build(),
               settings: settings.build(),
+              userSettings: userSettings.build(),
               subscription: subscription);
     } catch (_) {
       String _$failedField;
@@ -346,6 +364,8 @@ class UserDataLoadedBuilder
         userDocument.build();
         _$failedField = 'settings';
         settings.build();
+        _$failedField = 'userSettings';
+        userSettings.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'UserDataLoaded', _$failedField, e.toString());

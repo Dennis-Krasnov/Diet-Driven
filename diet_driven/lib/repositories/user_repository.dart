@@ -1,13 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:diet_driven/providers/firestore_paths.dart';
+import 'package:diet_driven/providers/firestore_serializer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
-import 'package:diet_driven/providers/providers.dart';
 import 'package:diet_driven/models/models.dart';
 
 /// Data access object for authentication and user data.
 class UserRepository {
-  final _firestoreProvider = FirestoreProvider();
-
   /// Streams [FirebaseUser] authentication status using `firebase_auth` library.
   ///
   /// Returns [null] if unauthenticated.
@@ -17,13 +17,13 @@ class UserRepository {
   ///
   /// Returns authenticated [FirebaseUser].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
-  Future<FirebaseUser> signInAnonymously() => FirebaseAuth.instance.signInAnonymously();
+  Future<AuthResult> signInAnonymously() => FirebaseAuth.instance.signInAnonymously();
 
   /// Signs in with email and password using `firebase_auth` library.
   ///
-  /// Returns authenticated [FirebaseUser].
+  /// Returns authenticated [AuthResult].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
-  Future<FirebaseUser> signInWithEmail({@required String email, @required String password}) {
+  Future<AuthResult> signInWithEmail({@required String email, @required String password}) {
     assert(email != null && email.isNotEmpty);
     assert(password != null && password.isNotEmpty);
 
@@ -32,9 +32,9 @@ class UserRepository {
 
   /// Creates email-password account using `firebase_auth` library.
   ///
-  /// Returns authenticated [FirebaseUser].
+  /// Returns authenticated [AuthResult].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
-  Future<void> createAccountWithEmail({@required String email, @required String password}) {
+  Future<AuthResult> createAccountWithEmail({@required String email, @required String password}) {
     assert(email != null && email.isNotEmpty);
     assert(password != null && password.isNotEmpty);
 
@@ -45,7 +45,7 @@ class UserRepository {
   Future<void> signOut() => FirebaseAuth.instance.signOut();
 
 
-  /// Streams [userId]'s [UserDocument].
+  /// Streams [userId]'s [UserDocument] using `cloud_firestore` library.
   ///
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns empty stream if Firestore document doesn't exist.
@@ -53,6 +53,7 @@ class UserRepository {
   Stream<UserDocument> userDocument$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    return _firestoreProvider.userDocument$(userId);
+    final docRef = Firestore.instance.document(FirestorePaths.user(userId));
+    return docRef.snapshots().transform(FirestoreSerializer<UserDocument>().deserializeDocumentTransform());
   }
 }

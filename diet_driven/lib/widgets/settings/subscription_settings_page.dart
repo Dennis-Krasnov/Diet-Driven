@@ -9,8 +9,7 @@ class SubscriptionSettingsPage extends StatelessWidget {
   Widget build(BuildContext context) {
 //    final SubscriptionEditBloc subscriptionEditBloc = BlocProvider.of<SubscriptionEditBloc>(context);
 
-    return BlocBuilder<UserDataEvent, UserDataState>(
-      bloc: BlocProvider.of<UserDataBloc>(context),
+    return BlocBuilder<UserDataBloc, UserDataState>(
       builder: (BuildContext context, UserDataState userDataState) {
         // TODO: also build off of subscription bloc, show loading, etc
         return Scaffold(

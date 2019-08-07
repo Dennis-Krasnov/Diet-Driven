@@ -9,21 +9,18 @@ import 'package:diet_driven/widgets/food_diary/food_diary.dart';
 import 'package:diet_driven/widgets/food_logging/food_logging.dart';
 import 'package:diet_driven/widgets/message/message.dart';
 
+///
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     LoggingBloc().verbose("App started");
 
-    // Configuration builder
-    return BlocBuilder<ConfigurationEvent, ConfigurationState>(
-      bloc: BlocProvider.of<ConfigurationBloc>(context),
+    return BlocBuilder<ConfigurationBloc, ConfigurationState>(
       condition: (previous, current) => true,
       builder: (BuildContext context, ConfigurationState configurationState) {
         LoggingBloc().verbose("Configuration rebuild");
 
-        // User data builder
-        return BlocBuilder<UserDataEvent, UserDataState>(
-            bloc: BlocProvider.of<UserDataBloc>(context),
+        return BlocBuilder<UserDataBloc, UserDataState>(
             condition: (previous, current) {
               // Unconditional rebuild
               if (previous is! UserDataLoaded || current is! UserDataLoaded)
@@ -170,6 +167,13 @@ class App extends StatelessWidget {
 //
 //    );
 
+    Color primaryColour;
+    try {
+      primaryColour = Color(num.tryParse(themeSettings?.primaryColour) ?? Colors.deepOrange.value);
+    } catch (e) {
+      primaryColour = Colors.deepOrange;
+    }
+
     return ThemeData(
 //      brightness: themeSettings.darkMode ? Brightness.dark : Brightness.light,
 
@@ -234,7 +238,8 @@ class App extends StatelessWidget {
       ),
 
       // Colours
-      primaryColor: Colors.deepOrange,
+      primaryColor: primaryColour,
+//      primaryColor: Colors.deepOrange,
       primaryColorDark: Colors.deepOrange,
 //      colorScheme: ColorScheme.light(
 //        primary: Colors.deepOrange,

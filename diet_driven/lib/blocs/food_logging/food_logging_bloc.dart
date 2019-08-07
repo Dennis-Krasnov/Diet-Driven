@@ -44,28 +44,28 @@ class FoodLoggingBloc extends Bloc<FoodLoggingEvent, FoodLoggingState> {
 
   @override
   Stream<FoodLoggingState> mapEventToState(FoodLoggingEvent event) async* {
-    if (event is ChangeMeal) {
-      yield currentState.rebuild((b) => b
-        ..mealIndex = event.mealIndex
-        ..selectedFoodRecords = SetBuilder(currentState.selectedFoodRecords.map<FoodRecord>((foodRecord) =>
-          foodRecord.rebuild((b) => b
-            ..mealIndex = mealIndex
-          )
-        ))
-      );
-    }
-
-    if (event is AddToSelection) {
-      assert(currentState.multiSelect);
-
-      yield currentState.rebuild((b) => b
-        ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) =>
-          b.add(event.foodRecord.rebuild((b) => b
-            ..mealIndex = mealIndex
-          ))
-        ).toBuilder()
-      );
-    }
+//    if (event is ChangeMeal) {
+//      yield currentState.rebuild((b) => b
+//        ..mealIndex = event.mealIndex
+//        ..selectedFoodRecords = SetBuilder(currentState.selectedFoodRecords.map<FoodRecord>((foodRecord) =>
+//          foodRecord.rebuild((b) => b
+//            ..mealIndex = mealIndex
+//          )
+//        ))
+//      );
+//    }
+//
+//    if (event is AddToSelection) {
+//      assert(currentState.multiSelect);
+//
+//      yield currentState.rebuild((b) => b
+//        ..selectedFoodRecords = currentState.selectedFoodRecords.rebuild((b) =>
+//          b.add(event.foodRecord.rebuild((b) => b
+//            ..mealIndex = mealIndex
+//          ))
+//        ).toBuilder()
+//      );
+//    }
 
     if (event is RemoveFromSelection) {
       assert(currentState.multiSelect);

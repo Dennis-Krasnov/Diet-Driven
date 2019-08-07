@@ -51,7 +51,7 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FoodRecordEditEvent, FoodRecordEditState>(
+    return BlocBuilder<FoodRecordEditBloc, FoodRecordEditState>(
       bloc: _foodRecordEditBloc,
       builder: (BuildContext context, FoodRecordEditState state) {
         return Scaffold(

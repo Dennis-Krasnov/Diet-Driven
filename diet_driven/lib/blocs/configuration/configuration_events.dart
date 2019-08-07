@@ -17,7 +17,7 @@ abstract class InitConfiguration implements ConfigurationEvent, Built<InitConfig
   @override String toString() => runtimeType.toString();
 }
 
-/// Reactively updates current [RemoteConfiguration], [PackageInfo], [ConnectivityResult].
+/// Reactively updates current [remoteConfiguration], [packageInfo], [connectivity].
 abstract class RemoteConfigurationArrived implements ConfigurationEvent, Built<RemoteConfigurationArrived, RemoteConfigurationArrivedBuilder> {
   RemoteConfiguration get remoteConfiguration;
 

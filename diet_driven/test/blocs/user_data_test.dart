@@ -53,7 +53,7 @@ void main() {
   test("Initialize properly", () {
     expect(userDataBloc.initialState, UserDataUninitialized());
   });
-
+  // TOTEST: merging settings documents!!!
   group("React to streams", () {
     test("Authentication stream", () {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA, null, userB]).asBroadcastStream());

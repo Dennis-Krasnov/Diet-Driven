@@ -65,17 +65,14 @@ class _$FoodDiaryFailed extends FoodDiaryFailed {
   @override
   final Object error;
   @override
-  final StackTrace trace;
+  final StackTrace stacktrace;
 
   factory _$FoodDiaryFailed([void Function(FoodDiaryFailedBuilder) updates]) =>
       (new FoodDiaryFailedBuilder()..update(updates)).build();
 
-  _$FoodDiaryFailed._({this.error, this.trace}) : super._() {
+  _$FoodDiaryFailed._({this.error, this.stacktrace}) : super._() {
     if (error == null) {
       throw new BuiltValueNullFieldError('FoodDiaryFailed', 'error');
-    }
-    if (trace == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryFailed', 'trace');
     }
   }
 
@@ -92,48 +89,50 @@ class _$FoodDiaryFailed extends FoodDiaryFailed {
     if (identical(other, this)) return true;
     return other is FoodDiaryFailed &&
         error == other.error &&
-        trace == other.trace;
+        stacktrace == other.stacktrace;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, error.hashCode), trace.hashCode));
+    return $jf($jc($jc(0, error.hashCode), stacktrace.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryFailed')
           ..add('error', error)
-          ..add('trace', trace))
+          ..add('stacktrace', stacktrace))
         .toString();
   }
 }
 
 class FoodDiaryFailedBuilder
-    implements Builder<FoodDiaryFailed, FoodDiaryFailedBuilder> {
+    implements
+        Builder<FoodDiaryFailed, FoodDiaryFailedBuilder>,
+        BuiltErrorBuilder {
   _$FoodDiaryFailed _$v;
 
   Object _error;
   Object get error => _$this._error;
   set error(Object error) => _$this._error = error;
 
-  StackTrace _trace;
-  StackTrace get trace => _$this._trace;
-  set trace(StackTrace trace) => _$this._trace = trace;
+  StackTrace _stacktrace;
+  StackTrace get stacktrace => _$this._stacktrace;
+  set stacktrace(StackTrace stacktrace) => _$this._stacktrace = stacktrace;
 
   FoodDiaryFailedBuilder();
 
   FoodDiaryFailedBuilder get _$this {
     if (_$v != null) {
       _error = _$v.error;
-      _trace = _$v.trace;
+      _stacktrace = _$v.stacktrace;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(FoodDiaryFailed other) {
+  void replace(covariant FoodDiaryFailed other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -147,7 +146,8 @@ class FoodDiaryFailedBuilder
 
   @override
   _$FoodDiaryFailed build() {
-    final _$result = _$v ?? new _$FoodDiaryFailed._(error: error, trace: trace);
+    final _$result =
+        _$v ?? new _$FoodDiaryFailed._(error: error, stacktrace: stacktrace);
     replace(_$result);
     return _$result;
   }

@@ -13,14 +13,16 @@ import 'package:diet_driven/blocs/blocs.dart';
 //              https://medium.com/@boldijar.paul/flutter-keeping-list-view-index-while-changing-page-view-c260352f35f8
 //              https://www.youtube.com/watch?v=ht76lDzPgUQ
 
-// Must be stateful widget to persist navigator keys
+/// ...
+/// TODO: rename to home_screen
+/// Must use stateful widget to persist navigator keys though builds.
 class TabbedNavigation extends StatefulWidget {
   @override
   _TabbedNavigationState createState() => _TabbedNavigationState();
 }
 
 class _TabbedNavigationState extends State<TabbedNavigation> {
-  // Storing navigator keys for every potential page to persist navigation state
+  /// Global navigator keys persist navigation state.
   Map<Page, GlobalKey<NavigatorState>> navigatorKeys = Map<Page, GlobalKey<NavigatorState>>.fromIterable(
     Page.values,
     key: (dynamic page) => page,
@@ -30,11 +32,10 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
   @override
   Widget build(BuildContext context) {
     // User data builder
-    return BlocBuilder<UserDataEvent, UserDataState>(
-      bloc: BlocProvider.of<UserDataBloc>(context),
+    return BlocBuilder<UserDataBloc, UserDataState>(
       condition: (previous, current) { // TODO: do >> everywhere
         // User data not loaded
-        if (previous is! UserDataLoaded || current is! UserDataLoaded) {
+        if (previous is! UserDataLoaded || current is! UserDataLoaded) { // OPTIMIZE: see main
           print("UNCONDITIONAL TABBED NAV USER DATA UPDATE");
           return true;
         }
@@ -53,8 +54,7 @@ class _TabbedNavigationState extends State<TabbedNavigation> {
         ];
         print("BOTTOM NAV PAGES $bottomNavPages");
 
-        return BlocBuilder<NavigationEvent, NavigationState>(
-          bloc: BlocProvider.of<NavigationBloc>(context),
+        return BlocBuilder<NavigationBloc, NavigationState>(
           condition: (previous, current) => true,
           builder: (BuildContext context, NavigationState navigationState) {
             // ...
@@ -212,12 +212,13 @@ class LoggingPage extends StatelessWidget {
           )
         ],
       ),
-      body: BlocBuilder<LoggingEvent, LoggingState>(
+      body: BlocBuilder<LoggingBloc, LoggingState>(
         bloc: LoggingBloc(),
         condition: (previous, current) => true,
         builder: (BuildContext context, LoggingState loggingState) {
           // List of all logs
           return ListView.builder(
+//            reverse: true,
             itemCount: loggingState.logs.length,
             itemBuilder: (BuildContext context, int index) {
               final log = loggingState.logs[index];

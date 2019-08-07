@@ -9,8 +9,11 @@ part 'food_diary_day.g.dart';
 abstract class FoodDiaryDay implements Built<FoodDiaryDay, FoodDiaryDayBuilder> {
   static Serializer<FoodDiaryDay> get serializer => _$foodDiaryDaySerializer;
 
+  /// Days since epoch.
   int get date;
-  BuiltList<FoodRecord> get foodRecords;
+
+  /// Food records stored under meal at keyed index.
+  BuiltListMultimap<int, FoodRecord> get mealRecords;
 
   factory FoodDiaryDay([void Function(FoodDiaryDayBuilder b)]) = _$FoodDiaryDay;
   FoodDiaryDay._();

@@ -7,7 +7,7 @@ part 'food_record.g.dart';
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
 
-  // Must compare by uuid explicitly
+  /// Must compare by uuid explicitly
   @BuiltValueField(compare: false)
   String get uuid;
 
@@ -17,8 +17,8 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   String get foodName;
 
   ///
-  @nullable
-  int get mealIndex;
+//  @nullable
+//  int get mealIndex;
 
   ///
   @nullable
@@ -61,7 +61,7 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
 abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
   String uuid = Uuid().v4();
   String foodName;
-  int mealIndex;
+//  int mealIndex;
 
   num grams;
   num calories;

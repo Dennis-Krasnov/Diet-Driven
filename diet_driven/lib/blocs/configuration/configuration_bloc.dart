@@ -12,7 +12,7 @@ import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
 /// Aggregates and manages app-wide runtime configuration.
-/// App shows splash page until [ConfigurationBloc] is loaded.
+/// App shows skeleton navigation until [ConfigurationBloc] is loaded.
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   final ConfigurationRepository configurationRepository;
 

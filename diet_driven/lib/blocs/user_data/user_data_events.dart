@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:built_value/built_value.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
@@ -16,13 +18,15 @@ abstract class InitUserData implements UserDataEvent, Built<InitUserData, InitUs
   @override String toString() => runtimeType.toString();
 }
 
-/// Reactively updates current [FirebaseUser], [UserDocument], [Settings], [Subscription].
+/// Reactively updates current [authentication], [userDocument], [settings], [subscription].
 abstract class RemoteUserDataArrived implements UserDataEvent, Built<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
   FirebaseUser get authentication;
 
   UserDocument get userDocument;
 
   Settings get settings;
+
+  Settings get userSettings;
 
   SubscriptionType get subscription;
 
@@ -42,4 +46,20 @@ abstract class OnboardUser implements UserDataEvent, Built<OnboardUser, OnboardU
   OnboardUser._();
 
   @override String toString() => runtimeType.toString();
+}
+
+///    ######  ######## ######## ######## #### ##    ##  ######    ######
+///   ##    ## ##          ##       ##     ##  ###   ## ##    ##  ##    ##
+///   ##       ##          ##       ##     ##  ####  ## ##        ##
+///    ######  ######      ##       ##     ##  ## ## ## ##   ####  ######
+///         ## ##          ##       ##     ##  ##  #### ##    ##        ##
+///   ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
+///    ######  ########    ##       ##    #### ##    ##  ######    ######
+
+/// Updates dark mode setting.
+abstract class UpdateDarkMode with Completable implements UserDataEvent, Built<UpdateDarkMode, UpdateDarkModeBuilder> {
+  bool get darkMode;
+
+  factory UpdateDarkMode([void Function(UpdateDarkModeBuilder) updates]) = _$UpdateDarkMode;
+  UpdateDarkMode._();
 }

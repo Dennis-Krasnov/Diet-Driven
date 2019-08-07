@@ -41,6 +41,10 @@ abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilde
   @nullable
   bool get darkMode;
 
+  /// Hexadecimal string
+  @nullable
+  String get primaryColour;
+
   factory ThemeSettings([void Function(ThemeSettingsBuilder b)]) = _$ThemeSettings;
   ThemeSettings._();
 }

@@ -12,6 +12,5 @@ export 'logging/logging.dart';
 export 'login/login.dart';
 export 'navigation/navigation.dart';
 export 'search/search.dart';
-export 'settings_edit/settings_edit.dart';
 export 'subscription_edit/subscription_edit.dart';
 export 'user_data/user_data.dart';

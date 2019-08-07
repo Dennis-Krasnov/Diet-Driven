@@ -7,8 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class DiarySettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<UserDataEvent, UserDataState>(
-      bloc: BlocProvider.of<UserDataBloc>(context),
+    return BlocBuilder<UserDataBloc, UserDataState>(
       builder: (BuildContext context, UserDataState userDataState) {
         return Scaffold(
           appBar: AppBar(

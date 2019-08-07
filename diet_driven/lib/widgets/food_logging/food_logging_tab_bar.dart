@@ -52,7 +52,7 @@ class _FoodLoggingTabBarState extends State<FoodLoggingTabBar> with AutomaticKee
     // Required for keep-alive
     super.build(context);
 
-    return BlocBuilder<FoodLoggingTabEvent, FoodLoggingTabState>(
+    return BlocBuilder<FoodLoggingTabBloc, FoodLoggingTabState>(
       bloc: _tabBloc,
       builder: (BuildContext context, FoodLoggingTabState state) {
         if (state is FoodLoggingTabUninitialized) {

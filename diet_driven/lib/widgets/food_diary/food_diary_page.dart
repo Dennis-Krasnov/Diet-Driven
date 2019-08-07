@@ -61,10 +61,7 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
 class FoodDiaryDay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final _foodDiaryBloc = BlocProvider.of<FoodDiaryBloc>(context);
-
-    return BlocBuilder<FoodDiaryEvent, FoodDiaryState>(
-      bloc: _foodDiaryBloc,
+    return BlocBuilder<FoodDiaryBloc, FoodDiaryState>(
       builder: (BuildContext context, FoodDiaryState state) {
         //
         if (state is FoodDiaryUninitialized) {

@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
 
 part 'food_diary_state.g.dart';
@@ -16,16 +17,12 @@ abstract class FoodDiaryUninitialized implements FoodDiaryState, Built<FoodDiary
 }
 
 /// Error page.
-abstract class FoodDiaryFailed implements FoodDiaryState, Built<FoodDiaryFailed, FoodDiaryFailedBuilder> {
-  Object get error;
-
-  StackTrace get trace;
-
+abstract class FoodDiaryFailed implements BuiltError, FoodDiaryState, Built<FoodDiaryFailed, FoodDiaryFailedBuilder> {
   factory FoodDiaryFailed([void Function(FoodDiaryFailedBuilder b)]) = _$FoodDiaryFailed;
   FoodDiaryFailed._();
 }
 
-/// Food diary day, stores current [FoodDiaryDay].
+/// Food diary.
 abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   ///
   int get currentDate;
@@ -35,8 +32,6 @@ abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded,
 
   ///
   BuiltList<Diet> get diets;
-
-//  ongoingDaysSubscription, historicalDaysSubscription
 
   factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
   FoodDiaryLoaded._();

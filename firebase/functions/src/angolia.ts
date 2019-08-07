@@ -32,3 +32,5 @@ exports.updateSubscription = functions.https.onCall(async (data, context) => {
 
     console.log(`${userId} subscription update to ${subscriptionType}`);
 });
+
+// TODO: Number.isInteger("hi")

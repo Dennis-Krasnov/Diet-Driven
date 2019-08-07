@@ -19,6 +19,7 @@ Completer<void> infoSnackBarCompleter(BuildContext context, String successMessag
 
     Scaffold.of(context).hideCurrentSnackBar();
     Scaffold.of(context).showSnackBar(SnackBar(
+      behavior: SnackBarBehavior.floating,
       content: Text(successMessage)
     ));
   })

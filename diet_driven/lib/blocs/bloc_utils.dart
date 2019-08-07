@@ -5,11 +5,13 @@ import 'package:built_value/built_value.dart';
 part 'bloc_utils.g.dart';
 
 // TODO: implements instead of with !? => do uninstantiable thing!
+///
 abstract class Completable {
   @nullable
   Completer<void> get completer;
 }
 
+///
 @BuiltValue(instantiable: false)
 abstract class BuiltError {
   ///
@@ -22,6 +24,12 @@ abstract class BuiltError {
   BuiltError rebuild(void Function(BuiltErrorBuilder) updates);
   BuiltErrorBuilder toBuilder();
 }
+
+///
+int dateTimeToDaysSinceEpoch(DateTime dateTime) => DateTime(1970).toLocal().difference(dateTime.toLocal()).inDays;
+
+///
+int currentDaysSinceEpoch() => dateTimeToDaysSinceEpoch(DateTime.now().toLocal());
 
 //@BuiltValue(instantiable: false)
 //abstract class FailState extends Object {

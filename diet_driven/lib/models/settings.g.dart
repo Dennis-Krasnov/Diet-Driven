@@ -136,6 +136,12 @@ class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
         ..add(serializers.serialize(object.darkMode,
             specifiedType: const FullType(bool)));
     }
+    if (object.primaryColour != null) {
+      result
+        ..add('primaryColour')
+        ..add(serializers.serialize(object.primaryColour,
+            specifiedType: const FullType(String)));
+    }
     return result;
   }
 
@@ -154,6 +160,10 @@ class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
         case 'darkMode':
           result.darkMode = serializers.deserialize(value,
               specifiedType: const FullType(bool)) as bool;
+          break;
+        case 'primaryColour':
+          result.primaryColour = serializers.deserialize(value,
+              specifiedType: const FullType(String)) as String;
           break;
       }
     }
@@ -378,11 +388,13 @@ class NavigationSettingsBuilder
 class _$ThemeSettings extends ThemeSettings {
   @override
   final bool darkMode;
+  @override
+  final String primaryColour;
 
   factory _$ThemeSettings([void Function(ThemeSettingsBuilder) updates]) =>
       (new ThemeSettingsBuilder()..update(updates)).build();
 
-  _$ThemeSettings._({this.darkMode}) : super._();
+  _$ThemeSettings._({this.darkMode, this.primaryColour}) : super._();
 
   @override
   ThemeSettings rebuild(void Function(ThemeSettingsBuilder) updates) =>
@@ -394,18 +406,21 @@ class _$ThemeSettings extends ThemeSettings {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ThemeSettings && darkMode == other.darkMode;
+    return other is ThemeSettings &&
+        darkMode == other.darkMode &&
+        primaryColour == other.primaryColour;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, darkMode.hashCode));
+    return $jf($jc($jc(0, darkMode.hashCode), primaryColour.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ThemeSettings')
-          ..add('darkMode', darkMode))
+          ..add('darkMode', darkMode)
+          ..add('primaryColour', primaryColour))
         .toString();
   }
 }
@@ -418,11 +433,17 @@ class ThemeSettingsBuilder
   bool get darkMode => _$this._darkMode;
   set darkMode(bool darkMode) => _$this._darkMode = darkMode;
 
+  String _primaryColour;
+  String get primaryColour => _$this._primaryColour;
+  set primaryColour(String primaryColour) =>
+      _$this._primaryColour = primaryColour;
+
   ThemeSettingsBuilder();
 
   ThemeSettingsBuilder get _$this {
     if (_$v != null) {
       _darkMode = _$v.darkMode;
+      _primaryColour = _$v.primaryColour;
       _$v = null;
     }
     return this;
@@ -443,7 +464,8 @@ class ThemeSettingsBuilder
 
   @override
   _$ThemeSettings build() {
-    final _$result = _$v ?? new _$ThemeSettings._(darkMode: darkMode);
+    final _$result = _$v ??
+        new _$ThemeSettings._(darkMode: darkMode, primaryColour: primaryColour);
     replace(_$result);
     return _$result;
   }

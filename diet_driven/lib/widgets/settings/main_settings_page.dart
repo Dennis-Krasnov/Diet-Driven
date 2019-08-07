@@ -7,11 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class MainSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
-    final NavigationBloc navigationBloc = BlocProvider.of<NavigationBloc>(context);
-
-    return BlocListener<NavigationEvent, NavigationState>(
-      bloc: navigationBloc,
+    return BlocListener<NavigationBloc, NavigationState>(
       listener: (BuildContext context, NavigationState state) {
         // Settings deep link handler
         if (state is SettingsTab && state.deepLink != null) {
@@ -31,11 +27,10 @@ class MainSettingsPage extends StatelessWidget {
           }
 
           // Ensuring deep link is used exactly once
-          navigationBloc.dispatch(ClearDeepLink());
+          BlocProvider.of<NavigationBloc>(context).dispatch(ClearDeepLink());
         }
       },
-      child: BlocBuilder<UserDataEvent, UserDataState>(
-        bloc: _userDataBloc,
+      child: BlocBuilder<UserDataBloc, UserDataState>(
         condition: (previous, current) => true,
         builder: (BuildContext context, UserDataState userDataState) {
           if (userDataState is UserDataLoaded) {
@@ -109,8 +104,7 @@ class MainSettingsPage extends StatelessWidget {
                       subtitleText: "Help, MIT license, Feedback",
                     ),
 
-                    BlocBuilder<ConfigurationEvent, ConfigurationState>(
-                      bloc: BlocProvider.of<ConfigurationBloc>(context),
+                    BlocBuilder<ConfigurationBloc, ConfigurationState>(
                       condition: (previous, current) => true,
                       builder: (BuildContext context, ConfigurationState configurationState) {
                         final packageInfo = (configurationState as ConfigurationLoaded).packageInfo;

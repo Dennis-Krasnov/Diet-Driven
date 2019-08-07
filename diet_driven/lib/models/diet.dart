@@ -6,7 +6,7 @@ part 'diet.g.dart';
 abstract class Diet implements Built<Diet, DietBuilder> {
   num get calories;
 
-  BuiltList<String> get meals;
+  BuiltList<String> get mealNames;
   // TODO: meal objects with start time,
   //  bool whether they count in 'mealindexRightNow', at least one must have this.
 
@@ -14,14 +14,14 @@ abstract class Diet implements Built<Diet, DietBuilder> {
 
   // TODO: 'mealIndexRightNow()` method
 
-  Diet._();
   factory Diet([void Function(DietBuilder b)]) = _$Diet;
+  Diet._();
 }
 
 abstract class DietBuilder implements Builder<Diet, DietBuilder> {
   num calories;
 
-  BuiltList<String> meals = BuiltList(<String>["Breakfast", "Lunch", "Dinner", "Snacks"]);
+  BuiltList<String> mealNames = BuiltList(<String>["Breakfast", "Lunch", "Dinner", "Snacks"]);
 
   factory DietBuilder() = _$DietBuilder;
   DietBuilder._();

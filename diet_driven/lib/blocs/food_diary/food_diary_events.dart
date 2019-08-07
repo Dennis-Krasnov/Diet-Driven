@@ -1,36 +1,54 @@
+import 'dart:async';
+
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
 
 part 'food_diary_events.g.dart';
 
 abstract class FoodDiaryEvent {}
 
-/// Reactively updates current [diaryDays], [diets], shows food diary.
+/// Subscribes to data streams.
+abstract class InitFoodDiary implements FoodDiaryEvent, Built<InitFoodDiary, InitFoodDiaryBuilder> {
+  factory InitFoodDiary([void Function(InitFoodDiaryBuilder) updates]) = _$InitFoodDiary;
+  InitFoodDiary._();
+
+  @override String toString() => runtimeType.toString();
+}
+
+/// Reactively updates current [diaryDays], [diets].
 abstract class RemoteFoodDiaryArrived implements FoodDiaryEvent, Built<RemoteFoodDiaryArrived, RemoteFoodDiaryArrivedBuilder> {
-  ///
   BuiltList<FoodDiaryDay> get diaryDays;
 
-  ///
   BuiltList<Diet> get diets;
 
   factory RemoteFoodDiaryArrived([void Function(RemoteFoodDiaryArrivedBuilder) updates]) = _$RemoteFoodDiaryArrived;
   RemoteFoodDiaryArrived._();
 }
 
-// TODO: update currentDate event!
-
-/// Shows error page.
-abstract class FoodDiaryError with FoodDiaryEvent implements Built<FoodDiaryError, FoodDiaryErrorBuilder> {
-  Object get error;
-
-  StackTrace get trace;
-
+/// Throws unrecoverable exception.
+abstract class FoodDiaryError implements BuiltError, FoodDiaryEvent, Built<FoodDiaryError, FoodDiaryErrorBuilder> {
   factory FoodDiaryError([void Function(FoodDiaryErrorBuilder b)]) = _$FoodDiaryError;
   FoodDiaryError._();
 }
 
+/// ... to specific [mealIndex].
+/// Assumes [mealIndex] is within range of corresponding diet's meals.
+abstract class AddFoodRecords implements Completable, FoodDiaryEvent, Built<AddFoodRecords, AddFoodRecordsBuilder> {
+  int get date;
+
+  int get mealIndex;
+
+  BuiltList<FoodRecord> get foodRecords;
+
+  factory AddFoodRecords([void Function(AddFoodRecordsBuilder) updates]) = _$AddFoodRecords;
+  AddFoodRecords._();
+}
+
+//  ongoingDaysSubscription, historicalDaysSubscription
+// TODO: update currentDate event!
 ///// Adds [BuiltList] of [FoodRecord]s to [FoodDiaryDay].
 //abstract class AddFoodRecords with Completable, FoodDiaryEvent implements Built<AddFoodRecords, AddFoodRecordsBuilder> {
 //  BuiltList<FoodRecord> get foodRecords;
