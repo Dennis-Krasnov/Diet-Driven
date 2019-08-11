@@ -27,7 +27,7 @@ class Page extends EnumClass {
   static const Page logging = _$logging;
 
 
-  int toFontAwesomeIcon() {
+  int toFontAwesomeCode() {
     switch (this) {
       case Page.diary:
         return 0xf5d1;

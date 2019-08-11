@@ -13,10 +13,11 @@ import 'package:diet_driven/blocs/food_diary/food_diary.dart';
 import 'package:diet_driven/models/models.dart';
 
 /// Aggregates and manages user's food diary days and diets.
-/// Diary tab shows skeleton records until [ConfigurationBloc] is loaded.
+/// Diary tab shows skeleton records until [FoodDiaryBloc] is loaded.
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   final DiaryRepository diaryRepository;
 
+  /// ...
   final String userId;
 
   /// Fixed point to distinguish 'ongoing' and 'historical' food diary subscriptions.
@@ -66,7 +67,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         diaryDaysBuilder.replace((currentState as FoodDiaryLoaded).diaryDays);
       }
 
-      // Combine with new food diary days (overrides)
+      // Override with new food diary days
       diaryDaysBuilder.addIterable(
         event.diaryDays,
         key: (FoodDiaryDay day) => day.date,

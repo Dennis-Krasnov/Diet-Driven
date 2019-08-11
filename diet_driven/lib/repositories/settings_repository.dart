@@ -37,7 +37,7 @@ class SettingsRepository {
     assert(settings != null);
 
     final docRef = Firestore.instance.document(FirestorePaths.userSettings(userId));
-    return docRef.setData(FirestoreSerializer<Settings>().serializeDocument(settings), merge: false);
+    return docRef.setData(FirestoreSerializer<Settings>().serializeDocument(settings), merge: false); // FIXME: should be merge: true maybe?
   }
 
 }

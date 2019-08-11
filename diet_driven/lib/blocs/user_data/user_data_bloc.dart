@@ -42,7 +42,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         .mapTo<UserDataEvent>(OnboardUser());
 
       // TODO: retry x times, with delay between each attempt
-      final dataArrival$ = auth$.delay(Duration(seconds: 5)) // FIXME
+      final dataArrival$ = auth$
         .where((user) => user != null)
         .switchMap<UserDataEvent>((user) => CombineLatestStream.combine4(
           userRepository.userDocument$(user.uid),
@@ -70,6 +70,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..authentication = event.authentication
         ..userDocument = event.userDocument.toBuilder()
         ..settings = event.settings.toBuilder()
+        ..userSettings = event.userSettings.toBuilder()
         ..subscription = event.subscription
       );
 
@@ -104,9 +105,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       assert(currentState is UserDataLoaded);
 
       try {
-        final settingsBuilder = _userSettings.toBuilder();
-
-        settingsBuilder.themeSettings.update((b) => b
+        final settingsBuilder = _userSettings.toBuilder()..themeSettings.update((b) => b
           ..darkMode = event.darkMode
         );
 
@@ -118,20 +117,25 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         event?.completer?.completeError(e);
       }
     }
-  }
 
-  // ONLY IF
-//      if (currentState is UserDataLoaded) {
-//        final settingsBuilder = _userSettings.toBuilder();
-//
-//        settingsBuilder.themeSettings.update((b) => b
-//          ..darkMode = event.darkMode
-//        );
-//
-//        settingsRepository.replaceSettings(_userId, settingsBuilder.build());
-//        event?.completer?.complete();
-//        LoggingBloc().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
-//      }
+    if (event is UpdatePrimaryColour) {
+      assert(currentState is UserDataLoaded);
+
+      try {
+        final settingsBuilder = _userSettings.toBuilder()..themeSettings.update((b) => b
+          ..primaryColour = "0x${event.colourValue.toRadixString(16).padLeft(8, '0')}"
+        );
+
+        settingsRepository.replaceSettings(_userId, settingsBuilder.build());
+        LoggingBloc().info("Primary colour now ${event.colourValue}");
+        event?.completer?.complete();
+      } on Exception catch(e) {
+        LoggingBloc().info("Primary colour update failed");
+        // LoggingBloc().unexpectedError("Adding ${event.foodRecords.length} foods to ${event.date} failed", error, stacktrace); TODO: real error handling!!
+        event?.completer?.completeError(e);
+      }
+    }
+  }
 
   /// Current user's id.
   /// Only use when it's certain that [currentState] is [UserDataLoaded].
@@ -155,3 +159,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     return jsonSerializers.deserialize(mergedJsonSettings);
   }
 }
+
+// OLD METHOD:
+//        final settingsBuilder = _userSettings.toBuilder();
+//
+//        settingsBuilder.themeSettings.update((b) => b
+//          ..darkMode = event.darkMode
+//        );

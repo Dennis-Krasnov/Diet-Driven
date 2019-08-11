@@ -32,11 +32,6 @@ class _$FoodDiaryDayUninitialized extends FoodDiaryDayUninitialized {
   int get hashCode {
     return 703389516;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('FoodDiaryDayUninitialized').toString();
-  }
 }
 
 class FoodDiaryDayUninitializedBuilder
@@ -69,15 +64,17 @@ class FoodDiaryDayUninitializedBuilder
 
 class _$FoodDiaryDayLoaded extends FoodDiaryDayLoaded {
   @override
-  final int date;
+  final FoodDiaryDay foodDiaryDay;
+  @override
+  final Diet diet;
 
   factory _$FoodDiaryDayLoaded(
           [void Function(FoodDiaryDayLoadedBuilder) updates]) =>
       (new FoodDiaryDayLoadedBuilder()..update(updates)).build();
 
-  _$FoodDiaryDayLoaded._({this.date}) : super._() {
-    if (date == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryDayLoaded', 'date');
+  _$FoodDiaryDayLoaded._({this.foodDiaryDay, this.diet}) : super._() {
+    if (diet == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryDayLoaded', 'diet');
     }
   }
 
@@ -93,18 +90,21 @@ class _$FoodDiaryDayLoaded extends FoodDiaryDayLoaded {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryDayLoaded && date == other.date;
+    return other is FoodDiaryDayLoaded &&
+        foodDiaryDay == other.foodDiaryDay &&
+        diet == other.diet;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, date.hashCode));
+    return $jf($jc($jc(0, foodDiaryDay.hashCode), diet.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryDayLoaded')
-          ..add('date', date))
+          ..add('foodDiaryDay', foodDiaryDay)
+          ..add('diet', diet))
         .toString();
   }
 }
@@ -113,15 +113,22 @@ class FoodDiaryDayLoadedBuilder
     implements Builder<FoodDiaryDayLoaded, FoodDiaryDayLoadedBuilder> {
   _$FoodDiaryDayLoaded _$v;
 
-  int _date;
-  int get date => _$this._date;
-  set date(int date) => _$this._date = date;
+  FoodDiaryDayBuilder _foodDiaryDay;
+  FoodDiaryDayBuilder get foodDiaryDay =>
+      _$this._foodDiaryDay ??= new FoodDiaryDayBuilder();
+  set foodDiaryDay(FoodDiaryDayBuilder foodDiaryDay) =>
+      _$this._foodDiaryDay = foodDiaryDay;
+
+  DietBuilder _diet;
+  DietBuilder get diet => _$this._diet ??= new DietBuilder();
+  set diet(DietBuilder diet) => _$this._diet = diet;
 
   FoodDiaryDayLoadedBuilder();
 
   FoodDiaryDayLoadedBuilder get _$this {
     if (_$v != null) {
-      _date = _$v.date;
+      _foodDiaryDay = _$v.foodDiaryDay?.toBuilder();
+      _diet = _$v.diet?.toBuilder();
       _$v = null;
     }
     return this;
@@ -142,7 +149,24 @@ class FoodDiaryDayLoadedBuilder
 
   @override
   _$FoodDiaryDayLoaded build() {
-    final _$result = _$v ?? new _$FoodDiaryDayLoaded._(date: date);
+    _$FoodDiaryDayLoaded _$result;
+    try {
+      _$result = _$v ??
+          new _$FoodDiaryDayLoaded._(
+              foodDiaryDay: _foodDiaryDay?.build(), diet: diet.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'foodDiaryDay';
+        _foodDiaryDay?.build();
+        _$failedField = 'diet';
+        diet.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'FoodDiaryDayLoaded', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

@@ -14,9 +14,9 @@ class DiaryRepository {
   /// Throws [DeserializationError] if Firestore data is corrupt.
   Stream<FoodDiaryDay> foodDiaryDay$(String userId, int daysSinceEpoch) {
     assert(userId != null && userId.isNotEmpty);
-    assert(daysSinceEpoch >= 0);
+    assert(daysSinceEpoch >= 0); // TODO: assert daysSinceEpoch isn't null (everywhere)
 
-    final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
+    final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch)); // TODO: make daysSinceEpoch an optional parameter
     return docRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeDocumentTransform());
   }
 
@@ -28,7 +28,7 @@ class DiaryRepository {
   Stream<BuiltList<FoodDiaryDay>> allTimeFoodDiary$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final colRef = Firestore.instance.collection(FirestorePaths.foodDiary(userId));
+    final colRef = Firestore.instance.collection(FirestorePaths.foodDiary(userId)); // TODO: make daysSinceEpoch an optional parameter
     return colRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeCollectionTransform());
   }
 
@@ -41,7 +41,7 @@ class DiaryRepository {
   Future<void> replaceFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
     assert(userId != null && userId.isNotEmpty);
     assert(foodDiaryDay != null);
-    assert(foodDiaryDay.date >= 0);
+    assert(foodDiaryDay.date >= 0); // TODO: make single assertion?? - or remove all together??
 
     final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
     return docRef.setData(FirestoreSerializer<FoodDiaryDay>().serializeDocument(foodDiaryDay), merge: false);

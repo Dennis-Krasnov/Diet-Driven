@@ -1,7 +1,10 @@
 import 'package:diet_driven/widgets/core/core.dart';
+import 'package:diet_driven/widgets/font_awesome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:flutter_material_color_picker/flutter_material_color_picker.dart';
+
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/completer.dart';
@@ -35,15 +38,33 @@ class ThemeSettingsPage extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8.0),
                   child: Text("Primary colour", style: Theme.of(context).textTheme.headline),
                 ),
-                for (var colour in ["Red", "Green", "Blue"])
-                  RadioListTile<String>(
-                    title: Text(colour),
-                    value: colour,
-                    groupValue: "Red", // current value from state
-                    onChanged: (String value) => null,
-                    activeColor: Theme.of(context).primaryColor,
-                    secondary: Container(color: colour == "Red" ? Colors.red : colour == "Green" ? Colors.green : Colors.blue, height: 20, width: 20,),
-                  ),
+                MaterialColorPicker(
+                  allowShades: false,
+                  onMainColorChange: (ColorSwatch colour) {
+                    BlocProvider.of<UserDataBloc>(context).dispatch(UpdatePrimaryColour((b) => b
+                      ..colourValue = colour.value
+                    ));
+                  },
+                  selectedColor: Color((userDataState as UserDataLoaded).settings.themeSettings.primaryColourValue),
+                  colors: [
+                    Colors.red,
+                    Colors.deepOrange,
+                    Colors.yellow,
+                    Colors.lightGreen
+                  ],
+                ),
+//                for (var colour in [Colors.red, Colors.green, Colors.blue])
+//                  RadioListTile<String>(
+//                    title: Text(colour.value.toString()),
+//                    value: colour.value.toString(),
+////                    selected: colourNameToCode(colour) == (userDataState as UserDataLoaded).settings.themeSettings.primaryColour,
+//                    groupValue: (userDataState as UserDataLoaded).settings.themeSettings.primaryColour,
+//                    onChanged: (String value) => BlocProvider.of<UserDataBloc>(context).dispatch(UpdatePrimaryColour((b) => b
+//                      ..colourValue = colour.value
+//                    )),
+//                    activeColor: Theme.of(context).primaryColor,
+//                    secondary: SizedBox(child: Container(color: colour), height: 24, width: 24,),
+//                  ),
                 Divider(),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 8.0),
@@ -67,7 +88,7 @@ class ThemeSettingsPage extends StatelessWidget {
                 Row(
                   children: <Widget>[
                     for (var page in (userDataState as UserDataLoaded).settings.navigationSettings.bottomNavigationPages)
-                      CircleAvatar(child: Icon(FaRegular(page.toFontAwesomeIcon())), backgroundColor: Colors.white, foregroundColor: Colors.black,)
+                      CircleAvatar(child: Icon(FaRegular(page.toFontAwesomeCode())), backgroundColor: Colors.white, foregroundColor: Colors.black,)
                   ],
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                 ),
@@ -88,6 +109,18 @@ class ThemeSettingsPage extends StatelessWidget {
     );
   }
 }
+
+//String colourNameToCode(String colourName) {
+//  if (colourName == "Red") {
+//    return "0xFFFF5722";
+//  }
+//  if (colourName == "Green") {
+//    return "0xFF008000";
+//  }
+//  if (colourName == "Blue") {
+//    return "0xFF00a8dd";
+//  }
+//}
 
 //if (settingsEditState.updateDarkModeState == "loading")
 //Shimmer.fromColors(

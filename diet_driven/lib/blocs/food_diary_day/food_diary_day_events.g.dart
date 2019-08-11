@@ -31,11 +31,6 @@ class _$InitFoodDiaryDay extends InitFoodDiaryDay {
   int get hashCode {
     return 412630403;
   }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('InitFoodDiaryDay').toString();
-  }
 }
 
 class InitFoodDiaryDayBuilder

@@ -45,6 +45,10 @@ abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilde
   @nullable
   String get primaryColour;
 
+  /// Integer representation of colour.
+  int get primaryColourValue => num.parse(primaryColour);
+
+
   factory ThemeSettings([void Function(ThemeSettingsBuilder b)]) = _$ThemeSettings;
   ThemeSettings._();
 }

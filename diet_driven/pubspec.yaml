@@ -37,6 +37,7 @@ dependencies:
   intl: ^0.15.8
   merge_map: ^1.0.2
   shimmer: ^1.0.0
+  flutter_material_color_picker: ^1.0.3
   uuid: ^2.0.2
 
 dev_dependencies:

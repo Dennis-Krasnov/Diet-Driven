@@ -462,4 +462,97 @@ class UpdateDarkModeBuilder
   }
 }
 
+class _$UpdatePrimaryColour extends UpdatePrimaryColour {
+  @override
+  final int colourValue;
+  @override
+  final Completer<void> completer;
+
+  factory _$UpdatePrimaryColour(
+          [void Function(UpdatePrimaryColourBuilder) updates]) =>
+      (new UpdatePrimaryColourBuilder()..update(updates)).build();
+
+  _$UpdatePrimaryColour._({this.colourValue, this.completer}) : super._() {
+    if (colourValue == null) {
+      throw new BuiltValueNullFieldError('UpdatePrimaryColour', 'colourValue');
+    }
+  }
+
+  @override
+  UpdatePrimaryColour rebuild(
+          void Function(UpdatePrimaryColourBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  UpdatePrimaryColourBuilder toBuilder() =>
+      new UpdatePrimaryColourBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is UpdatePrimaryColour &&
+        colourValue == other.colourValue &&
+        completer == other.completer;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, colourValue.hashCode), completer.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('UpdatePrimaryColour')
+          ..add('colourValue', colourValue)
+          ..add('completer', completer))
+        .toString();
+  }
+}
+
+class UpdatePrimaryColourBuilder
+    implements Builder<UpdatePrimaryColour, UpdatePrimaryColourBuilder> {
+  _$UpdatePrimaryColour _$v;
+
+  int _colourValue;
+  int get colourValue => _$this._colourValue;
+  set colourValue(int colourValue) => _$this._colourValue = colourValue;
+
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
+  UpdatePrimaryColourBuilder();
+
+  UpdatePrimaryColourBuilder get _$this {
+    if (_$v != null) {
+      _colourValue = _$v.colourValue;
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(UpdatePrimaryColour other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$UpdatePrimaryColour;
+  }
+
+  @override
+  void update(void Function(UpdatePrimaryColourBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$UpdatePrimaryColour build() {
+    final _$result = _$v ??
+        new _$UpdatePrimaryColour._(
+            colourValue: colourValue, completer: completer);
+    replace(_$result);
+    return _$result;
+  }
+}
+
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

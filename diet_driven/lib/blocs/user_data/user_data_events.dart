@@ -63,3 +63,11 @@ abstract class UpdateDarkMode with Completable implements UserDataEvent, Built<U
   factory UpdateDarkMode([void Function(UpdateDarkModeBuilder) updates]) = _$UpdateDarkMode;
   UpdateDarkMode._();
 }
+
+/// Updates primary colour setting.
+abstract class UpdatePrimaryColour with Completable implements UserDataEvent, Built<UpdatePrimaryColour, UpdatePrimaryColourBuilder> {
+  int get colourValue;
+
+  factory UpdatePrimaryColour([void Function(UpdatePrimaryColourBuilder) updates]) = _$UpdatePrimaryColour;
+  UpdatePrimaryColour._();
+}

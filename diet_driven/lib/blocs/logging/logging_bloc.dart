@@ -9,22 +9,10 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
   @override
   LoggingState get initialState => LoggingState();
 
-  // Custom print to avoid mobile phone console truncation
-  // https://github.com/flutter/flutter/issues/22665#issuecomment-458186456
-  void printWrapped(Object object, {int chunkSize = 800}) {
-    final line = "$object";
-    final pattern = RegExp(".{1,$chunkSize}");
-    for (var match in pattern.allMatches(line)) {
-      print(match.group(0));
-    }
-  }
-
   @override
   void onEvent(LoggingEvent event) {
 
   }
-
-
 
   @override
   void onTransition(Transition<LoggingEvent, LoggingState> transition) {
@@ -46,7 +34,6 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
 
     if (event is SendLogsToDeveloper) {
       print("SENT ${currentState.logs.length} LOGS TO DEVELOPER"); // TODO
-//      return;
     }
 
     if (event is LogMessage) {
@@ -57,9 +44,7 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
       );
 
       loggingBuilder.logs.add(messageLog);
-      printWrapped(messageLog);
-//      final pen = AnsiPen()..white(bold: true)..rgb(r: 1.0, g: 0.8, b: 0.2);
-//      print(pen("Bright white foreground") + " this text is default fg/bg");
+      _printWrapped(messageLog);
     }
 
     if (event is LogError) {
@@ -72,11 +57,10 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
       );
 
       loggingBuilder.logs.add(errorLog);
-      printWrapped(errorLog);
+      _printWrapped(errorLog);
     }
 
     if (event is LogBlocTransition) {
-
       final blocTransition = BlocTransitionLog((b) => b
         ..message = event.message
         ..datetime = DateTime.now()
@@ -86,23 +70,23 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
       );
 
       loggingBuilder.logs.add(blocTransition);
-      printWrapped(blocTransition);
-
-      //    logger.i("${transition.event}");
-//    logger.i("${transition.event.runtimeType}");
-//    logger.d("EVENT: ${transition.event}");
-//    logger.d("BEFORE: ${transition.currentState}");
-//    logger.d("AFTER: ${transition.nextState}\n");
-//    _log.fine("");
+      _printWrapped(blocTransition);
     }
 
     yield loggingBuilder.build();
   }
 
-  /// Convenience functions
-  /// Instead of `LoggingBloc().dispatch(...)` for every log;
+  /// Custom print to avoid mobile phone console truncation.
+  /// https://github.com/flutter/flutter/issues/22665#issuecomment-458186456
+  void _printWrapped(Object object, {int chunkSize = 800}) {
+    final line = "$object";
+    final pattern = RegExp(".{1,$chunkSize}");
+    for (var match in pattern.allMatches(line)) {
+      print(match.group(0));
+    }
+  }
 
-  ///
+  /// Anticipated runtime exception convenience logging function.
   void expectedError(String message, Object error, StackTrace stacktrace) {
     dispatch(LogError((b) => b
       ..level = ErrorLoggingLevel.expected
@@ -112,7 +96,7 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
     ));
   }
 
-  ///
+  /// Unexpected runtime exception convenience logging function.
   void unexpectedError(String message, Object error, StackTrace stacktrace) {
     dispatch(LogError((b) => b
       ..level = ErrorLoggingLevel.unexpected
@@ -122,7 +106,7 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
     ));
   }
 
-  ///
+  /// Verbose message convenience logging function.
   void verbose(String message) {
     dispatch(LogMessage((b) => b
       ..level = MessageLoggingLevel.verbose
@@ -130,7 +114,7 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
     ));
   }
 
-  ///
+  /// Debug message convenience logging function.
   void debug(String message) {
     dispatch(LogMessage((b) => b
       ..level = MessageLoggingLevel.debug
@@ -138,7 +122,7 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
     ));
   }
 
-  ///
+  /// Informational message convenience logging function.
   void info(String message) {
     dispatch(LogMessage((b) => b
       ..level = MessageLoggingLevel.info
@@ -146,7 +130,7 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
     ));
   }
 
-  ///
+  /// Warning message convenience logging function.
   void warning(String message) {
     dispatch(LogMessage((b) => b
       ..level = MessageLoggingLevel.warning
@@ -154,7 +138,7 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
     ));
   }
 
-  ///
+  /// Error message convenience logging function.
   void error(String message) {
     dispatch(LogMessage((b) => b
       ..level = MessageLoggingLevel.error

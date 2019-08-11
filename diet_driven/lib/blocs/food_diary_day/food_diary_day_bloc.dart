@@ -9,7 +9,10 @@ import 'package:diet_driven/blocs/food_diary_day/food_diary_day.dart';
 import 'package:diet_driven/models/models.dart';
 
 class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
+  /// All food diary days.
   final FoodDiaryBloc foodDiaryBloc;
+
+  /// Food diary day's date.
   final int date;
 
   StreamSubscription<FoodDiaryDayEvent> _foodDiaryDayEventSubscription;
@@ -46,7 +49,8 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
 
     if (event is RemoteFoodDiaryDayArrived) {
       yield FoodDiaryDayLoaded((b) => b
-        ..date = 124 // TODO parameters
+          ..diet = DietBuilder() // FIXME
+//        ..date = 124 // TODO: event parameters
       );
     }
   }

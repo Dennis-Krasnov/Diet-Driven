@@ -1,4 +1,6 @@
+import 'package:diet_driven/widgets/font_awesome.dart';
 import 'package:diet_driven/widgets/loading/loading.dart';
+import 'package:diet_driven/widgets/logging/logging_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
           builder: (BuildContext context, NavigationState navigationState) {
             // White screen with skeleton menu and app bar
             if (navigationState is NavigationUninitialized) {
-              return SplashPage();
+              return const SplashPage();
             }
 
             // Index of currently selected page
@@ -59,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   // ...
                   return !await navigatorKeys[currentPage].currentState.maybePop();
                 },
-                // Shows one page at a time while persisting navigation
+                // Shows one page at a time while persisting nested navigation
                 child: IndexedStack(
                   index: tabIndex,
                   children: <Widget>[
@@ -77,14 +79,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(page.name),//, style: TextStyle(fontWeight: FontWeight.w600,)),
                       icon: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
-//                        child: Icon(FaSolid(page.toFontAwesomeIcon())),
-                        child: Icon(FaRegular(page.toFontAwesomeIcon()),),
+                        child: Icon(FaRegular(page.toFontAwesomeCode()),),
                       ),
                       activeIcon: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
-                        child: Icon(FaSolid(page.toFontAwesomeIcon()),),
+                        child: Icon(FaSolid(page.toFontAwesomeCode()),),
                       ),
-//                      backgroundColor: Colors.red
                     )
                 ],
                 currentIndex: tabIndex,
@@ -92,30 +92,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   final NavigationBloc navigationBloc = BlocProvider.of<NavigationBloc>(context);
                   navigationBloc.dispatch(navigationBloc.pageToEvent(bottomNavPages[index]));
                 },
-//                backgroundColor: Colors.red,
-//                unselectedItemColor: Colors.purple,
-//                unselectedFontSize: 12,
-//                iconSize: 22,
                 elevation: 4,
                 iconSize: 24,
-//                selectedItemColor: Colors.redAccent,
                 selectedItemColor: Theme.of(context).primaryColor,
-                unselectedItemColor: Theme.of(context).unselectedWidgetColor, // disabledColor, // Colors.black.withOpacity(0.6),
+                unselectedItemColor: Theme.of(context).unselectedWidgetColor,
                 selectedFontSize: 15,
                 unselectedFontSize: 14,
-
-//                  this.onTap,
-//                  this.currentIndex = 0,
-//                  this.elevation = 8.0,
-//                  BottomNavigationBarType type,
-//                  Color fixedColor,
-//                  this.backgroundColor,
-//                  this.iconSize = 24.0,
-//                  Color selectedItemColor,
-//                  this.unselectedItemColor,
-//                  this.selectedFontSize = 14.0,
-//                  this.unselectedFontSize = 12.0,
-//                  this.showSelectedLabels = true,,
               ),
             );
           }
@@ -128,8 +110,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget pageToWidget(Page page, GlobalKey<NavigatorState> navigationKey) {
     switch (page) {
       case Page.diary:
-        return FoodDiaryPage();
-        // TODO: can place bloc provider here?!
+        return FoodDiaryPage(); // TODO: wrap with provider here?!
         break;
       case Page.track:
         return const UnderConstruction(page: "Tracking");
@@ -147,181 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
         return Container(child: Center(child: Text("couldn't find your $page"))); // OPTIMIZE
     }
   }
-
-}
-// TODO: move to own file
-// document that you need to load up your own icons
-
-class FaBrands extends IconData {
-  const FaBrands(int codePoint) : super(
-    codePoint,
-    fontFamily: 'FontAwesomeBrands',
-  );
 }
 
-class FaSolid extends IconData {
-  const FaSolid(int codePoint) : super(
-    codePoint,
-    fontFamily: 'FontAwesomeSolid',
-  );
-}
 
-class FaRegular extends IconData {
-  const FaRegular(int codePoint) : super(
-    codePoint,
-    fontFamily: 'FontAwesomeRegular',
-  );
-}
-
-class FaLight extends IconData {
-  const FaLight(int codePoint) : super(
-    codePoint,
-    fontFamily: 'FontAwesomeLight',
-  );
-}
-
-class LoggingPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // Logging builder
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Logging"),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.cloud_upload),
-            onPressed: () => null,
-          )
-        ],
-      ),
-      body: BlocBuilder<LoggingBloc, LoggingState>(
-        bloc: LoggingBloc(),
-        condition: (previous, current) => true,
-        builder: (BuildContext context, LoggingState loggingState) {
-          // List of all logs
-          return ListView.builder(
-//            reverse: true,
-            itemCount: loggingState.logs.length,
-            itemBuilder: (BuildContext context, int index) {
-              final log = loggingState.logs[index];
-
-              if (log is BlocTransitionLog) {
-                return ExpansionTile(
-                  key: PageStorageKey<Log>(log),
-                  title: Text(
-                    "${log.message} - ${log.event.runtimeType}",
-                    style: TextStyle(
-                        fontSize: 12
-                    ),
-//                    style: Theme.of(context).textTheme.subhead, // FIXME
-                  ),
-                  leading: log.event is NavigationEvent ? const Icon(Icons.navigation) : const Icon(Icons.arrow_forward),
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        child: Column(
-                          children: <Widget>[
-                            Text(log.datetime.toString()),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
-                              child: Text("Before", style: Theme.of(context).textTheme.headline),
-                            ),
-                            Text(log.currentState.toString()),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
-                              child: Text("Event", style: Theme.of(context).textTheme.headline),
-                            ),
-                            Text(log.event.toString()),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
-                              child: Text("After", style: Theme.of(context).textTheme.headline),
-                            ),
-                            Text(log.nextState.toString()),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                        ),
-                      ),
-                    )
-                  ],
-                );
-                  // TODO: icon depends on bloc type, pass as argument!
-              }
-
-              if (log is MessageLog) {
-                return ListTile(
-                  title: Text(log.message),
-                  subtitle: Text(log.datetime.toString()),
-                  leading: const Icon(Icons.info),
-                  // TODO: icon depends on level
-                );
-              }
-
-              if (log is ErrorLog) {
-                // TODO: error expansion tile - extends!!! or composes expansion tile
-                return ExpansionTile(
-                  key: PageStorageKey<Log>(log),
-                  title: Text(
-                    log.message,
-                    style: TextStyle(
-                        fontSize: 12
-                    ),
-//                    style: Theme.of(context).textTheme.subhead, // FIXME
-                  ),
-                  leading: log.level == ErrorLoggingLevel.expected ? const Icon(Icons.bug_report) : const Icon(Icons.bug_report), // FIXME
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        child: Column(
-                          children: <Widget>[
-                            Text(log.datetime.toString()),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
-                              child: Text("Error", style: Theme.of(context).textTheme.headline),
-                            ),
-                            Text(log.error.toString()),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
-                              child: Text("Severity", style: Theme.of(context).textTheme.headline),
-                            ),
-                            Text(log.level.toString()),
-                            Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 16, 16, 8.0),
-                              child: Text("Stack trace", style: Theme.of(context).textTheme.headline),
-                            ),
-                            Text(log?.stacktrace.toString() ?? ""),
-                          ],
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                        ),
-                      ),
-                    )
-                  ],
-                );
-//                return ListTile(
-//                  title: Text(log.error.toString()),
-//                  subtitle: Text(log.datetime.toString()),
-////                  log?.stacktrace
-//                  // TODO: icon depends on level
-//                );
-              }
-
-              return null; // FIXME
-            },
-          );
-        }
-      ),
-    );
-  }
-}
-/// ListView.separated(
-///   itemCount: 25,
-///   separatorBuilder: (BuildContext context, int index) => Divider(),
-///   itemBuilder: (BuildContext context, int index) {
-///     return ListTile(
-///       title: Text('item $index'),
-///     );
-///   },
-/// )

@@ -1,6 +1,7 @@
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/widgets/core/core.dart';
+import 'package:diet_driven/widgets/font_awesome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
