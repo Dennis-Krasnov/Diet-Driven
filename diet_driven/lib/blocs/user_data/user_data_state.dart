@@ -1,5 +1,4 @@
 import 'package:built_value/built_value.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
@@ -34,7 +33,7 @@ abstract class UserDataUnauthenticated implements UserDataState, Built<UserDataU
 /// Application.
 abstract class UserDataLoaded implements UserDataState, Built<UserDataLoaded, UserDataLoadedBuilder> {
   /// Firebase authentication user.
-  FirebaseUser get authentication;
+  Authentication get authentication;
 
   /// Read-only user metadata.
   UserDocument get userDocument; // TODO: accepted terms

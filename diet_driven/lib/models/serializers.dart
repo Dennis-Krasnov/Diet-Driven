@@ -15,6 +15,7 @@ part 'serializers.g.dart';
   Page,
 
 //  UserData,
+  Authentication,
   UserDocument,
   Settings,
   SubscriptionType,

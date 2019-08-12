@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:built_value/built_value.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
@@ -20,7 +19,7 @@ abstract class InitUserData implements UserDataEvent, Built<InitUserData, InitUs
 
 /// Reactively updates current [authentication], [userDocument], [settings], [subscription].
 abstract class RemoteUserDataArrived implements UserDataEvent, Built<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
-  FirebaseUser get authentication;
+  Authentication get authentication;
 
   UserDocument get userDocument;
 

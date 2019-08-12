@@ -1,12 +1,13 @@
 // TODO: place in logical subdirectories
 library models;
 
+export 'authentication.dart';
 export 'configuration.dart';
 export 'diet.dart';
 export 'food_diary_day.dart';
+export 'food_logging_tab.dart';
 export 'food_record.dart';
 export 'food_record_result.dart';
-export 'food_logging_tab.dart';
 export 'nutrient.dart';
 export 'page.dart';
 export 'settings.dart';

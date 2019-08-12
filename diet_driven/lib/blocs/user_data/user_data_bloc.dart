@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 import 'package:merge_map/merge_map.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
@@ -35,25 +34,26 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     if (event is InitUserData) {
       assert(currentState is UserDataUninitialized);
 
-      final auth$ = Observable<FirebaseUser>(userRepository.authStateChanged$());
+      final auth$ = Observable<Authentication>(userRepository.authStateChanged$());
 
       final onboard$ = auth$
-        .where((user) => user == null)
+        .where((auth) => auth == null)
         .mapTo<UserDataEvent>(OnboardUser());
 
       // TODO: retry x times, with delay between each attempt
       final dataArrival$ = auth$
-        .where((user) => user != null)
-        .switchMap<UserDataEvent>((user) => CombineLatestStream.combine4(
-          userRepository.userDocument$(user.uid),
+        .where((auth) => auth != null)
+        .switchMap<UserDataEvent>((auth) => CombineLatestStream.combine4(
+          userRepository.userDocument$(auth.uid),
           settingsRepository.defaultSettings$(),
-          settingsRepository.userSettings$(user.uid),
+          settingsRepository.userSettings$(auth.uid),
           Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
           (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
-            ..authentication = user
+            ..authentication = auth.toBuilder()
             ..userDocument = userDocument.toBuilder()
             ..settings = _mergeSettings(userSettings, defaultSettings).toBuilder()
-            ..userSettings = userSettings.toBuilder()
+            // userSettings may be null due to missing firestore document
+            ..userSettings = userSettings?.toBuilder() ?? SettingsBuilder()
             ..subscription = subscriptionType
           ),
         ))
@@ -67,7 +67,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
     if (event is RemoteUserDataArrived) {
       yield UserDataLoaded((b) => b
-        ..authentication = event.authentication
+        ..authentication = event.authentication.toBuilder()
         ..userDocument = event.userDocument.toBuilder()
         ..settings = event.settings.toBuilder()
         ..userSettings = event.userSettings.toBuilder()
@@ -148,6 +148,13 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   /// Merges user [Settings] with default [Settings] field-by-field.
   /// Default settings are used unless explicitly overwritten by user's custom settings.
   Settings _mergeSettings(Settings userSettings, Settings defaultSettings) {
+    assert(defaultSettings != null);
+
+    // userSettings may be null due to missing firestore document
+    if (userSettings == null) {
+      return defaultSettings;
+    }
+
     // Serialize settings into JSON
     final jsonSettings = jsonSerializers.serialize(userSettings);
     final jsonDefaultSettings = jsonSerializers.serialize(defaultSettings);

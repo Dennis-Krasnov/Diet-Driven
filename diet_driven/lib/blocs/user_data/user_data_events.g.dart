@@ -60,7 +60,7 @@ class InitUserDataBuilder
 
 class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   @override
-  final FirebaseUser authentication;
+  final Authentication authentication;
   @override
   final UserDocument userDocument;
   @override
@@ -148,9 +148,10 @@ class RemoteUserDataArrivedBuilder
     implements Builder<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
   _$RemoteUserDataArrived _$v;
 
-  FirebaseUser _authentication;
-  FirebaseUser get authentication => _$this._authentication;
-  set authentication(FirebaseUser authentication) =>
+  AuthenticationBuilder _authentication;
+  AuthenticationBuilder get authentication =>
+      _$this._authentication ??= new AuthenticationBuilder();
+  set authentication(AuthenticationBuilder authentication) =>
       _$this._authentication = authentication;
 
   UserDocumentBuilder _userDocument;
@@ -178,7 +179,7 @@ class RemoteUserDataArrivedBuilder
 
   RemoteUserDataArrivedBuilder get _$this {
     if (_$v != null) {
-      _authentication = _$v.authentication;
+      _authentication = _$v.authentication?.toBuilder();
       _userDocument = _$v.userDocument?.toBuilder();
       _settings = _$v.settings?.toBuilder();
       _userSettings = _$v.userSettings?.toBuilder();
@@ -207,7 +208,7 @@ class RemoteUserDataArrivedBuilder
     try {
       _$result = _$v ??
           new _$RemoteUserDataArrived._(
-              authentication: authentication,
+              authentication: authentication.build(),
               userDocument: userDocument.build(),
               settings: settings.build(),
               userSettings: userSettings.build(),
@@ -215,6 +216,8 @@ class RemoteUserDataArrivedBuilder
     } catch (_) {
       String _$failedField;
       try {
+        _$failedField = 'authentication';
+        authentication.build();
         _$failedField = 'userDocument';
         userDocument.build();
         _$failedField = 'settings';

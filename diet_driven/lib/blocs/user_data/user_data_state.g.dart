@@ -211,7 +211,7 @@ class UserDataUnauthenticatedBuilder
 
 class _$UserDataLoaded extends UserDataLoaded {
   @override
-  final FirebaseUser authentication;
+  final Authentication authentication;
   @override
   final UserDocument userDocument;
   @override
@@ -293,9 +293,10 @@ class UserDataLoadedBuilder
     implements Builder<UserDataLoaded, UserDataLoadedBuilder> {
   _$UserDataLoaded _$v;
 
-  FirebaseUser _authentication;
-  FirebaseUser get authentication => _$this._authentication;
-  set authentication(FirebaseUser authentication) =>
+  AuthenticationBuilder _authentication;
+  AuthenticationBuilder get authentication =>
+      _$this._authentication ??= new AuthenticationBuilder();
+  set authentication(AuthenticationBuilder authentication) =>
       _$this._authentication = authentication;
 
   UserDocumentBuilder _userDocument;
@@ -323,7 +324,7 @@ class UserDataLoadedBuilder
 
   UserDataLoadedBuilder get _$this {
     if (_$v != null) {
-      _authentication = _$v.authentication;
+      _authentication = _$v.authentication?.toBuilder();
       _userDocument = _$v.userDocument?.toBuilder();
       _settings = _$v.settings?.toBuilder();
       _userSettings = _$v.userSettings?.toBuilder();
@@ -352,7 +353,7 @@ class UserDataLoadedBuilder
     try {
       _$result = _$v ??
           new _$UserDataLoaded._(
-              authentication: authentication,
+              authentication: authentication.build(),
               userDocument: userDocument.build(),
               settings: settings.build(),
               userSettings: userSettings.build(),
@@ -360,6 +361,8 @@ class UserDataLoadedBuilder
     } catch (_) {
       String _$failedField;
       try {
+        _$failedField = 'authentication';
+        authentication.build();
         _$failedField = 'userDocument';
         userDocument.build();
         _$failedField = 'settings';

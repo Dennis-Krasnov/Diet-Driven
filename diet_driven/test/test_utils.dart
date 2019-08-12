@@ -1,5 +1,5 @@
 import 'package:diet_driven/blocs/bloc_utils.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser, FirebaseAuth;
+import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter_test/flutter_test.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/mockito.dart';
@@ -26,7 +26,7 @@ class MockUserDataBlock extends Mock implements UserDataBloc {}
 
 /// Mock Firestore
 class FirebaseAuthMock extends Mock implements FirebaseAuth {}
-class FirebaseUserMock extends Mock implements FirebaseUser {}
+//class FirebaseUserMock extends Mock implements FirebaseUser {}
 //class GoogleSignInAccountMock extends Mock implements GoogleSignInAccount {}
 //class GoogleSignInMock extends Mock implements GoogleSignIn {}
 

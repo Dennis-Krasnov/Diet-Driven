@@ -8,10 +8,16 @@ import 'package:diet_driven/models/models.dart';
 
 /// Data access object for authentication and user data.
 class UserRepository {
-  /// Streams [FirebaseUser] authentication status using `firebase_auth` library.
+  /// Streams [Authentication] authentication status using `firebase_auth` library.
   ///
   /// Returns [null] if unauthenticated.
-  Stream<FirebaseUser> authStateChanged$() => FirebaseAuth.instance.onAuthStateChanged;
+  Stream<Authentication> authStateChanged$() => FirebaseAuth.instance.onAuthStateChanged.map((user) => Authentication((b) => b
+    ..uid = user.uid
+    ..email = user.email
+    ..displayName = user.displayName
+    ..isAnonymous = user.isAnonymous
+    ..isEmailVerified = user.isEmailVerified
+  ));
 
   /// Signs in anonymously using `firebase_auth` library.
   ///
