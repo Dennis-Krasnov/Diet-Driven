@@ -3,6 +3,8 @@ import 'package:diet_driven/widgets/message/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+enum FoodDiaryPageOverflowActions { settings }
+
 class FoodDiaryPage extends StatefulWidget {
   @override
   _FoodDiaryPageState createState() => _FoodDiaryPageState();
@@ -16,6 +18,8 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
   Widget build(BuildContext context) {
     final userId = (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid;
 
+    // TODO: show dummy diary page while uninitialized
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Diary"),
@@ -25,12 +29,23 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
             icon: const Icon(Icons.calendar_today),
             onPressed: () => null, //controller.animateToPage(124, duration: const Duration(seconds: 1), curve: const ElasticInCurve())
           ),
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
-              ..deepLink = DiarySettingsDeepLink()
-            )),
-          ),
+          PopupMenuButton<FoodDiaryPageOverflowActions>(
+            onSelected: (FoodDiaryPageOverflowActions result) {
+              switch(result) {
+                case FoodDiaryPageOverflowActions.settings:
+                  BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings((b) => b
+                    ..deepLink = DiarySettingsDeepLink()
+                  ));
+                  break;
+              }
+            },
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<FoodDiaryPageOverflowActions>>[
+              const PopupMenuItem<FoodDiaryPageOverflowActions>(
+                value: FoodDiaryPageOverflowActions.settings,
+                child: Text("Diary settings"),
+              ),
+            ]
+          )
         ],
       ),
       body: PageView.builder(

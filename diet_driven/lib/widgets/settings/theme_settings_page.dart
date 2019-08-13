@@ -5,6 +5,8 @@ import 'package:flutter_material_color_picker/flutter_material_color_picker.dart
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/completer.dart';
 
+enum ThemeSettingsPageOverflowActions { resetSettings }
+
 class ThemeSettingsPage extends StatelessWidget {
   /// Primary colour options.
   final primaryColourOptions = const <Color>[
@@ -31,6 +33,21 @@ class ThemeSettingsPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: const Text("Theme Settings"),
+            actions: <Widget>[
+              PopupMenuButton<ThemeSettingsPageOverflowActions>(
+                onSelected: (ThemeSettingsPageOverflowActions result) {
+                  if (result == ThemeSettingsPageOverflowActions.resetSettings) {
+                    // TODO
+                  }
+                },
+                itemBuilder: (BuildContext context) => <PopupMenuEntry<ThemeSettingsPageOverflowActions>>[
+                  const PopupMenuItem<ThemeSettingsPageOverflowActions>(
+                    value: ThemeSettingsPageOverflowActions.resetSettings,
+                    child: Text('Reset theme settings'),
+                  ),
+                ]
+              )
+            ],
             // TODO: reset to defaults
           ),
           body: SafeArea(
@@ -65,12 +82,6 @@ class ThemeSettingsPage extends StatelessWidget {
                     // Default colour options
                     ...primaryColourOptions
                   ],
-                ),
-
-                FlatButton(
-                  child: const Text("Reset theme settings"),
-                  onPressed: () => null, // TODO: delete theme settings document for user
-                  // TODO: make icon button in app bar?
                 ),
               ],
             )

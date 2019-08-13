@@ -1,94 +1,189 @@
-void main() {
+import 'dart:async';
 
+import 'package:built_collection/built_collection.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mockito/mockito.dart';
+
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+
+import '../test_utils.dart';
+
+void main() {
+  UserDataBloc userDataBloc;
+
+  /// Mocks
+  UserRepository userRepository;
+  SettingsRepository settingsRepository;
+  Completer<void> completer;
+
+  /// Data
+  final user = Authentication((b) => b
+    ..uid = "1234"
+    ..isAnonymous = true
+    ..isEmailVerified = false
+  );
+
+  final userDocument = UserDocument();
+
+  final Settings settingsFull = Settings((b) => b
+    ..navigationSettings = NavigationSettings((b) => b
+      ..defaultPage = Page.reports
+      ..bottomNavigationPages = ListBuilder(<Page>[
+        Page.reports,
+        Page.diary,
+        Page.logging,
+      ])
+    ).toBuilder()
+    ..themeSettings = ThemeSettings((b) => b
+      ..darkMode = false
+      ..primaryColour = "dark blue"
+    ).toBuilder()
+  );
+
+  final expectedState = <UserDataState>[
+    UserDataUninitialized(),
+    UserDataUnauthenticated(),
+    UserDataLoaded((b) => b
+      ..authentication = user.toBuilder()
+      ..userDocument = UserDocumentBuilder()
+      ..settings = settingsFull.toBuilder()
+      ..userSettings = SettingsBuilder()
+      ..subscription = SubscriptionType.all_access
+    ),
+    UserDataUnauthenticated(),
+  ];
+
+  /// Configuration
+  setUp(() {
+    userRepository = MockUserRepository();
+    settingsRepository = MockSettingsRepository();
+    completer = Completer();
+
+    when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
+      Future.value(),
+      Future.value(user),
+      Future.delayed(ticks(3)),
+    ]).asBroadcastStream());
+    when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
+    when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
+      Future.value(userDocument),
+      Future.delayed(ticks(2), () => userDocument), // Duplicate
+    ]));
+    when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsFull]));
+    when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
+
+    userDataBloc = UserDataBloc(
+      userRepository: userRepository,
+      settingsRepository: settingsRepository,
+    );
+  });
+
+  tearDown(() {
+    userDataBloc?.dispose();
+  });
+
+  /// Tests
+  group("Update dark mode", () {
+    test("Sucessfully update", () async {
+      expectLater(
+        userDataBloc.state,
+        emitsInOrder(expectedState),
+      ).then((_) {
+        final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
+          ..darkMode = true
+        );
+
+        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
+        expect(completer.isCompleted, true);
+      });
+
+      // Wait for bloc is fully initialized
+      userDataBloc.dispatch(InitUserData());
+      await Future<void>.delayed(ticks(1));
+
+      userDataBloc.dispatch(UpdateDarkMode((b) => b
+        ..darkMode = true
+        ..completer = completer
+      ));
+    });
+
+    test("Fail on update error", () async {
+      // TODO: making throw a lambda no longer throws in-place!!!
+      when(settingsRepository.replaceSettings(any, any)).thenThrow(() => Exception("Update failed"));
+
+      expectLater(
+        userDataBloc.state,
+        emitsInOrder(expectedState),
+      ).then((_) {
+        final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
+          ..darkMode = true
+        );
+
+        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
+        expect(completer.isCompleted, false);
+      });
+
+      // Wait for bloc is fully initialized
+      userDataBloc.dispatch(InitUserData());
+      await Future<void>.delayed(ticks(1));
+
+      userDataBloc.dispatch(UpdateDarkMode((b) => b
+        ..darkMode = true
+        ..completer = completer
+      ));
+    });
+  });
+
+  group("Update primary colour", () {
+    test("Sucessfully update", () async {
+      expectLater(
+        userDataBloc.state,
+        emitsInOrder(expectedState),
+      ).then((_) {
+        final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
+          ..primaryColour = "0xffb76b01"
+        );
+
+        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
+        expect(completer.isCompleted, true);
+      });
+
+      // Wait for bloc is fully initialized
+      userDataBloc.dispatch(InitUserData());
+      await Future<void>.delayed(ticks(1));
+
+      userDataBloc.dispatch(UpdatePrimaryColour((b) => b
+        ..colourValue = 0xffb76b01
+        ..completer = completer
+      ));
+    });
+
+    test("Fail on update error", () async {
+      // TODO: making throw a lambda no longer throws in-place!!!
+      when(settingsRepository.replaceSettings(any, any)).thenThrow(() => Exception("Update failed"));
+
+      expectLater(
+        userDataBloc.state,
+        emitsInOrder(expectedState),
+      ).then((_) {
+        final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
+          ..primaryColour = "0x00ffff00" // Converts to lower case
+        );
+
+        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
+        expect(completer.isCompleted, false);
+      });
+
+      // Wait for bloc is fully initialized
+      userDataBloc.dispatch(InitUserData());
+      await Future<void>.delayed(ticks(1));
+
+      userDataBloc.dispatch(UpdatePrimaryColour((b) => b
+        ..colourValue = 0xFFFF00
+        ..completer = completer
+      ));
+    });
+  });
 }
-//import 'package:flutter_test/flutter_test.dart';
-//
-//import 'package:diet_driven/blocs/blocs.dart';
-//import 'package:diet_driven/repositories/repositories.dart';
-//import 'package:mockito/mockito.dart';
-//
-//import '../test_utils.dart';
-//
-//void main() {
-//  SettingsEditBloc settingsEditBloc;
-//
-//  /// Mocks
-//  UserRepository userRepository;
-//
-//  /// Data
-//  const String userId = "2da87e9305069f1d";
-//
-//  setUp(() {
-//    userRepository = MockUserRepository();
-//
-//    settingsEditBloc = SettingsEditBloc(
-//      userId: userId,
-//      userRepository: userRepository
-//    );
-//  });
-//
-//  test("Initialize properly", () {
-//    expect(settingsEditBloc.initialState, SettingsEditLoaded());
-//  });
-//
-//  test("Update dark mode succeeds", () {
-//    // Mock data
-////    when(userRepository.updateDarkMode(userId, true)).thenThrow(Exception("ERROR"));
-//
-////    when(userRepository.updateDarkMode(userId, any)).thenAnswer((_) => Future.delayed(Duration(milliseconds: 10)));
-//    when(userRepository.updateDarkMode(userId, any)).thenAnswer((_) => Future.value(null));
-//    settingsEditBloc = SettingsEditBloc(
-//        userId: userId,
-//        userRepository: userRepository
-//    );
-//
-////    when(userRepository.updateDarkMode(
-////      argThat(startsWith("invalid")),
-////      argThat(startsWith("invalid"))
-////    )).thenThrow(Exception("ERROR"));
-//
-//    // State changes
-//    expectLater(
-//      settingsEditBloc.state,
-//      emitsInOrder(<SettingsEditState>[
-//        SettingsEditLoaded(),
-//        SettingsEditLoading(),
-//        SettingsEditLoaded(),
-//        SettingsEditLoading(),
-//        SettingsEditLoaded(),
-//      ])
-//    ).then((_) {
-////      // Repository calls
-//      verify(userRepository.updateDarkMode(userId, true)).called(2);
-//      verify(userRepository.updateDarkMode(userId, false)).called(1);
-////      verify(userRepository.updateDarkMode(userId, false)).called(1);
-////      verifyInOrder<void>([
-////        userRepository.updateDarkMode(userId, true),
-////        userRepository.updateDarkMode(userId, false),
-////        userRepository.updateDarkMode(userId, true),
-////      ]);
-//    });
-//
-////    verify(userRepository.updateDarkMode(userId, false)).called(1);
-//
-////    verify(userRepository.updateDarkMode(userId, true)).called(2);
-////    verify(userRepository.updateDarkMode(userId, false)).called(1);
-//
-//    // Actions
-//    settingsEditBloc.dispatch(UpdateDarkMode((b) => b
-//      ..darkMode = true
-////      ..completer = MockCompleter TODO
-//    )); // TODO: check completers!
-//    settingsEditBloc.dispatch(UpdateDarkMode((b) => b..darkMode = false));
-////    settingsEditBloc.dispatch(UpdateDarkMode((b) => b..darkMode = true));
-//
-////    verify(userRepository.updateDarkMode(userId, false)).called(1);
-//  });
-//
-//}
-//
-//
-//
-////argThat(startsWith("invalid")),
-////argThat(startsWith("invalid"))
-//

@@ -1,4 +1,3 @@
-//import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -27,6 +26,8 @@ void main() {
     ..isAnonymous = true
     ..isEmailVerified = false
   );
+
+  final userDocument = UserDocument();
 
   final settingsLight = Settings((b) => b
     ..themeSettings = ThemeSettings((b) => b
@@ -60,10 +61,12 @@ void main() {
     expect(userDataBloc.initialState, UserDataUninitialized());
   });
 
+  // TODO: verify that repository.streams() are called just once
+
   group("React to streams", () {
     test("Authentication stream", () {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA, null, userB]).asBroadcastStream());
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([UserDocument()]));
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 
@@ -101,8 +104,8 @@ void main() {
       ]).asBroadcastStream());
       // TODO: different values for user document
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
-        Future.value(UserDocument()),
-        Future.delayed(ticks(2), () => UserDocument()), // Duplicate
+        Future.value(userDocument),
+        Future.delayed(ticks(2), () => userDocument), // Duplicate
       ]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromFutures([
         Future.value(settingsLight),
@@ -113,26 +116,26 @@ void main() {
       // TODO: also mock subscription arriving at different times
 
       expectLater(
-          userDataBloc.state,
-          emitsInOrder(<UserDataState>[
-            UserDataUninitialized(),
-            UserDataUnauthenticated(),
-            UserDataLoaded((b) => b
-              ..authentication = userA.toBuilder()
-              ..userDocument = UserDocumentBuilder()
-              ..settings = settingsLight.toBuilder()
-              ..userSettings = SettingsBuilder()
-              ..subscription = SubscriptionType.all_access
-            ),
-            UserDataLoaded((b) => b
-              ..authentication = userA.toBuilder()
-              ..userDocument = UserDocumentBuilder()
-              ..settings = settingsDark.toBuilder()
-              ..userSettings = SettingsBuilder()
-              ..subscription = SubscriptionType.all_access
-            ),
-            UserDataUnauthenticated(),
-          ])
+        userDataBloc.state,
+        emitsInOrder(<UserDataState>[
+          UserDataUninitialized(),
+          UserDataUnauthenticated(),
+          UserDataLoaded((b) => b
+            ..authentication = userA.toBuilder()
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsLight.toBuilder()
+            ..userSettings = SettingsBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+          UserDataLoaded((b) => b
+            ..authentication = userA.toBuilder()
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsDark.toBuilder()
+            ..userSettings = SettingsBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+          UserDataUnauthenticated(),
+        ])
       );
 
       userDataBloc.dispatch(InitUserData());
@@ -143,23 +146,23 @@ void main() {
   group("Merge user and default settings", () {
     test("Exclusively use default settings", () {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA]).asBroadcastStream());
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([UserDocument()]));
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 
       expectLater(
-          userDataBloc.state,
-          emitsInOrder(<UserDataState>[
-            UserDataUninitialized(),
-            UserDataUnauthenticated(),
-            UserDataLoaded((b) => b
-              ..authentication = userA.toBuilder()
-              ..userDocument = UserDocumentBuilder()
-              ..settings = settingsLight.toBuilder()
-              ..userSettings = SettingsBuilder()
-              ..subscription = SubscriptionType.all_access
-            ),
-          ])
+        userDataBloc.state,
+        emitsInOrder(<UserDataState>[
+          UserDataUninitialized(),
+          UserDataUnauthenticated(),
+          UserDataLoaded((b) => b
+            ..authentication = userA.toBuilder()
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsLight.toBuilder()
+            ..userSettings = SettingsBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+        ])
       );
 
       userDataBloc.dispatch(InitUserData());
@@ -167,7 +170,7 @@ void main() {
 
     test("Use mix of user and default settings", () {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA]).asBroadcastStream());
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([UserDocument()]));
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([Settings((b) => b
         ..themeSettings = ThemeSettings((b) => b
           ..darkMode = false
@@ -201,7 +204,7 @@ void main() {
 
     test("Exclusively use user settings", () {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA]).asBroadcastStream());
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([UserDocument()]));
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([settingsDark]));
 
@@ -232,7 +235,7 @@ void main() {
         Future.delayed(ticks(3)),
       ]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
-        Future.value(UserDocument()),
+        Future.value(userDocument),
         Future.delayed(ticks(1), () => Future.error(Exception("User document failed"))), // Ends at first error
         Future.delayed(ticks(2), () => Future.error(Exception("User document failed 2"))),
       ]));
@@ -265,7 +268,7 @@ void main() {
         Future.value(userA),
         Future.delayed(ticks(3)),
       ]).asBroadcastStream());
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([UserDocument()]));
+      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromFutures([
         Future.value(settingsLight),
         Future.delayed(ticks(1), () => Future.error(Exception("Settings failed"))), // Ends at first error
@@ -274,20 +277,20 @@ void main() {
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 
       expectLater(
-          userDataBloc.state,
-          emitsInOrder(<dynamic>[
-            UserDataUninitialized(),
-            UserDataUnauthenticated(),
-            UserDataLoaded((b) => b
-              ..authentication = userA.toBuilder()
-              ..userDocument = UserDocumentBuilder()
-              ..settings = settingsLight.toBuilder()
-              ..userSettings = SettingsBuilder()
-              ..subscription = SubscriptionType.all_access
-            ),
-            BuiltErrorMatcher("Settings failed"),
-            UserDataUnauthenticated(),
-          ])
+        userDataBloc.state,
+        emitsInOrder(<dynamic>[
+          UserDataUninitialized(),
+          UserDataUnauthenticated(),
+          UserDataLoaded((b) => b
+            ..authentication = userA.toBuilder()
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsLight.toBuilder()
+            ..userSettings = SettingsBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+          BuiltErrorMatcher("Settings failed"),
+          UserDataUnauthenticated(),
+        ])
       );
 
       userDataBloc.dispatch(InitUserData());
