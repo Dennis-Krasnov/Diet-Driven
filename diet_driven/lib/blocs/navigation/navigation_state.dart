@@ -25,8 +25,6 @@ abstract class NavigationState {
 abstract class NavigationUninitialized implements NavigationState, Built<NavigationUninitialized, NavigationUninitializedBuilder> {
   factory NavigationUninitialized([void Function(NavigationUninitializedBuilder b)]) = _$NavigationUninitialized;
   NavigationUninitialized._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 ///   ########  ####    ###    ########  ##    ##

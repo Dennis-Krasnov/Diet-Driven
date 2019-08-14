@@ -13,8 +13,6 @@ abstract class ConfigurationState {}
 abstract class ConfigurationUninitialized implements ConfigurationState, Built<ConfigurationUninitialized, ConfigurationUninitializedBuilder> {
   factory ConfigurationUninitialized([void Function(ConfigurationUninitializedBuilder b)]) = _$ConfigurationUninitialized;
   ConfigurationUninitialized._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Global error page.

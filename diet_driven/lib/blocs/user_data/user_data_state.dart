@@ -11,8 +11,6 @@ abstract class UserDataState {}
 abstract class UserDataUninitialized implements UserDataState, Built<UserDataUninitialized, UserDataUninitializedBuilder> {
   factory UserDataUninitialized([void Function(UserDataUninitializedBuilder b)]) = _$UserDataUninitialized;
   UserDataUninitialized._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Global error page.
@@ -26,8 +24,6 @@ abstract class UserDataFailed implements BuiltError, UserDataState, Built<UserDa
 abstract class UserDataUnauthenticated implements UserDataState, Built<UserDataUnauthenticated, UserDataUnauthenticatedBuilder> {
   factory UserDataUnauthenticated([void Function(UserDataUnauthenticatedBuilder b)]) = _$UserDataUnauthenticated;
   UserDataUnauthenticated._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Application.

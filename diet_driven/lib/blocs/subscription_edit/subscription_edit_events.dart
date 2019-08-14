@@ -21,6 +21,4 @@
 //abstract class Unsubscribe with Completable implements SubscriptionEditEvent, Built<Unsubscribe, UnsubscribeBuilder> {
 //  factory Unsubscribe([void Function(UnsubscribeBuilder b)]) = _$Unsubscribe;
 //  Unsubscribe._();
-//
-//  @override String toString() => runtimeType.toString();
 //}

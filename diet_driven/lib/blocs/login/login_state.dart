@@ -6,24 +6,20 @@ abstract class LoginState {}
 
 /// initial state of the LoginForm
 abstract class LoginInitial with LoginState implements Built<LoginInitial, LoginInitialBuilder> {
-  LoginInitial._();
   factory LoginInitial([void Function(LoginInitialBuilder b)]) = _$LoginInitial;
-
-  @override String toString() => runtimeType.toString();
+  LoginInitial._();
 }
 
 /// when we are validating credentials
 abstract class LoginLoading with LoginState implements Built<LoginLoading, LoginLoadingBuilder> {
-  LoginLoading._();
   factory LoginLoading([void Function(LoginLoadingBuilder b)]) = _$LoginLoading;
-
-  @override String toString() => runtimeType.toString();
+  LoginLoading._();
 }
 
 /// login attempt has failed.
 abstract class LoginFailure with LoginState implements Built<LoginFailure, LoginFailureBuilder> { // TODO: rename
   String get error;
 
-  LoginFailure._();
   factory LoginFailure([void Function(LoginFailureBuilder b)]) = _$LoginFailure;
+  LoginFailure._();
 }

@@ -10,8 +10,6 @@ abstract class FoodLoggingTabState {}
 abstract class FoodLoggingTabUninitialized with FoodLoggingTabState implements Built<FoodLoggingTabUninitialized, FoodLoggingTabUninitializedBuilder> {
   FoodLoggingTabUninitialized._();
   factory FoodLoggingTabUninitialized([void Function(FoodLoggingTabUninitializedBuilder b)]) = _$FoodLoggingTabUninitialized;
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Food record result list.

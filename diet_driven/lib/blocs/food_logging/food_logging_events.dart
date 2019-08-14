@@ -53,8 +53,6 @@ abstract class ReplaceSelected with FoodLoggingEvent implements Built<ReplaceSel
 abstract class StartMultiSelect with FoodLoggingEvent implements Built<StartMultiSelect, StartMultiSelectBuilder> {
   factory StartMultiSelect([void Function(StartMultiSelectBuilder b)]) = _$StartMultiSelect;
   StartMultiSelect._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Exits multi-selection mode, loses all current selected food records.
@@ -62,6 +60,4 @@ abstract class StartMultiSelect with FoodLoggingEvent implements Built<StartMult
 abstract class CancelMultiSelect with FoodLoggingEvent implements Built<CancelMultiSelect, CancelMultiSelectBuilder> {
   factory CancelMultiSelect([void Function(CancelMultiSelectBuilder b)]) = _$CancelMultiSelect;
   CancelMultiSelect._();
-
-  @override String toString() => runtimeType.toString();
 }

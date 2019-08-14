@@ -30,6 +30,4 @@ abstract class DeleteFoodRecord with Completable, FoodRecordEditEvent implements
 abstract class SaveFoodRecord with FoodRecordEditEvent implements Built<SaveFoodRecord, SaveFoodRecordBuilder> {
   SaveFoodRecord._();
   factory SaveFoodRecord([void Function(SaveFoodRecordBuilder b)]) = _$SaveFoodRecord;
-
-  @override String toString() => runtimeType.toString();
 }

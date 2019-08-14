@@ -9,8 +9,6 @@ abstract class FoodDiaryDayState {}
 abstract class FoodDiaryDayUninitialized implements FoodDiaryDayState, Built<FoodDiaryDayUninitialized, FoodDiaryDayUninitializedBuilder> {
   factory FoodDiaryDayUninitialized([void Function(FoodDiaryDayUninitializedBuilder) updates]) = _$FoodDiaryDayUninitialized;
   FoodDiaryDayUninitialized._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Single-day food diary view.

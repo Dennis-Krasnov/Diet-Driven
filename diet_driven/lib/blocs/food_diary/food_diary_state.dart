@@ -12,8 +12,6 @@ abstract class FoodDiaryState {}
 abstract class FoodDiaryUninitialized implements FoodDiaryState, Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
   factory FoodDiaryUninitialized([void Function(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
   FoodDiaryUninitialized._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Error page.

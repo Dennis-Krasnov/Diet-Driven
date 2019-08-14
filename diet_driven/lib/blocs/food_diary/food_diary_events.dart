@@ -14,8 +14,6 @@ abstract class FoodDiaryEvent {}
 abstract class InitFoodDiary implements FoodDiaryEvent, Built<InitFoodDiary, InitFoodDiaryBuilder> {
   factory InitFoodDiary([void Function(InitFoodDiaryBuilder) updates]) = _$InitFoodDiary;
   InitFoodDiary._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Reactively updates current [diaryDays], [diets].

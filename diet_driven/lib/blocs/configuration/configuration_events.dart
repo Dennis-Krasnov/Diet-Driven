@@ -13,8 +13,6 @@ abstract class ConfigurationEvent {}
 abstract class InitConfiguration implements ConfigurationEvent, Built<InitConfiguration, InitConfigurationBuilder> {
   factory InitConfiguration([void Function(InitConfigurationBuilder) updates]) = _$InitConfiguration;
   InitConfiguration._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Reactively updates current [remoteConfiguration], [packageInfo], [connectivity].

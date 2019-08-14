@@ -13,8 +13,6 @@ abstract class UserDataEvent {}
 abstract class InitUserData implements UserDataEvent, Built<InitUserData, InitUserDataBuilder> {
   factory InitUserData([void Function(InitUserDataBuilder) updates]) = _$InitUserData;
   InitUserData._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 /// Reactively updates current [authentication], [userDocument], [settings], [subscription].
@@ -43,8 +41,6 @@ abstract class UserDataError implements BuiltError, UserDataEvent, Built<UserDat
 abstract class OnboardUser implements UserDataEvent, Built<OnboardUser, OnboardUserBuilder> {
   factory OnboardUser([void Function(OnboardUserBuilder b)]) = _$OnboardUser;
   OnboardUser._();
-
-  @override String toString() => runtimeType.toString();
 }
 
 ///    ######  ######## ######## ######## #### ##    ##  ######    ######
