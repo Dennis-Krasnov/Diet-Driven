@@ -99,7 +99,7 @@ void main() {
         expect(completer.isCompleted, true);
       });
 
-      // Wait for bloc is fully initialized
+      // Wait for bloc to be fully initialized
       userDataBloc.dispatch(InitUserData());
       await Future<void>.delayed(ticks(1));
 
@@ -125,7 +125,7 @@ void main() {
         expect(completer.isCompleted, false);
       });
 
-      // Wait for bloc is fully initialized
+      // Wait for bloc to be fully initialized
       userDataBloc.dispatch(InitUserData());
       await Future<void>.delayed(ticks(1));
 
@@ -150,7 +150,7 @@ void main() {
         expect(completer.isCompleted, true);
       });
 
-      // Wait for bloc is fully initialized
+      // Wait for bloc to be fully initialized
       userDataBloc.dispatch(InitUserData());
       await Future<void>.delayed(ticks(1));
 
@@ -176,7 +176,7 @@ void main() {
         expect(completer.isCompleted, false);
       });
 
-      // Wait for bloc is fully initialized
+      // Wait for bloc to be fully initialized
       userDataBloc.dispatch(InitUserData());
       await Future<void>.delayed(ticks(1));
 

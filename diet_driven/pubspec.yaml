@@ -30,6 +30,7 @@ dependencies:
   # device_info
 
   ## UTILS
+  font_awesome_flutter: ^8.5.0
   ansicolor: ^1.0.2
   date_utils: ^0.1.0+2
   dio: ^2.1.13
@@ -76,22 +77,4 @@ flutter:
     - family: FiraSans
       fonts:
       - asset: fonts/Fira_Sans/FiraSans-Regular.ttf
-
-    # FONT AWESOME
-    - family: FontAwesomeBrands
-      fonts:
-        - asset: fonts/fa-brands-400.otf
-          weight: 400
-    - family: FontAwesomeLight
-      fonts:
-          - asset: fonts/fa-light-300.otf
-            weight: 300
-    - family: FontAwesomeRegular
-      fonts:
-        - asset: fonts/fa-regular-400.otf
-          weight: 400
-    - family: FontAwesomeSolid
-      fonts:
-        - asset: fonts/fa-solid-900.otf
-          weight: 900
 

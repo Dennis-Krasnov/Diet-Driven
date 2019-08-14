@@ -1,9 +1,9 @@
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/widgets/core/core.dart';
-import 'package:diet_driven/widgets/font_awesome.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class MainSettingsPage extends StatelessWidget {
   @override
@@ -19,7 +19,10 @@ class MainSettingsPage extends StatelessWidget {
 
           }
 
+          // OPTIMIZE: polymorphic method of deep link to generate path string!!! - no need to enumerate!
+
           if (state.deepLink is DiarySettingsDeepLink) {
+            // TODO: use GoToDiary.link
             Navigator.of(context).pushNamed("settings/diary", arguments: false); // FIXME state is SettingsTab doesn't work as already in settings TODO pass as argument in deep link!!
           }
 
@@ -43,38 +46,44 @@ class MainSettingsPage extends StatelessWidget {
                 child: ListView(
                   children: <Widget>[
                     const SettingsListTile(
-                      iconData: FaRegular(0xf013),
+//                      iconData: FaRegular(0xf013),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "General",
                       subtitleText: "Language, Units, Time",
                     ),
                     
                     const SettingsListTile(
-                      iconData: FaRegular(0xf007),
+//                      iconData: FaRegular(0xf007),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Account",
                       subtitleText: "Profile, Subscriptions, Import/Export data",
                     ),
                     
                     SettingsListTile(
-                      iconData: const FaRegular(0xf5d1),
+//                      iconData: const FaRegular(0xf5d1),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Diary",
                       subtitleText: "Calories, Nutrients, Meals, Logging",
                       navigationEvent: NavigateToSettings((b) => b..deepLink = DiarySettingsDeepLink()),
                     ),
                     
                     const SettingsListTile(
-                      iconData: FaRegular(0xf496),
+//                      iconData: FaRegular(0xf496),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Track",
                       subtitleText: "Measurements, Goals",
                     ),
                     
                     const SettingsListTile(
-                      iconData: FaRegular(0xf201),
+//                      iconData: FaRegular(0xf201),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Reports",
                       subtitleText: "Time intervals, ",
                     ),
                     
                     SettingsListTile(
-                      iconData: const FaRegular(0xf53f),
+//                      iconData: const FaRegular(0xf53f),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Theme",  // TODO: rename bloc, from theme to visuals?
                       subtitleText: "Navigation, Dark mode, Colour scheme",
                       chipText: "NEW",
@@ -82,25 +91,29 @@ class MainSettingsPage extends StatelessWidget {
                     ),
                     
                     const SettingsListTile(
-                      iconData: FaRegular(0xf021),
+//                      iconData: FaRegular(0xf021),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Integrations",
                       subtitleText: "Google Fit, Fitbit",
                     ),
                     
                     const SettingsListTile(
-                      iconData: FaRegular(0xf0f3),
+//                      iconData: FaRegular(0xf0f3),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Notifications",
                       subtitleText: "Google Fit, Fitbit",
                     ),
                     
                     const SettingsListTile(
-                      iconData: FaRegular(0xf460),
+//                      iconData: FaRegular(0xf460),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "Coaching",
                       subtitleText: "None",
                     ),
                     
                     const SettingsListTile(
-                      iconData: FaRegular(0xf059),
+//                      iconData: FaRegular(0xf059),
+                      iconData: FontAwesomeIcons.gamepad,
                       titleText: "About",
                       subtitleText: "Help, MIT license, Feedback",
                     ),

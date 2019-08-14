@@ -1,8 +1,8 @@
-import 'package:diet_driven/widgets/font_awesome.dart';
 import 'package:diet_driven/widgets/loading/loading.dart';
 import 'package:diet_driven/widgets/logging/logging_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
@@ -79,11 +79,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       title: Text(page.name),//, style: TextStyle(fontWeight: FontWeight.w600,)),
                       icon: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
-                        child: Icon(FaRegular(page.toFontAwesomeCode()),),
+//                        child: Icon(FaRegular(page.toFontAwesomeCode()),),
+                        child: Icon(FontAwesomeIcons.gamepad), // FIXME
                       ),
                       activeIcon: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
-                        child: Icon(FaSolid(page.toFontAwesomeCode()),),
+//                        child: Icon(FaSolid(page.toFontAwesomeCode()),),
+                        child: Icon(FontAwesomeIcons.gamepad), // FIXME
                       ),
                     )
                 ],

@@ -27,27 +27,27 @@ class Page extends EnumClass {
   static const Page logging = _$logging;
 
 
-  int toFontAwesomeCode() {
-    switch (this) {
-      case Page.diary:
-        return 0xf5d1;
-        break;
-      case Page.track:
-        return 0xf496;
-        break;
-      case Page.reports:
-        return 0xf201;
-        break;
-      case Page.settings:
-        return 0xf013; // cog
-        break;
-      case Page.logging:
-        return 0xf03a; // list
-        break;
-      default:
-        return null;
-    }
-  }
+//  int toFontAwesomeCode() {
+//    switch (this) {
+//      case Page.diary:
+//        return 0xf5d1;
+//        break;
+//      case Page.track:
+//        return 0xf496;
+//        break;
+//      case Page.reports:
+//        return 0xf201;
+//        break;
+//      case Page.settings:
+//        return 0xf013; // cog
+//        break;
+//      case Page.logging:
+//        return 0xf03a; // list
+//        break;
+//      default:
+//        return null;
+//    }
+//  }
   
   const Page._(String name) : super(name);
 
