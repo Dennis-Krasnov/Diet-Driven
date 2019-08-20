@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 currentIndex: tabIndex,
                 onTap: (index) {
                   final NavigationBloc navigationBloc = BlocProvider.of<NavigationBloc>(context);
-                  navigationBloc.dispatch(navigationBloc.pageToEvent(bottomNavPages[index]));
+                  navigationBloc.dispatch(bottomNavPages[index].navigationEvent);
                 },
                 elevation: 4,
                 iconSize: 24,

@@ -32,7 +32,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       // Go to default page if navigation bloc hasn't yet been initialized
       Observable<UserDataState>(userDataBloc.state)
         .ofType(const TypeToken<UserDataLoaded>())
-        .map<NavigationEvent>((state) => pageToEvent(state.settings.navigationSettings.defaultPage))
+        .map<NavigationEvent>((state) => state.settings.navigationSettings.defaultPage.navigationEvent)
         .first
         .then(dispatch);
     }
@@ -48,6 +48,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       yield DiaryTab((b) => b
         ..deepLink = event.deepLink
       );
+      // OPTIMIZE: dispatch ClearDeepLink from here, automatically!!
     }
 
     if (event is NavigateToTrack) {
@@ -69,23 +70,4 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     }
   }
 
-  NavigationEvent pageToEvent(Page page) {
-    switch (page) {
-      case Page.diary:
-        return NavigateToDiary();
-        break;
-      case Page.track:
-        return NavigateToTrack();
-        break;
-      case Page.reports:
-        return NavigateToReports();
-        break;
-      case Page.settings:
-        return NavigateToSettings();
-        break;
-      case Page.logging:
-        return NavigateToLogging();
-        break;
-    }
-  }
 }

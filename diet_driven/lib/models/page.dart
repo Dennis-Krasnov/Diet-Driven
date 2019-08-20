@@ -1,6 +1,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:diet_driven/blocs/blocs.dart';
 
 part 'page.g.dart';
 
@@ -26,28 +27,27 @@ class Page extends EnumClass {
   /// ...
   static const Page logging = _$logging;
 
-
-//  int toFontAwesomeCode() {
-//    switch (this) {
-//      case Page.diary:
-//        return 0xf5d1;
-//        break;
-//      case Page.track:
-//        return 0xf496;
-//        break;
-//      case Page.reports:
-//        return 0xf201;
-//        break;
-//      case Page.settings:
-//        return 0xf013; // cog
-//        break;
-//      case Page.logging:
-//        return 0xf03a; // list
-//        break;
-//      default:
-//        return null;
-//    }
-//  }
+  NavigationEvent get navigationEvent {
+    switch (this) {
+      case diary:
+        return NavigateToDiary();
+        break;
+      case track:
+        return NavigateToTrack();
+        break;
+      case reports:
+        return NavigateToReports();
+        break;
+      case settings:
+        return NavigateToSettings();
+        break;
+      case logging:
+        return NavigateToLogging();
+        break;
+      default:
+        throw UnimplementedError();
+    }
+  }
   
   const Page._(String name) : super(name);
 

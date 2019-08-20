@@ -1,126 +1,198 @@
-void main() {
+import 'package:bloc/bloc.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:flutter_test/flutter_test.dart';
 
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+import 'package:mockito/mockito.dart';
+
+import '../test_utils.dart';
+
+void main() {
+  NavigationBloc navigationBloc;
+
+  /// Mocks
+  AnalyticsRepository analyticsRepository;
+  UserDataBloc userDataBloc;
+
+  /// Data
+  final userDataStates = <UserDataState>[
+    UserDataUninitialized(),
+    UserDataUnauthenticated(),
+    // TODO: put this (with settingsFull) in utils, only rebuild settings/whatever's needed for given test
+    UserDataLoaded((b) => b
+      ..authentication = Authentication((b) => b
+        ..uid = "1234"
+        ..isAnonymous = true
+        ..isEmailVerified = false
+      ).toBuilder()
+      ..userDocument = UserDocumentBuilder()
+      ..settings = Settings((b) => b
+        ..navigationSettings = NavigationSettings((b) => b
+          ..bottomNavigationPages = ListBuilder(<Page>[Page.diary, Page.reports, Page.recipes])
+          ..defaultPage = Page.reports
+        ).toBuilder()
+      ).toBuilder()
+      ..userSettings = SettingsBuilder()
+      ..subscription = SubscriptionType.all_access
+    ),
+    // TODO: put second userDataLoaded, but with different default page??
+    UserDataUnauthenticated(),
+  ];
+
+  /// Configuration
+  setUp(() {
+    analyticsRepository = MockAnalyticsRepository();
+    userDataBloc = MockUserDataBlock();
+
+    when(userDataBloc.state).thenAnswer((_) => Stream.fromIterable(userDataStates));
+
+    navigationBloc = NavigationBloc(
+      analyticsRepository: analyticsRepository,
+      userDataBloc: userDataBloc
+    );
+  });
+
+  /// Tests
+  test("Initialize properly", () {
+    expect(navigationBloc.initialState, NavigationUninitialized());
+  });
+
+  // TODO: test analytics events for all events!!!
+  test("Navigate to default page", () {
+    expectLater(
+      navigationBloc.state,
+      emitsInOrder(<NavigationState>[
+        NavigationUninitialized(),
+        ReportsTab(),
+      ])
+    );
+
+    navigationBloc.dispatch(InitNavigation());
+  });
+
+  group("Navigate to pages", () {
+    test("Diary page", () async {
+      expectLater(
+        navigationBloc.state,
+        emitsInOrder(<NavigationState>[
+          NavigationUninitialized(),
+          ReportsTab(),
+          DiaryTab(),
+          DiaryTab((b) => b
+            ..deepLink = DateDeepLink((b) => b
+              ..date = 24
+            )
+          ),
+          DiaryTab(),
+        ])
+      );
+
+      // Wait for bloc to be fully initialized
+      navigationBloc.dispatch(InitNavigation());
+      await Future<void>.delayed(ticks(1));
+
+      navigationBloc.dispatch(NavigateToDiary());
+      navigationBloc.dispatch(NavigateToDiary((b) => b
+        ..deepLink = DateDeepLink((b) => b
+          ..date = 24
+        )
+      ));
+      navigationBloc.dispatch(ClearDeepLink());
+    });
+
+    test("Tracking page", () async {
+      expectLater(
+        navigationBloc.state,
+        emitsInOrder(<NavigationState>[
+          NavigationUninitialized(),
+          ReportsTab(),
+          TrackTab(),
+        ])
+      );
+
+      // Wait for bloc to be fully initialized
+      navigationBloc.dispatch(InitNavigation());
+      await Future<void>.delayed(ticks(1));
+
+      navigationBloc.dispatch(NavigateToTrack());
+      navigationBloc.dispatch(ClearDeepLink());
+    });
+
+    test("Reports page", () async {
+      expectLater(
+        navigationBloc.state,
+        emitsInOrder(<NavigationState>[
+          NavigationUninitialized(),
+          ReportsTab(),
+          DiaryTab(),
+          ReportsTab(),
+        ])
+      );
+
+      // Wait for bloc to be fully initialized
+      navigationBloc.dispatch(InitNavigation());
+      await Future<void>.delayed(ticks(1));
+
+      navigationBloc.dispatch(NavigateToDiary());
+      navigationBloc.dispatch(NavigateToReports());
+      navigationBloc.dispatch(ClearDeepLink());
+    });
+
+    test("Settings page", () async {
+      expectLater(
+        navigationBloc.state,
+        emitsInOrder(<NavigationState>[
+          NavigationUninitialized(),
+          ReportsTab(),
+          SettingsTab(),
+          SettingsTab((b) => b
+            ..deepLink = ProfileDeepLink()
+          ),
+          SettingsTab((b) => b
+            ..deepLink = ThemeDeepLink()
+          ),
+          SettingsTab((b) => b
+            ..deepLink = DiarySettingsDeepLink()
+          ),
+          SettingsTab(),
+        ])
+      );
+
+      // Wait for bloc to be fully initialized
+      navigationBloc.dispatch(InitNavigation());
+      await Future<void>.delayed(ticks(1));
+
+      navigationBloc.dispatch(NavigateToSettings());
+      navigationBloc.dispatch(NavigateToSettings((b) => b
+        ..deepLink = ProfileDeepLink()
+      ));
+      navigationBloc.dispatch(NavigateToSettings((b) => b
+        ..deepLink = ThemeDeepLink()
+      ));
+      navigationBloc.dispatch(NavigateToSettings((b) => b
+        ..deepLink = DiarySettingsDeepLink()
+      ));
+      navigationBloc.dispatch(ClearDeepLink());
+    });
+
+    test("Logging page", () async {
+      expectLater(
+        navigationBloc.state,
+        emitsInOrder(<NavigationState>[
+          NavigationUninitialized(),
+          ReportsTab(),
+          LoggingTab(),
+        ])
+      );
+
+      // Wait for bloc to be fully initialized
+      navigationBloc.dispatch(InitNavigation());
+      await Future<void>.delayed(ticks(1));
+
+      navigationBloc.dispatch(NavigateToLogging());
+      navigationBloc.dispatch(ClearDeepLink());
+    });
+  });
 }
-//import 'package:diet_driven/models/models.dart';
-//import 'package:diet_driven/repositories/repositories.dart';
-//import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
-//import 'package:flutter_test/flutter_test.dart';
-//import 'package:mockito/mockito.dart';
-//import 'package:rxdart/rxdart.dart';
-//
-//import 'package:diet_driven/blocs/blocs.dart';
-//
-//import '../test_utils.dart';
-//
-//void main() {
-//  NavigationBloc navigationBloc;
-//
-//  /// Mocks
-//  AnalyticsRepository analyticsRepository;
-//  UserDataBloc userDataBloc;
-//
-//  /// Data
-//  final FirebaseUser userA = FirebaseUserMock();
-//  final UserDocument userDocumentA = UserDocument((b) => b
-//    ..currentSubscription = "all"
-//  );
-//
-//  final UserDataLoaded userDataStateA = UserDataLoaded((b) => b
-//    ..authentication = userA
-//    ..userDocument = userDocumentA.toBuilder()
-//    ..settings = Settings((b) => b
-//      ..navigationSettings = NavigationSettings((b) => b
-//        ..defaultPage = Page.diet
-//      )
-//    ).toBuilder()
-//  );
-//
-//  final UserDataLoaded userDataStateB = UserDataLoaded((b) => b
-//    ..authentication = userA
-//    ..userDocument = userDocumentA.toBuilder()
-//    ..settings = Settings((b) => b
-//      ..navigationSettings = NavigationSettings((b) => b
-//        ..defaultPage = Page.recipes
-//      )
-//    ).toBuilder()
-//  );
-//
-//  setUp(() {
-//    analyticsRepository = MockAnalyticsRepository();
-//    userDataBloc = MockUserDataBlock();
-//
-//    // User stub
-//    when(userA.uid).thenReturn("1234");
-//    when(userA.email).thenReturn("example@gmail.com");
-//    when(userA.displayName).thenReturn("John Smith");
-//
-//    when(userDataBloc.state).thenAnswer((_) =>
-//      Observable<UserDataState>.fromIterable([])
-//    );
-//
-//    navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository, userDataBloc: userDataBloc);
-//  });
-//
-//  test("Initialize properly", () {
-//    expect(navigationBloc.initialState, NavigationUninitialized());
-//  });
-//
-//  test("Go to default page", () {
-//    // Only need to check logic from within the same user as switching users re-instantiates navigation bloc
-//    when(userDataBloc.state).thenAnswer((_) =>
-//      Observable<UserDataState>.fromIterable([
-//        UserDataUninitialized(),
-//        UserDataLoading(),
-//        userDataStateA,
-//        userDataStateB
-//      ])
-//    );
-//    navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository, userDataBloc: userDataBloc);
-//
-//    expectLater(
-//      navigationBloc.state,
-//      emitsInOrder(<NavigationState>[
-//        NavigationUninitialized(),
-//        NavigationLoaded((b) => b..currentPage = Page.diet),
-////        emitsDone // should succeed => timeout
-//      ])
-//    ).then((_) {
-//      verify(analyticsRepository.navigateToScreen(Page.diet.name)).called(1);
-//      // Don't go to default page unless going from uninitialized
-//      verifyNever(analyticsRepository.navigateToScreen(Page.recipes.name));
-//    });
-//  });
-//
-//  test("Navigate to page", () async {
-//    when(userDataBloc.state).thenAnswer((_) =>
-//      Observable<UserDataState>.fromIterable([
-//        UserDataUninitialized(),
-//        UserDataLoading(),
-//        userDataStateA
-//      ])
-//    );
-//    navigationBloc = NavigationBloc(analyticsRepository: analyticsRepository, userDataBloc: userDataBloc);
-//
-//    expectLater(
-//      navigationBloc.state,
-//      emitsInOrder(<NavigationState>[
-//        NavigationUninitialized(),
-//        NavigationLoaded((b) => b..currentPage = Page.diet), // default page
-//        NavigationLoaded((b) => b..currentPage = Page.track),
-//        NavigationLoaded((b) => b..currentPage = Page.recipes),
-//        NavigationLoaded((b) => b..currentPage = Page.diet),
-//      ])
-//    ).then((_) {
-//      verify(analyticsRepository.navigateToScreen(Page.diet.name)).called(2);
-//      verify(analyticsRepository.navigateToScreen(Page.track.name)).called(1);
-//      verify(analyticsRepository.navigateToScreen(Page.recipes.name)).called(1);
-//      verifyNever(analyticsRepository.navigateToScreen(Page.diary.name));
-//    });
-//
-//    // Need time for asynchronous default page event to run
-//    await Future<dynamic>.delayed(Duration(milliseconds: 10));
-//    navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.track));
-//    navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.recipes));
-//    navigationBloc.dispatch(NavigateToPage((b) => b..page = Page.diet));
-//  });
-//}
