@@ -99,7 +99,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     ///         ## ##          ##       ##     ##  ##  #### ##    ##        ##
     ///   ##    ## ##          ##       ##     ##  ##   ### ##    ##  ##    ##
     ///    ######  ########    ##       ##    #### ##    ##  ######    ######
-    ///
 
     if (event is UpdateDarkMode) {
       assert(currentState is UserDataLoaded);
@@ -112,8 +111,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         settingsRepository.replaceSettings(_userId, settingsBuilder.build());
         LoggingBloc().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
         event?.completer?.complete();
-      } on Exception catch(e) {
-        LoggingBloc().info("Dark mode update failed");
+      } catch(e) {
+        LoggingBloc().unexpectedError("Dark mode update failed", e);
         event?.completer?.completeError(e);
       }
     }
@@ -129,9 +128,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         settingsRepository.replaceSettings(_userId, settingsBuilder.build());
         LoggingBloc().info("Primary colour now ${event.colourValue}");
         event?.completer?.complete();
-      } on Exception catch(e) {
-        LoggingBloc().info("Primary colour update failed");
-        // LoggingBloc().unexpectedError("Adding ${event.foodRecords.length} foods to ${event.date} failed", error, stacktrace); TODO: real error handling!!
+      } catch(e) {
+        LoggingBloc().unexpectedError("Primary colour update failed", e);
         event?.completer?.completeError(e);
       }
     }

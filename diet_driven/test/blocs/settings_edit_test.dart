@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+//import 'package:test/test.dart';
+
+//import 'package:flutter_test/flutter_test.dart';
+//import 'package:matcher/matcher.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
@@ -55,8 +60,12 @@ void main() {
     UserDataUnauthenticated(),
   ];
 
+  final updateFailedException = Exception("Update failed");
+
   /// Configuration
   setUp(() {
+    BlocSupervisor.delegate = LoggingBlocDelegate();
+
     userRepository = MockUserRepository();
     settingsRepository = MockSettingsRepository();
     completer = Completer();
@@ -66,7 +75,6 @@ void main() {
       Future.value(user),
       Future.delayed(ticks(3)),
     ]).asBroadcastStream());
-    when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
     when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
       Future.value(userDocument),
       Future.delayed(ticks(2), () => userDocument), // Duplicate
@@ -90,7 +98,7 @@ void main() {
       expectLater(
         userDataBloc.state,
         emitsInOrder(expectedState),
-      ).then((_) {
+      ).then((void _) {
         final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
           ..darkMode = true
         );
@@ -110,19 +118,19 @@ void main() {
     });
 
     test("Fail on update error", () async {
-      // TODO: making throw a lambda no longer throws in-place!!!
-      when(settingsRepository.replaceSettings(any, any)).thenThrow(() => Exception("Update failed"));
+      when(settingsRepository.replaceSettings(any, any)).thenThrow(updateFailedException);
 
       expectLater(
         userDataBloc.state,
         emitsInOrder(expectedState),
-      ).then((_) {
+      ).then((void _) {
         final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
           ..darkMode = true
         );
 
         verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
-        expect(completer.isCompleted, false);
+        // Ensure completer didn't timeout (must use .isCompletedField)
+        expect(completer.isCompleted, true);
       });
 
       // Wait for bloc to be fully initialized
@@ -133,6 +141,12 @@ void main() {
         ..darkMode = true
         ..completer = completer
       ));
+
+      completer.future
+        // Assume completer.future completes
+        .then((_) => fail("Shouldn't complete sucessfully"))
+        // Catch expected exception (must be called synchronously)
+        .catchError((Object e) => expect(e, updateFailedException));
     });
   });
 
@@ -141,7 +155,7 @@ void main() {
       expectLater(
         userDataBloc.state,
         emitsInOrder(expectedState),
-      ).then((_) {
+      ).then((void _) {
         final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
           ..primaryColour = "0xffb76b01"
         );
@@ -160,20 +174,21 @@ void main() {
       ));
     });
 
+    // FIXME: colour doesn't change, but colour picker UI still updates... TODO: recreate colour selection package myself
     test("Fail on update error", () async {
-      // TODO: making throw a lambda no longer throws in-place!!!
-      when(settingsRepository.replaceSettings(any, any)).thenThrow(() => Exception("Update failed"));
+      when(settingsRepository.replaceSettings(any, any)).thenThrow(updateFailedException);
 
       expectLater(
         userDataBloc.state,
         emitsInOrder(expectedState),
-      ).then((_) {
+      ).then((void _) {
         final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
-          ..primaryColour = "0x00ffff00" // Converts to lower case
+          ..primaryColour = "0xffb76b01"
         );
 
         verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
-        expect(completer.isCompleted, false);
+        // Ensure completer didn't timeout (must use .isCompletedField)
+        expect(completer.isCompleted, true);
       });
 
       // Wait for bloc to be fully initialized
@@ -181,9 +196,15 @@ void main() {
       await Future<void>.delayed(ticks(1));
 
       userDataBloc.dispatch(UpdatePrimaryColour((b) => b
-        ..colourValue = 0xFFFF00
+        ..colourValue = 0xffb76b01
         ..completer = completer
       ));
+
+      completer.future
+      // Assume completer.future completes
+          .then((_) => fail("Shouldn't complete sucessfully"))
+      // Catch expected exception (must be called synchronously)
+          .catchError((Object e) => expect(e, updateFailedException));
     });
   });
 }

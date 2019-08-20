@@ -38,6 +38,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
     }
 
     if (event is ClearDeepLink) {
+      // TODO: assert one of loaded states
       yield currentState.rebuild((b) => b
         ..deepLink = null
       );

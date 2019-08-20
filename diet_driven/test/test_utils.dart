@@ -1,5 +1,5 @@
 import 'package:diet_driven/blocs/bloc_utils.dart';
-import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
+//import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter_test/flutter_test.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/mockito.dart';
@@ -11,7 +11,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 final StreamMatcher doesNotEmit = emitsInOrder(<dynamic>[]);
 
 ///
-Duration ticks(int ticks, {int tickDuration = 20}) => Duration(milliseconds: ticks * tickDuration);
+Duration ticks(int ticksCount, {int tickDuration = 20}) => Duration(milliseconds: ticksCount * tickDuration);
 
 /// Mock repositories
 class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}
@@ -25,7 +25,7 @@ class MockSettingsRepository extends Mock implements SettingsRepository {}
 class MockUserDataBlock extends Mock implements UserDataBloc {}
 
 /// Mock Firestore
-class FirebaseAuthMock extends Mock implements FirebaseAuth {}
+//class FirebaseAuthMock extends Mock implements FirebaseAuth {}
 //class FirebaseUserMock extends Mock implements FirebaseUser {}
 //class GoogleSignInAccountMock extends Mock implements GoogleSignInAccount {}
 //class GoogleSignInMock extends Mock implements GoogleSignIn {}
@@ -88,3 +88,8 @@ class BuiltErrorMatcher extends Matcher {
 //    return (actual as Word).content == expected.content;
 //  }
 //}
+
+
+// Ensure completer didn't timeout ()
+// must: expect(completer.isCompleted, true);
+// can't: expect(completer.future, completes)

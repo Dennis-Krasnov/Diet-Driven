@@ -87,7 +87,8 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
   }
 
   /// Anticipated runtime exception convenience logging function.
-  void expectedError(String message, Object error, StackTrace stacktrace) {
+  /// [stacktrace] is optional positional parameter.
+  void expectedError(String message, Object error, [StackTrace stacktrace]) {
     dispatch(LogError((b) => b
       ..level = ErrorLoggingLevel.expected
       ..message = message
@@ -97,7 +98,8 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
   }
 
   /// Unexpected runtime exception convenience logging function.
-  void unexpectedError(String message, Object error, StackTrace stacktrace) {
+  /// [stacktrace] is optional positional parameter.
+  void unexpectedError(String message, Object error, [StackTrace stacktrace]) {
     dispatch(LogError((b) => b
       ..level = ErrorLoggingLevel.unexpected
       ..message = message
