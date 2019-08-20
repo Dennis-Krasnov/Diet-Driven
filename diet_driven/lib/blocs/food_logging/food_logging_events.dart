@@ -1,7 +1,13 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found
+ * in the LICENSE file.
+ */
+
 import 'dart:async';
 
 import 'package:built_value/built_value.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
+
 import 'package:diet_driven/models/models.dart';
 
 part 'food_logging_events.g.dart';

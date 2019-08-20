@@ -1,8 +1,11 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found
+ * in the LICENSE file.
+ */
+
 import 'dart:async';
 
-//import 'package:diet_driven/log_printer.dart';
-import 'package:diet_driven/repositories/repositories.dart';
-//import 'package:logger/logger.dart';
 import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';

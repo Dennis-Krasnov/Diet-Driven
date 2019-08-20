@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found
+ * in the LICENSE file.
+ */
+
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/models/models.dart';
@@ -10,8 +16,8 @@ abstract class FoodLoggingTabEvent {}
 abstract class ResultsArrived with FoodLoggingTabEvent implements Built<ResultsArrived, ResultsArrivedBuilder> {
   BuiltList<FoodRecordResult> get results;
 
-  ResultsArrived._();
   factory ResultsArrived([void Function(ResultsArrivedBuilder b)]) = _$ResultsArrived;
+  ResultsArrived._();
 }
 
 /// Shows error page.
@@ -19,6 +25,6 @@ abstract class FoodLoggingTabError with FoodLoggingTabEvent implements Built<Foo
   String get error;
   String get trace;
 
-  FoodLoggingTabError._();
   factory FoodLoggingTabError([void Function(FoodLoggingTabErrorBuilder b)]) = _$FoodLoggingTabError;
+  FoodLoggingTabError._();
 }

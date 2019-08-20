@@ -1,15 +1,17 @@
-import 'package:bloc/bloc.dart';
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found
+ * in the LICENSE file.
+ */
 
-// TODO: change other blocs to only import their own export file
-import 'package:diet_driven/blocs/food_record_edit/food_record_edit.dart';
-//import 'package:diet_driven/log_printer.dart';
-import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/repositories.dart';
-//import 'package:logger/logger.dart';
+import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
+import 'package:diet_driven/blocs/food_record_edit/food_record_edit.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+
 class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> {
-//  final logger = getLogger("food record edit bloc");
   final FoodRecord initialFoodRecord;
   final String userId;
   final int daysSinceEpoch;

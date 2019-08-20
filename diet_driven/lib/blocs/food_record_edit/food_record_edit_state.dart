@@ -1,3 +1,9 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found
+ * in the LICENSE file.
+ */
+
 import 'package:built_value/built_value.dart';
 import 'package:diet_driven/models/models.dart';
 
@@ -9,6 +15,6 @@ abstract class FoodRecordEditState implements Built<FoodRecordEditState, FoodRec
   @nullable
   String get quantityError;
 
-  FoodRecordEditState._();
   factory FoodRecordEditState([void Function(FoodRecordEditStateBuilder b)]) = _$FoodRecordEditState;
+  FoodRecordEditState._();
 }
