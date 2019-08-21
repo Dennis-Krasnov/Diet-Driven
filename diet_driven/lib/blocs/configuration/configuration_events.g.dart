@@ -31,6 +31,11 @@ class _$InitConfiguration extends InitConfiguration {
   int get hashCode {
     return 432678889;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('InitConfiguration').toString();
+  }
 }
 
 class InitConfigurationBuilder

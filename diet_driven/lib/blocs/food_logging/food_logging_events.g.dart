@@ -410,6 +410,11 @@ class _$StartMultiSelect extends StartMultiSelect {
   int get hashCode {
     return 894813869;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('StartMultiSelect').toString();
+  }
 }
 
 class StartMultiSelectBuilder
@@ -463,6 +468,11 @@ class _$CancelMultiSelect extends CancelMultiSelect {
   @override
   int get hashCode {
     return 293815956;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('CancelMultiSelect').toString();
   }
 }
 

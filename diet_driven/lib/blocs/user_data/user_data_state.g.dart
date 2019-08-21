@@ -32,6 +32,11 @@ class _$UserDataUninitialized extends UserDataUninitialized {
   int get hashCode {
     return 252898823;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('UserDataUninitialized').toString();
+  }
 }
 
 class UserDataUninitializedBuilder
@@ -178,6 +183,11 @@ class _$UserDataUnauthenticated extends UserDataUnauthenticated {
   @override
   int get hashCode {
     return 938140426;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('UserDataUnauthenticated').toString();
   }
 }
 

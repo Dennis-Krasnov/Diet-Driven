@@ -107,7 +107,9 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     ///    ######  ########    ##       ##    #### ##    ##  ######    ######
 
     if (event is UpdateDarkMode) {
-      assert(currentState is UserDataLoaded);
+      if (currentState is! UserDataLoaded) {
+        throw StateError("User data bloc must be loaded");
+      }
 
       try {
         final settingsBuilder = _userSettings.toBuilder()..themeSettings.update((b) => b
@@ -117,14 +119,16 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         settingsRepository.replaceSettings(_userId, settingsBuilder.build());
         LoggingBloc().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
         event?.completer?.complete();
-      } catch(e) {
-        LoggingBloc().unexpectedError("Dark mode update failed", e);
-        event?.completer?.completeError(e);
+      } catch(error, stacktrace) {
+        LoggingBloc().unexpectedError("Dark mode update failed", error, stacktrace);
+        event?.completer?.completeError(error, stacktrace);
       }
     }
 
     if (event is UpdatePrimaryColour) {
-      assert(currentState is UserDataLoaded);
+      if (currentState is! UserDataLoaded) {
+        throw StateError("User data bloc must be loaded");
+      }
 
       try {
         final settingsBuilder = _userSettings.toBuilder()..themeSettings.update((b) => b
@@ -134,9 +138,9 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         settingsRepository.replaceSettings(_userId, settingsBuilder.build());
         LoggingBloc().info("Primary colour now ${event.colourValue}");
         event?.completer?.complete();
-      } catch(e) {
-        LoggingBloc().unexpectedError("Primary colour update failed", e);
-        event?.completer?.completeError(e);
+      } catch(error, stacktrace) {
+        LoggingBloc().unexpectedError("Primary colour update failed", error, stacktrace);
+        event?.completer?.completeError(error, stacktrace);
       }
     }
   }
@@ -152,7 +156,9 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   /// Merges user [Settings] with default [Settings] field-by-field.
   /// Default settings are used unless explicitly overwritten by user's custom settings.
   Settings _mergeSettings(Settings userSettings, Settings defaultSettings) {
-    assert(defaultSettings != null);
+    if (defaultSettings == null) {
+      throw ArgumentError.notNull("Default settings");
+    }
 
     // userSettings may be null due to missing firestore document
     if (userSettings == null) {
@@ -171,9 +177,3 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   }
 }
 
-// OLD METHOD:
-//        final settingsBuilder = _userSettings.toBuilder();
-//
-//        settingsBuilder.themeSettings.update((b) => b
-//          ..darkMode = event.darkMode
-//        );

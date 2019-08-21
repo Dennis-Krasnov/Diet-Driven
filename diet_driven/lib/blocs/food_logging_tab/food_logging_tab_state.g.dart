@@ -32,6 +32,12 @@ class _$FoodLoggingTabUninitialized extends FoodLoggingTabUninitialized {
   int get hashCode {
     return 206649877;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('FoodLoggingTabUninitialized')
+        .toString();
+  }
 }
 
 class FoodLoggingTabUninitializedBuilder

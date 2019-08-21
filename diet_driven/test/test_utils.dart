@@ -28,7 +28,8 @@ class MockUserRepository extends Mock implements UserRepository {}
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 /// Mock blocs
-class MockUserDataBlock extends Mock implements UserDataBloc {}
+class MockUserDataBloc extends Mock implements UserDataBloc {}
+class MockFoodDiaryBloc extends Mock implements FoodDiaryBloc {}
 
 /// Mock Firestore
 //class FirebaseAuthMock extends Mock implements FirebaseAuth {}
@@ -99,3 +100,9 @@ class BuiltErrorMatcher extends Matcher {
 // Ensure completer didn't timeout ()
 // must: expect(completer.isCompleted, true);
 // can't: expect(completer.future, completes)
+
+//testWidgets("awaiting future with value from setUp works", (WidgetTester tester) async {
+//  await tester.runAsync(() async {
+//    await future;
+//  });
+//});

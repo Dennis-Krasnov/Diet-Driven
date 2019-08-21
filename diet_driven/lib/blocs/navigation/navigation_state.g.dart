@@ -49,6 +49,14 @@ class _$NavigationUninitialized extends NavigationUninitialized {
   int get hashCode {
     return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
   }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('NavigationUninitialized')
+          ..add('page', page)
+          ..add('deepLink', deepLink))
+        .toString();
+  }
 }
 
 class NavigationUninitializedBuilder

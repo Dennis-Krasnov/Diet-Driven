@@ -14,6 +14,6 @@ abstract class PressLoginButton with LoginEvent implements Built<PressLoginButto
   String get username;
   String get password;
 
-  PressLoginButton._();
   factory PressLoginButton([void Function(PressLoginButtonBuilder b)]) = _$PressLoginButton;
+  PressLoginButton._();
 }

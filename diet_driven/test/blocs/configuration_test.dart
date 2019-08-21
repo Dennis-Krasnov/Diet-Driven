@@ -57,7 +57,7 @@ void main() {
   });
 
   group("React to streams", () {
-    test("Data arrival stream", () {
+    test("Process data arrival stream", () {
       when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future<RemoteConfiguration>.value(remoteConfig));
       when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));
       when(configurationRepository.connectivity$()).thenAnswer((_) => Stream<ConnectivityResult>.fromIterable(connectivityList));
@@ -77,9 +77,7 @@ void main() {
 
       configurationBloc.dispatch(InitConfiguration());
     });
-  });
 
-  group("Handle runtime exceptions", () {
     test("Fallback to default remote configuration", () {
       when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) => Future.error(Exception("Remote configuration failed")));
       when(configurationRepository.fetchPackageInfo()).thenAnswer((_) => Future<PackageInfo>.value(packageInfo));

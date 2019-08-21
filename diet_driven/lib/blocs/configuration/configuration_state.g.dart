@@ -32,6 +32,11 @@ class _$ConfigurationUninitialized extends ConfigurationUninitialized {
   int get hashCode {
     return 787888127;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('ConfigurationUninitialized').toString();
+  }
 }
 
 class ConfigurationUninitializedBuilder

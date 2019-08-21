@@ -184,6 +184,11 @@ class _$SaveFoodRecord extends SaveFoodRecord {
   int get hashCode {
     return 921753263;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('SaveFoodRecord').toString();
+  }
 }
 
 class SaveFoodRecordBuilder

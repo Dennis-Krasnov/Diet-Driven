@@ -14,7 +14,7 @@ part 'food_diary_state.g.dart';
 
 abstract class FoodDiaryState {}
 
-/// Skeleton app bar and food records.
+/// Skeleton app bar.
 abstract class FoodDiaryUninitialized implements FoodDiaryState, Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
   factory FoodDiaryUninitialized([void Function(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
   FoodDiaryUninitialized._();
@@ -28,13 +28,13 @@ abstract class FoodDiaryFailed implements BuiltError, FoodDiaryState, Built<Food
 
 /// Food diary day switcher.
 abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-  ///
+  /// Currently active diary day's date.
   int get currentDate;
 
-  ///
+  /// Map from [int] daysFromEpoch to [FoodDiaryDay]s.
   BuiltMap<int, FoodDiaryDay> get diaryDays;
 
-  ///
+  /// List of all user's [Diet]s.
   BuiltList<Diet> get diets;
 
   factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;

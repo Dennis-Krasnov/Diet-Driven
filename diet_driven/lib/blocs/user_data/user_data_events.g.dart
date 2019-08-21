@@ -29,6 +29,11 @@ class _$InitUserData extends InitUserData {
   int get hashCode {
     return 437658457;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('InitUserData').toString();
+  }
 }
 
 class InitUserDataBuilder
@@ -346,6 +351,11 @@ class _$OnboardUser extends OnboardUser {
   @override
   int get hashCode {
     return 509793739;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('OnboardUser').toString();
   }
 }
 

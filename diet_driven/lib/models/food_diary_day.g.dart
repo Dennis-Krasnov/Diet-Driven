@@ -46,11 +46,11 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
               specifiedType: const FullType(int)) as int;
           break;
         case 'mealRecords':
-          result.mealRecords.replace(serializers.deserialize(value,
+          result.mealRecords = serializers.deserialize(value,
               specifiedType: const FullType(BuiltListMultimap, const [
                 const FullType(int),
                 const FullType(FoodRecord)
-              ])) as BuiltListMultimap<dynamic, dynamic>);
+              ])) as BuiltListMultimap<dynamic, dynamic>;
           break;
       }
     }
@@ -66,7 +66,7 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   final BuiltListMultimap<int, FoodRecord> mealRecords;
 
   factory _$FoodDiaryDay([void Function(FoodDiaryDayBuilder) updates]) =>
-      (new FoodDiaryDayBuilder()..update(updates)).build();
+      (new FoodDiaryDayBuilder()..update(updates)).build() as _$FoodDiaryDay;
 
   _$FoodDiaryDay._({this.date, this.mealRecords}) : super._() {
     if (date == null) {
@@ -82,7 +82,8 @@ class _$FoodDiaryDay extends FoodDiaryDay {
       (toBuilder()..update(updates)).build();
 
   @override
-  FoodDiaryDayBuilder toBuilder() => new FoodDiaryDayBuilder()..replace(this);
+  _$FoodDiaryDayBuilder toBuilder() =>
+      new _$FoodDiaryDayBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -106,26 +107,39 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   }
 }
 
-class FoodDiaryDayBuilder
-    implements Builder<FoodDiaryDay, FoodDiaryDayBuilder> {
+class _$FoodDiaryDayBuilder extends FoodDiaryDayBuilder {
   _$FoodDiaryDay _$v;
 
-  int _date;
-  int get date => _$this._date;
-  set date(int date) => _$this._date = date;
+  @override
+  int get date {
+    _$this;
+    return super.date;
+  }
 
-  ListMultimapBuilder<int, FoodRecord> _mealRecords;
-  ListMultimapBuilder<int, FoodRecord> get mealRecords =>
-      _$this._mealRecords ??= new ListMultimapBuilder<int, FoodRecord>();
-  set mealRecords(ListMultimapBuilder<int, FoodRecord> mealRecords) =>
-      _$this._mealRecords = mealRecords;
+  @override
+  set date(int date) {
+    _$this;
+    super.date = date;
+  }
 
-  FoodDiaryDayBuilder();
+  @override
+  BuiltListMultimap<int, FoodRecord> get mealRecords {
+    _$this;
+    return super.mealRecords;
+  }
+
+  @override
+  set mealRecords(BuiltListMultimap<int, FoodRecord> mealRecords) {
+    _$this;
+    super.mealRecords = mealRecords;
+  }
+
+  _$FoodDiaryDayBuilder() : super._();
 
   FoodDiaryDayBuilder get _$this {
     if (_$v != null) {
-      _date = _$v.date;
-      _mealRecords = _$v.mealRecords?.toBuilder();
+      super.date = _$v.date;
+      super.mealRecords = _$v.mealRecords;
       _$v = null;
     }
     return this;
@@ -146,21 +160,8 @@ class FoodDiaryDayBuilder
 
   @override
   _$FoodDiaryDay build() {
-    _$FoodDiaryDay _$result;
-    try {
-      _$result = _$v ??
-          new _$FoodDiaryDay._(date: date, mealRecords: mealRecords.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'mealRecords';
-        mealRecords.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'FoodDiaryDay', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result =
+        _$v ?? new _$FoodDiaryDay._(date: date, mealRecords: mealRecords);
     replace(_$result);
     return _$result;
   }

@@ -13,6 +13,8 @@ abstract class Diet implements Built<Diet, DietBuilder> {
   num get calories;
 
   BuiltList<String> get mealNames;
+
+  int get startDate;
   // TODO: meal objects with start time,
   //  bool whether they count in 'mealindexRightNow', at least one must have this.
 
@@ -28,6 +30,8 @@ abstract class DietBuilder implements Builder<Diet, DietBuilder> {
   num calories;
 
   BuiltList<String> mealNames = BuiltList(<String>["Breakfast", "Lunch", "Dinner", "Snacks"]);
+
+  int startDate;
 
   factory DietBuilder() = _$DietBuilder;
   DietBuilder._();

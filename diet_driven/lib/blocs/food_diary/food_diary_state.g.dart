@@ -32,6 +32,11 @@ class _$FoodDiaryUninitialized extends FoodDiaryUninitialized {
   int get hashCode {
     return 9984324;
   }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('FoodDiaryUninitialized').toString();
+  }
 }
 
 class FoodDiaryUninitializedBuilder

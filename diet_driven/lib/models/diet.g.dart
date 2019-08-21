@@ -11,16 +11,21 @@ class _$Diet extends Diet {
   final num calories;
   @override
   final BuiltList<String> mealNames;
+  @override
+  final int startDate;
 
   factory _$Diet([void Function(DietBuilder) updates]) =>
       (new DietBuilder()..update(updates)).build() as _$Diet;
 
-  _$Diet._({this.calories, this.mealNames}) : super._() {
+  _$Diet._({this.calories, this.mealNames, this.startDate}) : super._() {
     if (calories == null) {
       throw new BuiltValueNullFieldError('Diet', 'calories');
     }
     if (mealNames == null) {
       throw new BuiltValueNullFieldError('Diet', 'mealNames');
+    }
+    if (startDate == null) {
+      throw new BuiltValueNullFieldError('Diet', 'startDate');
     }
   }
 
@@ -36,19 +41,22 @@ class _$Diet extends Diet {
     if (identical(other, this)) return true;
     return other is Diet &&
         calories == other.calories &&
-        mealNames == other.mealNames;
+        mealNames == other.mealNames &&
+        startDate == other.startDate;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, calories.hashCode), mealNames.hashCode));
+    return $jf($jc($jc($jc(0, calories.hashCode), mealNames.hashCode),
+        startDate.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Diet')
           ..add('calories', calories)
-          ..add('mealNames', mealNames))
+          ..add('mealNames', mealNames)
+          ..add('startDate', startDate))
         .toString();
   }
 }
@@ -80,12 +88,25 @@ class _$DietBuilder extends DietBuilder {
     super.mealNames = mealNames;
   }
 
+  @override
+  int get startDate {
+    _$this;
+    return super.startDate;
+  }
+
+  @override
+  set startDate(int startDate) {
+    _$this;
+    super.startDate = startDate;
+  }
+
   _$DietBuilder() : super._();
 
   DietBuilder get _$this {
     if (_$v != null) {
       super.calories = _$v.calories;
       super.mealNames = _$v.mealNames;
+      super.startDate = _$v.startDate;
       _$v = null;
     }
     return this;
@@ -106,8 +127,9 @@ class _$DietBuilder extends DietBuilder {
 
   @override
   _$Diet build() {
-    final _$result =
-        _$v ?? new _$Diet._(calories: calories, mealNames: mealNames);
+    final _$result = _$v ??
+        new _$Diet._(
+            calories: calories, mealNames: mealNames, startDate: startDate);
     replace(_$result);
     return _$result;
   }

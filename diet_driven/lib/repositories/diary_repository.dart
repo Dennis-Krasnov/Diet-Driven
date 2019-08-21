@@ -20,7 +20,7 @@ class DiaryRepository {
   /// Throws [DeserializationError] if Firestore data is corrupt.
   Stream<FoodDiaryDay> foodDiaryDay$(String userId, int daysSinceEpoch) {
     assert(userId != null && userId.isNotEmpty);
-    assert(daysSinceEpoch >= 0); // TODO: assert daysSinceEpoch isn't null (everywhere)
+    assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
     final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch)); // TODO: make daysSinceEpoch an optional parameter
     return docRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeDocumentTransform());
@@ -44,10 +44,9 @@ class DiaryRepository {
   /// -
   ///
   /// Throws [PlatformException] if [userId] is empty.
-  Future<void> replaceFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
+  Future<void> saveFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
     assert(userId != null && userId.isNotEmpty);
     assert(foodDiaryDay != null);
-    assert(foodDiaryDay.date >= 0); // TODO: make single assertion?? - or remove all together??
 
     final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
     return docRef.setData(FirestoreSerializer<FoodDiaryDay>().serializeDocument(foodDiaryDay), merge: false);
@@ -63,7 +62,7 @@ class DiaryRepository {
   /// Throws [Exception] if food diary day document doesn't exist.
   Future<void> deleteFoodDiaryDay(String userId, int daysSinceEpoch) {
     assert(userId != null && userId.isNotEmpty);
-    assert(daysSinceEpoch >= 0);
+    assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
     final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
     return docRef.delete();
@@ -78,9 +77,14 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
 
     return Stream.fromFuture(Future.value(BuiltList(<Diet>[ // FIXME
-      Diet((b) => b..calories = 2520),
-      Diet((b) => b..calories = 2125),
+      Diet((b) => b
+        ..calories = 2000
+        ..startDate = 0
+      ),
+      Diet((b) => b
+        ..calories = 2125
+        ..startDate = 18128
+      ),
     ])));
-//    return _firestoreProvider.allTimeFoodDiary$(userId); // TODO
   }
 }

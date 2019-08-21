@@ -4,6 +4,7 @@
  * in the LICENSE file.
  */
 
+import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
@@ -48,8 +49,10 @@ void main() {
 
   /// Configuration
   setUp(() {
+    BlocSupervisor.delegate = LoggingBlocDelegate();
+
     analyticsRepository = MockAnalyticsRepository();
-    userDataBloc = MockUserDataBlock();
+    userDataBloc = MockUserDataBloc();
 
     when(userDataBloc.state).thenAnswer((_) => Stream.fromIterable(userDataStates));
 
