@@ -73,12 +73,12 @@ class SelectionFoodRecordTile extends StatelessWidget {
       subtitle: Row(
         children: <Widget>[
           // TODO: table
-          Text("${foodRecord.protein} g"),
-          Text("${foodRecord.fat} g"),
-          Text("${foodRecord.carbs} g"),
-          Text("${foodRecord.calories}",
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-          ),
+//          Text("${foodRecord.protein} g"),
+//          Text("${foodRecord.fat} g"),
+//          Text("${foodRecord.carbs} g"),
+//          Text("${foodRecord.calories}",
+//            style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+//          ),
         ],
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       ),

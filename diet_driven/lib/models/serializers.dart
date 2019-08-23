@@ -11,14 +11,21 @@ import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
 
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/models/nutrient_type.dart';
 
 part 'serializers.g.dart';
 
 @SerializersFor([
   FoodRecord,
   FoodDiaryDay,
+  MealData,
+  MealInfo,
 
   Page,
+
+  Nutrient,
+  NutrientMap,
+  NutrientType,
 
 //  UserData,
   Authentication,
@@ -38,9 +45,16 @@ final Serializers serializers = _$serializers;
 final Serializers jsonSerializers = (serializers.toBuilder()
   // Supporting built collections with custom classes
   ..addBuilderFactory(const FullType(BuiltList, [FullType(FoodRecord)]), () => ListBuilder<FoodRecord>())
-  ..addBuilderFactory(const FullType(BuiltList, [FullType(FoodDiaryDay)]), () =>ListBuilder<FoodDiaryDay>())
-  // Converting to JSON
+  ..addBuilderFactory(const FullType(BuiltList, [FullType(FoodDiaryDay)]), () => ListBuilder<FoodDiaryDay>())
+   ..addBuilderFactory(const FullType(BuiltListMultimap, [FullType(String), FullType(FoodRecord)]), () => ListMultimapBuilder<String, FoodRecord>())
+//   Converting to JSON
   ..addPlugin(StandardJsonPlugin())
 ).build();
 
-//var serializersWithBuilder = (serializers.toBuilder()..addBuilderFactory( const FullType(BuiltSet, const[const FullType(GroupMessageReadBy)])) .build()
+
+// TEMPLATE
+// ..addBuilderFactory(const FullType(BuiltListMultimap, [FullType.object, FullType.object]), () => ListMultimapBuilder<Object, Object>())
+// ..addBuilderFactory(const FullType(BuiltList, [FullType.object]), () => ListBuilder<Object>())
+
+//I/flutter ( 9584):   error=Deserializing '[FoodDiaryDay, date, 124, mealRecords, {0: []}, foodRecords, [{foodName: Some...' to 'unspecified' failed due to: Deserializing '[0, []]' to 'BuiltListMultimap<String, FoodRecord>' failed due to: Bad state: No builder factory for BuiltListMultimap<String, FoodRecord>. Fix by adding one, see SerializersBuilder.addBuilderFactory.,
+//I/flutter ( 9584):   error=Deserializing '[FoodDiaryDay, date, 124, mealRecords, {0: []}, foodRecords, [{foodName: Some...' to 'unspecified' failed due to: type '_BuiltListMultimap<String, FoodRecord>' is not a subtype of type 'BuiltListMultimap<int, FoodRecord>',

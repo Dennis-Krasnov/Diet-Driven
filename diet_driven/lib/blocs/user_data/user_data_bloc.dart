@@ -116,7 +116,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           ..darkMode = event.darkMode
         );
 
-        settingsRepository.replaceSettings(_userId, settingsBuilder.build());
+        settingsRepository.saveSettings(userId, settingsBuilder.build());
         LoggingBloc().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
@@ -135,7 +135,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           ..primaryColour = "0x${event.colourValue.toRadixString(16).padLeft(8, '0')}"
         );
 
-        settingsRepository.replaceSettings(_userId, settingsBuilder.build());
+        settingsRepository.saveSettings(userId, settingsBuilder.build());
         LoggingBloc().info("Primary colour now ${event.colourValue}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
@@ -147,7 +147,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   /// Current user's id.
   /// Only use when it's certain that [currentState] is [UserDataLoaded].
-  String get _userId => (currentState as UserDataLoaded).authentication.uid;
+  String get userId => (currentState as UserDataLoaded).authentication.uid;
 
   /// Current user's user settings.
   /// Only use when it's certain that [currentState] is [UserDataLoaded].
@@ -157,7 +157,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   /// Default settings are used unless explicitly overwritten by user's custom settings.
   Settings _mergeSettings(Settings userSettings, Settings defaultSettings) {
     if (defaultSettings == null) {
-      throw ArgumentError.notNull("Default settings");
+      throw ArgumentError.notNull("Default settings"); // TOTEST
     }
 
     // userSettings may be null due to missing firestore document

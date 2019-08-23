@@ -40,7 +40,7 @@ class SettingsRepository {
   /// Throws [PlatformException] if [userId] is empty.
   // Future<void> replaceSettings(String userId, Settings settings) => Future.sync(() async {
   /// `Future.sync()` runs future immediately to enable proper exception handling.
-  Future<void> replaceSettings(String userId, Settings settings) {
+  Future<void> saveSettings(String userId, Settings settings) {
     assert(userId != null && userId.isNotEmpty);
     assert(settings != null);
 

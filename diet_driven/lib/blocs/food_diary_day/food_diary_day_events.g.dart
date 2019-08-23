@@ -76,10 +76,6 @@ class _$RemoteFoodDiaryDayArrived extends RemoteFoodDiaryDayArrived {
       (new RemoteFoodDiaryDayArrivedBuilder()..update(updates)).build();
 
   _$RemoteFoodDiaryDayArrived._({this.foodDiaryDay, this.diet}) : super._() {
-    if (foodDiaryDay == null) {
-      throw new BuiltValueNullFieldError(
-          'RemoteFoodDiaryDayArrived', 'foodDiaryDay');
-    }
     if (diet == null) {
       throw new BuiltValueNullFieldError('RemoteFoodDiaryDayArrived', 'diet');
     }
@@ -161,12 +157,12 @@ class RemoteFoodDiaryDayArrivedBuilder
     try {
       _$result = _$v ??
           new _$RemoteFoodDiaryDayArrived._(
-              foodDiaryDay: foodDiaryDay.build(), diet: diet.build());
+              foodDiaryDay: _foodDiaryDay?.build(), diet: diet.build());
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'foodDiaryDay';
-        foodDiaryDay.build();
+        _foodDiaryDay?.build();
         _$failedField = 'diet';
         diet.build();
       } catch (e) {
@@ -294,6 +290,238 @@ class AddFoodRecordsBuilder
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'AddFoodRecords', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$ReplaceFoodRecord extends ReplaceFoodRecord {
+  @override
+  final FoodRecord oldRecord;
+  @override
+  final FoodRecord newRecord;
+  @override
+  final Completer<void> completer;
+
+  factory _$ReplaceFoodRecord(
+          [void Function(ReplaceFoodRecordBuilder) updates]) =>
+      (new ReplaceFoodRecordBuilder()..update(updates)).build();
+
+  _$ReplaceFoodRecord._({this.oldRecord, this.newRecord, this.completer})
+      : super._() {
+    if (oldRecord == null) {
+      throw new BuiltValueNullFieldError('ReplaceFoodRecord', 'oldRecord');
+    }
+    if (newRecord == null) {
+      throw new BuiltValueNullFieldError('ReplaceFoodRecord', 'newRecord');
+    }
+  }
+
+  @override
+  ReplaceFoodRecord rebuild(void Function(ReplaceFoodRecordBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  ReplaceFoodRecordBuilder toBuilder() =>
+      new ReplaceFoodRecordBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is ReplaceFoodRecord &&
+        oldRecord == other.oldRecord &&
+        newRecord == other.newRecord &&
+        completer == other.completer;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc($jc(0, oldRecord.hashCode), newRecord.hashCode),
+        completer.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('ReplaceFoodRecord')
+          ..add('oldRecord', oldRecord)
+          ..add('newRecord', newRecord)
+          ..add('completer', completer))
+        .toString();
+  }
+}
+
+class ReplaceFoodRecordBuilder
+    implements Builder<ReplaceFoodRecord, ReplaceFoodRecordBuilder> {
+  _$ReplaceFoodRecord _$v;
+
+  FoodRecordBuilder _oldRecord;
+  FoodRecordBuilder get oldRecord =>
+      _$this._oldRecord ??= new FoodRecordBuilder();
+  set oldRecord(FoodRecordBuilder oldRecord) => _$this._oldRecord = oldRecord;
+
+  FoodRecordBuilder _newRecord;
+  FoodRecordBuilder get newRecord =>
+      _$this._newRecord ??= new FoodRecordBuilder();
+  set newRecord(FoodRecordBuilder newRecord) => _$this._newRecord = newRecord;
+
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
+  ReplaceFoodRecordBuilder();
+
+  ReplaceFoodRecordBuilder get _$this {
+    if (_$v != null) {
+      _oldRecord = _$v.oldRecord?.toBuilder();
+      _newRecord = _$v.newRecord?.toBuilder();
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(ReplaceFoodRecord other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$ReplaceFoodRecord;
+  }
+
+  @override
+  void update(void Function(ReplaceFoodRecordBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$ReplaceFoodRecord build() {
+    _$ReplaceFoodRecord _$result;
+    try {
+      _$result = _$v ??
+          new _$ReplaceFoodRecord._(
+              oldRecord: oldRecord.build(),
+              newRecord: newRecord.build(),
+              completer: completer);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'oldRecord';
+        oldRecord.build();
+        _$failedField = 'newRecord';
+        newRecord.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'ReplaceFoodRecord', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$DeleteFoodRecords extends DeleteFoodRecords {
+  @override
+  final BuiltList<FoodRecord> foodRecords;
+  @override
+  final Completer<void> completer;
+
+  factory _$DeleteFoodRecords(
+          [void Function(DeleteFoodRecordsBuilder) updates]) =>
+      (new DeleteFoodRecordsBuilder()..update(updates)).build();
+
+  _$DeleteFoodRecords._({this.foodRecords, this.completer}) : super._() {
+    if (foodRecords == null) {
+      throw new BuiltValueNullFieldError('DeleteFoodRecords', 'foodRecords');
+    }
+  }
+
+  @override
+  DeleteFoodRecords rebuild(void Function(DeleteFoodRecordsBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DeleteFoodRecordsBuilder toBuilder() =>
+      new DeleteFoodRecordsBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DeleteFoodRecords &&
+        foodRecords == other.foodRecords &&
+        completer == other.completer;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, foodRecords.hashCode), completer.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('DeleteFoodRecords')
+          ..add('foodRecords', foodRecords)
+          ..add('completer', completer))
+        .toString();
+  }
+}
+
+class DeleteFoodRecordsBuilder
+    implements Builder<DeleteFoodRecords, DeleteFoodRecordsBuilder> {
+  _$DeleteFoodRecords _$v;
+
+  ListBuilder<FoodRecord> _foodRecords;
+  ListBuilder<FoodRecord> get foodRecords =>
+      _$this._foodRecords ??= new ListBuilder<FoodRecord>();
+  set foodRecords(ListBuilder<FoodRecord> foodRecords) =>
+      _$this._foodRecords = foodRecords;
+
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
+  DeleteFoodRecordsBuilder();
+
+  DeleteFoodRecordsBuilder get _$this {
+    if (_$v != null) {
+      _foodRecords = _$v.foodRecords?.toBuilder();
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(DeleteFoodRecords other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DeleteFoodRecords;
+  }
+
+  @override
+  void update(void Function(DeleteFoodRecordsBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DeleteFoodRecords build() {
+    _$DeleteFoodRecords _$result;
+    try {
+      _$result = _$v ??
+          new _$DeleteFoodRecords._(
+              foodRecords: foodRecords.build(), completer: completer);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'foodRecords';
+        foodRecords.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'DeleteFoodRecords', _$failedField, e.toString());
       }
       rethrow;
     }

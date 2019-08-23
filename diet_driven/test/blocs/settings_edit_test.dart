@@ -109,7 +109,7 @@ void main() {
           ..darkMode = true
         );
 
-        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
+        verify(settingsRepository.saveSettings(user.uid, settingsBuilder.build())).called(1);
         expect(completer.isCompleted, true);
       });
 
@@ -124,7 +124,7 @@ void main() {
     });
 
     test("Fail on update error", () async {
-      when(settingsRepository.replaceSettings(any, any)).thenThrow(updateFailedException);
+      when(settingsRepository.saveSettings(any, any)).thenThrow(updateFailedException);
 
       expectLater(
         userDataBloc.state,
@@ -134,8 +134,8 @@ void main() {
           ..darkMode = true
         );
 
-        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
-        // Ensure completer didn't timeout (must use .isCompletedField)
+        verify(settingsRepository.saveSettings(user.uid, settingsBuilder.build())).called(1);
+        // Ensure completer didn't timeout (must use .isCompleted field)
         expect(completer.isCompleted, true);
       });
 
@@ -166,7 +166,7 @@ void main() {
           ..primaryColour = "0xffb76b01"
         );
 
-        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
+        verify(settingsRepository.saveSettings(user.uid, settingsBuilder.build())).called(1);
         expect(completer.isCompleted, true);
       });
 
@@ -182,7 +182,7 @@ void main() {
 
     // FIXME: colour doesn't change, but colour picker UI still updates... TODO: recreate colour selection package myself
     test("Fail on update error", () async {
-      when(settingsRepository.replaceSettings(any, any)).thenThrow(updateFailedException);
+      when(settingsRepository.saveSettings(any, any)).thenThrow(updateFailedException);
 
       expectLater(
         userDataBloc.state,
@@ -192,8 +192,8 @@ void main() {
           ..primaryColour = "0xffb76b01"
         );
 
-        verify(settingsRepository.replaceSettings(user.uid, settingsBuilder.build())).called(1);
-        // Ensure completer didn't timeout (must use .isCompletedField)
+        verify(settingsRepository.saveSettings(user.uid, settingsBuilder.build())).called(1);
+        // Ensure completer didn't timeout (must use .isCompleted field)
         expect(completer.isCompleted, true);
       });
 
@@ -207,10 +207,10 @@ void main() {
       ));
 
       completer.future
-      // Assume completer.future completes
-          .then((_) => fail("Shouldn't complete sucessfully"))
-      // Catch expected exception (must be called synchronously)
-          .catchError((Object e) => expect(e, updateFailedException));
+        // Assume completer.future completes
+        .then((_) => fail("Shouldn't complete sucessfully"))
+        // Catch expected exception (must be called synchronously)
+        .catchError((Object e) => expect(e, updateFailedException));
     });
   });
 }

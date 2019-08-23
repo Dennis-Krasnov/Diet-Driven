@@ -24,7 +24,7 @@ class FirestorePaths {
   static String userSettings(String userId) => "${userConfiguration(userId)}/settings";
 
 
-
+  // TODO: make daysSinceEpoch an optional parameter?? - use , [int daysSinceEpoch]
   /// [userId]'s food diary.
   static String foodDiary(String userId) => "${user(userId)}/food_diary";
 

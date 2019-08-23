@@ -37,6 +37,10 @@ abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded,
   /// List of all user's [Diet]s.
   BuiltList<Diet> get diets;
 
+  /// Most recent [Diet] for a given [date].
+  /// Assumes [diets] are arranged in ascending startingDate order.
+  Diet dietForDate(int date) => diets.lastWhere((diet) => diet.startDate <= date);
+
   factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
   FoodDiaryLoaded._();
 }

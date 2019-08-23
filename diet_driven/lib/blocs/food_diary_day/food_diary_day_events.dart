@@ -10,6 +10,7 @@ import 'package:built_value/built_value.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:flutter/services.dart';
 
 part 'food_diary_day_events.g.dart';
 
@@ -23,6 +24,7 @@ abstract class InitFoodDiaryDay implements FoodDiaryDayEvent, Built<InitFoodDiar
 
 /// Reactively updates current [foodDiaryDay], [diet].
 abstract class RemoteFoodDiaryDayArrived implements FoodDiaryDayEvent, Built<RemoteFoodDiaryDayArrived, RemoteFoodDiaryDayArrivedBuilder> {
+  @nullable
   FoodDiaryDay get foodDiaryDay;
 
   Diet get diet;
@@ -31,7 +33,7 @@ abstract class RemoteFoodDiaryDayArrived implements FoodDiaryDayEvent, Built<Rem
   RemoteFoodDiaryDayArrived._();
 }
 
-/// Adds food records to a specific [mealIndex].
+/// Adds [foodRecords] to specified [mealIndex].
 /// Assumes [mealIndex] is within range of corresponding diet's meals.
 abstract class AddFoodRecords implements Completable, FoodDiaryDayEvent, Built<AddFoodRecords, AddFoodRecordsBuilder> {
   int get mealIndex;
@@ -41,3 +43,24 @@ abstract class AddFoodRecords implements Completable, FoodDiaryDayEvent, Built<A
   factory AddFoodRecords([void Function(AddFoodRecordsBuilder) updates]) = _$AddFoodRecords;
   AddFoodRecords._();
 }
+
+/// Replaces [oldRecord] with [newRecord].
+abstract class ReplaceFoodRecord implements Completable, FoodDiaryDayEvent, Built<ReplaceFoodRecord, ReplaceFoodRecordBuilder> {
+  FoodRecord get oldRecord;
+
+  FoodRecord get newRecord;
+
+  factory ReplaceFoodRecord([void Function(ReplaceFoodRecordBuilder) updates]) = _$ReplaceFoodRecord;
+  ReplaceFoodRecord._();
+}
+
+/// Deletes [foodRecords] from this day.
+abstract class DeleteFoodRecords implements Completable, FoodDiaryDayEvent, Built<DeleteFoodRecords, DeleteFoodRecordsBuilder> {
+  BuiltList<FoodRecord> get foodRecords;
+
+  factory DeleteFoodRecords([void Function(DeleteFoodRecordsBuilder) updates]) = _$DeleteFoodRecords;
+  DeleteFoodRecords._();
+}
+
+/// Moves [foodRecords] from this day to specified [mealIndex].
+//MoveFoodRecords

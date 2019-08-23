@@ -78,7 +78,7 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Text("UUID: ${state.foodRecord.uuid}"),
+                Text("UUID: ${state.foodRecord.uid}"),
                 Text("food name: ${state.foodRecord.foodName}"),
                 NumberFormField(
                   value: state.foodRecord.grams,

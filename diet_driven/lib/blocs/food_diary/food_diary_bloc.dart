@@ -59,11 +59,28 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       .distinct()
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => FoodDiaryError((b) => b..error = error))
+//      .onFirst ... GO TO TODAY'S PAGE
+//      .doOnListen(() => FIXME: doesn't fix
+//          dispatch(UpdateCurrentDate((b) => b // FIXME: food diary bloc must be loaded
+//            ..currentDate = currentDaysSinceEpoch()
+//          ))
+//      )
       .listen(dispatch);
+
+      // solution: make stream = ...; stream.first.mapTo(UpdateCurrentDate).then(dispatch); but also sub = stream.listen
+      // see user data bloc on how to separate streams!
+
+      // Go to today's food diary day if food diary bloc hasn't yet been initialized
+//      _foodDiaryEventSubscription.
+//      dispatch(UpdateCurrentDate((b) => b // FIXME: food diary bloc must be loaded
+//        ..currentDate = currentDaysSinceEpoch()
+//      ))
+
     }
 
     if (event is RemoteFoodDiaryArrived) {
-      var currentDate = currentDaysSinceEpoch();
+      /// Initializes default DiaryDayBloc currentDate as today. FIXME: should go to today on a new day
+      var currentDate = currentDaysSinceEpoch(); // TOTEST as 0
       final diaryDaysBuilder = MapBuilder<int, FoodDiaryDay>();
 
       // Load previous state
@@ -86,6 +103,16 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       );
 
       LoggingBloc().info("Food diary loaded with ${diaryDaysBuilder.length} days");
+    }
+
+    if (event is UpdateCurrentDate) {
+      if (currentState is! FoodDiaryLoaded) {
+        throw StateError("Food diary bloc must be loaded");
+      }
+
+      yield (currentState as FoodDiaryLoaded).rebuild((b) => b
+        ..currentDate = event.currentDate
+      );
     }
 
     if (event is FoodDiaryError) {

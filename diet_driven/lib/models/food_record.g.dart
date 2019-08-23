@@ -18,42 +18,18 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
   Iterable<Object> serialize(Serializers serializers, FoodRecord object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[
-      'uuid',
-      serializers.serialize(object.uuid, specifiedType: const FullType(String)),
+      'uid',
+      serializers.serialize(object.uid, specifiedType: const FullType(String)),
       'foodName',
       serializers.serialize(object.foodName,
           specifiedType: const FullType(String)),
+      'grams',
+      serializers.serialize(object.grams, specifiedType: const FullType(num)),
+      'totalNutrients',
+      serializers.serialize(object.totalNutrients,
+          specifiedType: const FullType(NutrientMap)),
     ];
-    if (object.grams != null) {
-      result
-        ..add('grams')
-        ..add(serializers.serialize(object.grams,
-            specifiedType: const FullType(num)));
-    }
-    if (object.calories != null) {
-      result
-        ..add('calories')
-        ..add(serializers.serialize(object.calories,
-            specifiedType: const FullType(num)));
-    }
-    if (object.protein != null) {
-      result
-        ..add('protein')
-        ..add(serializers.serialize(object.protein,
-            specifiedType: const FullType(num)));
-    }
-    if (object.fat != null) {
-      result
-        ..add('fat')
-        ..add(serializers.serialize(object.fat,
-            specifiedType: const FullType(num)));
-    }
-    if (object.carbs != null) {
-      result
-        ..add('carbs')
-        ..add(serializers.serialize(object.carbs,
-            specifiedType: const FullType(num)));
-    }
+
     return result;
   }
 
@@ -68,8 +44,8 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case 'uuid':
-          result.uuid = serializers.deserialize(value,
+        case 'uid':
+          result.uid = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
         case 'foodName':
@@ -80,21 +56,9 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
           result.grams = serializers.deserialize(value,
               specifiedType: const FullType(num)) as num;
           break;
-        case 'calories':
-          result.calories = serializers.deserialize(value,
-              specifiedType: const FullType(num)) as num;
-          break;
-        case 'protein':
-          result.protein = serializers.deserialize(value,
-              specifiedType: const FullType(num)) as num;
-          break;
-        case 'fat':
-          result.fat = serializers.deserialize(value,
-              specifiedType: const FullType(num)) as num;
-          break;
-        case 'carbs':
-          result.carbs = serializers.deserialize(value,
-              specifiedType: const FullType(num)) as num;
+        case 'totalNutrients':
+          result.totalNutrients = serializers.deserialize(value,
+              specifiedType: const FullType(NutrientMap)) as NutrientMap;
           break;
       }
     }
@@ -105,37 +69,30 @@ class _$FoodRecordSerializer implements StructuredSerializer<FoodRecord> {
 
 class _$FoodRecord extends FoodRecord {
   @override
-  final String uuid;
+  final String uid;
   @override
   final String foodName;
   @override
   final num grams;
   @override
-  final num calories;
-  @override
-  final num protein;
-  @override
-  final num fat;
-  @override
-  final num carbs;
+  final NutrientMap totalNutrients;
 
   factory _$FoodRecord([void Function(FoodRecordBuilder) updates]) =>
       (new FoodRecordBuilder()..update(updates)).build() as _$FoodRecord;
 
-  _$FoodRecord._(
-      {this.uuid,
-      this.foodName,
-      this.grams,
-      this.calories,
-      this.protein,
-      this.fat,
-      this.carbs})
+  _$FoodRecord._({this.uid, this.foodName, this.grams, this.totalNutrients})
       : super._() {
-    if (uuid == null) {
-      throw new BuiltValueNullFieldError('FoodRecord', 'uuid');
+    if (uid == null) {
+      throw new BuiltValueNullFieldError('FoodRecord', 'uid');
     }
     if (foodName == null) {
       throw new BuiltValueNullFieldError('FoodRecord', 'foodName');
+    }
+    if (grams == null) {
+      throw new BuiltValueNullFieldError('FoodRecord', 'grams');
+    }
+    if (totalNutrients == null) {
+      throw new BuiltValueNullFieldError('FoodRecord', 'totalNutrients');
     }
   }
 
@@ -152,34 +109,22 @@ class _$FoodRecord extends FoodRecord {
     return other is FoodRecord &&
         foodName == other.foodName &&
         grams == other.grams &&
-        calories == other.calories &&
-        protein == other.protein &&
-        fat == other.fat &&
-        carbs == other.carbs;
+        totalNutrients == other.totalNutrients;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc(
-            $jc(
-                $jc($jc($jc(0, foodName.hashCode), grams.hashCode),
-                    calories.hashCode),
-                protein.hashCode),
-            fat.hashCode),
-        carbs.hashCode));
+    return $jf($jc($jc($jc(0, foodName.hashCode), grams.hashCode),
+        totalNutrients.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodRecord')
-          ..add('uuid', uuid)
+          ..add('uid', uid)
           ..add('foodName', foodName)
           ..add('grams', grams)
-          ..add('calories', calories)
-          ..add('protein', protein)
-          ..add('fat', fat)
-          ..add('carbs', carbs))
+          ..add('totalNutrients', totalNutrients))
         .toString();
   }
 }
@@ -188,15 +133,15 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
   _$FoodRecord _$v;
 
   @override
-  String get uuid {
+  String get uid {
     _$this;
-    return super.uuid;
+    return super.uid;
   }
 
   @override
-  set uuid(String uuid) {
+  set uid(String uid) {
     _$this;
-    super.uuid = uuid;
+    super.uid = uid;
   }
 
   @override
@@ -224,64 +169,25 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
   }
 
   @override
-  num get calories {
+  NutrientMap get totalNutrients {
     _$this;
-    return super.calories;
+    return super.totalNutrients;
   }
 
   @override
-  set calories(num calories) {
+  set totalNutrients(NutrientMap totalNutrients) {
     _$this;
-    super.calories = calories;
-  }
-
-  @override
-  num get protein {
-    _$this;
-    return super.protein;
-  }
-
-  @override
-  set protein(num protein) {
-    _$this;
-    super.protein = protein;
-  }
-
-  @override
-  num get fat {
-    _$this;
-    return super.fat;
-  }
-
-  @override
-  set fat(num fat) {
-    _$this;
-    super.fat = fat;
-  }
-
-  @override
-  num get carbs {
-    _$this;
-    return super.carbs;
-  }
-
-  @override
-  set carbs(num carbs) {
-    _$this;
-    super.carbs = carbs;
+    super.totalNutrients = totalNutrients;
   }
 
   _$FoodRecordBuilder() : super._();
 
   FoodRecordBuilder get _$this {
     if (_$v != null) {
-      super.uuid = _$v.uuid;
+      super.uid = _$v.uid;
       super.foodName = _$v.foodName;
       super.grams = _$v.grams;
-      super.calories = _$v.calories;
-      super.protein = _$v.protein;
-      super.fat = _$v.fat;
-      super.carbs = _$v.carbs;
+      super.totalNutrients = _$v.totalNutrients;
       _$v = null;
     }
     return this;
@@ -304,13 +210,10 @@ class _$FoodRecordBuilder extends FoodRecordBuilder {
   _$FoodRecord build() {
     final _$result = _$v ??
         new _$FoodRecord._(
-            uuid: uuid,
+            uid: uid,
             foodName: foodName,
             grams: grams,
-            calories: calories,
-            protein: protein,
-            fat: fat,
-            carbs: carbs);
+            totalNutrients: totalNutrients);
     replace(_$result);
     return _$result;
   }

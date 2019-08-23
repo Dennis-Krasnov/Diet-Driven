@@ -4,6 +4,8 @@
  * in the LICENSE file.
  */
 
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
@@ -21,6 +23,7 @@ void main() {
 
   /// Mocks
   DiaryRepository diaryRepository;
+  Completer<void> completer;
 
   /// Data
   const userId = "1234";
@@ -30,19 +33,48 @@ void main() {
     ..startDate = 0
   );
 
-  BuiltListMultimap foodRecordMultiMap(int mealIndex, String foodName) => BuiltListMultimap<int, FoodRecord>({
-    mealIndex: BuiltList<FoodRecord>(<FoodRecord>[
-      FoodRecord((b) => b
-        ..foodName = foodName
-      ),
-    ])
-  });
+  /// Only generate food records for single meal
+  BuiltList<MealData> onlyMeal(int mealIndex, String foodName) => BuiltList(<MealData>[
+    for (var i in List<int>.generate(4, (e) => e))
+      MealData((b) => b
+        ..foodRecords = ListBuilder(<FoodRecord>[
+          if (mealIndex == i)
+            FoodRecord((b) => b
+              ..foodName = foodName
+            ),
+        ])
+      )
+  ]);
+
+  // Constant current date
+  final daysSinceEpoch = currentDaysSinceEpoch();
+
+  final expectedState = <FoodDiaryState>[
+    FoodDiaryUninitialized(),
+    FoodDiaryLoaded((b) => b
+      ..currentDate = daysSinceEpoch
+      ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
+        23: FoodDiaryDay((b) => b
+          ..date = 23
+          ..meals = BuiltList<MealData>()
+        ),
+        24: FoodDiaryDay((b) => b
+          ..date = 24
+          ..meals = onlyMeal(0, "Apple")
+        ),
+      })
+      ..diets = ListBuilder(<Diet>[
+        diet,
+      ])
+    ),
+  ];
 
   /// Configuration
   setUp(() {
     BlocSupervisor.delegate = LoggingBlocDelegate();
 
     diaryRepository = MockDiaryRepository();
+    completer = Completer();
 
     foodDiaryBloc = FoodDiaryBloc(
       diaryRepository: diaryRepository,
@@ -67,21 +99,21 @@ void main() {
         Future.delayed(ticks(2), () => BuiltList(<FoodDiaryDay>[
           FoodDiaryDay((b) => b
             ..date = 23
-            ..mealRecords = BuiltListMultimap<int, FoodRecord>()
+            ..meals = BuiltList<MealData>()
           ),
           FoodDiaryDay((b) => b
             ..date = 24
-            ..mealRecords = foodRecordMultiMap(0, "Apple")
+            ..meals = onlyMeal(0, "Apple")
           ),
         ])), //
         Future.delayed(ticks(3), () => BuiltList(<FoodDiaryDay>[
           FoodDiaryDay((b) => b
             ..date = 24
-            ..mealRecords = foodRecordMultiMap(1, "Apricot")
+            ..meals = onlyMeal(1, "Apricot")
           ),
           FoodDiaryDay((b) => b
             ..date = 25
-            ..mealRecords = BuiltListMultimap<int, FoodRecord>()
+            ..meals = BuiltList<MealData>()
           ),
         ])),
       ]));
@@ -91,9 +123,6 @@ void main() {
           diet,
         ])),
       ]));
-
-      // Constant current date
-      final daysSinceEpoch = currentDaysSinceEpoch();
 
       expectLater(
         foodDiaryBloc.state,
@@ -119,11 +148,11 @@ void main() {
             ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
               23: FoodDiaryDay((b) => b
                 ..date = 23
-                ..mealRecords = BuiltListMultimap<int, FoodRecord>()
+                ..meals = BuiltList<MealData>()
               ),
               24: FoodDiaryDay((b) => b
                 ..date = 24
-                ..mealRecords = foodRecordMultiMap(0, "Apple")
+                ..meals = onlyMeal(0, "Apple")
               ),
             })
             ..diets = ListBuilder(<Diet>[
@@ -136,15 +165,15 @@ void main() {
             ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
               23: FoodDiaryDay((b) => b // Persists while not being in list
                 ..date = 23
-                ..mealRecords = BuiltListMultimap<int, FoodRecord>()
+                ..meals = BuiltList<MealData>()
               ),
               24: FoodDiaryDay((b) => b // Overridden by new value
                 ..date = 24
-                ..mealRecords = foodRecordMultiMap(1, "Apricot")
+                ..meals = onlyMeal(1, "Apricot")
               ),
               25: FoodDiaryDay((b) => b
                 ..date = 25
-                ..mealRecords = BuiltListMultimap<int, FoodRecord>()
+                ..meals = BuiltList<MealData>()
               ),
             })
             ..diets = ListBuilder(<Diet>[
@@ -157,16 +186,16 @@ void main() {
       foodDiaryBloc.dispatch(InitFoodDiary());
     });
 
-    test("Fail on food diary error", () {
+    test("Fail on food diary error", () async {
       when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromFutures([
         Future.value(BuiltList(<FoodDiaryDay>[
           FoodDiaryDay((b) => b
             ..date = 23
-            ..mealRecords = BuiltListMultimap<int, FoodRecord>()
+            ..meals = BuiltList<MealData>()
           ),
           FoodDiaryDay((b) => b
             ..date = 24
-            ..mealRecords = foodRecordMultiMap(0, "Apple")
+            ..meals = onlyMeal(0, "Apple")
           ),
         ])), //
         Future.delayed(ticks(1), () => Future.error(Exception("Food diary failed"))), // Ends at first error
@@ -179,9 +208,6 @@ void main() {
         ])),
       ]));
 
-      // Constant current date
-      final daysSinceEpoch = currentDaysSinceEpoch();
-
       foodDiaryBloc.state.listen((e) {
         print("0000");
         print(e);
@@ -190,42 +216,29 @@ void main() {
       expectLater(
         foodDiaryBloc.state,
         emitsInOrder(<dynamic>[
-          FoodDiaryUninitialized(),
-          FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
-            ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: FoodDiaryDay((b) => b
-                ..date = 23
-                ..mealRecords = BuiltListMultimap<int, FoodRecord>()
-              ),
-              24: FoodDiaryDay((b) => b
-                ..date = 24
-                ..mealRecords = foodRecordMultiMap(0, "Apple")
-              ),
-            })
-            ..diets = ListBuilder(<Diet>[
-              diet,
-            ])
-          ),
+          ...expectedState,
           BuiltErrorMatcher("Food diary failed"),
-          // FIXME no way to check that state no longer emits??? (check that doesn't emit for a certain amount of time?)
-//          emitsDone,
+          emitsDone,
         ])
       );
 
       foodDiaryBloc.dispatch(InitFoodDiary());
+
+      // Ensure first error was last state before stream close
+      await Future<void>.delayed(ticks(4));
+      foodDiaryBloc.dispose();
     });
 
-    test("Fail on all time diets error", () {
+    test("Fail on all time diets error", () async {
       when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromFutures([
         Future.value(BuiltList(<FoodDiaryDay>[
           FoodDiaryDay((b) => b
             ..date = 23
-            ..mealRecords = BuiltListMultimap<int, FoodRecord>()
+            ..meals = BuiltList<MealData>()
           ),
           FoodDiaryDay((b) => b
             ..date = 24
-            ..mealRecords = foodRecordMultiMap(0, "Apple")
+            ..meals = onlyMeal(0, "Apple")
           ),
         ])), //
       ]));
@@ -240,42 +253,72 @@ void main() {
         ])),
       ]));
 
-      // Constant current date
-      final daysSinceEpoch = currentDaysSinceEpoch();
-
       expectLater(
         foodDiaryBloc.state,
         emitsInOrder(<dynamic>[
-          FoodDiaryUninitialized(),
-          FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
-            ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: FoodDiaryDay((b) => b
-                ..date = 23
-                ..mealRecords = BuiltListMultimap<int, FoodRecord>()
-              ),
-              24: FoodDiaryDay((b) => b
-                ..date = 24
-                ..mealRecords = foodRecordMultiMap(0, "Apple")
-              ),
-            })
-            ..diets = ListBuilder(<Diet>[
-              diet,
-            ])
-          ),
+          ...expectedState,
           BuiltErrorMatcher("Diet failed"),
-          // FIXME no way to check that state no longer emits??? (check that doesn't emit for a certain amount of time?)
-//          emitsDone,
+          emitsDone,
         ])
       );
 
       foodDiaryBloc.dispatch(InitFoodDiary());
+
+      // Ensure first error was last state before stream close
+      await Future<void>.delayed(ticks(4));
+      foodDiaryBloc.dispose();
     });
   });
 
+  // TOTEST
   group("Copy food diary days", () {
-    test("Sucessfully copy", () async {
+    /// Configuration
+    setUp(() {
+      when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream.fromIterable([
+        BuiltList(<FoodDiaryDay>[
+          FoodDiaryDay((b) => b
+            ..date = 23
+            ..meals = BuiltList<MealData>()
+          ),
+          FoodDiaryDay((b) => b
+            ..date = 24
+            ..meals = onlyMeal(0, "Apple")
+          ),
+        ]),
+      ]));
 
+      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream.fromIterable([
+        BuiltList(<Diet>[
+          diet,
+        ]),
+      ]));
+    });
+
+    /// Tests
+    test("Sucessfully copy", () async {
+//      expectLater(
+//        foodDiaryBloc.state,
+//        emitsInOrder(expectedState),
+//      ).then((void _) {
+//        final foodDiaryDayBuilder = FoodDiaryDayBuilder(); // TODO: take existing!!
+//        foodDiaryDayBuilder.date = 53; //event.date; // TODO: update only date!!!!
+////        final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
+////          ..primaryColour = "0xffb76b01"
+////        );
+//
+//        verify(diaryRepository.saveFoodDiaryDay(userId, foodDiaryDayBuilder.build())).called(1);
+//        expect(completer.isCompleted, true);
+//      });
+//
+//      // Wait for bloc to be fully initialized
+//      foodDiaryBloc.dispatch(InitFoodDiary());
+//      await Future<void>.delayed(ticks(1));
+
+      // TODO
+//      foodDiaryBloc.dispatch(Copy...((b) => b
+//        ..date = ....
+//        ..completer = completer
+//      ));
     });
 
     test("Fail on copy error", () async {

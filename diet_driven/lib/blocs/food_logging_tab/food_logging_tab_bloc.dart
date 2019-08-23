@@ -38,18 +38,18 @@ class FoodLoggingTabBloc extends Bloc<FoodLoggingTabEvent, FoodLoggingTabState> 
       Observable.fromFuture(futureResultRecords),
       (selected, diary, results) {
         return BuiltList(results.map<FoodRecordResult>((foodRecord) {
-          final bool existsInDiary = diary.any((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid);
-          final bool existsInSelection = selected.any((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid);
+          final bool existsInDiary = diary.any((diaryFoodRecord) => diaryFoodRecord.uid == foodRecord.uid);
+          final bool existsInSelection = selected.any((selectedFoodRecord) => selectedFoodRecord.uid == foodRecord.uid);
           assert(!(existsInDiary && existsInSelection), "food record can't exist in both diary and selection");
 
           // Updating foodRecord as needed to match diary or selection
           final FoodRecordBuilder mergedBuilder = foodRecord.toBuilder();
 
           if (existsInDiary) {
-            mergedBuilder.replace(diary.singleWhere((diaryFoodRecord) => diaryFoodRecord.uuid == foodRecord.uuid));
+            mergedBuilder.replace(diary.singleWhere((diaryFoodRecord) => diaryFoodRecord.uid == foodRecord.uid));
           }
           else if (existsInSelection) {
-            mergedBuilder.replace(selected.singleWhere((selectedFoodRecord) => selectedFoodRecord.uuid == foodRecord.uuid));
+            mergedBuilder.replace(selected.singleWhere((selectedFoodRecord) => selectedFoodRecord.uid == foodRecord.uid));
           }
 
           return FoodRecordResult((b) => b

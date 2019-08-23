@@ -35,3 +35,11 @@ abstract class FoodDiaryError implements BuiltError, FoodDiaryEvent, Built<FoodD
   factory FoodDiaryError([void Function(FoodDiaryErrorBuilder b)]) = _$FoodDiaryError;
   FoodDiaryError._();
 }
+
+/// TODOCUMENT
+abstract class UpdateCurrentDate implements FoodDiaryEvent, Built<UpdateCurrentDate, UpdateCurrentDateBuilder> {
+  int get currentDate;
+
+  factory UpdateCurrentDate([void Function(UpdateCurrentDateBuilder) updates]) = _$UpdateCurrentDate;
+  UpdateCurrentDate._();
+}

@@ -26,7 +26,7 @@ class ConfigurationSettingsDecision extends StatelessWidget {
   Widget build(BuildContext context) {
     // Initial splash screen while loading critical configuration and user data
     if (configurationState is ConfigurationUninitialized || userDataState is UserDataUninitialized) {
-      return SplashPage();
+      return const SplashPage();
     }
 
     // Loading configuration failed

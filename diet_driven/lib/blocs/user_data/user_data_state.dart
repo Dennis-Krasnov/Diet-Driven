@@ -38,7 +38,7 @@ abstract class UserDataLoaded implements UserDataState, Built<UserDataLoaded, Us
   Authentication get authentication;
 
   /// Read-only user metadata.
-  UserDocument get userDocument; // TODO: accepted terms
+  UserDocument get userDocument;
 
   /// Synchronized application settings.
   Settings get settings;

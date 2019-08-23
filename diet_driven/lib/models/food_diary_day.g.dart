@@ -21,10 +21,10 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
     final result = <Object>[
       'date',
       serializers.serialize(object.date, specifiedType: const FullType(int)),
-      'mealRecords',
-      serializers.serialize(object.mealRecords,
-          specifiedType: const FullType(BuiltListMultimap,
-              const [const FullType(int), const FullType(FoodRecord)])),
+      'meals',
+      serializers.serialize(object.meals,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(MealData)])),
     ];
 
     return result;
@@ -45,12 +45,11 @@ class _$FoodDiaryDaySerializer implements StructuredSerializer<FoodDiaryDay> {
           result.date = serializers.deserialize(value,
               specifiedType: const FullType(int)) as int;
           break;
-        case 'mealRecords':
-          result.mealRecords = serializers.deserialize(value,
-              specifiedType: const FullType(BuiltListMultimap, const [
-                const FullType(int),
-                const FullType(FoodRecord)
-              ])) as BuiltListMultimap<dynamic, dynamic>;
+        case 'meals':
+          result.meals = serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(MealData)]))
+              as BuiltList<dynamic>;
           break;
       }
     }
@@ -63,17 +62,17 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   @override
   final int date;
   @override
-  final BuiltListMultimap<int, FoodRecord> mealRecords;
+  final BuiltList<MealData> meals;
 
   factory _$FoodDiaryDay([void Function(FoodDiaryDayBuilder) updates]) =>
       (new FoodDiaryDayBuilder()..update(updates)).build() as _$FoodDiaryDay;
 
-  _$FoodDiaryDay._({this.date, this.mealRecords}) : super._() {
+  _$FoodDiaryDay._({this.date, this.meals}) : super._() {
     if (date == null) {
       throw new BuiltValueNullFieldError('FoodDiaryDay', 'date');
     }
-    if (mealRecords == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryDay', 'mealRecords');
+    if (meals == null) {
+      throw new BuiltValueNullFieldError('FoodDiaryDay', 'meals');
     }
   }
 
@@ -88,21 +87,19 @@ class _$FoodDiaryDay extends FoodDiaryDay {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is FoodDiaryDay &&
-        date == other.date &&
-        mealRecords == other.mealRecords;
+    return other is FoodDiaryDay && date == other.date && meals == other.meals;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, date.hashCode), mealRecords.hashCode));
+    return $jf($jc($jc(0, date.hashCode), meals.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryDay')
           ..add('date', date)
-          ..add('mealRecords', mealRecords))
+          ..add('meals', meals))
         .toString();
   }
 }
@@ -123,15 +120,15 @@ class _$FoodDiaryDayBuilder extends FoodDiaryDayBuilder {
   }
 
   @override
-  BuiltListMultimap<int, FoodRecord> get mealRecords {
+  BuiltList<MealData> get meals {
     _$this;
-    return super.mealRecords;
+    return super.meals;
   }
 
   @override
-  set mealRecords(BuiltListMultimap<int, FoodRecord> mealRecords) {
+  set meals(BuiltList<MealData> meals) {
     _$this;
-    super.mealRecords = mealRecords;
+    super.meals = meals;
   }
 
   _$FoodDiaryDayBuilder() : super._();
@@ -139,7 +136,7 @@ class _$FoodDiaryDayBuilder extends FoodDiaryDayBuilder {
   FoodDiaryDayBuilder get _$this {
     if (_$v != null) {
       super.date = _$v.date;
-      super.mealRecords = _$v.mealRecords;
+      super.meals = _$v.meals;
       _$v = null;
     }
     return this;
@@ -160,8 +157,7 @@ class _$FoodDiaryDayBuilder extends FoodDiaryDayBuilder {
 
   @override
   _$FoodDiaryDay build() {
-    final _$result =
-        _$v ?? new _$FoodDiaryDay._(date: date, mealRecords: mealRecords);
+    final _$result = _$v ?? new _$FoodDiaryDay._(date: date, meals: meals);
     replace(_$result);
     return _$result;
   }

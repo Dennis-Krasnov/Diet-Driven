@@ -22,7 +22,7 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
-    final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch)); // TODO: make daysSinceEpoch an optional parameter
+    final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
     return docRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeDocumentTransform());
   }
 
@@ -34,7 +34,7 @@ class DiaryRepository {
   Stream<BuiltList<FoodDiaryDay>> allTimeFoodDiary$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final colRef = Firestore.instance.collection(FirestorePaths.foodDiary(userId)); // TODO: make daysSinceEpoch an optional parameter
+    final colRef = Firestore.instance.collection(FirestorePaths.foodDiary(userId));
     return colRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeCollectionTransform());
   }
 

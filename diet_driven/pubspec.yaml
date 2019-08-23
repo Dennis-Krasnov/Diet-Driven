@@ -29,16 +29,20 @@ dependencies:
   package_info: ^0.4.0+6
   # device_info
 
-  ## UTILS
+  ## FLUTTER WIDGETS
+  charts_flutter: ^0.7.0
   font_awesome_flutter: ^8.5.0
+  flare_flutter: ^1.5.5
+  shimmer: ^1.0.0
+  flutter_material_color_picker: ^1.0.3
+  sticky_headers: "^0.1.8"
+
+  ## DART UTILS
   ansicolor: ^1.0.2
   date_utils: ^0.1.0+2
   dio: ^2.1.13
-  flare_flutter: ^1.5.5
   intl: ^0.15.8
   merge_map: ^1.0.2
-  shimmer: ^1.0.0
-  flutter_material_color_picker: ^1.0.3
   uuid: ^2.0.2
 
 dev_dependencies:

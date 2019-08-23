@@ -12,6 +12,8 @@ import 'package:diet_driven/models/models.dart';
 void main() {
   FoodDiaryDay day;
 
+  // TOTEST: by id, not by identical values!!!
+
   /// Data
   final peach = FoodRecord((b) => b
     ..foodName = "Peach"
@@ -29,64 +31,108 @@ void main() {
     ..foodName = "Tomato"
   );
 
+  final apricot = FoodRecord((b) => b
+    ..foodName = "Apricot"
+  );
+
   /// Configuration
   setUp(() {
     day = FoodDiaryDay((b) => b
       ..date = 124
-      ..mealRecords = BuiltListMultimap<int, FoodRecord>({
-        0: [peach, orange],
-        2: [tomato],
-      })
+      ..meals = BuiltList(<MealData>[
+        MealData((b) => b
+          ..foodRecords = ListBuilder(<FoodRecord>[peach, orange])
+        ),
+        MealData((b) => b
+          ..foodRecords = ListBuilder()
+        ),
+        MealData((b) => b
+          ..foodRecords = ListBuilder(<FoodRecord>[tomato])
+        ),
+        MealData((b) => b
+          ..foodRecords = ListBuilder()
+        ),
+      ])
     );
   });
 
+  test("Data validation", () {
+    expect(() => FoodDiaryDay((b) => b
+      ..date = -2
+    ), throwsStateError);
+  });
+
   test("Add food records", () {
-    expect(day.mealRecords[0], [peach, orange]);
-    expect(day.mealRecords[1], isEmpty);
+    // Exceptions
+    expect(() => day.toBuilder()..addFoodRecords(null, BuiltList(<FoodRecord>[potato])), throwsArgumentError);
+    expect(() => day.toBuilder()..addFoodRecords(-1, BuiltList(<FoodRecord>[potato])), throwsArgumentError);
+    expect(() => day.toBuilder()..addFoodRecords(4, BuiltList(<FoodRecord>[potato])), throwsArgumentError);
+
+    expect(() => day.toBuilder()..addFoodRecords(0, null), throwsArgumentError);
+    expect(() => day.toBuilder()..addFoodRecords(0, BuiltList(<FoodRecord>[])), throwsArgumentError);
+
+    // Behaviour
+    expect(day.meals[0].foodRecords, [peach, orange]);
+    expect(day.meals[1].foodRecords, isEmpty);
 
     day = day.rebuild((b) => b
       ..addFoodRecords(0, BuiltList(<FoodRecord>[potato]))
       ..addFoodRecords(1, BuiltList(<FoodRecord>[peach, orange, potato]))
     );
 
-    expect(day.mealRecords[0], [peach, orange, potato]);
-    expect(day.mealRecords[1], [peach, orange, potato]);
+    expect(day.meals[0].foodRecords, [peach, orange, potato]);
+    expect(day.meals[1].foodRecords, [peach, orange, potato]);
   });
 
   test("Replace food records", () {
-    expect(day.mealRecords[0], [peach, orange]);
+    // Exceptions
+    expect(() => day.toBuilder()..replaceFoodRecord(null, tomato), throwsArgumentError);
+    expect(() => day.toBuilder()..replaceFoodRecord(potato, apricot), throwsArgumentError);
+
+    expect(() => day.toBuilder()..replaceFoodRecord(tomato, null), throwsArgumentError);
+    expect(() => day.toBuilder()..replaceFoodRecord(tomato, peach), throwsArgumentError);
+
+    // Behaviour
+    expect(day.meals[0].foodRecords, [peach, orange]);
 
     day = day.rebuild((b) => b
       ..replaceFoodRecord(orange, potato)
     );
 
-    expect(day.mealRecords[0], [peach, potato]);
+    expect(day.meals[0].foodRecords, [peach, potato]);
   });
 
   test("Delete food records", () {
-    expect(day.mealRecords[0], [peach, orange]);
-    expect(day.mealRecords[2], [tomato]);
+    // Exceptions
+    expect(() => day.toBuilder()..deleteFoodRecords(null), throwsArgumentError);
+    expect(() => day.toBuilder()..deleteFoodRecords(BuiltList(<FoodRecord>[])), throwsArgumentError);
+    expect(() => day.toBuilder()..deleteFoodRecords(BuiltList(<FoodRecord>[apricot])), throwsArgumentError);
 
-    print(day.mealRecords);
+    // Behaviour
+    expect(day.meals[0].foodRecords, [peach, orange]);
+    expect(day.meals[2].foodRecords, [tomato]);
+
     day = day.rebuild((b) => b
       ..deleteFoodRecords(BuiltList(<FoodRecord>[peach, tomato]))
     );
-    print(day.mealRecords);
 
-    expect(day.mealRecords[0], [orange]);
-    expect(day.mealRecords[2], isEmpty);
+    expect(day.meals[0].foodRecords, [orange]);
+    expect(day.meals[2].foodRecords, isEmpty);
   });
 
   test("Move food records", () {
-    expect(day.mealRecords[0], [peach, orange]);
-    expect(day.mealRecords[2], [tomato]);
+    // Exceptions already tested
+
+    // Behaviour
+    expect(day.meals[0].foodRecords, [peach, orange]);
+    expect(day.meals[2].foodRecords, [tomato]);
 
     day = day.rebuild((b) => b
       ..moveFoodRecords(1, BuiltList(<FoodRecord>[peach, tomato]))
     );
 
-    expect(day.mealRecords[0], [orange]);
-    expect(day.mealRecords[1], [peach, tomato]);
-    expect(day.mealRecords[2], isEmpty);
+    expect(day.meals[0].foodRecords, [orange]);
+    expect(day.meals[1].foodRecords, [peach, tomato]);
+    expect(day.meals[2].foodRecords, isEmpty);
   });
 }

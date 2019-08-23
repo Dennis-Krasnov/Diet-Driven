@@ -18,8 +18,8 @@ abstract class FoodDiaryDay implements Built<FoodDiaryDay, FoodDiaryDayBuilder> 
   /// Days since epoch.
   int get date;
 
-  /// Food records stored under keyed meal index.
-  BuiltListMultimap<int, FoodRecord> get mealRecords;
+  /// List of meals storing food records.
+  BuiltList<MealData> get meals;
 
   factory FoodDiaryDay([void Function(FoodDiaryDayBuilder b)]) = _$FoodDiaryDay;
 
@@ -32,59 +32,83 @@ abstract class FoodDiaryDay implements Built<FoodDiaryDay, FoodDiaryDayBuilder> 
 
 abstract class FoodDiaryDayBuilder implements Builder<FoodDiaryDay, FoodDiaryDayBuilder> {
   int date;
-  BuiltListMultimap<int, FoodRecord> mealRecords;
+  BuiltList<MealData> meals;
+
 
   /// Adds [foodRecords] to specified [mealIndex].
+  /// Throws [ArgumentError] on invalid input.
   void addFoodRecords(int mealIndex, BuiltList<FoodRecord> foodRecords) {
-    if (mealIndex == null || mealIndex < 0) {
-      throw ArgumentError("Meal index must be non-negative");
+    if (mealIndex == null || mealIndex < 0 || mealIndex >= meals.length) {
+      throw ArgumentError("Meal index must be within meals' size");
     }
 
     if (foodRecords == null || foodRecords.isEmpty) {
       throw ArgumentError("Food records must be non-empty");
     }
 
-    final mealRecordsBuilder = mealRecords.toBuilder();
-    mealRecordsBuilder[mealIndex].addAll(foodRecords);
-    mealRecords = mealRecordsBuilder.build();
+    final mealRecordsBuilder = meals.toBuilder();
+    mealRecordsBuilder[mealIndex] = mealRecordsBuilder[mealIndex].rebuild((b) => b
+      ..foodRecords.update((b) => b
+        ..addAll(foodRecords)
+      )
+    );
+    meals = mealRecordsBuilder.build();
   }
 
   /// Replaces [oldRecord] with [newRecord].
-  /// Idempotent if they're the same.
+  /// Throws [ArgumentError] on invalid input.
   void replaceFoodRecord(FoodRecord oldRecord, FoodRecord newRecord) {
-    if (oldRecord.uuid == newRecord.uuid) {
-      return;
-    }
-
-    if (oldRecord == null || !mealRecords.values.contains(oldRecord)) {
+    if (oldRecord == null || !meals.expand((m) => m.foodRecords).contains(oldRecord)) {
       throw ArgumentError("mealRecords must contain oldValue");
     }
 
-    if (newRecord == null || mealRecords.values.contains(newRecord)) {
+    if (newRecord == null || meals.expand((m) => m.foodRecords).contains(newRecord)) {
       throw ArgumentError("mealRecords must not contain newValue");
     }
 
-    mealRecords = BuiltListMultimap<int, FoodRecord>(Map<int, Iterable<FoodRecord>>.fromIterable(
-      mealRecords.keys,
-      key: (dynamic key) => key,
-      value: (dynamic key) => mealRecords[key].map((fr) => fr.uuid == oldRecord.uuid ? newRecord : fr)
+    // Idempotent if they're the same value-wise.
+    if (oldRecord == newRecord) { // TOTEST: ensure comparison is by value, not by uid!
+      return;
+    }
+
+    meals = BuiltList(meals.map<MealData>((meal) =>
+      meal.rebuild((b) => b
+        ..foodRecords.map((foodRecord) =>
+          (foodRecord.uid == oldRecord.uid) ? newRecord : foodRecord
+        )
+      )
     ));
   }
+//  BuiltList(meal.map<FoodRecord>((foodRecord) =>
+//  (foodRecord.uuid == oldRecord.uuid) ? newRecord : foodRecord
+//  ))
 
   /// Deletes [foodRecords] from this day.
+  /// Throws [ArgumentError] on invalid input.
   void deleteFoodRecords(BuiltList<FoodRecord> foodRecords) {
     if (foodRecords == null || foodRecords.isEmpty) {
       throw ArgumentError("Food records must be non-empty");
     }
 
-    mealRecords = BuiltListMultimap<int, FoodRecord>(Map<int, Iterable<FoodRecord>>.fromIterable(
-      mealRecords.keys,
-      key: (dynamic key) => key,
-      value: (dynamic key) => mealRecords[key].where((fr) => !foodRecords.any((toDelete) => fr.uuid == toDelete.uuid))
+    if (foodRecords.any((fr) => !meals.expand((m) => m.foodRecords).contains(fr))) {
+      throw ArgumentError("Existing food records must contain food records to delete");
+    }
+
+    meals = BuiltList(meals.map<MealData>((meal) =>
+      meal.rebuild((b) => b
+        ..foodRecords.removeWhere((foodRecord) => foodRecords.any((toRemove) => toRemove.uid == foodRecord.uid))
+//        ..foodRecords.removeWhere((foodRecord) => foodRecords.contains(foodRecord))
+      )
     ));
+//    mealRecords = BuiltList(mealRecords.map<BuiltList<FoodRecord>>((meal) =>
+//      BuiltList(meal.where((foodRecord) =>
+//        !foodRecords.contains(foodRecord)
+//      ))
+//    ));
   }
 
   /// Moves [foodRecords] from this day to specified [mealIndex].
+  /// Throws [ArgumentError] on invalid input.
   void moveFoodRecords(int mealIndex, BuiltList<FoodRecord> foodRecords) {
     deleteFoodRecords(foodRecords);
     addFoodRecords(mealIndex, foodRecords);

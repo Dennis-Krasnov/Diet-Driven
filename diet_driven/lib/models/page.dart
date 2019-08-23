@@ -33,6 +33,7 @@ class Page extends EnumClass {
   /// ...
   static const Page logging = _$logging;
 
+  /// ...
   NavigationEvent get navigationEvent {
     switch (this) {
       case diary:

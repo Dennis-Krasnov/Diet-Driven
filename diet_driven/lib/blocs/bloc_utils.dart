@@ -32,7 +32,7 @@ abstract class BuiltError {
 }
 
 ///
-int dateTimeToDaysSinceEpoch(DateTime dateTime) => DateTime(1970).toLocal().difference(dateTime.toLocal()).inDays;
+int dateTimeToDaysSinceEpoch(DateTime dateTime) => dateTime.toLocal().difference(DateTime(1970).toLocal()).inDays;
 
 ///
 int currentDaysSinceEpoch() => dateTimeToDaysSinceEpoch(DateTime.now().toLocal());

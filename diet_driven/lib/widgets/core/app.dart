@@ -40,6 +40,7 @@ class App extends StatelessWidget {
                 // Use default theme while user data is loading
                 theme: generateThemeSettings(userDataState is UserDataLoaded ? userDataState.settings.themeSettings : null),
                 onUnknownRoute: (RouteSettings setting) => MaterialPageRoute<dynamic>(builder: (BuildContext context) => ErrorPage(error: "${setting.name} route not found")),
+                debugShowCheckedModeBanner: false,
               );
             }
         );

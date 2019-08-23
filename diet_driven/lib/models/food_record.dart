@@ -6,91 +6,86 @@
 
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
+import 'package:diet_driven/models/models.dart';
 import 'package:uuid/uuid.dart';
 
 part 'food_record.g.dart';
 
+/// ...
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
 
-  /// Must compare by uuid explicitly
+  /// Auto-generated unique ID.
+  /// Must explicitly compare by uid.
   @BuiltValueField(compare: false)
-  String get uuid;
-
-  // TODO: edamam ID
+  String get uid;
 
   ///
   String get foodName;
 
-  ///
-//  @nullable
-//  int get mealIndex;
-
-  ///
-  @nullable
+  /// ...
+  /// Defaults to 100g.
   num get grams;
 
-  /// NUTRIENTS
-
   ///
-  @nullable
-  num get calories;
+  NutrientMap get totalNutrients;
 
-  ///
-  @nullable
-  num get protein;
+  /// Nutrients per 100g.
+  NutrientMap get normalizedNutrients => totalNutrients * (100 / grams);
 
-  ///
-  @nullable
-  num get fat;
+  /// TODO: reference to DB
 
-  ///
-  @nullable
-  num get carbs;
+  /// Total calories (kcal) coming from protein.
+  num get proteinCalories => 0;
 
-  /// Minerals
-//  @nullable
-//  Calcium get calcium;
+  /// Total calories (kcal) coming from fat.
+  num get fatCalories => 0;
 
-  // etc
+  /// Total calories (kcal) coming from carbs.
+  num get carbsCalories => 0;
 
-  /// Vitamins
-//  @nullable
-//  VitaminB1 get B1;
+  // TODO, use in tests
+//  factory FoodRecord
+//  FoodRecord.random() => FoodRecord((b) => b
+//    ..foodName = (["Apple", "Pear", "Orange", "Peach", "Carrot"].shuffle())[0]
+//  )
 
-  // etc
-
-  FoodRecord._();
   factory FoodRecord([void Function(FoodRecordBuilder b)]) = _$FoodRecord;
+
+  /// Data validation.
+  FoodRecord._() {
+    if (grams < 0)
+      throw StateError("Grams can't be negative");
+    if (grams == 0)
+      throw StateError("Normalization is division by zero grams");
+  }
 }
 
 abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
-  String uuid = Uuid().v4();
+  String uid = Uuid().v4();
   String foodName;
-//  int mealIndex;
+  num grams = 100;
+  NutrientMap totalNutrients;
 
-  num grams;
-  num calories;
-  num protein;
-  num fat;
-  num carbs;
+  /// ... in g
+  void fromMacros(num protein, num fat, num carbs) {
+    grams = protein + fat + carbs;
+    totalNutrients = totalNutrients.rebuild((b) => b // OPTIMIZE: create totalNutrients if it's currently not defined?
+      ..calories = Nutrient.protein.caloriesFromGram(protein)
+        + Nutrient.fat.caloriesFromGram(fat)
+        + Nutrient.carbs.caloriesFromGram(carbs)
+      ..quantities = b.quantities.rebuild((b) => b
+        // Overrides existing values
+        ..addAll({
+          Nutrient.protein: protein,
+          Nutrient.fat: fat,
+          Nutrient.carbs: carbs,
+        })
+      )
+    );
+  }
 
-
-  // Parses e.g. John "Joe" Smith into username+nickname.
-//  void parseUser(String user) {
-//    ...
-//  }
-
-//  var user = new User((b) => b..parseUser('John "Joe" Smith'));
-//https://medium.com/dartlang/darts-built-value-for-immutable-object-models-83e2497922d4
-
-
-  // TODO: make builder update to:
-  // to normalize to 1 gram (private)
-  // to scale by n (private)
-
-  // to update to different quantity (public)
-
+  // OPTIMIZE: randomized here?
 
   factory FoodRecordBuilder() = _$FoodRecordBuilder;
   FoodRecordBuilder._();

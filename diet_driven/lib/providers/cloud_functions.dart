@@ -48,11 +48,14 @@ class CloudFunctionsProvider {
     return BuiltList<FoodRecord>.from(
       (result.data as List<String>).map<FoodRecord>((name) => FoodRecord((b) => b
         ..foodName = name
-        ..grams = Random().nextInt(100)
-        ..calories = Random().nextInt(1000)
-        ..protein = Random().nextInt(100)
-        ..fat = Random().nextInt(100)
-        ..carbs = Random().nextInt(100)
+        ..grams = Random().nextInt(90) + 10
+        ..totalNutrients = NutrientMap((b) => b
+          ..calories = Random().nextInt(900) + 100
+        )
+//        ..calories = Random().nextInt(1000)
+//        ..protein = Random().nextInt(100)
+//        ..fat = Random().nextInt(100)
+//        ..carbs = Random().nextInt(100)
       ))
     );
   }

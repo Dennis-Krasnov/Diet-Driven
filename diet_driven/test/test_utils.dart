@@ -65,7 +65,6 @@ class BuiltErrorMatcher extends Matcher {
 
   @override
   bool matches(dynamic item, Map matchState) => item is BuiltError && item.error.toString().endsWith(expectedError);
-
 }
 
 //class WordMatcher extends Matcher {
@@ -106,3 +105,18 @@ class BuiltErrorMatcher extends Matcher {
 //    await future;
 //  });
 //});
+
+//Matcher badLinkMatcher(String link, int statusCode) => new TypeMatcher<BadLinkStatus>()
+//    .having((b) => b.link, 'link', link)
+//    .having((b) => b.statusCode, 'statusCode', statusCode);
+//expect(
+//getBadLinks([
+//'https://google.com',
+//'https://github.com/neelkamath/nonexistent',
+//'http://lakdjflakfasldfkjadlkfj.io'
+//]),
+//emitsInAnyOrder([
+//badLinkMatcher('https://github.com/neelkamath/nonexistent', 404),
+//badLinkMatcher('http://lakdjflakfasldfkjadlkfj.io', 0)
+//]),
+//);Z
