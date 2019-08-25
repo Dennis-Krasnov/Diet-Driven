@@ -61,6 +61,7 @@ void main() {
     );
   });
 
+  /// Tests
   test("Data validation", () {
     expect(() => FoodDiaryDay((b) => b
       ..date = -2

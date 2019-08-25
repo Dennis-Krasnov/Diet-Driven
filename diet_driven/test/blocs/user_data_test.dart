@@ -71,6 +71,7 @@ void main() {
   });
 
   // TODO: verify that repository.streams() are called just once
+  // TODO: verify loaded state Errors by trying to call each event, should result in many error states!
 
   group("React to streams", () {
     test("Process authentication stream", () {

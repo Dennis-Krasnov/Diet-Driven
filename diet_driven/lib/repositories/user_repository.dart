@@ -5,25 +5,28 @@
  */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:diet_driven/providers/firestore_paths.dart';
-import 'package:diet_driven/providers/firestore_serializer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/providers/firestore_paths.dart';
+import 'package:diet_driven/providers/firestore_serializer.dart';
 
 /// Data access object for authentication and user data.
 class UserRepository {
   /// Streams [Authentication] authentication status using `firebase_auth` library.
   ///
-  /// Returns [null] if unauthenticated.
-  Stream<Authentication> authStateChanged$() => FirebaseAuth.instance.onAuthStateChanged.map((user) => Authentication((b) => b
-    ..uid = user.uid
-    ..email = user.email
-    ..displayName = user.displayName
-    ..isAnonymous = user.isAnonymous
-    ..isEmailVerified = user.isEmailVerified
-  ));
+  /// Emits [null] if unauthenticated.
+  Stream<Authentication> authStateChanged$() => FirebaseAuth.instance.onAuthStateChanged.map((user) => user == null
+    // Let nulls pass through stream
+    ? null
+    : Authentication((b) => b
+      ..uid = user.uid
+      ..email = user.email
+      ..displayName = user.displayName
+      ..isAnonymous = user.isAnonymous
+      ..isEmailVerified = user.isEmailVerified
+    ));
 
   /// Signs in anonymously using `firebase_auth` library.
   ///

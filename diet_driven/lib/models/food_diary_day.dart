@@ -79,9 +79,6 @@ abstract class FoodDiaryDayBuilder implements Builder<FoodDiaryDay, FoodDiaryDay
       )
     ));
   }
-//  BuiltList(meal.map<FoodRecord>((foodRecord) =>
-//  (foodRecord.uuid == oldRecord.uuid) ? newRecord : foodRecord
-//  ))
 
   /// Deletes [foodRecords] from this day.
   /// Throws [ArgumentError] on invalid input.
@@ -97,14 +94,8 @@ abstract class FoodDiaryDayBuilder implements Builder<FoodDiaryDay, FoodDiaryDay
     meals = BuiltList(meals.map<MealData>((meal) =>
       meal.rebuild((b) => b
         ..foodRecords.removeWhere((foodRecord) => foodRecords.any((toRemove) => toRemove.uid == foodRecord.uid))
-//        ..foodRecords.removeWhere((foodRecord) => foodRecords.contains(foodRecord))
       )
     ));
-//    mealRecords = BuiltList(mealRecords.map<BuiltList<FoodRecord>>((meal) =>
-//      BuiltList(meal.where((foodRecord) =>
-//        !foodRecords.contains(foodRecord)
-//      ))
-//    ));
   }
 
   /// Moves [foodRecords] from this day to specified [mealIndex].

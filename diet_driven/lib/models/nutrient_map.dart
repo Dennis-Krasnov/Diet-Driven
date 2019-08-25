@@ -14,19 +14,19 @@ import 'package:diet_driven/models/models.dart';
 
 part 'nutrient_map.g.dart';
 
-/// TODOCUMENT
+/// Nutritional information base unit used for calculations.
+/// eg. final sum = nutrients.reduce((curr, next) => curr + next);
 abstract class NutrientMap implements Built<NutrientMap, NutrientMapBuilder> {
   static Serializer<NutrientMap> get serializer => _$nutrientMapSerializer;
 
-  /// TODOCUMENT
+  /// Energy of food (kcal).
   num get calories;
 
-  /// TODOCUMENT
+  /// Quantity of each nutrient (Nutrient.unitOfMeasure).
   BuiltMap<Nutrient, num> get quantities;
 
   /// Vector addition of nutrient values.
   /// Only LHS addition operator is defined.
-  /// eg. nutrients.reduce((curr, next) => curr + next)
   NutrientMap operator+(NutrientMap other) => rebuild((b) => b + other);
 
   /// Scalar multiplication of nutrient values.
@@ -48,7 +48,7 @@ abstract class NutrientMapBuilder implements Builder<NutrientMap, NutrientMapBui
   num calories;
   BuiltMap<Nutrient, num> quantities;
 
-  /// Replaces entire [NutrientMapBuilder] with random values.
+  /// Replaces [NutrientMapBuilder] with random values.
   void random() => fromMacros(Random().nextInt(90) + 10, Random().nextInt(75) + 25, Random().nextInt(150) + 50);
 
   /// Replaces [NutrientMapBuilder] with specified macronutrients.
@@ -73,10 +73,6 @@ abstract class NutrientMapBuilder implements Builder<NutrientMap, NutrientMapBui
     final protein = quantities[Nutrient.protein];
     final carbs = quantities[Nutrient.carbs];
     final fat = quantities[Nutrient.fat];
-
-    if (protein == null || fat == null || carbs == null) {
-      throw StateError("All macronutrients must be defined");
-    }
 
     calories = Nutrient.protein.caloriesFromGram(protein)
       + Nutrient.fat.caloriesFromGram(fat)

@@ -7,7 +7,6 @@
 import 'dart:math';
 
 import 'package:built_value/built_value.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:uuid/uuid.dart';
 
@@ -15,7 +14,7 @@ import 'package:diet_driven/models/models.dart';
 
 part 'food_record.g.dart';
 
-/// ...
+/// Contextualizes [NutrientMap] with food name, quantity, and source.
 abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   static Serializer<FoodRecord> get serializer => _$foodRecordSerializer;
 
@@ -24,29 +23,33 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   @BuiltValueField(compare: false)
   String get uid;
 
-  ///
+  /// Common name of food.
   String get foodName;
 
-  /// ...
+  /// Total weight of food (g).
   /// Defaults to 100g.
   num get grams;
 
-  ///
+  /// Nutritional information for [grams]g.
   NutrientMap get totalNutrients;
 
-  /// Nutrients per 100g.
+  /// Nutritional information per 100g.
   NutrientMap get normalizedNutrients => totalNutrients * (100 / grams);
 
-  /// TODO: reference to DB
+  // TODO: selection portion size (TODO: make grams a derived value, make quantity field)
+  /// TODO: source reference to DB, barcode value
 
   /// Total calories (kcal) coming from protein.
-  num get proteinCalories => 0;
+  /// Defaults to 0kcal if quantity isn't defined.
+  num get proteinCalories => Nutrient.protein.caloriesFromGram(totalNutrients.quantities[Nutrient.protein] ?? 0);
 
   /// Total calories (kcal) coming from fat.
-  num get fatCalories => 0;
+  /// Defaults to 0kcal if quantity isn't defined.
+  num get fatCalories => Nutrient.fat.caloriesFromGram(totalNutrients.quantities[Nutrient.fat] ?? 0);
 
   /// Total calories (kcal) coming from carbs.
-  num get carbsCalories => 0;
+  /// Defaults to 0kcal if quantity isn't defined.
+  num get carbsCalories => Nutrient.carbs.caloriesFromGram(totalNutrients.quantities[Nutrient.carbs] ?? 0);
 
   factory FoodRecord([void Function(FoodRecordBuilder b)]) = _$FoodRecord;
 
@@ -68,7 +71,7 @@ abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilde
   num grams = 100;
   NutrientMap totalNutrients;
 
-  /// Replaces entire [FoodRecordBuilder] with random values.
+  /// Replaces [FoodRecordBuilder] with random values.
   void random() {
     final randomFoodNames = <String>["Apple", "Pear", "Orange", "Peach", "Carrot"]..shuffle();
     foodName = randomFoodNames[0];
