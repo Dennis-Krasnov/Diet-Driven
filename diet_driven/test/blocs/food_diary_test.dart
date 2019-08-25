@@ -226,7 +226,8 @@ void main() {
       foodDiaryBloc.dispatch(InitFoodDiary());
 
       // Ensure first error was last state before stream close
-      await Future<void>.delayed(ticks(4));
+      // Extra time is given to avoid flaky tests
+      await Future<void>.delayed(ticks(5));
       foodDiaryBloc.dispose();
     });
 
@@ -266,7 +267,8 @@ void main() {
       foodDiaryBloc.dispatch(InitFoodDiary());
 
       // Ensure first error was last state before stream close
-      await Future<void>.delayed(ticks(4));
+      // Extra time is given to avoid flaky tests
+      await Future<void>.delayed(ticks(5));
       foodDiaryBloc.dispose();
     });
   });
