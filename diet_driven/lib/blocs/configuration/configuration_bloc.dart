@@ -38,7 +38,10 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   @override
   Stream<ConfigurationState> mapEventToState(ConfigurationEvent event) async* {
     if (event is InitConfiguration) {
-      assert(currentState is ConfigurationUninitialized);
+      if (currentState is! ConfigurationUninitialized) {
+        dispatch(ConfigurationError((b) => b..error = StateError("Configuration bloc must be uninitialized")));
+        return;
+      }
 
       // Maintain single instance of stream subscriptions
       _configurationEventSubscription ??= Observable<ConfigurationEvent>(CombineLatestStream.combine3(

@@ -41,6 +41,7 @@ void main() {
           if (mealIndex == i)
             FoodRecord((b) => b
               ..foodName = foodName
+              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
             ),
         ])
       )

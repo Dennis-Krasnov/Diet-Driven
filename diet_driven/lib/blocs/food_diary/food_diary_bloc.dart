@@ -46,7 +46,10 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
     if (event is InitFoodDiary) {
-      assert(currentState is FoodDiaryUninitialized);
+      if (currentState is! FoodDiaryUninitialized) {
+        dispatch(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be uninitialized")));
+        return;
+      }
 
       _foodDiaryEventSubscription ??= Observable<FoodDiaryEvent>(CombineLatestStream.combine2(
         Observable<BuiltList<FoodDiaryDay>>(diaryRepository.allTimeFoodDiary$(userId)),
@@ -59,28 +62,12 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       .distinct()
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => FoodDiaryError((b) => b..error = error))
-//      .onFirst ... GO TO TODAY'S PAGE
-//      .doOnListen(() => FIXME: doesn't fix
-//          dispatch(UpdateCurrentDate((b) => b // FIXME: food diary bloc must be loaded
-//            ..currentDate = currentDaysSinceEpoch()
-//          ))
-//      )
       .listen(dispatch);
-
-      // solution: make stream = ...; stream.first.mapTo(UpdateCurrentDate).then(dispatch); but also sub = stream.listen
-      // see user data bloc on how to separate streams!
-
-      // Go to today's food diary day if food diary bloc hasn't yet been initialized
-//      _foodDiaryEventSubscription.
-//      dispatch(UpdateCurrentDate((b) => b // FIXME: food diary bloc must be loaded
-//        ..currentDate = currentDaysSinceEpoch()
-//      ))
-
     }
 
     if (event is RemoteFoodDiaryArrived) {
       /// Initializes default DiaryDayBloc currentDate as today. FIXME: should go to today on a new day
-      var currentDate = currentDaysSinceEpoch(); // TOTEST as 0
+      var currentDate = currentDaysSinceEpoch();
       final diaryDaysBuilder = MapBuilder<int, FoodDiaryDay>();
 
       // Load previous state
@@ -105,16 +92,6 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       LoggingBloc().info("Food diary loaded with ${diaryDaysBuilder.length} days");
     }
 
-    if (event is UpdateCurrentDate) {
-      if (currentState is! FoodDiaryLoaded) {
-        throw StateError("Food diary bloc must be loaded");
-      }
-
-      yield (currentState as FoodDiaryLoaded).rebuild((b) => b
-        ..currentDate = event.currentDate
-      );
-    }
-
     if (event is FoodDiaryError) {
       yield FoodDiaryFailed((b) => b
         ..error = event.error
@@ -122,6 +99,54 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       );
 
       LoggingBloc().unexpectedError("Food diary failed", event.error, event.stacktrace);
+    }
+
+    if (event is UpdateCurrentDate) {
+      if (currentState is! FoodDiaryLoaded) {
+        dispatch(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be loaded")));
+        return;
+      }
+
+      yield (currentState as FoodDiaryLoaded).rebuild((b) => b
+        ..currentDate = event.currentDate
+      );
+    }
+
+    if (event is GlobalAddFoodRecords) {
+      if (currentState is! FoodDiaryLoaded) {
+        dispatch(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be loaded")));
+        return;
+      }
+
+      try {
+        // Builder for default day
+        // Only needed when adding to day without existing FoodDiaryDay object
+        final diaryDayBuilder = FoodDiaryDayBuilder()
+          ..date = event.date
+          // Create correct number of empty meals according to diet for that day
+          ..meals = BuiltList(List<MealData>.generate(
+            (currentState as FoodDiaryLoaded).dietForDate(event.date).mealNames.length,
+            (i) => MealData((b) => b
+              ..foodRecords = ListBuilder()
+            )
+          ));
+
+        // Override default day with existing day if it exists
+        final existingDiaryDay = (currentState as FoodDiaryLoaded).diaryDays[event.date];
+        if (existingDiaryDay != null) {
+          diaryDayBuilder.replace(existingDiaryDay);
+        }
+
+        diaryDayBuilder.addFoodRecords(event.mealIndex, event.foodRecords);
+
+        await diaryRepository.saveFoodDiaryDay(userId, diaryDayBuilder.build());
+
+        LoggingBloc().info("Added ${event.foodRecords.length} foods to ${event.date}");
+        event?.completer?.complete();
+      } catch(error, stacktrace) {
+        LoggingBloc().unexpectedError("Adding ${event.foodRecords.length} foods to ${event.date} failed", error, stacktrace);
+        event?.completer?.completeError(error, stacktrace);
+      }
     }
   }
 }

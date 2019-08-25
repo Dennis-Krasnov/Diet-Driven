@@ -191,14 +191,7 @@ class FoodDiaryDay extends StatelessWidget {
                     onTap: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(AddFoodRecords((b) => b
                       ..mealIndex = tmpMealsFromDiet.indexOf(meal)
                       ..foodRecords = ListBuilder(<FoodRecord>[
-                        FoodRecord((b) => b
-                          ..foodName = "new food in ${meal.mealName}"
-                          ..totalNutrients = NutrientMap((b) => b
-                            ..calories = 0
-                            ..quantities = BuiltMap()
-                          )
-                          ..fromMacros(Random().nextInt(90) + 10, Random().nextInt(90) + 10, Random().nextInt(90) + 10)
-                        )
+                        FoodRecord.random()
                       ])
                       ..completer = infoSnackBarCompleter(context, "successfully added food")
                     )),
@@ -216,7 +209,12 @@ class FoodDiaryDay extends StatelessWidget {
                         InkWell(
                           onTap: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(ReplaceFoodRecord((b) => b
                             ..oldRecord = fr.toBuilder()
-                            ..newRecord = (fr.toBuilder()..fromMacros(Random().nextInt(90) + 10, Random().nextInt(90) + 10, Random().nextInt(90) + 10))
+                            ..newRecord = fr.rebuild((b) => b
+                              ..totalNutrients = b.totalNutrients.rebuild((b) => b
+                                ..random()
+                              )
+                            ).toBuilder()
+//                            ..newRecord = (fr.toBuilder()..fromMacros(Random().nextInt(90) + 10, Random().nextInt(90) + 10, Random().nextInt(90) + 10))
                             ..completer = infoSnackBarCompleter(context, "successfully updated ${fr.foodName}")
                           )),
                           onLongPress: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(DeleteFoodRecords((b) => b
@@ -260,6 +258,7 @@ class FoodDiaryDay extends StatelessWidget {
   }
 }
 
+// TODO: put as method under NutritionMap data class eg. [nutrition.toSeries]
 List<charts.Series<MapEntry<Nutrient, num>, num>> _createSampleData2(NutrientMap nutrients) {
   return [
     charts.Series<MapEntry<Nutrient, num>, num>(
@@ -267,9 +266,9 @@ List<charts.Series<MapEntry<Nutrient, num>, num>> _createSampleData2(NutrientMap
       domainFn: (MapEntry<Nutrient, num> nutrientQuantity, _) => nutrientQuantity.key.hashCode,
       measureFn: (MapEntry<Nutrient, num> nutrientQuantity, _) => nutrientQuantity.value,
       colorFn: (MapEntry<Nutrient, num> nutrientQuantity, _) => nutrientQuantity.key == Nutrient.protein
-          ? charts.MaterialPalette.red.shadeDefault.darker
+          ? charts.MaterialPalette.red.shadeDefault
           : nutrientQuantity.key == Nutrient.fat
-          ? charts.MaterialPalette.yellow.shadeDefault
+          ? charts.MaterialPalette.yellow.shadeDefault.darker
           : charts.MaterialPalette.green.shadeDefault,
       data: nutrients.quantities.entries.where((nutrientQuantity) => nutrientQuantity.key.type == NutrientType.macronutrient).toList(), // TODO: macros only!
     )
@@ -397,6 +396,7 @@ class HiddenSticky extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final clampedStuckAmount = stuckAmount.clamp(0.0, 1.0);
+    // OPTIMIZE: technically don't need offstage if all go opacity 0
     return Offstage(
       offstage: 1 - clampedStuckAmount <= 0.0,
       child: Opacity(

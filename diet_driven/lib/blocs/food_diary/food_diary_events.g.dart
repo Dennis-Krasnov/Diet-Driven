@@ -348,4 +348,144 @@ class UpdateCurrentDateBuilder
   }
 }
 
+class _$GlobalAddFoodRecords extends GlobalAddFoodRecords {
+  @override
+  final int date;
+  @override
+  final int mealIndex;
+  @override
+  final BuiltList<FoodRecord> foodRecords;
+  @override
+  final Completer<void> completer;
+
+  factory _$GlobalAddFoodRecords(
+          [void Function(GlobalAddFoodRecordsBuilder) updates]) =>
+      (new GlobalAddFoodRecordsBuilder()..update(updates)).build();
+
+  _$GlobalAddFoodRecords._(
+      {this.date, this.mealIndex, this.foodRecords, this.completer})
+      : super._() {
+    if (date == null) {
+      throw new BuiltValueNullFieldError('GlobalAddFoodRecords', 'date');
+    }
+    if (mealIndex == null) {
+      throw new BuiltValueNullFieldError('GlobalAddFoodRecords', 'mealIndex');
+    }
+    if (foodRecords == null) {
+      throw new BuiltValueNullFieldError('GlobalAddFoodRecords', 'foodRecords');
+    }
+  }
+
+  @override
+  GlobalAddFoodRecords rebuild(
+          void Function(GlobalAddFoodRecordsBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  GlobalAddFoodRecordsBuilder toBuilder() =>
+      new GlobalAddFoodRecordsBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is GlobalAddFoodRecords &&
+        date == other.date &&
+        mealIndex == other.mealIndex &&
+        foodRecords == other.foodRecords &&
+        completer == other.completer;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(
+        $jc($jc($jc(0, date.hashCode), mealIndex.hashCode),
+            foodRecords.hashCode),
+        completer.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('GlobalAddFoodRecords')
+          ..add('date', date)
+          ..add('mealIndex', mealIndex)
+          ..add('foodRecords', foodRecords)
+          ..add('completer', completer))
+        .toString();
+  }
+}
+
+class GlobalAddFoodRecordsBuilder
+    implements Builder<GlobalAddFoodRecords, GlobalAddFoodRecordsBuilder> {
+  _$GlobalAddFoodRecords _$v;
+
+  int _date;
+  int get date => _$this._date;
+  set date(int date) => _$this._date = date;
+
+  int _mealIndex;
+  int get mealIndex => _$this._mealIndex;
+  set mealIndex(int mealIndex) => _$this._mealIndex = mealIndex;
+
+  ListBuilder<FoodRecord> _foodRecords;
+  ListBuilder<FoodRecord> get foodRecords =>
+      _$this._foodRecords ??= new ListBuilder<FoodRecord>();
+  set foodRecords(ListBuilder<FoodRecord> foodRecords) =>
+      _$this._foodRecords = foodRecords;
+
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
+
+  GlobalAddFoodRecordsBuilder();
+
+  GlobalAddFoodRecordsBuilder get _$this {
+    if (_$v != null) {
+      _date = _$v.date;
+      _mealIndex = _$v.mealIndex;
+      _foodRecords = _$v.foodRecords?.toBuilder();
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(GlobalAddFoodRecords other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$GlobalAddFoodRecords;
+  }
+
+  @override
+  void update(void Function(GlobalAddFoodRecordsBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$GlobalAddFoodRecords build() {
+    _$GlobalAddFoodRecords _$result;
+    try {
+      _$result = _$v ??
+          new _$GlobalAddFoodRecords._(
+              date: date,
+              mealIndex: mealIndex,
+              foodRecords: foodRecords.build(),
+              completer: completer);
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'foodRecords';
+        foodRecords.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'GlobalAddFoodRecords', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
 // ignore_for_file: always_put_control_body_on_new_line,always_specify_types,annotate_overrides,avoid_annotating_with_dynamic,avoid_as,avoid_catches_without_on_clauses,avoid_returning_this,lines_longer_than_80_chars,omit_local_variable_types,prefer_expression_function_bodies,sort_constructors_first,test_types_in_equals,unnecessary_const,unnecessary_new

@@ -37,6 +37,9 @@ int dateTimeToDaysSinceEpoch(DateTime dateTime) => dateTime.toLocal().difference
 ///
 int currentDaysSinceEpoch() => dateTimeToDaysSinceEpoch(DateTime.now().toLocal());
 
+///
+String hexNumberCodeToString(int hexCode) => "0x${hexCode.toRadixString(16).padLeft(8, '0')}";
+
 //@BuiltValue(instantiable: false)
 //abstract class FailState extends Object {
 //  String get error;

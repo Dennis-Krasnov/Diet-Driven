@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:merge_map/merge_map.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
@@ -38,7 +39,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
     if (event is InitUserData) {
-      assert(currentState is UserDataUninitialized);
+      if (currentState is! UserDataUninitialized) {
+        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be uninitialized")));
+        return;
+      }
 
       final auth$ = Observable<Authentication>(userRepository.authStateChanged$());
 
@@ -108,15 +112,18 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
     if (event is UpdateDarkMode) {
       if (currentState is! UserDataLoaded) {
-        throw StateError("User data bloc must be loaded");
+        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
+        return;
       }
 
       try {
-        final settingsBuilder = _userSettings.toBuilder()..themeSettings.update((b) => b
-          ..darkMode = event.darkMode
-        );
+        final settingsBuilder = _userSettings.toBuilder()
+          ..themeSettings.update((b) => b
+            ..darkMode = event.darkMode
+          );
 
-        settingsRepository.saveSettings(userId, settingsBuilder.build());
+        await settingsRepository.saveSettings(userId, settingsBuilder.build());
+
         LoggingBloc().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
@@ -127,15 +134,18 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
     if (event is UpdatePrimaryColour) {
       if (currentState is! UserDataLoaded) {
-        throw StateError("User data bloc must be loaded");
+        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
+        return;
       }
 
       try {
-        final settingsBuilder = _userSettings.toBuilder()..themeSettings.update((b) => b
-          ..primaryColour = "0x${event.colourValue.toRadixString(16).padLeft(8, '0')}"
-        );
+        final settingsBuilder = _userSettings.toBuilder()
+          ..themeSettings.update((b) => b
+            ..primaryColour = hexNumberCodeToString(event.colourValue)
+          );
 
-        settingsRepository.saveSettings(userId, settingsBuilder.build());
+        await settingsRepository.saveSettings(userId, settingsBuilder.build());
+
         LoggingBloc().info("Primary colour now ${event.colourValue}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
@@ -156,9 +166,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   /// Merges user [Settings] with default [Settings] field-by-field.
   /// Default settings are used unless explicitly overwritten by user's custom settings.
   Settings _mergeSettings(Settings userSettings, Settings defaultSettings) {
-    if (defaultSettings == null) {
-      throw ArgumentError.notNull("Default settings"); // TOTEST
-    }
+    ArgumentError.checkNotNull(defaultSettings, "Default settings"); // TOTEST
 
     // userSettings may be null due to missing firestore document
     if (userSettings == null) {

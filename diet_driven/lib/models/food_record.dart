@@ -4,10 +4,14 @@
  * in the LICENSE file.
  */
 
+import 'dart:math';
+
 import 'package:built_value/built_value.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
-import 'package:diet_driven/models/models.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:diet_driven/models/models.dart';
 
 part 'food_record.g.dart';
 
@@ -44,12 +48,6 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
   /// Total calories (kcal) coming from carbs.
   num get carbsCalories => 0;
 
-  // TODO, use in tests
-//  factory FoodRecord
-//  FoodRecord.random() => FoodRecord((b) => b
-//    ..foodName = (["Apple", "Pear", "Orange", "Peach", "Carrot"].shuffle())[0]
-//  )
-
   factory FoodRecord([void Function(FoodRecordBuilder b)]) = _$FoodRecord;
 
   /// Data validation.
@@ -57,8 +55,11 @@ abstract class FoodRecord implements Built<FoodRecord, FoodRecordBuilder> {
     if (grams < 0)
       throw StateError("Grams can't be negative");
     if (grams == 0)
-      throw StateError("Normalization is division by zero grams");
+      throw StateError("Normalization does division by zero grams");
   }
+
+  /// [FoodRecord] with random values.
+  factory FoodRecord.random() => FoodRecord((b) => b..random());
 }
 
 abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilder> {
@@ -67,25 +68,15 @@ abstract class FoodRecordBuilder implements Builder<FoodRecord, FoodRecordBuilde
   num grams = 100;
   NutrientMap totalNutrients;
 
-  /// ... in g
-  void fromMacros(num protein, num fat, num carbs) {
-    grams = protein + fat + carbs;
-    totalNutrients = totalNutrients.rebuild((b) => b // OPTIMIZE: create totalNutrients if it's currently not defined?
-      ..calories = Nutrient.protein.caloriesFromGram(protein)
-        + Nutrient.fat.caloriesFromGram(fat)
-        + Nutrient.carbs.caloriesFromGram(carbs)
-      ..quantities = b.quantities.rebuild((b) => b
-        // Overrides existing values
-        ..addAll({
-          Nutrient.protein: protein,
-          Nutrient.fat: fat,
-          Nutrient.carbs: carbs,
-        })
-      )
-    );
-  }
+  /// Replaces entire [FoodRecordBuilder] with random values.
+  void random() {
+    final randomFoodNames = <String>["Apple", "Pear", "Orange", "Peach", "Carrot"]..shuffle();
+    foodName = randomFoodNames[0];
 
-  // OPTIMIZE: randomized here?
+    grams = Random().nextInt(100) + 100;
+
+    totalNutrients = NutrientMap.random();
+  }
 
   factory FoodRecordBuilder() = _$FoodRecordBuilder;
   FoodRecordBuilder._();

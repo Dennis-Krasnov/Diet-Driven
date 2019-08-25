@@ -17,22 +17,27 @@ void main() {
   /// Data
   final peach = FoodRecord((b) => b
     ..foodName = "Peach"
+    ..totalNutrients = NutrientMap.random()
   );
 
   final orange = FoodRecord((b) => b
     ..foodName = "Orange"
+    ..totalNutrients = NutrientMap.random()
   );
 
   final potato = FoodRecord((b) => b
     ..foodName = "Potato"
+    ..totalNutrients = NutrientMap.random()
   );
 
   final tomato = FoodRecord((b) => b
     ..foodName = "Tomato"
+    ..totalNutrients = NutrientMap.random()
   );
 
   final apricot = FoodRecord((b) => b
     ..foodName = "Apricot"
+    ..totalNutrients = NutrientMap.random()
   );
 
   /// Configuration
