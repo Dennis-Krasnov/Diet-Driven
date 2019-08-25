@@ -70,8 +70,29 @@ void main() {
     expect(userDataBloc.initialState, UserDataUninitialized());
   });
 
-  // TODO: verify that repository.streams() are called just once
-  // TODO: verify loaded state Errors by trying to call each event, should result in many error states!
+  test("Fail on invalid events", () async {
+    expectLater(
+      userDataBloc.state,
+      emitsInOrder(<dynamic>[
+        UserDataUninitialized(),
+        BuiltErrorMatcher("User data bloc must be loaded"),
+        BuiltErrorMatcher("User data bloc must be loaded"),
+        BuiltErrorMatcher("User data bloc must be uninitialized"),
+      ])
+    );
+
+    userDataBloc.dispatch(UpdateDarkMode((b) => b
+      ..darkMode = true
+    ));
+    await Future<void>.delayed(ticks(1));
+
+    userDataBloc.dispatch(UpdatePrimaryColour((b) => b
+      ..colourValue = 0xffb76b01
+    ));
+    await Future<void>.delayed(ticks(1));
+
+    userDataBloc.dispatch(InitUserData());
+  });
 
   group("React to streams", () {
     test("Process authentication stream", () {
@@ -158,12 +179,13 @@ void main() {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(3)),
+        Future.delayed(ticks(4)),
       ]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
         Future.value(userDocument),
         Future.delayed(ticks(1), () => Future.error(Exception("User document failed"))), // Ends at first error
         Future.delayed(ticks(2), () => Future.error(Exception("User document failed 2"))),
+        Future.delayed(ticks(2), () => userDocument),
       ]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
@@ -192,14 +214,14 @@ void main() {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(3)),
+        Future.delayed(ticks(4)),
       ]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromFutures([
         Future.value(settingsLight),
         Future.delayed(ticks(1), () => Future.error(Exception("Settings failed"))), // Ends at first error
         Future.delayed(ticks(2), () => Future.error(Exception("Settings failed 2"))),
-        // TODO: check what happens when emitting another valid data value (see food_diary_test)
+        Future.delayed(ticks(3), () => settingsLight),
       ]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 

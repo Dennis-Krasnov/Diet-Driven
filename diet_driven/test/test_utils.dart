@@ -14,6 +14,7 @@ import 'package:mockito/mockito.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
+final eventFailedException = Exception("Event failed");
 final StreamMatcher doesNotEmit = emitsInOrder(<dynamic>[]);
 
 ///

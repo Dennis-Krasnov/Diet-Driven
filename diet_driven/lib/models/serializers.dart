@@ -9,6 +9,8 @@ library serializers;
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/serializer.dart';
 import 'package:built_value/standard_json_plugin.dart';
+import 'package:built_value/iso_8601_date_time_serializer.dart';
+import 'package:built_value/iso_8601_duration_serializer.dart';
 
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/models/nutrient_type.dart';
@@ -16,18 +18,18 @@ import 'package:diet_driven/models/nutrient_type.dart';
 part 'serializers.g.dart';
 
 @SerializersFor([
-  FoodRecord,
+  // Diary
   FoodDiaryDay,
   MealData,
   MealInfo,
 
-  Page,
-
-  Nutrient,
+  // Food records
+  FoodRecord,
   NutrientMap,
+  Nutrient,
   NutrientType,
 
-//  UserData,
+  // User data
   Authentication,
   UserDocument,
   Settings,
@@ -35,7 +37,8 @@ part 'serializers.g.dart';
   ThemeSettings,
   NavigationSettings,
 
-//  Uncertainty,
+  // Other
+  Page,
 ])
 
 // Built value default serializer
@@ -43,18 +46,12 @@ final Serializers serializers = _$serializers;
 
 // JSON serializer
 final Serializers jsonSerializers = (serializers.toBuilder()
-  // Supporting built collections with custom classes
+  // Supporting built collections with custom built value elements
   ..addBuilderFactory(const FullType(BuiltList, [FullType(FoodRecord)]), () => ListBuilder<FoodRecord>())
   ..addBuilderFactory(const FullType(BuiltList, [FullType(FoodDiaryDay)]), () => ListBuilder<FoodDiaryDay>())
-   ..addBuilderFactory(const FullType(BuiltListMultimap, [FullType(String), FullType(FoodRecord)]), () => ListMultimapBuilder<String, FoodRecord>())
-//   Converting to JSON
+  // ISO8601 DateTime and Duration format
+  ..add(Iso8601DateTimeSerializer())
+  ..add(Iso8601DurationSerializer())
+  // Converting to JSON
   ..addPlugin(StandardJsonPlugin())
 ).build();
-
-
-// TEMPLATE
-// ..addBuilderFactory(const FullType(BuiltListMultimap, [FullType.object, FullType.object]), () => ListMultimapBuilder<Object, Object>())
-// ..addBuilderFactory(const FullType(BuiltList, [FullType.object]), () => ListBuilder<Object>())
-
-//I/flutter ( 9584):   error=Deserializing '[FoodDiaryDay, date, 124, mealRecords, {0: []}, foodRecords, [{foodName: Some...' to 'unspecified' failed due to: Deserializing '[0, []]' to 'BuiltListMultimap<String, FoodRecord>' failed due to: Bad state: No builder factory for BuiltListMultimap<String, FoodRecord>. Fix by adding one, see SerializersBuilder.addBuilderFactory.,
-//I/flutter ( 9584):   error=Deserializing '[FoodDiaryDay, date, 124, mealRecords, {0: []}, foodRecords, [{foodName: Some...' to 'unspecified' failed due to: type '_BuiltListMultimap<String, FoodRecord>' is not a subtype of type 'BuiltListMultimap<int, FoodRecord>',

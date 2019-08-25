@@ -32,8 +32,7 @@ class CloudFunctionsProvider {
   Future<BuiltList<String>> fetchFoodSearchSuggestions(String query) async {
     assert(query != null && query.isNotEmpty);
 
-    final cloudFunction = CloudFunctions.instance.getHttpsCallable(functionName: "foodSuggestions")..timeout = Duration(seconds: 10);
-    final result = await cloudFunction(query);
+    final result = await _cloudFunction("foodSuggestions")(query);
     return BuiltList<String>.from(result.data);
   }
 
@@ -42,21 +41,19 @@ class CloudFunctionsProvider {
   /// Throws [CloudFunctionsException] if cloud functions fails.
   /// Throws [Exception] is function couldn't be called.
   Future<BuiltList<FoodRecord>> fetchRecentFoodRecords() async {
+    final result = await _cloudFunction("foodSuggestions")("apple");
     // TODO: implement real cloud function
-    final cloudFunction = CloudFunctions.instance.getHttpsCallable(functionName: "foodSuggestions")..timeout = Duration(seconds: 10);
-    final result = await cloudFunction("apple");
     return BuiltList<FoodRecord>.from(
-      (result.data as List<String>).map<FoodRecord>((name) => FoodRecord((b) => b
-        ..foodName = name
-        ..grams = Random().nextInt(90) + 10
-        ..totalNutrients = NutrientMap((b) => b
-          ..calories = Random().nextInt(900) + 100
+      (result.data as List<String>).map<FoodRecord>((name) => FoodRecord.random()
+        .rebuild((b) => b
+          ..foodName = name
         )
-//        ..calories = Random().nextInt(1000)
-//        ..protein = Random().nextInt(100)
-//        ..fat = Random().nextInt(100)
-//        ..carbs = Random().nextInt(100)
-      ))
+      )
     );
   }
+
+  ///
+  HttpsCallable _cloudFunction(String functionName, [int timeoutSeconds = 10]) =>
+    CloudFunctions.instance.getHttpsCallable(functionName: functionName)
+    ..timeout = Duration(seconds: timeoutSeconds);
 }

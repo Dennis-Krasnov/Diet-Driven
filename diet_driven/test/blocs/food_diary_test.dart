@@ -83,6 +83,28 @@ void main() {
     );
   });
 
+  void _setupDefaultMocks() {
+    when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromFutures([
+      Future.value(BuiltList(<FoodDiaryDay>[
+        FoodDiaryDay((b) => b
+          ..date = 23
+          ..meals = BuiltList<MealData>()
+        ),
+        FoodDiaryDay((b) => b
+          ..date = 24
+          ..meals = onlyMeal(0, "Apple")
+        ),
+      ])), //
+    ]));
+
+    when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromFutures([
+      Future.value(BuiltList(<Diet>[
+        diet,
+      ])),
+      Future.delayed(ticks(3), () => Future.error(Exception("Expected error to delay end of test"))),
+    ]));
+  }
+
   tearDown(() {
     foodDiaryBloc?.dispose();
   });
@@ -91,6 +113,32 @@ void main() {
   test("Initialize properly", () {
     expect(foodDiaryBloc.userId, userId);
     expect(foodDiaryBloc.initialState, FoodDiaryUninitialized());
+  });
+
+  test("Fail on invalid events", () async {
+    expectLater(
+      foodDiaryBloc.state,
+      emitsInOrder(<dynamic>[
+        FoodDiaryUninitialized(),
+        BuiltErrorMatcher("Food diary bloc must be loaded"),
+        BuiltErrorMatcher("Food diary bloc must be loaded"),
+        BuiltErrorMatcher("Food diary bloc must be uninitialized"),
+      ])
+    );
+
+    foodDiaryBloc.dispatch(UpdateCurrentDate((b) => b
+      ..currentDate = 2145
+    ));
+    await Future<void>.delayed(ticks(1));
+
+    foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+      ..date = 5232
+      ..mealIndex = 0
+      ..foodRecords = ListBuilder()
+    ));
+    await Future<void>.delayed(ticks(1));
+
+    foodDiaryBloc.dispatch(InitFoodDiary());
   });
 
   group("React to streams", () {
@@ -209,11 +257,6 @@ void main() {
         ])),
       ]));
 
-      foodDiaryBloc.state.listen((e) {
-        print("0000");
-        print(e);
-      });
-
       expectLater(
         foodDiaryBloc.state,
         emitsInOrder(<dynamic>[
@@ -273,59 +316,143 @@ void main() {
     });
   });
 
+  test("Update current date", () async {
+    _setupDefaultMocks();
+
+    expectLater(
+      foodDiaryBloc.state,
+      emitsInOrder(<FoodDiaryState>[
+        ...expectedState,
+        (expectedState.last as FoodDiaryLoaded).rebuild((b) => b
+          ..currentDate = daysSinceEpoch + 1
+        ),
+      ])
+    );
+
+    // Wait for bloc to be fully initialized
+    foodDiaryBloc.dispatch(InitFoodDiary());
+    await Future<void>.delayed(ticks(1));
+
+    foodDiaryBloc.dispatch(UpdateCurrentDate((b) => b
+      ..currentDate = daysSinceEpoch + 1
+    ));
+  });
+
   // TOTEST
-  group("Copy food diary days", () {
-    /// Configuration
-    setUp(() {
-      when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream.fromIterable([
-        BuiltList(<FoodDiaryDay>[
-          FoodDiaryDay((b) => b
-            ..date = 23
-            ..meals = BuiltList<MealData>()
-          ),
-          FoodDiaryDay((b) => b
-            ..date = 24
-            ..meals = onlyMeal(0, "Apple")
-          ),
-        ]),
-      ]));
+//  group("Copy food diary days", () {
+//  test("Sucessfully copy", () async {
+//  test("Fail on copy error", () async {
 
-      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream.fromIterable([
-        BuiltList(<Diet>[
-          diet,
-        ]),
-      ]));
+
+  group("Globally add food records", () {
+    test("Sucessfully add to existing day", () async {
+      _setupDefaultMocks();
+
+      final foods = BuiltList<FoodRecord>(<FoodRecord>[FoodRecord.random(), FoodRecord.random()]);
+
+      expectLater(
+        foodDiaryBloc.state,
+        emitsInOrder(<dynamic>[
+          ...expectedState,
+          BuiltErrorMatcher("Expected error to delay end of test"),
+        ])
+      ).then((void _) {
+        final foodDiaryDay = FoodDiaryDay((b) => b
+          ..date = 24
+          ..meals = onlyMeal(0, "Apple")
+          ..addFoodRecords(0, foods)
+        );
+
+        verify(diaryRepository.saveFoodDiaryDay(userId, foodDiaryDay)).called(1);
+        expect(completer.isCompleted, true);
+      });
+
+      // Wait for bloc to be fully initialized
+      foodDiaryBloc.dispatch(InitFoodDiary());
+      await Future<void>.delayed(ticks(1));
+
+      foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+        ..date = 24
+        ..mealIndex = 0
+        ..foodRecords = foods.toBuilder()
+        ..completer = completer
+      ));
     });
 
-    /// Tests
-    test("Sucessfully copy", () async {
-//      expectLater(
-//        foodDiaryBloc.state,
-//        emitsInOrder(expectedState),
-//      ).then((void _) {
-//        final foodDiaryDayBuilder = FoodDiaryDayBuilder(); // TODO: take existing!!
-//        foodDiaryDayBuilder.date = 53; //event.date; // TODO: update only date!!!!
-////        final settingsBuilder = SettingsBuilder()..themeSettings.update((b) => b
-////          ..primaryColour = "0xffb76b01"
-////        );
-//
-//        verify(diaryRepository.saveFoodDiaryDay(userId, foodDiaryDayBuilder.build())).called(1);
-//        expect(completer.isCompleted, true);
-//      });
-//
-//      // Wait for bloc to be fully initialized
-//      foodDiaryBloc.dispatch(InitFoodDiary());
-//      await Future<void>.delayed(ticks(1));
+    test("Sucessfully add to new day", () async {
+      _setupDefaultMocks();
 
-      // TODO
-//      foodDiaryBloc.dispatch(Copy...((b) => b
-//        ..date = ....
-//        ..completer = completer
-//      ));
+      final foods = BuiltList<FoodRecord>(<FoodRecord>[FoodRecord.random(), FoodRecord.random()]);
+
+      expectLater(
+        foodDiaryBloc.state,
+        emitsInOrder(<dynamic>[
+          ...expectedState,
+          BuiltErrorMatcher("Expected error to delay end of test"),
+        ])
+      ).then((void _) {
+        final foodDiaryDay = FoodDiaryDay((b) => b
+          ..date = 25
+          ..meals = BuiltList(List<MealData>.generate(4, (e) => MealData()))
+          ..addFoodRecords(1, foods)
+        );
+
+        verify(diaryRepository.saveFoodDiaryDay(userId, foodDiaryDay)).called(1);
+        expect(completer.isCompleted, true);
+      });
+
+      // Wait for bloc to be fully initialized
+      foodDiaryBloc.dispatch(InitFoodDiary());
+      await Future<void>.delayed(ticks(1));
+
+      foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+        ..date = 25
+        ..mealIndex = 1
+        ..foodRecords = foods.toBuilder()
+        ..completer = completer
+      ));
     });
 
-    test("Fail on copy error", () async {
+    test("Fail on add error", () async {
+      _setupDefaultMocks();
+      when(diaryRepository.saveFoodDiaryDay(any, any)).thenThrow(eventFailedException);
 
+      final foods = BuiltList<FoodRecord>(<FoodRecord>[FoodRecord.random(), FoodRecord.random()]);
+
+      expectLater(
+        foodDiaryBloc.state,
+        emitsInOrder(<dynamic>[
+          ...expectedState,
+          BuiltErrorMatcher("Expected error to delay end of test"),
+        ])
+      ).then((void _) {
+        final foodDiaryDay = FoodDiaryDay((b) => b
+          ..date = 25
+          ..meals = BuiltList(List<MealData>.generate(4, (e) => MealData()))
+          ..addFoodRecords(1, foods)
+        );
+
+        verify(diaryRepository.saveFoodDiaryDay(userId, foodDiaryDay)).called(1);
+        // Ensure completer didn't timeout (must use .isCompleted field)
+        expect(completer.isCompleted, true);
+      });
+
+      // Wait for bloc to be fully initialized
+      foodDiaryBloc.dispatch(InitFoodDiary());
+      await Future<void>.delayed(ticks(1));
+
+      foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+        ..date = 25
+        ..mealIndex = 1
+        ..foodRecords = foods.toBuilder()
+        ..completer = completer
+      ));
+
+      completer.future
+        // Assume completer.future completes
+        .then((_) => fail("Shouldn't complete sucessfully"))
+        // Catch expected exception (must be called synchronously)
+        .catchError((Object e) => expect(e, eventFailedException));
     });
   });
 

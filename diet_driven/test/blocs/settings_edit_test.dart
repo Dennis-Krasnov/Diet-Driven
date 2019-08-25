@@ -66,8 +66,6 @@ void main() {
     UserDataUnauthenticated(),
   ];
 
-  final updateFailedException = Exception("Update failed");
-
   /// Configuration
   setUp(() {
     BlocSupervisor.delegate = LoggingBlocDelegate();
@@ -124,7 +122,7 @@ void main() {
     });
 
     test("Fail on update error", () async {
-      when(settingsRepository.saveSettings(any, any)).thenThrow(updateFailedException);
+      when(settingsRepository.saveSettings(any, any)).thenThrow(eventFailedException);
 
       expectLater(
         userDataBloc.state,
@@ -152,7 +150,7 @@ void main() {
         // Assume completer.future completes
         .then((_) => fail("Shouldn't complete sucessfully"))
         // Catch expected exception (must be called synchronously)
-        .catchError((Object e) => expect(e, updateFailedException));
+        .catchError((Object e) => expect(e, eventFailedException));
     });
   });
 
@@ -182,7 +180,7 @@ void main() {
 
     // FIXME: colour doesn't change, but colour picker UI still updates... TODO: recreate colour selection package myself
     test("Fail on update error", () async {
-      when(settingsRepository.saveSettings(any, any)).thenThrow(updateFailedException);
+      when(settingsRepository.saveSettings(any, any)).thenThrow(eventFailedException);
 
       expectLater(
         userDataBloc.state,
@@ -210,7 +208,7 @@ void main() {
         // Assume completer.future completes
         .then((_) => fail("Shouldn't complete sucessfully"))
         // Catch expected exception (must be called synchronously)
-        .catchError((Object e) => expect(e, updateFailedException));
+        .catchError((Object e) => expect(e, eventFailedException));
     });
   });
 }
