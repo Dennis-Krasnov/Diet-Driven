@@ -179,7 +179,7 @@ void main() {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(4)),
+        Future.delayed(ticks(5)),
       ]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
         Future.value(userDocument),
@@ -214,7 +214,7 @@ void main() {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(4)),
+        Future.delayed(ticks(5)),
       ]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromFutures([
