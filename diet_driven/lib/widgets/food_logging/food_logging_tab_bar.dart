@@ -42,7 +42,7 @@ class _FoodLoggingTabBarState extends State<FoodLoggingTabBar> with AutomaticKee
     _tabBloc = FoodLoggingTabBloc(
       foodLoggingTab: widget.foodLoggingTab,
 //      futureResultRecords: RepositoryProvider.of<FoodRepository>(context).futureFoodRecordResultsFor(widget.foodLoggingTab, userId), // OPTIMIZE: bloc should access repository itself, also pass userId
-      futureResultRecords: RepositoryProvider.of<FoodRepository>(context).fetchRecentFoodRecords(),
+//      futureResultRecords: RepositoryProvider.of<FoodRepository>(context).fetchRecentFoodRecords(), // FIXME use diary itself!!!
       foodLoggingBloc: widget.foodLoggingBloc
     );
   }
@@ -74,65 +74,65 @@ class _FoodLoggingTabBarState extends State<FoodLoggingTabBar> with AutomaticKee
           // TOTEST: use delay to test this
           return ListView(
             children: <Widget>[
-              for (var foodRecordResult in state.results)
-                if (widget.foodLoggingBloc.currentState.multiSelect)
-                  SelectionFoodRecordTile(
-                    foodRecordResult.foodRecord,
-//                                value: state.selectedFoodRecords.contains(foodRecordResult),
-                    // TODO: exists in diary in different colour, for now disabled!
-                    value: foodRecordResult.existsInSelection,
-                    onChanged: (bool value) {
-                      if (value) {
-                        widget.foodLoggingBloc.dispatch(AddToSelection((b) => b
-                          ..foodRecord = foodRecordResult.foodRecord.toBuilder()
-                        ));
-                      }
-                      else {
-                        widget.foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
-                          ..foodRecord = foodRecordResult.foodRecord.toBuilder()
-                        ));
-                      }
-                    },
-                    onTap: () async {
-                      FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
-                        "/logging_food_record_edit",
-                        arguments: foodRecordResult.foodRecord
-                      );
-
-                      // TOTEST: enter multiple selection, edit a result to something else, save it to selection,
-                        //  then remove it from selection and the old result quantity should reappear
-
-                      // Removes old food record from selection, adds modified result to selection
-                      if (modified != null) {
-                        widget.foodLoggingBloc.dispatch(ReplaceSelected((b) => b
-                          ..oldRecord = foodRecordResult.foodRecord.toBuilder()
-                          ..newRecord = modified.toBuilder()
-                        ));
-                      }
-                    },
-                  )
-                else
-                  FoodRecordTile(
-                    foodRecordResult.foodRecord,
-                    onTap: () async {
-                      final FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
-                        "/logging_food_record_edit",
-                        arguments: foodRecordResult.foodRecord
-                      );
-
-                      // Adds modified result to diary
-                      if (modified != null) {
-                        Navigator.of(context).pop(BuiltList<FoodRecord>(<FoodRecord>[modified]));
-                      }
-                    },
-                    onLongPress: () {
-                      // Enters multiple selection mode with initial selection
-                      widget.foodLoggingBloc.dispatch(StartMultiSelect());
-                      widget.foodLoggingBloc.dispatch(AddToSelection((b) => b
-                        ..foodRecord = foodRecordResult.foodRecord.toBuilder()
-                      ));
-                    }
-                  )
+//              for (var foodRecordResult in state.results)
+//                if (widget.foodLoggingBloc.currentState.multiSelect)
+//                  SelectionFoodRecordTile(
+//                    foodRecordResult.foodRecord,
+////                                value: state.selectedFoodRecords.contains(foodRecordResult),
+//                    // TODO: exists in diary in different colour, for now disabled!
+//                    value: foodRecordResult.existsInSelection,
+//                    onChanged: (bool value) {
+//                      if (value) {
+//                        widget.foodLoggingBloc.dispatch(AddToSelection((b) => b
+//                          ..foodRecord = foodRecordResult.foodRecord.toBuilder()
+//                        ));
+//                      }
+//                      else {
+//                        widget.foodLoggingBloc.dispatch(RemoveFromSelection((b) => b
+//                          ..foodRecord = foodRecordResult.foodRecord.toBuilder()
+//                        ));
+//                      }
+//                    },
+//                    onTap: () async {
+//                      FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
+//                        "/logging_food_record_edit",
+//                        arguments: foodRecordResult.foodRecord
+//                      );
+//
+//                      // TOTEST: enter multiple selection, edit a result to something else, save it to selection,
+//                        //  then remove it from selection and the old result quantity should reappear
+//
+//                      // Removes old food record from selection, adds modified result to selection
+//                      if (modified != null) {
+//                        widget.foodLoggingBloc.dispatch(ReplaceSelected((b) => b
+//                          ..oldRecord = foodRecordResult.foodRecord.toBuilder()
+//                          ..newRecord = modified.toBuilder()
+//                        ));
+//                      }
+//                    },
+//                  )
+//                else
+//                  FoodRecordTile(
+//                    foodRecordResult.foodRecord,
+//                    onTap: () async {
+//                      final FoodRecord modified = await Navigator.of(context).pushNamed<FoodRecord>(
+//                        "/logging_food_record_edit",
+//                        arguments: foodRecordResult.foodRecord
+//                      );
+//
+//                      // Adds modified result to diary
+//                      if (modified != null) {
+//                        Navigator.of(context).pop(BuiltList<FoodRecord>(<FoodRecord>[modified]));
+//                      }
+//                    },
+//                    onLongPress: () {
+//                      // Enters multiple selection mode with initial selection
+//                      widget.foodLoggingBloc.dispatch(StartMultiSelect());
+//                      widget.foodLoggingBloc.dispatch(AddToSelection((b) => b
+//                        ..foodRecord = foodRecordResult.foodRecord.toBuilder()
+//                      ));
+//                    }
+//                  )
             ],
           );
         }

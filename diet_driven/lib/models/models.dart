@@ -20,6 +20,7 @@ export 'nutrient.dart';
 export 'nutrient_map.dart';
 export 'nutrient_type.dart';
 export 'page.dart';
+export 'search_result.dart';
 export 'settings.dart';
 export 'subscription_type.dart';
 export 'user_document.dart';

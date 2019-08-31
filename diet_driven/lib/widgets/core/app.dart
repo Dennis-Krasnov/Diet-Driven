@@ -89,13 +89,42 @@ class App extends StatelessWidget {
 
       // TYPOGRAPHY
 //      disabledColor: Colors.red,
-      textTheme: TextTheme(
+//      fontFamily: "Inter",
+//      textTheme: ,
+//        text
+
+        fontFamily: "Inter",
+//        textTheme: Typography.englishLike2018,
+        textTheme: TextTheme(
+//          display4   : TextStyle(debugLabel: 'Diet Driven display4 2018', fontSize: 96.0, fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic, letterSpacing: -1.5),
+//          display3   : TextStyle(debugLabel: 'englishLike display3 2018', fontSize: 60.0, fontWeight: FontWeight.w300, textBaseline: TextBaseline.alphabetic, letterSpacing: -0.5),
+//          display2   : TextStyle(debugLabel: 'englishLike display2 2018', fontSize: 48.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.0),
+//          display1   : TextStyle(debugLabel: 'englishLike display1 2018', fontSize: 34.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.25),
+          // Meal name heading??
+//          headline   : TextStyle(debugLabel: 'Diet Driven headline', fontSize: 24, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.0),
+          // Scaffold title
+          title      : TextStyle(debugLabel: 'Diet Driven title',    fontSize: 18, fontWeight: FontWeight.w500, textBaseline: TextBaseline.alphabetic, color: const Color.fromRGBO(0, 0, 0, 0.9)),
+//          subhead    : TextStyle(debugLabel: 'englishLike subhead 2018',  fontSize: 16.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.15),
+          // Food record subtitle
+          body2      : TextStyle(debugLabel: 'Diet Driven body2',    fontSize: 10, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, color: const Color.fromRGBO(0, 0, 0, 0.6)),
+          // Food record title
+          body1      : TextStyle(debugLabel: 'Diet Driven body1',    fontSize: 14, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, color: const Color.fromRGBO(0, 0, 0, 0.87)),
+//          button     : TextStyle(debugLabel: 'englishLike button 2018',   fontSize: 14.0, fontWeight: FontWeight.w500, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.75),
+//          caption    : TextStyle(debugLabel: 'englishLike caption 2018',  fontSize: 12.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.4),
+//          subtitle   : TextStyle(debugLabel: 'englishLike subtitle 2018', fontSize: 14.0, fontWeight: FontWeight.w500, textBaseline: TextBaseline.alphabetic, letterSpacing: 0.1),
+          // see track headings
+//          overline   : TextStyle(debugLabel: 'englishLike overline 2018', fontSize: 10.0, fontWeight: FontWeight.w400, textBaseline: TextBaseline.alphabetic, letterSpacing: 1.5),
+        ),
+//      englishLike2018
+//      textTheme: TextTheme(
         // Heading
-          headline: TextStyle(
-            fontWeight: FontWeight.w600,
-            fontSize: 12,
-            color: Colors.black.withOpacity(0.6),
-          ),
+//          headline: TextStyle(
+//            fontWeight: FontWeight.w600,
+//            fontSize: 12,
+//            color: Colors.black.withOpacity(0.6),
+//          ),
+
+
           //  // FIXME: affects all built-in listtiles !! - MAKE THIS THE HEADER INSTEAD OF HEADER 2 and use everywhere, // TODO: find the style that naturally styles subtitle too!
 //        subhead: TextStyle(
 //          fontWeight: FontWeight.w600,
@@ -103,18 +132,20 @@ class App extends StatelessWidget {
 //          color: Colors.black.withOpacity(0.2),
 //        ),
           // List tile title
-          body2: TextStyle(
-//          fontWeight: FontWeight.w600,
-              fontSize: 15,
-//          color: Colors.black87
-              color: Colors.black.withOpacity(0.8)
-          ),
-          // List tile subtitle
-          body1: TextStyle(
-              fontSize: 12,
-              color: Colors.black54
-//            color: Colors.black.withOpacity(60)
-          )
+//          body2: TextStyle(
+////          fontWeight: FontWeight.w600,
+//              fontSize: 15,
+////          color: Colors.black87
+//              color: Colors.black.withOpacity(0.8)
+//          ),
+//
+//          // List tile subtitle
+//          body1: TextStyle(
+//              fontSize: 12,
+//              color: Colors.black54
+////            color: Colors.black.withOpacity(60)
+//          )
+
 //        title: TextStyle(
 ////          fontWeight: FontWeight.w600,
 //        ),
@@ -125,7 +156,7 @@ class App extends StatelessWidget {
 //          fontSize: 14,
 ////          fontWeight: FontWeight.w600
 //        )
-      ),
+//      ),
 
       // Colours
       primaryColor: primaryColour,

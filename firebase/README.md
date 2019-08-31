@@ -17,8 +17,11 @@ and 'gcloud init'
 https://firebase.google.com/docs/functions/config-env
 ```
 firebase functions:config:set \
-    edamam.app_id="1c25cea1" \
-    edamam.app_key="88fbceb07e4fa287b47fefa3db2004f3"
+    algolia.app_id="..." \
+    algolia.admin_key="..." \
+    algolia.index_name="..." \
+    edamam.app_id="..." \
+    edamam.app_key="..." 
 ```
 
 - Must then redeploy functions to make the new configuration available.

@@ -9,6 +9,7 @@ import 'package:diet_driven/widgets/completer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:diet_driven/providers/cloud_functions.dart'; // FIXME
 
 class DiarySettingsPage extends StatelessWidget {
   @override
@@ -26,7 +27,12 @@ class DiarySettingsPage extends StatelessWidget {
             ],
           ),
           body: SafeArea(
-            child: Container(),
+            child: Container(
+              child: RaisedButton(
+                child: const Text("try out cloud function!"),
+                onPressed: () => CloudFunctionsProvider().searchFoodsByQuery("apple"),
+              ),
+            ),
           )
         );
       }

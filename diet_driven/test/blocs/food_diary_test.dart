@@ -377,6 +377,9 @@ void main() {
         ..foodRecords = foods.toBuilder()
         ..completer = completer
       ));
+
+      // Assume completer.future completes (must be called synchronously)
+      completer.future.catchError((Object e) => fail("Shouldn't fail"));
     });
 
     test("Sucessfully add to new day", () async {
@@ -411,6 +414,9 @@ void main() {
         ..foodRecords = foods.toBuilder()
         ..completer = completer
       ));
+
+      // Assume completer.future completes (must be called synchronously)
+      completer.future.catchError((Object e) => fail("Shouldn't fail"));
     });
 
     test("Fail on add error", () async {

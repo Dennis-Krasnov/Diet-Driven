@@ -16,7 +16,7 @@ import 'package:diet_driven/blocs/food_diary_day/food_diary_day.dart';
 import 'package:diet_driven/models/models.dart';
 
 class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
-  /// All food diary days.
+  /// All food diary days and diets.
   final FoodDiaryBloc foodDiaryBloc;
 
   /// Food diary day's date.
@@ -58,11 +58,11 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       );
     }
 
-    // TODO: move this back to food diary bloc; curry call it from here
     if (event is AddFoodRecords) {
       // Food diary day has no error state
       assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
 
+      // Reuse FoodDiaryBloc's add food records functionality
       foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
         ..date = date
         ..mealIndex = event.mealIndex

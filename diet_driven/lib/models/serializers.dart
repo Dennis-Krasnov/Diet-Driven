@@ -28,6 +28,7 @@ part 'serializers.g.dart';
   NutrientMap,
   Nutrient,
   NutrientType,
+  SearchResult,
 
   // User data
   Authentication,

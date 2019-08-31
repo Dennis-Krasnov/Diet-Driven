@@ -74,11 +74,14 @@ flutter:
     - assets/
 
   fonts:
-    - family: SourceSansPro
+    # https://github.com/rsms/inter
+    - family: Inter
       fonts:
-      - asset: fonts/Source_Sans_Pro/SourceSansPro-Regular.ttf
-      - asset: fonts/Source_Sans_Pro/SourceSansPro-Bold.ttf
-    - family: FiraSans
-      fonts:
-      - asset: fonts/Fira_Sans/FiraSans-Regular.ttf
-
+        - asset: fonts/Inter-Regular.otf
+          weight: 400
+        - asset: fonts/Inter-Medium.otf
+          weight: 500
+        - asset: fonts/Inter-SemiBold.otf
+          weight: 600
+        - asset: fonts/Inter-Bold.otf
+          weight: 700

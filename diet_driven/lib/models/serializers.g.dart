@@ -16,10 +16,14 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(NutrientMap.serializer)
       ..add(NutrientType.serializer)
       ..add(Page.serializer)
+      ..add(SearchResult.serializer)
       ..add(Settings.serializer)
       ..add(SubscriptionType.serializer)
       ..add(ThemeSettings.serializer)
       ..add(UserDocument.serializer)
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(FoodRecord)]),
+          () => new ListBuilder<FoodRecord>())
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(FoodRecord)]),
           () => new ListBuilder<FoodRecord>())

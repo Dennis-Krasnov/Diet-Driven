@@ -119,6 +119,9 @@ void main() {
         ..darkMode = true
         ..completer = completer
       ));
+
+      // Assume completer.future completes (must be called synchronously)
+      completer.future.catchError((Object e) => fail("Shouldn't fail"));
     });
 
     test("Fail on update error", () async {
@@ -176,6 +179,9 @@ void main() {
         ..colourValue = 0xffb76b01
         ..completer = completer
       ));
+
+      // Assume completer.future completes (must be called synchronously)
+      completer.future.catchError((Object e) => fail("Shouldn't fail"));
     });
 
     // FIXME: colour doesn't change, but colour picker UI still updates... TODO: recreate colour selection package myself

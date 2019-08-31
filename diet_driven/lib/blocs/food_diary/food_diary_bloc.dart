@@ -66,14 +66,14 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     }
 
     if (event is RemoteFoodDiaryArrived) {
-      /// Initializes default DiaryDayBloc currentDate as today. FIXME: should go to today on a new day
+      /// Initializes default DiaryDayBloc currentDate as today.
       var currentDate = currentDaysSinceEpoch();
       final diaryDaysBuilder = MapBuilder<int, FoodDiaryDay>();
 
       // Load previous state
       if (currentState is FoodDiaryLoaded) {
         currentDate = (currentState as FoodDiaryLoaded).currentDate;
-        diaryDaysBuilder.replace((currentState as FoodDiaryLoaded).diaryDays);
+        diaryDaysBuilder.replace((currentState as FoodDiaryLoaded).diaryDays); // OPTIMIZE?: when last food record deletes, cloud function deletes day but this still shows... is this ok?
       }
 
       // Override with new food diary days
@@ -125,7 +125,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
           ..date = event.date
           // Create correct number of empty meals according to diet for that day
           ..meals = BuiltList(List<MealData>.generate(
-            (currentState as FoodDiaryLoaded).dietForDate(event.date).mealNames.length,
+            (currentState as FoodDiaryLoaded).dietForDate(event.date).meals.length,
             (i) => MealData((b) => b
               ..foodRecords = ListBuilder()
             )
@@ -149,4 +149,20 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       }
     }
   }
+
+  /// Current diary's recently logged foods.
+  /// Only use when it's certain that [currentState] is [FoodDiaryLoaded].
+  BuiltList<FoodRecord> get recentFoods {
+    final loadedState = currentState as FoodDiaryLoaded;
+
+    return loadedState.diaryDays.keys
+      // Don't consider future foods
+      .where((date) => date <= loadedState.currentDate)
+      .map((date) => loadedState.diaryDays[date].meals.expand((meal) => meal.foodRecords))
+      .expand((mealFoods) => mealFoods);;
+  }
+
+  /// Current diary's frequently logged foods.
+  /// Only use when it's certain that [currentState] is [FoodDiaryLoaded].
+  BuiltList<FoodRecord> get frequentFoods => BuiltList(<FoodRecord>[]);
 }

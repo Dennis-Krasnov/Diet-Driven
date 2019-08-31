@@ -11,6 +11,7 @@ import 'package:rxdart/rxdart.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/loading/loading.dart';
 
+// TODO: separate into multiple widgets (one for each field of scaffold)
 class SplashPage extends StatelessWidget {
   final bool pulsating;
   final int bottomNavPages;

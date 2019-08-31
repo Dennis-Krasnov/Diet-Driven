@@ -70,7 +70,7 @@ void main() {
     expect(userDataBloc.initialState, UserDataUninitialized());
   });
 
-  test("Fail on invalid events", () async {
+  test("Fail on invalid state", () async {
     expectLater(
       userDataBloc.state,
       emitsInOrder(<dynamic>[

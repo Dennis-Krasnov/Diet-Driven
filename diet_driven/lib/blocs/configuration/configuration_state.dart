@@ -6,9 +6,9 @@
 
 import 'package:built_value/built_value.dart';
 import 'package:connectivity/connectivity.dart' show ConnectivityResult;
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:package_info/package_info.dart' show PackageInfo;
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
 
 part 'configuration_state.g.dart';

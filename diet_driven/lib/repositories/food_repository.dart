@@ -13,22 +13,30 @@ import 'package:diet_driven/providers/providers.dart';
 class FoodRepository {
   final _cloudFunctionsProvider = CloudFunctionsProvider();
 
-  /// Fetches [BuiltList] of relevant food search suggestions based on current [query].
+  /// Fetches result of an arbitrary text query from a nutrition database.
   ///
   /// Throws [CloudFunctionsException] if cloud functions fails.
   /// Throws [Exception] is function couldn't be called.
-  Future<BuiltList<String>> fetchFoodSearchSuggestions(String query) async {
+  Future<SearchResult> searchFoodsByQuery(String query) async {
+    assert(query != null && query.isNotEmpty);
+
+    // TODO: memoize results using https://pub.dev/packages/memoize
+    return _cloudFunctionsProvider.searchFoodsByQuery(query);
+  }
+
+  /// Fetches [BuiltList] of relevant food search suggestions based on [query].
+  ///
+  /// Throws [CloudFunctionsException] if cloud functions fails.
+  /// Throws [Exception] is function couldn't be called.
+  Future<BuiltList<String>> fetchAutocompleteSuggestions(String query) async {
     assert(query != null && query.isNotEmpty);
 
     // TODO: memoize suggestions using https://pub.dev/packages/memoize
-    return _cloudFunctionsProvider.fetchFoodSearchSuggestions(query);
+    return _cloudFunctionsProvider.fetchAutocompleteSuggestions(query);
   }
 
-  /// Fetches [BuiltList] of authenticated user's recent food records.
-  ///
-  /// Throws [CloudFunctionsException] if cloud functions fails.
-  /// Throws [Exception] is function couldn't be called.
-  Future<BuiltList<FoodRecord>> fetchRecentFoodRecords() async {
-    return _cloudFunctionsProvider.fetchRecentFoodRecords();
-  }
+  // TODO: natural language processing using edamam / fat secret
+
+  // TODO: by UPC barcode ...
+
 }

@@ -16,6 +16,7 @@ class Nutrient extends EnumClass {
   static Serializer<Nutrient> get serializer => _$nutrientSerializer;
 
   /// ...
+  /// TODO: wirenames
   static const Nutrient protein = _$protein;
 
   /// ...

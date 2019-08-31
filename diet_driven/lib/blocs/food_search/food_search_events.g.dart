@@ -1,10 +1,70 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'search_events.dart';
+part of 'food_search_events.dart';
 
 // **************************************************************************
 // BuiltValueGenerator
 // **************************************************************************
+
+class _$SuggestFoodRecords extends SuggestFoodRecords {
+  factory _$SuggestFoodRecords(
+          [void Function(SuggestFoodRecordsBuilder) updates]) =>
+      (new SuggestFoodRecordsBuilder()..update(updates)).build();
+
+  _$SuggestFoodRecords._() : super._();
+
+  @override
+  SuggestFoodRecords rebuild(
+          void Function(SuggestFoodRecordsBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SuggestFoodRecordsBuilder toBuilder() =>
+      new SuggestFoodRecordsBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SuggestFoodRecords;
+  }
+
+  @override
+  int get hashCode {
+    return 930010248;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('SuggestFoodRecords').toString();
+  }
+}
+
+class SuggestFoodRecordsBuilder
+    implements Builder<SuggestFoodRecords, SuggestFoodRecordsBuilder> {
+  _$SuggestFoodRecords _$v;
+
+  SuggestFoodRecordsBuilder();
+
+  @override
+  void replace(SuggestFoodRecords other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SuggestFoodRecords;
+  }
+
+  @override
+  void update(void Function(SuggestFoodRecordsBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SuggestFoodRecords build() {
+    final _$result = _$v ?? new _$SuggestFoodRecords._();
+    replace(_$result);
+    return _$result;
+  }
+}
 
 class _$UpdateQuery extends UpdateQuery {
   @override
@@ -84,16 +144,12 @@ class UpdateQueryBuilder implements Builder<UpdateQuery, UpdateQueryBuilder> {
 
 class _$SearchFoods extends SearchFoods {
   @override
-  final String query;
+  final Completer<void> completer;
 
   factory _$SearchFoods([void Function(SearchFoodsBuilder) updates]) =>
       (new SearchFoodsBuilder()..update(updates)).build();
 
-  _$SearchFoods._({this.query}) : super._() {
-    if (query == null) {
-      throw new BuiltValueNullFieldError('SearchFoods', 'query');
-    }
-  }
+  _$SearchFoods._({this.completer}) : super._();
 
   @override
   SearchFoods rebuild(void Function(SearchFoodsBuilder) updates) =>
@@ -105,17 +161,18 @@ class _$SearchFoods extends SearchFoods {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SearchFoods && query == other.query;
+    return other is SearchFoods && completer == other.completer;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, query.hashCode));
+    return $jf($jc(0, completer.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('SearchFoods')..add('query', query))
+    return (newBuiltValueToStringHelper('SearchFoods')
+          ..add('completer', completer))
         .toString();
   }
 }
@@ -123,15 +180,15 @@ class _$SearchFoods extends SearchFoods {
 class SearchFoodsBuilder implements Builder<SearchFoods, SearchFoodsBuilder> {
   _$SearchFoods _$v;
 
-  String _query;
-  String get query => _$this._query;
-  set query(String query) => _$this._query = query;
+  Completer<void> _completer;
+  Completer<void> get completer => _$this._completer;
+  set completer(Completer<void> completer) => _$this._completer = completer;
 
   SearchFoodsBuilder();
 
   SearchFoodsBuilder get _$this {
     if (_$v != null) {
-      _query = _$v.query;
+      _completer = _$v.completer;
       _$v = null;
     }
     return this;
@@ -152,7 +209,7 @@ class SearchFoodsBuilder implements Builder<SearchFoods, SearchFoodsBuilder> {
 
   @override
   _$SearchFoods build() {
-    final _$result = _$v ?? new _$SearchFoods._(query: query);
+    final _$result = _$v ?? new _$SearchFoods._(completer: completer);
     replace(_$result);
     return _$result;
   }

@@ -1,31 +1,28 @@
-import * as functions from "firebase-functions";
+import {UserRecord} from "firebase-functions/lib/providers/auth";
+import * as admin from "firebase-admin";
 
-import {db} from "./services";
-// import * as admin from "firebase-admin";
-
-// const db = admin.firestore();
-
-export const createUserHook = functions.auth.user().onCreate(async (user) => {
-    // Creates user document
-    await db.doc(`users/${user.uid}`).set({
+export async function handleAuthenticationCreate(user: UserRecord) {
+    // Creates default user document
+    await admin.firestore().doc(`users/${user.uid}`).set({
         $: "UserDocument",
         currentSubscription: "none", // not in use
         staleRemoteConfig: false // not in use
     });
 
-    console.log(`${user.uid} user document created!`);
-});
+    console.log(`${user.uid} user document created`);
+}
 
-export const deleteUserHook = functions.auth.user().onDelete(async (user) => {
+export async function handleAuthenticationDelete(user: UserRecord) {
+    // UserRecord
     // Deletes user document
-    await db.doc(`users/${user.uid}`).delete();
+    await admin.firestore().doc(`users/${user.uid}`).delete();
 
     // TODO: delete all other documents
-
+    // TODO: use firebase extensions instead
 
     // OPTIMIZE:
     // const promises = []
     // for doc in docs: promises.push(doc.delete())
     // const snapshots = await Promise.all(promises)
-    console.log(`${user.uid} firestore data deleted!`);
-});
+    console.log(`${user.uid} firestore data deleted`);
+}

@@ -7,13 +7,20 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
+import 'package:diet_driven/models/models.dart' show MealInfo;
+
 part 'diet.g.dart';
 
+/// ...
 abstract class Diet implements Built<Diet, DietBuilder> {
+  ///
   num get calories;
 
-  BuiltList<String> get mealNames;
+  ///
+  /// ... default ...
+  BuiltList<MealInfo> get meals;
 
+  ///
   int get startDate;
   // TODO: meal objects with start time,
   //  bool whether they count in 'mealindexRightNow', at least one must have this.
@@ -28,8 +35,24 @@ abstract class Diet implements Built<Diet, DietBuilder> {
 
 abstract class DietBuilder implements Builder<Diet, DietBuilder> {
   num calories;
-
-  BuiltList<String> mealNames = BuiltList(<String>["Breakfast", "Lunch", "Dinner", "Snacks"]);
+  BuiltList<MealInfo> meals = BuiltList(<MealInfo>[
+    MealInfo((b) => b
+      ..mealName = "Breakfast"
+      ..startTime = 0 // ?? AM
+    ),
+    MealInfo((b) => b
+      ..mealName = "Lunch"
+      ..startTime = 0 // ?? AM
+    ),
+    MealInfo((b) => b
+      ..mealName = "Dinner"
+      ..startTime = 0 // ?? AM
+    ),
+    MealInfo((b) => b
+      ..mealName = "Snacks"
+      ..startTime = 0 // ?? AM
+    ),
+  ]);
 
   int startDate;
 

@@ -15,7 +15,7 @@ part 'meal_info.g.dart';
 abstract class MealInfo implements Built<MealInfo, MealInfoBuilder> {
   static Serializer<MealInfo> get serializer => _$mealInfoSerializer;
 
-  /// TODOCUMENT
+  /// Meal name eg. Breakfast.
   String get mealName;
 
   /// Time in minutes from midnight.
