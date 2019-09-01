@@ -14,7 +14,7 @@ part 'food_diary_state.g.dart';
 
 abstract class FoodDiaryState {}
 
-/// Skeleton diary app bar and food records.
+/// Skeleton diary app bar.
 abstract class FoodDiaryUninitialized implements FoodDiaryState, Built<FoodDiaryUninitialized, FoodDiaryUninitializedBuilder> {
   factory FoodDiaryUninitialized([void Function(FoodDiaryUninitializedBuilder b)]) = _$FoodDiaryUninitialized;
   FoodDiaryUninitialized._();

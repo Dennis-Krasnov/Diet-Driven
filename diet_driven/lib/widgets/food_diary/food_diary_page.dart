@@ -27,6 +27,76 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
 
   @override
   Widget build(BuildContext context) {
+
+    return Scaffold(
+      // appBar requires an PreferredSizeWidget
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(72), // FIXME
+        child: BlocBuilder<FoodDiaryBloc, FoodDiaryState>(
+          condition: (previous, current) {
+            // Unconditional rebuild
+            if (previous is! FoodDiaryLoaded || current is! FoodDiaryLoaded)
+              return true;
+
+            // Rebuild only if current date changed
+            return (previous as FoodDiaryLoaded).currentDate != (current as FoodDiaryLoaded).currentDate;
+          },
+          builder: (BuildContext context, FoodDiaryState foodDiaryState) {
+            LoggingBloc().verbose("Food diary app bar rebuild");
+
+            // Skeleton diary app bar
+            if (foodDiaryState is FoodDiaryUninitialized) {
+              return const SplashPage(); // FIXME: different splash page for diary, without bottom navigation
+            }
+
+            // Loading food diary days failed
+            if (foodDiaryState is FoodDiaryFailed) {
+              // OPTIMIZE: food diary day blocs inherit diary bloc's error state!
+              return Container();
+//              return ErrorPage(
+//                error: foodDiaryState.error.toString(),
+//                trace: foodDiaryState.stacktrace.toString()
+//              );
+            }
+
+            // Food diary is loaded from now on
+            assert(foodDiaryState is FoodDiaryLoaded);
+
+            final loadedState = foodDiaryState as FoodDiaryLoaded;
+
+            return AppBar(
+              title: Text(
+                "Diary",
+                style: Theme.of(context).textTheme.title,
+              ),
+              actions: <Widget>[
+                Text("current page: ${loadedState.currentDate}", style: TextStyle(color: Colors.black),)
+                //controller.animateToPage(124, duration: const Duration(seconds: 1), curve: const ElasticInCurve())
+              ],
+            );
+          }
+        ),
+      ),
+      body: PageView.builder(
+//        key: GlobalKey(), // OPTIMIZE: trying to fix performance!
+        controller: controller,
+        onPageChanged: (int page) => BlocProvider.of<FoodDiaryBloc>(context).dispatch(UpdateCurrentDate((b) => b
+          ..currentDate = page
+        )),
+        itemBuilder: (BuildContext context, int page) {
+          return BlocProvider<FoodDiaryDayBloc>(
+            key: ValueKey(page), // OPTIMIZE: is this necessary? // TODOCUMENT
+            builder: (BuildContext context) => FoodDiaryDayBloc(
+              date: page,
+              foodDiaryBloc: BlocProvider.of<FoodDiaryBloc>(context),
+            )..dispatch(InitFoodDiaryDay()),
+            child: FoodDiaryDayPage(),
+          );
+        }
+      )
+    );
+
+    // OPTIMIZE: PUT ONLY AROUND APP BAR??? - WON'T REBUILD EVERY SUB BLOC AND EVERYTHING!!
     return BlocBuilder<FoodDiaryBloc, FoodDiaryState>(
       condition: (previous, current) {
         // Unconditional rebuild
@@ -37,6 +107,8 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
         return (previous as FoodDiaryLoaded).currentDate != (current as FoodDiaryLoaded).currentDate;
       },
       builder: (BuildContext context, FoodDiaryState foodDiaryState) {
+        LoggingBloc().verbose("Food diary rebuild");
+
         // White screen with skeleton diary app bar and food records
         if (foodDiaryState is FoodDiaryUninitialized) {
           return const SplashPage(); // FIXME: different splash page for diary, without bottom navigation
@@ -66,7 +138,9 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
               //controller.animateToPage(124, duration: const Duration(seconds: 1), curve: const ElasticInCurve())
             ],
           ),
+          // OPTIMIZE: DON'T REBUILD THIS - it recreates every food diary day bloc!
           body: PageView.builder(
+            key: GlobalKey(), // OPTIMIZE: trying to fix performance!
             controller: controller,
             onPageChanged: (int page) => BlocProvider.of<FoodDiaryBloc>(context).dispatch(UpdateCurrentDate((b) => b
               ..currentDate = page

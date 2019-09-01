@@ -4,11 +4,10 @@
  * in the LICENSE file.
  */
 
-import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:flutter/material.dart';
 
 import 'package:diet_driven/models/models.dart';
-
 
 class FoodRecordTile extends StatelessWidget {
   ///
@@ -27,8 +26,36 @@ class FoodRecordTile extends StatelessWidget {
   /// Inoperative if [enabled] is false.
   final GestureLongPressCallback onLongPress;
 
+//  final List<charts.Series<MapEntry<Nutrient, num>, num>> chartData;
+  // chartData = _createSampleData2(foodRecord)
+  // FIXME: calculate only once!
+
   const FoodRecordTile({Key key, @required this.foodRecord, this.enabled = true, this.onTap, this.onLongPress})
     : assert(foodRecord != null), super(key: key);
+
+  List<CircularStackEntry> generatePieChart(NutrientMap nutrientMap, List<Nutrient> macroNutrientOrder) {
+    assert(nutrientMap != null);
+    assert(macroNutrientOrder != null);
+
+    return <CircularStackEntry>[
+      CircularStackEntry(
+        <CircularSegmentEntry>[
+          // TODO: take list (macronutrient order) from settings
+          for (final nutrient in macroNutrientOrder)
+            CircularSegmentEntry(
+              nutrientMap.quantities[nutrient],
+                nutrient == Nutrient.protein // TODO: dynamic, store in map
+                  ? const Color(0xFFA23648)
+                  : nutrient == Nutrient.fat
+                  ? const Color(0xFFD3AF32)
+                  : const Color(0xFF4DAB75),
+              rankKey: nutrient.name
+            ),
+        ],
+        rankKey: 'Macronutrient distribution',
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +71,13 @@ class FoodRecordTile extends StatelessWidget {
         child: Row(
           children: <Widget>[
             SizedBox(
-//                                    height: 50,
+//              key: ValueKey(foodRecord.normalizedNutrients), // OPTIMIZE: I Don't know if this changes anything...
               width: 24,
-              child: charts.PieChart<num>(
-                _createSampleData2(foodRecord.totalNutrients),
-                animate: false,
-                layoutConfig: charts.LayoutConfig(
-                  topMarginSpec: charts.MarginSpec.fixedPixel(0),
-                  rightMarginSpec: charts.MarginSpec.fixedPixel(0),
-                  bottomMarginSpec: charts.MarginSpec.fixedPixel(0),
-                  leftMarginSpec: charts.MarginSpec.fixedPixel(0),
-                ),
+              child: AnimatedCircularChart(
+                size: const Size(30, 30),
+                duration: const Duration(milliseconds: 0),
+                initialChartData: generatePieChart(foodRecord.totalNutrients, [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
+                chartType: CircularChartType.Pie,
               ),
             ),
             const SizedBox(width: 16),
@@ -121,22 +144,7 @@ class FoodRecordTile extends StatelessWidget {
 }
 
 
-// TODO: put as method under NutritionMap data class eg. [nutrition.toSeries]
-List<charts.Series<MapEntry<Nutrient, num>, num>> _createSampleData2(NutrientMap nutrients) {
-  return [
-    charts.Series<MapEntry<Nutrient, num>, num>(
-      id: 'Sales',
-      domainFn: (MapEntry<Nutrient, num> nutrientQuantity, _) => nutrientQuantity.key.hashCode,
-      measureFn: (MapEntry<Nutrient, num> nutrientQuantity, _) => nutrientQuantity.value,
-      colorFn: (MapEntry<Nutrient, num> nutrientQuantity, _) => nutrientQuantity.key == Nutrient.protein
-          ? charts.MaterialPalette.red.shadeDefault
-          : nutrientQuantity.key == Nutrient.fat
-          ? charts.MaterialPalette.yellow.shadeDefault.darker
-          : charts.MaterialPalette.green.shadeDefault,
-      data: nutrients.quantities.entries.where((nutrientQuantity) => nutrientQuantity.key.type == NutrientType.macronutrient).toList(), // TODO: macros only!
-    )
-  ];
-}
+
 
 // TODO: for selection version
 /// Called when the value of the checkbox should change.

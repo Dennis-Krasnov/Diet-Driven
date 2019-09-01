@@ -75,8 +75,8 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
         ..nextState = event.nextState
       );
 
-      loggingBuilder.logs.add(blocTransition);
-      _printWrapped(blocTransition);
+//      loggingBuilder.logs.add(blocTransition); OPTIMIZE: try to fix crash
+//      _printWrapped(blocTransition); OPTIMIZE: try to fix crash
     }
 
     yield loggingBuilder.build();

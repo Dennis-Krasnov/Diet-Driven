@@ -20,6 +20,8 @@ class FoodDiaryDayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<FoodDiaryDayBloc, FoodDiaryDayState>(
       builder: (BuildContext context, FoodDiaryDayState foodDiaryDayState) {
+        LoggingBloc().verbose("Food diary day #${BlocProvider.of<FoodDiaryDayBloc>(context).date} rebuild");
+
         // White screen with skeleton food records
         if (foodDiaryDayState is FoodDiaryDayUninitialized) {
           // TODO: skeleton page
@@ -78,7 +80,7 @@ class FoodDiaryDayPage extends StatelessWidget {
                           ..newRecord = fr.rebuild((b) => b
                             ..totalNutrients = NutrientMap.random()
                           ).toBuilder()
-                          ..completer = infoSnackBarCompleter(context, "successfully updated ${fr.foodName}")
+//                          ..completer = infoSnackBarCompleter(context, "successfully updated ${fr.foodName}")
                         )),
                         onLongPress: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(DeleteFoodRecords((b) => b
                           ..foodRecords = ListBuilder(<FoodRecord>[fr])

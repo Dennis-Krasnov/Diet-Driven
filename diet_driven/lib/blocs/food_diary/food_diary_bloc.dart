@@ -66,6 +66,15 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     }
 
     if (event is RemoteFoodDiaryArrived) {
+      // optimize with compute(method, params)
+      // The callback argument must be a top-level function, not a closure or an instance or static method of a class.
+//      int result = await compute(_calculate, 5);
+//      int _calculate(int value) {
+//        // this runs on another isolate
+//        return value * 2;
+//      }
+
+
       /// Initializes default DiaryDayBloc currentDate as today.
       var currentDate = currentDaysSinceEpoch();
       final diaryDaysBuilder = MapBuilder<int, FoodDiaryDay>();

@@ -86,12 +86,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
 //                        child: Icon(FaRegular(page.toFontAwesomeCode()),),
-                        child: Icon(FontAwesomeIcons.gamepad), // FIXME
+                        child: Icon(pageToIconData(page)),
                       ),
                       activeIcon: Padding(
                         padding: const EdgeInsets.only(bottom: 4),
 //                        child: Icon(FaSolid(page.toFontAwesomeCode()),),
-                        child: Icon(FontAwesomeIcons.gamepad), // FIXME
+                        child: Icon(pageToIconData(page)),
                       ),
                     )
                 ],
@@ -112,6 +112,29 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       }
     );
+  }
+
+  /// Creates respective icon data based on page enum.
+  IconData pageToIconData(Page page) {
+    switch (page) {
+      case Page.diary:
+        return FontAwesomeIcons.book;
+        break;
+      case Page.track:
+        return FontAwesomeIcons.weight;
+        break;
+      case Page.reports:
+        return FontAwesomeIcons.chartLine;
+        break;
+      case Page.settings:
+        return FontAwesomeIcons.userCog; // cog
+        break;
+      case Page.logging:
+        return FontAwesomeIcons.stream;
+        break;
+      default:
+        return FontAwesomeIcons.bug;
+    }
   }
 
   /// Creates respective page widget based on page enum.

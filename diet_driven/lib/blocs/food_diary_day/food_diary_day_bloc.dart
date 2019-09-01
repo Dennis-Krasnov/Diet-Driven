@@ -48,6 +48,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
           ..foodDiaryDay = loadedDiaryState.diaryDays[date]?.toBuilder()
           ..diet = loadedDiaryState.dietForDate(date).toBuilder()
         ))
+        .distinct()
         .listen(dispatch);
     }
 

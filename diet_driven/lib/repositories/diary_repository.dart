@@ -23,7 +23,7 @@ class DiaryRepository {
     assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
     final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
-    return docRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeDocumentTransform());
+    return docRef.snapshots().transform(deserializeDocumentTransform<FoodDiaryDay>());
   }
 
   /// Streams [userId]'s all-time [FoodDiaryDay]s using `cloud_firestore` library.
@@ -35,7 +35,7 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
 
     final colRef = Firestore.instance.collection(FirestorePaths.foodDiary(userId));
-    return colRef.snapshots().transform(FirestoreSerializer<FoodDiaryDay>().deserializeCollectionTransform());
+    return colRef.snapshots().transform(deserializeCollectionTransform<FoodDiaryDay>());
   }
 
   /// Replaces [userId]'s [FoodDiaryDay] on its respective day using `cloud_firestore` library.
@@ -44,15 +44,16 @@ class DiaryRepository {
   /// -
   ///
   /// Throws [PlatformException] if [userId] is empty.
-  Future<void> saveFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) {
+  Future<void> saveFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) async {
     assert(userId != null && userId.isNotEmpty);
     assert(foodDiaryDay != null);
 
     final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
-    return docRef.setData(FirestoreSerializer<FoodDiaryDay>().serializeDocument(foodDiaryDay), merge: false);
+    return docRef.setData(serializeDocument(foodDiaryDay), merge: false);
   }
 
   /// Deletes [userId]'s [FoodDiaryDay] on [daysSinceEpoch] using `cloud_firestore` library.
+  /// `Future.sync()` runs future immediately to enable proper exception handling.
   ///
   /// Cloud functions triggers on delete:
   /// - If [dayCompleted], calculates score for the day, saves in aggregate score.

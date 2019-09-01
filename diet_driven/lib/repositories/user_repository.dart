@@ -69,6 +69,6 @@ class UserRepository {
     assert(userId != null && userId.isNotEmpty);
 
     final docRef = Firestore.instance.document(FirestorePaths.user(userId));
-    return docRef.snapshots().transform(FirestoreSerializer<UserDocument>().deserializeDocumentTransform());
+    return docRef.snapshots().transform(deserializeDocumentTransform<UserDocument>());
   }
 }

@@ -17,7 +17,7 @@ class SettingsRepository {
   /// Throws [DeserializationError] if Firestore data is corrupt.
   Stream<Settings> defaultSettings$() {
     final docRef = Firestore.instance.document(FirestorePaths.defaultSettings());
-    return docRef.snapshots().transform(FirestoreSerializer<Settings>().deserializeDocumentTransform());
+    return docRef.snapshots().transform(deserializeDocumentTransform<Settings>());
   }
 
   /// Streams [userId]'s custom [Settings] using `cloud_firestore` library.
@@ -29,24 +29,22 @@ class SettingsRepository {
     assert(userId != null && userId.isNotEmpty);
 
     final docRef = Firestore.instance.document(FirestorePaths.userSettings(userId));
-    return docRef.snapshots().transform(FirestoreSerializer<Settings>().deserializeDocumentTransform());
+    return docRef.snapshots().transform(deserializeDocumentTransform<Settings>());
   }
 
   /// Replaces [userId]'s [Settings] using `cloud_firestore` library.
+  /// `Future.sync()` runs future immediately to enable proper exception handling.
   ///
   /// Cloud functions triggers on edit:
   /// -
   ///
   /// Throws [PlatformException] if [userId] is empty.
-  // Future<void> replaceSettings(String userId, Settings settings) => Future.sync(() async {
-  /// `Future.sync()` runs future immediately to enable proper exception handling.
-  Future<void> saveSettings(String userId, Settings settings) {
+   Future<void> saveSettings(String userId, Settings settings) async {
     assert(userId != null && userId.isNotEmpty);
     assert(settings != null);
 
     final docRef = Firestore.instance.document(FirestorePaths.userSettings(userId));
-    return docRef.setData(FirestoreSerializer<Settings>().serializeDocument(settings), merge: false); // FIXME: should be merge: true maybe?
+    return docRef.setData(serializeDocument<Settings>(settings), merge: false);
   }
-
 }
 
