@@ -4,6 +4,7 @@
  * in the LICENSE file.
  */
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -32,30 +33,6 @@ class FoodRecordTile extends StatelessWidget {
 
   const FoodRecordTile({Key key, @required this.foodRecord, this.enabled = true, this.onTap, this.onLongPress})
     : assert(foodRecord != null), super(key: key);
-
-  List<CircularStackEntry> generatePieChart(NutrientMap nutrientMap, List<Nutrient> macroNutrientOrder) {
-    assert(nutrientMap != null);
-    assert(macroNutrientOrder != null);
-
-    return <CircularStackEntry>[
-      CircularStackEntry(
-        <CircularSegmentEntry>[
-          // TODO: take list (macronutrient order) from settings
-          for (final nutrient in macroNutrientOrder)
-            CircularSegmentEntry(
-              nutrientMap.quantities[nutrient],
-                nutrient == Nutrient.protein // TODO: dynamic, store in map
-                  ? const Color(0xFFA23648)
-                  : nutrient == Nutrient.fat
-                  ? const Color(0xFFD3AF32)
-                  : const Color(0xFF4DAB75),
-              rankKey: nutrient.name
-            ),
-        ],
-        rankKey: 'Macronutrient distribution',
-      ),
-    ];
-  }
 
   @override
   Widget build(BuildContext context) {
