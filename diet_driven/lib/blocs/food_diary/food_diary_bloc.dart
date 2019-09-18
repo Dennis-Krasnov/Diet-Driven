@@ -164,11 +164,21 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   BuiltList<FoodRecord> get recentFoods {
     final loadedState = currentState as FoodDiaryLoaded;
 
-    return loadedState.diaryDays.keys
+    final foodRecords = loadedState.diaryDays.keys
       // Don't consider future foods
       .where((date) => date <= loadedState.currentDate)
+      // ...
       .map((date) => loadedState.diaryDays[date].meals.expand((meal) => meal.foodRecords))
-      .expand((mealFoods) => mealFoods);;
+      // ...
+      .expand<FoodRecord>((mealFoods) => mealFoods);
+
+    // OPTIMIZE: this is mega inefficient
+    return BuiltList((foodRecords.toList()
+      ..sort((a, b) =>
+        foodRecords.where((fr) => fr == b).length - foodRecords.where((fr) => fr == a).length))
+        // Distinct elements
+        .toSet().toList()
+    );
   }
 
   /// Current diary's frequently logged foods.

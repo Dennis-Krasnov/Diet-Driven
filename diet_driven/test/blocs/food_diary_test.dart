@@ -463,4 +463,123 @@ void main() {
   });
 
   // TODO: other full day operations!!!
+
+  group("Recent foods", () {
+    test("Empty diary", () async {
+      when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromIterable([
+        BuiltList(<FoodDiaryDay>[]),
+      ]));
+      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromIterable([
+        BuiltList(<Diet>[]),
+      ]));
+
+      expectLater(
+        foodDiaryBloc.state,
+        emitsInOrder(<FoodDiaryState>[
+          FoodDiaryUninitialized(),
+          FoodDiaryLoaded((b) => b
+            ..currentDate = daysSinceEpoch
+            ..diaryDays = MapBuilder<int, FoodDiaryDay>()
+            ..diets = ListBuilder<Diet>()
+          ),
+        ]),
+      );
+
+      // Wait for bloc to be fully initialized
+      foodDiaryBloc.dispatch(InitFoodDiary());
+      await Future<void>.delayed(ticks(1));
+
+      expect(foodDiaryBloc.recentFoods, BuiltList<FoodRecord>(<FoodRecord>[]));
+    });
+
+    test("Filled diary", () async {
+      final customMeals = BuiltList<MealData>(<MealData>[
+        MealData((b) => b
+          ..foodRecords = ListBuilder(<FoodRecord>[
+            FoodRecord((b) => b
+              ..foodName = "Orange"
+              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
+            ),
+            FoodRecord((b) => b
+              ..foodName = "Apple"
+              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
+            ),
+            FoodRecord((b) => b
+              ..foodName = "Potato"
+              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
+            ),
+          ])
+        )
+      ]);
+
+      when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromIterable([
+        BuiltList(<FoodDiaryDay>[]),
+        BuiltList(<FoodDiaryDay>[
+          FoodDiaryDay((b) => b
+            ..date = 23
+            ..meals = BuiltList<MealData>()
+          ),
+          FoodDiaryDay((b) => b
+            ..date = 24
+            ..meals = customMeals
+          ),
+          FoodDiaryDay((b) => b
+            ..date = 25
+            ..meals = onlyMeal(0, "Apple")
+          ),
+        ]),
+      ]));
+      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromIterable([
+        BuiltList(<Diet>[]),
+      ]));
+
+      expectLater(
+        foodDiaryBloc.state,
+        emitsInOrder(<FoodDiaryState>[
+          FoodDiaryUninitialized(),
+          FoodDiaryLoaded((b) => b
+            ..currentDate = daysSinceEpoch
+            ..diaryDays = MapBuilder<int, FoodDiaryDay>()
+            ..diets = ListBuilder<Diet>()
+          ),
+          FoodDiaryLoaded((b) => b
+            ..currentDate = daysSinceEpoch
+            ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
+              23: FoodDiaryDay((b) => b
+                ..date = 23
+                ..meals = BuiltList<MealData>()
+              ),
+              24: FoodDiaryDay((b) => b
+                ..date = 24
+                ..meals = customMeals
+              ),
+              25: FoodDiaryDay((b) => b
+                ..date = 25
+                ..meals = onlyMeal(0, "Apple")
+              ),
+              // TODO: test future date!
+            })
+            ..diets = ListBuilder<Diet>()
+          ),
+        ]),
+      );
+
+      // Wait for bloc to be fully initialized
+      foodDiaryBloc.dispatch(InitFoodDiary());
+      await Future<void>.delayed(ticks(1));
+
+      expect(foodDiaryBloc.recentFoods, BuiltList<FoodRecord>(<FoodRecord>[
+        for (final name in ["Apple", "Orange", "Potato"])
+          FoodRecord((b) => b
+            ..foodName = name
+            ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
+          ),
+      ]));
+    });
+  });
+
+
+  test("Frequent foods", () {
+    expect(foodDiaryBloc.frequentFoods, BuiltList<FoodRecord>(<FoodRecord>[]));
+  });
 }
