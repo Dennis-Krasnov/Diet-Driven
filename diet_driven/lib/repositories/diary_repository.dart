@@ -13,6 +13,11 @@ import 'package:diet_driven/providers/firestore_serializer.dart';
 
 /// Data access object for food and exercise diaries.
 class DiaryRepository {
+  final Firestore _firestore;
+
+  // Dependency injection
+  DiaryRepository({Firestore firestore}) : _firestore = firestore ?? Firestore.instance;
+
   /// Streams [userId]'s [FoodDiaryDay] on [daysSinceEpoch] using `cloud_firestore` library.
   ///
   /// Returns empty stream if Firestore document doesn't exist.
@@ -22,7 +27,7 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
-    final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
     return docRef.snapshots().transform(deserializeDocumentTransform<FoodDiaryDay>());
   }
 
@@ -34,7 +39,7 @@ class DiaryRepository {
   Stream<BuiltList<FoodDiaryDay>> allTimeFoodDiary$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final colRef = Firestore.instance.collection(FirestorePaths.foodDiary(userId));
+    final colRef = _firestore.collection(FirestorePaths.foodDiary(userId));
     return colRef.snapshots().transform(deserializeCollectionTransform<FoodDiaryDay>());
   }
 
@@ -48,7 +53,7 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(foodDiaryDay != null);
 
-    final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
     return docRef.setData(serializeDocument(foodDiaryDay), merge: false);
   }
 
@@ -65,7 +70,7 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
-    final docRef = Firestore.instance.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
     return docRef.delete();
   }
 

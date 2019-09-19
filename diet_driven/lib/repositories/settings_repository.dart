@@ -11,12 +11,17 @@ import 'package:diet_driven/providers/firestore_serializer.dart';
 
 /// Data access object for user settings.
 class SettingsRepository {
+  final Firestore _firestore;
+
+  // Dependency injection
+  SettingsRepository({Firestore firestore}) : _firestore = firestore ?? Firestore.instance;
+
   /// Streams global default [Settings] using `cloud_firestore` library.
   ///
   /// Returns empty stream if Firestore document doesn't exist.
   /// Throws [DeserializationError] if Firestore data is corrupt.
   Stream<Settings> defaultSettings$() {
-    final docRef = Firestore.instance.document(FirestorePaths.defaultSettings());
+    final docRef = _firestore.document(FirestorePaths.defaultSettings());
     return docRef.snapshots().transform(deserializeDocumentTransform<Settings>());
   }
 
@@ -28,7 +33,7 @@ class SettingsRepository {
   Stream<Settings> userSettings$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final docRef = Firestore.instance.document(FirestorePaths.userSettings(userId));
+    final docRef = _firestore.document(FirestorePaths.userSettings(userId));
     return docRef.snapshots().transform(deserializeDocumentTransform<Settings>());
   }
 
@@ -43,7 +48,7 @@ class SettingsRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(settings != null);
 
-    final docRef = Firestore.instance.document(FirestorePaths.userSettings(userId));
+    final docRef = _firestore.document(FirestorePaths.userSettings(userId));
     return docRef.setData(serializeDocument<Settings>(settings), merge: false);
   }
 }

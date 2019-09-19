@@ -11,7 +11,10 @@ import 'package:diet_driven/providers/providers.dart';
 
 /// Data access object for food search and nutritional information.
 class FoodRepository {
-  final _cloudFunctionsProvider = CloudFunctionsProvider();
+  final CloudFunctionsProvider _cloudFunctions;
+
+  // Dependency injection
+  FoodRepository({CloudFunctionsProvider cloudFunctions}) : _cloudFunctions = cloudFunctions ?? CloudFunctionsProvider();
 
   /// Fetches result of an arbitrary text query from a nutrition database.
   ///
@@ -21,7 +24,7 @@ class FoodRepository {
     assert(query != null && query.isNotEmpty);
 
     // TODO: memoize results using https://pub.dev/packages/memoize
-    return _cloudFunctionsProvider.searchFoodsByQuery(query);
+    return _cloudFunctions.searchFoodsByQuery(query);
   }
 
   /// Fetches [BuiltList] of relevant food search suggestions based on [query].
@@ -32,7 +35,7 @@ class FoodRepository {
     assert(query != null && query.isNotEmpty);
 
     // TODO: memoize suggestions using https://pub.dev/packages/memoize
-    return _cloudFunctionsProvider.fetchAutocompleteSuggestions(query);
+    return _cloudFunctions.fetchAutocompleteSuggestions(query);
   }
 
   // TODO: natural language processing using edamam / fat secret

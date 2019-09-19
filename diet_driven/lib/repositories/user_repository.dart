@@ -14,10 +14,17 @@ import 'package:diet_driven/providers/firestore_serializer.dart';
 
 /// Data access object for authentication and user data.
 class UserRepository {
+  final FirebaseAuth _firebaseAuth;
+  final Firestore _firestore;
+
+  // Dependency injection
+  UserRepository({FirebaseAuth fbAuth, Firestore firestore})
+    : _firebaseAuth = fbAuth ?? FirebaseAuth.instance, _firestore = firestore ?? Firestore.instance;
+
   /// Streams [Authentication] authentication status using `firebase_auth` library.
   ///
   /// Emits [null] if unauthenticated.
-  Stream<Authentication> authStateChanged$() => FirebaseAuth.instance.onAuthStateChanged.map((user) => user == null
+  Stream<Authentication> authStateChanged$() => _firebaseAuth.onAuthStateChanged.map((user) => user == null
     // Let nulls pass through stream
     ? null
     : Authentication((b) => b
@@ -32,7 +39,7 @@ class UserRepository {
   ///
   /// Returns authenticated [FirebaseUser].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
-  Future<AuthResult> signInAnonymously() => FirebaseAuth.instance.signInAnonymously();
+  Future<AuthResult> signInAnonymously() => _firebaseAuth.signInAnonymously();
 
   /// Signs in with email and password using `firebase_auth` library.
   ///
@@ -42,7 +49,7 @@ class UserRepository {
     assert(email != null && email.isNotEmpty);
     assert(password != null && password.isNotEmpty);
 
-    return FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
+    return _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
 
   /// Creates email-password account using `firebase_auth` library.
@@ -53,11 +60,11 @@ class UserRepository {
     assert(email != null && email.isNotEmpty);
     assert(password != null && password.isNotEmpty);
 
-    return FirebaseAuth.instance.createUserWithEmailAndPassword(email: email, password: password);
+    return _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
   }
 
   /// Signs out using `firebase_auth` library.
-  Future<void> signOut() => FirebaseAuth.instance.signOut();
+  Future<void> signOut() => _firebaseAuth.signOut();
 
 
   /// Streams [userId]'s [UserDocument] using `cloud_firestore` library.
@@ -68,7 +75,7 @@ class UserRepository {
   Stream<UserDocument> userDocument$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final docRef = Firestore.instance.document(FirestorePaths.user(userId));
+    final docRef = _firestore.document(FirestorePaths.user(userId));
     return docRef.snapshots().transform(deserializeDocumentTransform<UserDocument>());
   }
 }

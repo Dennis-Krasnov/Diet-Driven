@@ -12,6 +12,15 @@ import 'package:diet_driven/models/models.dart';
 
 /// Data access object for runtime configuration.
 class ConfigurationRepository {
+  final Future<RemoteConfig> _remoteConfig;
+  final Future<PackageInfo> _packageInfo;
+  final Connectivity _connectivity;
+
+  // Dependency injection
+  ConfigurationRepository({RemoteConfig remoteConfig, PackageInfo packageInfo, Connectivity connectivity})
+    : _remoteConfig = remoteConfig ?? RemoteConfig.instance,
+      _packageInfo = packageInfo ?? PackageInfo.fromPlatform(),
+      _connectivity = connectivity ?? Connectivity();
 
   /// Fetches [RemoteConfiguration] using `firebase_remote_config` library.
   /// `Future.sync()` runs future immediately to enable proper exception handling.
@@ -19,7 +28,7 @@ class ConfigurationRepository {
   /// Throws [FetchThrottledException] or [Exception] on failure to fetch live Firebase Remote Config data.
   /// Throws [BuiltValueNullFieldError] on failure to create built object due to missing fields.
   Future<RemoteConfiguration> fetchRemoteConfig() => Future.sync(() async {
-    final config = await RemoteConfig.instance;
+    final config = await _remoteConfig;
 
     // Developer mode to relax fetch throttling (> 5 requests per hour)
     await config.setConfigSettings(RemoteConfigSettings(debugMode: true));
@@ -37,8 +46,8 @@ class ConfigurationRepository {
   });
 
   /// Fetches [PackageInfo] using `package_info` library.
-  Future<PackageInfo> fetchPackageInfo() => PackageInfo.fromPlatform();
+  Future<PackageInfo> fetchPackageInfo() => _packageInfo;
 
   /// Streams [ConnectivityResult] using `connectivity` library.
-  Stream<ConnectivityResult> connectivity$() => Connectivity().onConnectivityChanged;
+  Stream<ConnectivityResult> connectivity$() => _connectivity.onConnectivityChanged;
 }

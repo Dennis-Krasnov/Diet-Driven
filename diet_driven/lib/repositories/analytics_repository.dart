@@ -9,7 +9,10 @@ import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
 /// Firebase Analytics logging interface.
 class AnalyticsRepository {
-  final _analytics = FirebaseAnalytics();
+  final FirebaseAnalytics _analytics;
+
+  // Dependency injection
+  AnalyticsRepository({FirebaseAnalytics analytics}) : _analytics = analytics ?? FirebaseAnalytics();
 
   // TODO: log custom event (similar to bloc transition) for every analytics log (special filter in logging tab)
   // TODO: bloc tests ensure proper analytics event was called
