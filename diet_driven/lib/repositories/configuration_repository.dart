@@ -51,3 +51,4 @@ class ConfigurationRepository {
   /// Streams [ConnectivityResult] using `connectivity` library.
   Stream<ConnectivityResult> connectivity$() => _connectivity.onConnectivityChanged;
 }
+// TODO: use built classes for package info and connectivity result!

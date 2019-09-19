@@ -4,6 +4,7 @@
  * in the LICENSE file.
  */
 
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
 //import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter_test/flutter_test.dart';
@@ -33,6 +34,9 @@ class MockUserDataBloc extends Mock implements UserDataBloc {}
 class MockFoodDiaryBloc extends Mock implements FoodDiaryBloc {}
 
 /// Mock Firestore
+class MockCloudFunctions extends Mock implements CloudFunctions {}
+class MockHttpCallable extends Mock implements HttpsCallable {}
+class MockHttpsCallableResult extends Mock implements HttpsCallableResult {}
 //class FirebaseAuthMock extends Mock implements FirebaseAuth {}
 //class FirebaseUserMock extends Mock implements FirebaseUser {}
 //class GoogleSignInAccountMock extends Mock implements GoogleSignInAccount {}
