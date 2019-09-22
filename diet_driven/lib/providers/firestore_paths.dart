@@ -13,7 +13,6 @@ class FirestorePaths {
   static String defaultSettings() => "${configuration()}/default_settings";
 
 
-
   /// [userId]'s base path and read-only user document.
   static String user(String userId) => "users/$userId";
 

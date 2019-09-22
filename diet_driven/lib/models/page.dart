@@ -33,7 +33,7 @@ class Page extends EnumClass {
   /// ...
   static const Page logging = _$logging;
 
-  /// ...
+  /// ... SOFT, initial route / switching tabs doesn't reset sub navigation!
   NavigationEvent get navigationEvent {
     switch (this) {
       case diary:
@@ -50,6 +50,28 @@ class Page extends EnumClass {
         break;
       case logging:
         return NavigateToLogging();
+        break;
+      default:
+        throw UnimplementedError();
+    }
+  }
+
+  NavigationState get navigationState {
+    switch (this) {
+      case diary:
+        return DiaryTab();
+        break;
+      case track:
+        return TrackTab();
+        break;
+      case reports:
+        return ReportsTab();
+        break;
+      case settings:
+        return SettingsTab();
+        break;
+      case logging:
+        return LoggingTab();
         break;
       default:
         throw UnimplementedError();

@@ -30,6 +30,13 @@ class _HomeScreenState extends State<HomeScreen> {
     value: (dynamic page) => GlobalKey<NavigatorState>(),
   );
 
+  /// Must be stateful widget to persist observer state throughout builds.
+  Map<Page, NavigatorObserver> navigatorObservers = Map<Page, NavigatorObserver>.fromIterable(
+    Page.values,
+    key: (dynamic page) => page,
+    value: (dynamic page) => PopObserver(),
+  );
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserDataBloc, UserDataState>(
@@ -51,20 +58,22 @@ class _HomeScreenState extends State<HomeScreen> {
               return const SplashPage();
             }
 
-            // Index of currently selected page
-            assert(bottomNavPages.contains(navigationState.page));
-            final int tabIndex = bottomNavPages.indexWhere((page) => page == navigationState.page);
+            // Index of currently selected page (ignoring deep links)
+            final int tabIndex = bottomNavPages.indexWhere((page) => page.navigationState == navigationState.rebuild((b) => b..deepLink = null));
+            assert(tabIndex != -1);
 
             return Scaffold(
               // Need to specify custom back button behaviour
               // Otherwise app is dismissed and we are back to the home screen
-              body: WillPopScope( // FIXME: this broke...
+              // If returns false, the enclosing route will not be popped
+              body: WillPopScope(
                 onWillPop: () async {
-                  final Page currentPage = Page.values.toList()[tabIndex];
+                  final Page currentPage = bottomNavPages[tabIndex];
                   // Page doesn't have nested navigation
                   if (navigatorKeys[currentPage].currentState == null)
                     return true;
-                  // ...
+                  // Navigator vetoes a pop if they're the first route in the history
+                  // This behavior prevents the user from popping the first route off the history and being stranded at a blank screen
                   return !await navigatorKeys[currentPage].currentState.maybePop();
                 },
                 // Shows one page at a time while persisting nested navigation
@@ -72,7 +81,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   index: tabIndex,
                   children: <Widget>[
                     for (var page in bottomNavPages)
-                      pageToWidget(page, navigatorKeys[page])
+                      pageToWidget(page, navigatorKeys[page], navigatorObservers[page])
                   ],
                 ),
               ),
@@ -96,10 +105,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     )
                 ],
                 currentIndex: tabIndex,
-                onTap: (index) {
-                  final NavigationBloc navigationBloc = BlocProvider.of<NavigationBloc>(context);
-                  navigationBloc.dispatch(bottomNavPages[index].navigationEvent);
-                },
+                onTap: (index) => BlocProvider.of<NavigationBloc>(context).dispatch(bottomNavPages[index].navigationEvent),
                 elevation: 4,
                 iconSize: 24,
                 selectedItemColor: Theme.of(context).primaryColor,
@@ -138,7 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Creates respective page widget based on page enum.
-  Widget pageToWidget(Page page, GlobalKey<NavigatorState> navigationKey) {
+  Widget pageToWidget(Page page, GlobalKey<NavigatorState> navigationKey, NavigatorObserver navigatorObserver) {
     switch (page) {
       case Page.diary:
         return FoodDiaryPage(); // TODO: wrap with provider here?!
@@ -150,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return const UnderConstruction(page: "Reports");
         break;
       case Page.settings:
-        return SettingsPage(navigationKey: navigationKey);
+        return SettingsPage(navigationKey: navigationKey, navigatorObserver: navigatorObserver);
         break;
       case Page.logging:
         return LoggingPage();
@@ -162,3 +168,9 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 
+class PopObserver extends NavigatorObserver {
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    LoggingBloc().verbose("NAVIGATION OBSERVER!!!!");
+  }
+}

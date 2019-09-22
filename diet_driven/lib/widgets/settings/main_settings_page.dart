@@ -5,41 +5,52 @@
  */
 
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/widgets/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+// TODOCUMENT
+String getRouteOfParent(String baseRoute, BuiltList<String> deepLink) {
+  final allButLast = deepLink.toList();
+  if (allButLast.isNotEmpty) {
+    allButLast.removeLast();
+  }
+  return "$baseRoute${allButLast.isEmpty ? "" : "/" + allButLast.join("/")}";
+}
+
 class MainSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<NavigationBloc, NavigationState>(
-      listener: (BuildContext context, NavigationState state) {
+      listener: (BuildContext context, NavigationState state) { // TODO: rename state to convention
         // Settings deep link handler
         if (state is SettingsTab && state.deepLink != null) {
-          // Guarantee root page of settings navigation
-          Navigator.of(context).popUntil(ModalRoute.withName('settings')); // TODO: without animation
+          // Single push with animation
+          final currentRoute = ModalRoute.of(context).settings.name;
+          if (getRouteOfParent(Routes.settings, state.deepLink) == currentRoute) {
+            final path = "${Routes.settings}/${state.deepLink.join("/")}";
+            Navigator.of(context).pushNamed(path, arguments: true);
 
-          if (state.deepLink is ProfileDeepLink) {
-
+            // FIXME:
+//            BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings());
           }
+          // No animation
+          else {
+            // Start at root settings page
+            Navigator.of(context).popUntil(ModalRoute.withName(Routes.settings));
 
-          // OPTIMIZE: polymorphic method of deep link to generate path string!!! - no need to enumerate!
-
-          if (state.deepLink is DiarySettingsDeepLink) {
-            // TODO: use GoToDiary.link
-            Navigator.of(context).pushNamed("settings/diary", arguments: false); // FIXME state is SettingsTab doesn't work as already in settings TODO pass as argument in deep link!!
+            // Push ...
+            for (int i = 1; i <= state.deepLink.length; i++) {
+              final path = "${Routes.settings}/${state.deepLink.sublist(0, i).join("/")}";
+              Navigator.of(context).pushNamed(path, arguments: false);
+            }
           }
-
-          if (state.deepLink is ThemeDeepLink) {
-            Navigator.of(context).pushNamed("settings/theme", arguments: false);
-          }
-
-          // Ensuring deep link is used exactly once
-          BlocProvider.of<NavigationBloc>(context).dispatch(ClearDeepLink());
         }
       },
+        // TODO: remove unused bloc builder!?
       child: BlocBuilder<UserDataBloc, UserDataState>(
         condition: (previous, current) => true,
         builder: (BuildContext context, UserDataState userDataState) {
@@ -51,11 +62,12 @@ class MainSettingsPage extends StatelessWidget {
             body: SafeArea(
               child: ListView(
                 children: <Widget>[
-                  const SettingsListTile(
+                  SettingsListTile(
 //                      iconData: FaRegular(0xf013),
                     iconData: FontAwesomeIcons.gamepad,
                     titleText: "General",
                     subtitleText: "Language, Units, Time",
+                    navigationEvent: NavigateToSettings.general(),
                   ),
 
                   const SettingsListTile(
@@ -70,7 +82,7 @@ class MainSettingsPage extends StatelessWidget {
                     iconData: FontAwesomeIcons.gamepad,
                     titleText: "Diary",
                     subtitleText: "Calories, Nutrients, Meals, Logging",
-                    navigationEvent: NavigateToSettings((b) => b..deepLink = DiarySettingsDeepLink()),
+                    navigationEvent: NavigateToSettings.diary(),
                   ),
 
                   const SettingsListTile(
@@ -92,7 +104,7 @@ class MainSettingsPage extends StatelessWidget {
                     iconData: FontAwesomeIcons.gamepad,
                     titleText: "Theme",  // TODO: rename bloc, from theme to visuals?
                     subtitleText: "Navigation, Dark mode, Colour scheme",
-                    navigationEvent: NavigateToSettings((b) => b..deepLink = ThemeDeepLink()),
+                    navigationEvent: NavigateToSettings.theme(),
                   ),
 
                   const SettingsListTile(

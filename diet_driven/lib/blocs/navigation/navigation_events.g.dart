@@ -64,66 +64,9 @@ class InitNavigationBuilder
   }
 }
 
-class _$ClearDeepLink extends ClearDeepLink {
-  factory _$ClearDeepLink([void Function(ClearDeepLinkBuilder) updates]) =>
-      (new ClearDeepLinkBuilder()..update(updates)).build();
-
-  _$ClearDeepLink._() : super._();
-
-  @override
-  ClearDeepLink rebuild(void Function(ClearDeepLinkBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  ClearDeepLinkBuilder toBuilder() => new ClearDeepLinkBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is ClearDeepLink;
-  }
-
-  @override
-  int get hashCode {
-    return 860407335;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('ClearDeepLink').toString();
-  }
-}
-
-class ClearDeepLinkBuilder
-    implements Builder<ClearDeepLink, ClearDeepLinkBuilder> {
-  _$ClearDeepLink _$v;
-
-  ClearDeepLinkBuilder();
-
-  @override
-  void replace(ClearDeepLink other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$ClearDeepLink;
-  }
-
-  @override
-  void update(void Function(ClearDeepLinkBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$ClearDeepLink build() {
-    final _$result = _$v ?? new _$ClearDeepLink._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
 class _$NavigateToDiary extends NavigateToDiary {
   @override
-  final DiaryDeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$NavigateToDiary([void Function(NavigateToDiaryBuilder) updates]) =>
       (new NavigateToDiaryBuilder()..update(updates)).build();
@@ -161,15 +104,16 @@ class NavigateToDiaryBuilder
     implements Builder<NavigateToDiary, NavigateToDiaryBuilder> {
   _$NavigateToDiary _$v;
 
-  DiaryDeepLink _deepLink;
-  DiaryDeepLink get deepLink => _$this._deepLink;
-  set deepLink(DiaryDeepLink deepLink) => _$this._deepLink = deepLink;
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
   NavigateToDiaryBuilder();
 
   NavigateToDiaryBuilder get _$this {
     if (_$v != null) {
-      _deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -190,84 +134,20 @@ class NavigateToDiaryBuilder
 
   @override
   _$NavigateToDiary build() {
-    final _$result = _$v ?? new _$NavigateToDiary._(deepLink: deepLink);
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$DateDeepLink extends DateDeepLink {
-  @override
-  final int date;
-
-  factory _$DateDeepLink([void Function(DateDeepLinkBuilder) updates]) =>
-      (new DateDeepLinkBuilder()..update(updates)).build();
-
-  _$DateDeepLink._({this.date}) : super._() {
-    if (date == null) {
-      throw new BuiltValueNullFieldError('DateDeepLink', 'date');
+    _$NavigateToDiary _$result;
+    try {
+      _$result = _$v ?? new _$NavigateToDiary._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'NavigateToDiary', _$failedField, e.toString());
+      }
+      rethrow;
     }
-  }
-
-  @override
-  DateDeepLink rebuild(void Function(DateDeepLinkBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  DateDeepLinkBuilder toBuilder() => new DateDeepLinkBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is DateDeepLink && date == other.date;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, date.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('DateDeepLink')..add('date', date))
-        .toString();
-  }
-}
-
-class DateDeepLinkBuilder
-    implements Builder<DateDeepLink, DateDeepLinkBuilder> {
-  _$DateDeepLink _$v;
-
-  int _date;
-  int get date => _$this._date;
-  set date(int date) => _$this._date = date;
-
-  DateDeepLinkBuilder();
-
-  DateDeepLinkBuilder get _$this {
-    if (_$v != null) {
-      _date = _$v.date;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(DateDeepLink other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$DateDeepLink;
-  }
-
-  @override
-  void update(void Function(DateDeepLinkBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$DateDeepLink build() {
-    final _$result = _$v ?? new _$DateDeepLink._(date: date);
     replace(_$result);
     return _$result;
   }
@@ -392,7 +272,7 @@ class NavigateToReportsBuilder
 
 class _$NavigateToSettings extends NavigateToSettings {
   @override
-  final SettingsDeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$NavigateToSettings(
           [void Function(NavigateToSettingsBuilder) updates]) =>
@@ -432,15 +312,16 @@ class NavigateToSettingsBuilder
     implements Builder<NavigateToSettings, NavigateToSettingsBuilder> {
   _$NavigateToSettings _$v;
 
-  SettingsDeepLink _deepLink;
-  SettingsDeepLink get deepLink => _$this._deepLink;
-  set deepLink(SettingsDeepLink deepLink) => _$this._deepLink = deepLink;
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
   NavigateToSettingsBuilder();
 
   NavigateToSettingsBuilder get _$this {
     if (_$v != null) {
-      _deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -461,182 +342,21 @@ class NavigateToSettingsBuilder
 
   @override
   _$NavigateToSettings build() {
-    final _$result = _$v ?? new _$NavigateToSettings._(deepLink: deepLink);
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$ProfileDeepLink extends ProfileDeepLink {
-  factory _$ProfileDeepLink([void Function(ProfileDeepLinkBuilder) updates]) =>
-      (new ProfileDeepLinkBuilder()..update(updates)).build();
-
-  _$ProfileDeepLink._() : super._();
-
-  @override
-  ProfileDeepLink rebuild(void Function(ProfileDeepLinkBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  ProfileDeepLinkBuilder toBuilder() =>
-      new ProfileDeepLinkBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is ProfileDeepLink;
-  }
-
-  @override
-  int get hashCode {
-    return 999881030;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('ProfileDeepLink').toString();
-  }
-}
-
-class ProfileDeepLinkBuilder
-    implements Builder<ProfileDeepLink, ProfileDeepLinkBuilder> {
-  _$ProfileDeepLink _$v;
-
-  ProfileDeepLinkBuilder();
-
-  @override
-  void replace(ProfileDeepLink other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
+    _$NavigateToSettings _$result;
+    try {
+      _$result =
+          _$v ?? new _$NavigateToSettings._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'NavigateToSettings', _$failedField, e.toString());
+      }
+      rethrow;
     }
-    _$v = other as _$ProfileDeepLink;
-  }
-
-  @override
-  void update(void Function(ProfileDeepLinkBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$ProfileDeepLink build() {
-    final _$result = _$v ?? new _$ProfileDeepLink._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$ThemeDeepLink extends ThemeDeepLink {
-  factory _$ThemeDeepLink([void Function(ThemeDeepLinkBuilder) updates]) =>
-      (new ThemeDeepLinkBuilder()..update(updates)).build();
-
-  _$ThemeDeepLink._() : super._();
-
-  @override
-  ThemeDeepLink rebuild(void Function(ThemeDeepLinkBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  ThemeDeepLinkBuilder toBuilder() => new ThemeDeepLinkBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is ThemeDeepLink;
-  }
-
-  @override
-  int get hashCode {
-    return 165948376;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('ThemeDeepLink').toString();
-  }
-}
-
-class ThemeDeepLinkBuilder
-    implements Builder<ThemeDeepLink, ThemeDeepLinkBuilder> {
-  _$ThemeDeepLink _$v;
-
-  ThemeDeepLinkBuilder();
-
-  @override
-  void replace(ThemeDeepLink other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$ThemeDeepLink;
-  }
-
-  @override
-  void update(void Function(ThemeDeepLinkBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$ThemeDeepLink build() {
-    final _$result = _$v ?? new _$ThemeDeepLink._();
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$DiarySettingsDeepLink extends DiarySettingsDeepLink {
-  factory _$DiarySettingsDeepLink(
-          [void Function(DiarySettingsDeepLinkBuilder) updates]) =>
-      (new DiarySettingsDeepLinkBuilder()..update(updates)).build();
-
-  _$DiarySettingsDeepLink._() : super._();
-
-  @override
-  DiarySettingsDeepLink rebuild(
-          void Function(DiarySettingsDeepLinkBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  DiarySettingsDeepLinkBuilder toBuilder() =>
-      new DiarySettingsDeepLinkBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is DiarySettingsDeepLink;
-  }
-
-  @override
-  int get hashCode {
-    return 736479308;
-  }
-
-  @override
-  String toString() {
-    return newBuiltValueToStringHelper('DiarySettingsDeepLink').toString();
-  }
-}
-
-class DiarySettingsDeepLinkBuilder
-    implements Builder<DiarySettingsDeepLink, DiarySettingsDeepLinkBuilder> {
-  _$DiarySettingsDeepLink _$v;
-
-  DiarySettingsDeepLinkBuilder();
-
-  @override
-  void replace(DiarySettingsDeepLink other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$DiarySettingsDeepLink;
-  }
-
-  @override
-  void update(void Function(DiarySettingsDeepLinkBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$DiarySettingsDeepLink build() {
-    final _$result = _$v ?? new _$DiarySettingsDeepLink._();
     replace(_$result);
     return _$result;
   }

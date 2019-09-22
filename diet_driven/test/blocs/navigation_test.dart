@@ -89,11 +89,11 @@ void main() {
           ReportsTab(),
           DiaryTab(),
           DiaryTab((b) => b
-            ..deepLink = DateDeepLink((b) => b
-              ..date = 24
-            )
+            ..deepLink = ListBuilder(<String>["24"])
           ),
-          DiaryTab(),
+          DiaryTab((b) => b
+            ..deepLink = ListBuilder(<String>["35"])
+          ),
         ])
       );
 
@@ -102,12 +102,8 @@ void main() {
       await Future<void>.delayed(ticks(1));
 
       navigationBloc.dispatch(NavigateToDiary());
-      navigationBloc.dispatch(NavigateToDiary((b) => b
-        ..deepLink = DateDeepLink((b) => b
-          ..date = 24
-        )
-      ));
-      navigationBloc.dispatch(ClearDeepLink());
+      navigationBloc.dispatch(NavigateToDiary.day(24));
+      navigationBloc.dispatch(NavigateToDiary.day(35));
     });
 
     test("Tracking page", () async {
@@ -125,7 +121,6 @@ void main() {
       await Future<void>.delayed(ticks(1));
 
       navigationBloc.dispatch(NavigateToTrack());
-      navigationBloc.dispatch(ClearDeepLink());
     });
 
     test("Reports page", () async {
@@ -143,9 +138,9 @@ void main() {
       navigationBloc.dispatch(InitNavigation());
       await Future<void>.delayed(ticks(1));
 
+      // Navigate away from default page
       navigationBloc.dispatch(NavigateToDiary());
       navigationBloc.dispatch(NavigateToReports());
-      navigationBloc.dispatch(ClearDeepLink());
     });
 
     test("Settings page", () async {
@@ -156,15 +151,14 @@ void main() {
           ReportsTab(),
           SettingsTab(),
           SettingsTab((b) => b
-            ..deepLink = ProfileDeepLink()
+            ..deepLink = ListBuilder(<String>[Routes.generalSettings])
           ),
           SettingsTab((b) => b
-            ..deepLink = ThemeDeepLink()
+            ..deepLink = ListBuilder(<String>[Routes.themeSettings])
           ),
           SettingsTab((b) => b
-            ..deepLink = DiarySettingsDeepLink()
+            ..deepLink = ListBuilder(<String>[Routes.diarySettings])
           ),
-          SettingsTab(),
         ])
       );
 
@@ -173,16 +167,9 @@ void main() {
       await Future<void>.delayed(ticks(1));
 
       navigationBloc.dispatch(NavigateToSettings());
-      navigationBloc.dispatch(NavigateToSettings((b) => b
-        ..deepLink = ProfileDeepLink()
-      ));
-      navigationBloc.dispatch(NavigateToSettings((b) => b
-        ..deepLink = ThemeDeepLink()
-      ));
-      navigationBloc.dispatch(NavigateToSettings((b) => b
-        ..deepLink = DiarySettingsDeepLink()
-      ));
-      navigationBloc.dispatch(ClearDeepLink());
+      navigationBloc.dispatch(NavigateToSettings.general());
+      navigationBloc.dispatch(NavigateToSettings.theme());
+      navigationBloc.dispatch(NavigateToSettings.diary());
     });
 
     test("Logging page", () async {
@@ -200,7 +187,6 @@ void main() {
       await Future<void>.delayed(ticks(1));
 
       navigationBloc.dispatch(NavigateToLogging());
-      navigationBloc.dispatch(ClearDeepLink());
     });
   });
 }

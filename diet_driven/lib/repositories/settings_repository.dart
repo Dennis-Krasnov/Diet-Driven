@@ -52,4 +52,3 @@ class SettingsRepository {
     return docRef.setData(serializeDocument<Settings>(settings), merge: false);
   }
 }
-

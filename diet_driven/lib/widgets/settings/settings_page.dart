@@ -11,51 +11,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 
+///
 class SettingsPage extends StatelessWidget {
   // Persists navigation across tabs
   final GlobalKey<NavigatorState> navigationKey;
 
-  const SettingsPage({Key key, @required this.navigationKey}) : super(key: key);
+  final NavigatorObserver navigatorObserver;
+
+  const SettingsPage({Key key, @required this.navigationKey, @required this.navigatorObserver}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
       key: navigationKey,
-      initialRoute: 'settings',
+      observers: [navigatorObserver],
+      initialRoute: Routes.settings,
       onGenerateRoute: (RouteSettings settings) => generateRoute(context, settings),
     );
   }
 
   /// Profile page's navigator routes.
   Route generateRoute(BuildContext context, RouteSettings settings) {
-    final userId = (BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication.uid;
     final bool withAnimation = settings?.arguments ?? true;
+    LoggingBloc().verbose(withAnimation.toString());
 
     WidgetBuilder builder;
     switch (settings.name) {
-      case 'settings':
+      case Routes.settings:
         builder = (BuildContext _) => MainSettingsPage();
         break;
-      case 'settings/general':
+      case "${Routes.settings}/${Routes.generalSettings}":
         builder = (BuildContext _) => GeneralSettingsPage();
         break;
-      case 'settings/profile':
-        builder = (BuildContext _) => GeneralSettingsPage();
-        break;
-      case 'settings/diary':
+      case "${Routes.settings}/${Routes.diarySettings}":
         builder = (BuildContext _) => DiarySettingsPage();
         break;
         // ,,,
-      case 'settings/theme':
-        // TODO: own bloc if very complex logic!
-//        builder = (BuildContext _) => BlocProvider<SettingsEditBloc>(
-//          builder: (BuildContext context) => SettingsEditBloc(
-//            userId: userId,
-//            settingsRepository: RepositoryProvider.of<SettingsRepository>(context)
-//          ),
-//          child: ThemeSettingsPage()
-//        );
-
+      case "${Routes.settings}/${Routes.themeSettings}":
         builder = (BuildContext _) => BlocProvider.value(
           value: BlocProvider.of<UserDataBloc>(context),
           child: ThemeSettingsPage(),
@@ -68,7 +60,6 @@ class SettingsPage extends StatelessWidget {
 
     // TODO: make global navigator follow this builder pattern as well
 
-    // Animate only if coming from same page
     if (withAnimation) {
       return MaterialPageRoute<void>(builder: builder, settings: settings);
     }

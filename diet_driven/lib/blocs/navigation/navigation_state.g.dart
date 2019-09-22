@@ -9,24 +9,19 @@ part of 'navigation_state.dart';
 abstract class NavigationStateBuilder {
   void replace(NavigationState other);
   void update(void Function(NavigationStateBuilder) updates);
-  Page get page;
-  set page(Page page);
-
-  DeepLink get deepLink;
-  set deepLink(DeepLink deepLink);
+  ListBuilder<String> get deepLink;
+  set deepLink(ListBuilder<String> deepLink);
 }
 
 class _$NavigationUninitialized extends NavigationUninitialized {
   @override
-  final Page page;
-  @override
-  final DeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$NavigationUninitialized(
           [void Function(NavigationUninitializedBuilder) updates]) =>
       (new NavigationUninitializedBuilder()..update(updates)).build();
 
-  _$NavigationUninitialized._({this.page, this.deepLink}) : super._();
+  _$NavigationUninitialized._({this.deepLink}) : super._();
 
   @override
   NavigationUninitialized rebuild(
@@ -40,20 +35,17 @@ class _$NavigationUninitialized extends NavigationUninitialized {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigationUninitialized &&
-        page == other.page &&
-        deepLink == other.deepLink;
+    return other is NavigationUninitialized && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('NavigationUninitialized')
-          ..add('page', page)
           ..add('deepLink', deepLink))
         .toString();
   }
@@ -65,20 +57,16 @@ class NavigationUninitializedBuilder
         NavigationStateBuilder {
   _$NavigationUninitialized _$v;
 
-  Page _page;
-  Page get page => _$this._page;
-  set page(Page page) => _$this._page = page;
-
-  DeepLink _deepLink;
-  DeepLink get deepLink => _$this._deepLink;
-  set deepLink(DeepLink deepLink) => _$this._deepLink = deepLink;
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
   NavigationUninitializedBuilder();
 
   NavigationUninitializedBuilder get _$this {
     if (_$v != null) {
-      _page = _$v.page;
-      _deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -99,8 +87,21 @@ class NavigationUninitializedBuilder
 
   @override
   _$NavigationUninitialized build() {
-    final _$result =
-        _$v ?? new _$NavigationUninitialized._(page: page, deepLink: deepLink);
+    _$NavigationUninitialized _$result;
+    try {
+      _$result =
+          _$v ?? new _$NavigationUninitialized._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'NavigationUninitialized', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
@@ -108,77 +109,52 @@ class NavigationUninitializedBuilder
 
 class _$DiaryTab extends DiaryTab {
   @override
-  final Page page;
-  @override
-  final DeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$DiaryTab([void Function(DiaryTabBuilder) updates]) =>
-      (new DiaryTabBuilder()..update(updates)).build() as _$DiaryTab;
+      (new DiaryTabBuilder()..update(updates)).build();
 
-  _$DiaryTab._({this.page, this.deepLink}) : super._();
+  _$DiaryTab._({this.deepLink}) : super._();
 
   @override
   DiaryTab rebuild(void Function(DiaryTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$DiaryTabBuilder toBuilder() => new _$DiaryTabBuilder()..replace(this);
+  DiaryTabBuilder toBuilder() => new DiaryTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is DiaryTab &&
-        page == other.page &&
-        deepLink == other.deepLink;
+    return other is DiaryTab && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('DiaryTab')
-          ..add('page', page)
-          ..add('deepLink', deepLink))
+    return (newBuiltValueToStringHelper('DiaryTab')..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class _$DiaryTabBuilder extends DiaryTabBuilder {
+class DiaryTabBuilder
+    implements Builder<DiaryTab, DiaryTabBuilder>, NavigationStateBuilder {
   _$DiaryTab _$v;
 
-  @override
-  Page get page {
-    _$this;
-    return super.page;
-  }
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
-  @override
-  set page(Page page) {
-    _$this;
-    super.page = page;
-  }
-
-  @override
-  DeepLink get deepLink {
-    _$this;
-    return super.deepLink;
-  }
-
-  @override
-  set deepLink(DeepLink deepLink) {
-    _$this;
-    super.deepLink = deepLink;
-  }
-
-  _$DiaryTabBuilder() : super._();
+  DiaryTabBuilder();
 
   DiaryTabBuilder get _$this {
     if (_$v != null) {
-      super.page = _$v.page;
-      super.deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -199,7 +175,20 @@ class _$DiaryTabBuilder extends DiaryTabBuilder {
 
   @override
   _$DiaryTab build() {
-    final _$result = _$v ?? new _$DiaryTab._(page: page, deepLink: deepLink);
+    _$DiaryTab _$result;
+    try {
+      _$result = _$v ?? new _$DiaryTab._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'DiaryTab', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
@@ -207,77 +196,52 @@ class _$DiaryTabBuilder extends DiaryTabBuilder {
 
 class _$TrackTab extends TrackTab {
   @override
-  final Page page;
-  @override
-  final DeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$TrackTab([void Function(TrackTabBuilder) updates]) =>
-      (new TrackTabBuilder()..update(updates)).build() as _$TrackTab;
+      (new TrackTabBuilder()..update(updates)).build();
 
-  _$TrackTab._({this.page, this.deepLink}) : super._();
+  _$TrackTab._({this.deepLink}) : super._();
 
   @override
   TrackTab rebuild(void Function(TrackTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$TrackTabBuilder toBuilder() => new _$TrackTabBuilder()..replace(this);
+  TrackTabBuilder toBuilder() => new TrackTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is TrackTab &&
-        page == other.page &&
-        deepLink == other.deepLink;
+    return other is TrackTab && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('TrackTab')
-          ..add('page', page)
-          ..add('deepLink', deepLink))
+    return (newBuiltValueToStringHelper('TrackTab')..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class _$TrackTabBuilder extends TrackTabBuilder {
+class TrackTabBuilder
+    implements Builder<TrackTab, TrackTabBuilder>, NavigationStateBuilder {
   _$TrackTab _$v;
 
-  @override
-  Page get page {
-    _$this;
-    return super.page;
-  }
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
-  @override
-  set page(Page page) {
-    _$this;
-    super.page = page;
-  }
-
-  @override
-  DeepLink get deepLink {
-    _$this;
-    return super.deepLink;
-  }
-
-  @override
-  set deepLink(DeepLink deepLink) {
-    _$this;
-    super.deepLink = deepLink;
-  }
-
-  _$TrackTabBuilder() : super._();
+  TrackTabBuilder();
 
   TrackTabBuilder get _$this {
     if (_$v != null) {
-      super.page = _$v.page;
-      super.deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -298,7 +262,20 @@ class _$TrackTabBuilder extends TrackTabBuilder {
 
   @override
   _$TrackTab build() {
-    final _$result = _$v ?? new _$TrackTab._(page: page, deepLink: deepLink);
+    _$TrackTab _$result;
+    try {
+      _$result = _$v ?? new _$TrackTab._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'TrackTab', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
@@ -306,77 +283,53 @@ class _$TrackTabBuilder extends TrackTabBuilder {
 
 class _$ReportsTab extends ReportsTab {
   @override
-  final Page page;
-  @override
-  final DeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$ReportsTab([void Function(ReportsTabBuilder) updates]) =>
-      (new ReportsTabBuilder()..update(updates)).build() as _$ReportsTab;
+      (new ReportsTabBuilder()..update(updates)).build();
 
-  _$ReportsTab._({this.page, this.deepLink}) : super._();
+  _$ReportsTab._({this.deepLink}) : super._();
 
   @override
   ReportsTab rebuild(void Function(ReportsTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$ReportsTabBuilder toBuilder() => new _$ReportsTabBuilder()..replace(this);
+  ReportsTabBuilder toBuilder() => new ReportsTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ReportsTab &&
-        page == other.page &&
-        deepLink == other.deepLink;
+    return other is ReportsTab && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ReportsTab')
-          ..add('page', page)
           ..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class _$ReportsTabBuilder extends ReportsTabBuilder {
+class ReportsTabBuilder
+    implements Builder<ReportsTab, ReportsTabBuilder>, NavigationStateBuilder {
   _$ReportsTab _$v;
 
-  @override
-  Page get page {
-    _$this;
-    return super.page;
-  }
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
-  @override
-  set page(Page page) {
-    _$this;
-    super.page = page;
-  }
-
-  @override
-  DeepLink get deepLink {
-    _$this;
-    return super.deepLink;
-  }
-
-  @override
-  set deepLink(DeepLink deepLink) {
-    _$this;
-    super.deepLink = deepLink;
-  }
-
-  _$ReportsTabBuilder() : super._();
+  ReportsTabBuilder();
 
   ReportsTabBuilder get _$this {
     if (_$v != null) {
-      super.page = _$v.page;
-      super.deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -397,7 +350,20 @@ class _$ReportsTabBuilder extends ReportsTabBuilder {
 
   @override
   _$ReportsTab build() {
-    final _$result = _$v ?? new _$ReportsTab._(page: page, deepLink: deepLink);
+    _$ReportsTab _$result;
+    try {
+      _$result = _$v ?? new _$ReportsTab._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'ReportsTab', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
@@ -405,77 +371,55 @@ class _$ReportsTabBuilder extends ReportsTabBuilder {
 
 class _$SettingsTab extends SettingsTab {
   @override
-  final Page page;
-  @override
-  final DeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$SettingsTab([void Function(SettingsTabBuilder) updates]) =>
-      (new SettingsTabBuilder()..update(updates)).build() as _$SettingsTab;
+      (new SettingsTabBuilder()..update(updates)).build();
 
-  _$SettingsTab._({this.page, this.deepLink}) : super._();
+  _$SettingsTab._({this.deepLink}) : super._();
 
   @override
   SettingsTab rebuild(void Function(SettingsTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$SettingsTabBuilder toBuilder() => new _$SettingsTabBuilder()..replace(this);
+  SettingsTabBuilder toBuilder() => new SettingsTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SettingsTab &&
-        page == other.page &&
-        deepLink == other.deepLink;
+    return other is SettingsTab && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('SettingsTab')
-          ..add('page', page)
           ..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class _$SettingsTabBuilder extends SettingsTabBuilder {
+class SettingsTabBuilder
+    implements
+        Builder<SettingsTab, SettingsTabBuilder>,
+        NavigationStateBuilder {
   _$SettingsTab _$v;
 
-  @override
-  Page get page {
-    _$this;
-    return super.page;
-  }
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
-  @override
-  set page(Page page) {
-    _$this;
-    super.page = page;
-  }
-
-  @override
-  DeepLink get deepLink {
-    _$this;
-    return super.deepLink;
-  }
-
-  @override
-  set deepLink(DeepLink deepLink) {
-    _$this;
-    super.deepLink = deepLink;
-  }
-
-  _$SettingsTabBuilder() : super._();
+  SettingsTabBuilder();
 
   SettingsTabBuilder get _$this {
     if (_$v != null) {
-      super.page = _$v.page;
-      super.deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -496,7 +440,20 @@ class _$SettingsTabBuilder extends SettingsTabBuilder {
 
   @override
   _$SettingsTab build() {
-    final _$result = _$v ?? new _$SettingsTab._(page: page, deepLink: deepLink);
+    _$SettingsTab _$result;
+    try {
+      _$result = _$v ?? new _$SettingsTab._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'SettingsTab', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }
@@ -504,77 +461,53 @@ class _$SettingsTabBuilder extends SettingsTabBuilder {
 
 class _$LoggingTab extends LoggingTab {
   @override
-  final Page page;
-  @override
-  final DeepLink deepLink;
+  final BuiltList<String> deepLink;
 
   factory _$LoggingTab([void Function(LoggingTabBuilder) updates]) =>
-      (new LoggingTabBuilder()..update(updates)).build() as _$LoggingTab;
+      (new LoggingTabBuilder()..update(updates)).build();
 
-  _$LoggingTab._({this.page, this.deepLink}) : super._();
+  _$LoggingTab._({this.deepLink}) : super._();
 
   @override
   LoggingTab rebuild(void Function(LoggingTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$LoggingTabBuilder toBuilder() => new _$LoggingTabBuilder()..replace(this);
+  LoggingTabBuilder toBuilder() => new LoggingTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is LoggingTab &&
-        page == other.page &&
-        deepLink == other.deepLink;
+    return other is LoggingTab && deepLink == other.deepLink;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, page.hashCode), deepLink.hashCode));
+    return $jf($jc(0, deepLink.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('LoggingTab')
-          ..add('page', page)
           ..add('deepLink', deepLink))
         .toString();
   }
 }
 
-class _$LoggingTabBuilder extends LoggingTabBuilder {
+class LoggingTabBuilder
+    implements Builder<LoggingTab, LoggingTabBuilder>, NavigationStateBuilder {
   _$LoggingTab _$v;
 
-  @override
-  Page get page {
-    _$this;
-    return super.page;
-  }
+  ListBuilder<String> _deepLink;
+  ListBuilder<String> get deepLink =>
+      _$this._deepLink ??= new ListBuilder<String>();
+  set deepLink(ListBuilder<String> deepLink) => _$this._deepLink = deepLink;
 
-  @override
-  set page(Page page) {
-    _$this;
-    super.page = page;
-  }
-
-  @override
-  DeepLink get deepLink {
-    _$this;
-    return super.deepLink;
-  }
-
-  @override
-  set deepLink(DeepLink deepLink) {
-    _$this;
-    super.deepLink = deepLink;
-  }
-
-  _$LoggingTabBuilder() : super._();
+  LoggingTabBuilder();
 
   LoggingTabBuilder get _$this {
     if (_$v != null) {
-      super.page = _$v.page;
-      super.deepLink = _$v.deepLink;
+      _deepLink = _$v.deepLink?.toBuilder();
       _$v = null;
     }
     return this;
@@ -595,7 +528,20 @@ class _$LoggingTabBuilder extends LoggingTabBuilder {
 
   @override
   _$LoggingTab build() {
-    final _$result = _$v ?? new _$LoggingTab._(page: page, deepLink: deepLink);
+    _$LoggingTab _$result;
+    try {
+      _$result = _$v ?? new _$LoggingTab._(deepLink: _deepLink?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'deepLink';
+        _deepLink?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'LoggingTab', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

@@ -8,6 +8,7 @@ import 'package:built_collection/built_collection.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/providers/cloud_functions.dart';
 
 /// Data access object for food search and nutritional information.
 class FoodRepository {
@@ -25,7 +26,7 @@ class FoodRepository {
 
     // TODO: memoize results using https://pub.dev/packages/memoize
 
-    final result = await _cloudFunctionCurry("searchFoodsByQuery")({"query": query});
+    final result = await curry(_cloudFunctions, "searchFoodsByQuery")({"query": query});
     return jsonSerializers.deserialize(result.data);
   }
 
@@ -37,17 +38,11 @@ class FoodRepository {
     assert(query != null && query.isNotEmpty);
 
     // TODO: memoize suggestions using https://pub.dev/packages/memoize
-    final result = await _cloudFunctionCurry("foodSuggestions")(query);
+    final result = await curry(_cloudFunctions, "foodSuggestions")(query);
     return BuiltList<String>.from(result.data);
   }
 
   // TODO: natural language processing using edamam / fat secret
 
   // TODO: by UPC barcode ...
-
-  /// Function curry for easy use of cloud functions.
-  /// eg. final result = await _cloudFunction("functionName")({"arg": value});
-  HttpsCallable _cloudFunctionCurry(String functionName, [int timeoutSeconds = 10]) =>
-    _cloudFunctions.getHttpsCallable(functionName: functionName)
-    ..timeout = Duration(seconds: timeoutSeconds);
 }

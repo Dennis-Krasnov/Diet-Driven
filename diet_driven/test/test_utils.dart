@@ -4,8 +4,11 @@
  * in the LICENSE file.
  */
 
+import 'package:built_collection/built_collection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/models/models.dart';
 //import 'package:firebase_auth/firebase_auth.dart' show FirebaseAuth;
 import 'package:flutter_test/flutter_test.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
@@ -37,6 +40,11 @@ class MockFoodDiaryBloc extends Mock implements FoodDiaryBloc {}
 class MockCloudFunctions extends Mock implements CloudFunctions {}
 class MockHttpCallable extends Mock implements HttpsCallable {}
 class MockHttpsCallableResult extends Mock implements HttpsCallableResult {}
+
+class MockFirestore extends Mock implements Firestore {}
+class MockDocumentReference extends Mock implements DocumentReference {}
+class MockCollectionReference extends Mock implements DocumentReference {}
+//class MockDocumentSnapshot extends Mock implements DocumentSnapshot {}
 //class FirebaseAuthMock extends Mock implements FirebaseAuth {}
 //class FirebaseUserMock extends Mock implements FirebaseUser {}
 //class GoogleSignInAccountMock extends Mock implements GoogleSignInAccount {}
@@ -52,6 +60,23 @@ class MockHttpsCallableResult extends Mock implements HttpsCallableResult {}
   // example: expect(configurationBloc.currentState, ConfigurationLoaded((b) => b..configuration = remoteConfig.toBuilder()));
 // });
 
+FoodDiaryDay generateFoodDiaryDay(int date, List<List<String>> foodNames) {
+  return FoodDiaryDay((b) => b
+    ..date = date
+    ..meals = BuiltList<MealData>(<MealData>[
+      for (final meal in foodNames)
+        MealData((b) => b
+          ..foodRecords = ListBuilder(<FoodRecord>[
+            for (final name in meal)
+              FoodRecord((b) => b
+                ..foodName = name
+                ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
+              ),
+          ]),
+        )
+    ])
+  );
+}
 
 class BuiltErrorMatcher extends Matcher {
   // TODO: generalized builtError

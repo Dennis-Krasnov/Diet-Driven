@@ -7,12 +7,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-//import 'package:diet_driven/log_printer.dart';
-//import 'package:logger/logger.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:meta/meta.dart';
 
-import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/navigation/navigation.dart';
@@ -28,8 +25,6 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   @override
   NavigationState get initialState => NavigationUninitialized();
 
-//  analyticsRepository.navigateToScreen(transition.event.page.name); // FIXME logging
-
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
     if (event is InitNavigation) {
@@ -37,24 +32,16 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
       // Go to default page if navigation bloc hasn't yet been initialized
       Observable<UserDataState>(userDataBloc.state)
-        .ofType(const TypeToken<UserDataLoaded>())
+        .whereType<UserDataLoaded>()
         .map<NavigationEvent>((state) => state.settings.navigationSettings.defaultPage.navigationEvent)
         .first
         .then(dispatch);
     }
 
-    if (event is ClearDeepLink) {
-      // TODO: assert one of loaded states
-      yield currentState.rebuild((b) => b
-        ..deepLink = null
-      );
-    }
-
     if (event is NavigateToDiary) {
       yield DiaryTab((b) => b
-        ..deepLink = event.deepLink
+        ..deepLink = event.deepLink?.toBuilder()
       );
-      // OPTIMIZE: dispatch ClearDeepLink from here, automatically!!
     }
 
     if (event is NavigateToTrack) {
@@ -67,7 +54,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
     if (event is NavigateToSettings) {
       yield SettingsTab((b) => b
-        ..deepLink = event.deepLink
+        ..deepLink = event.deepLink?.toBuilder()
       );
     }
 
@@ -75,5 +62,4 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       yield LoggingTab();
     }
   }
-
 }

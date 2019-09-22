@@ -33,20 +33,6 @@ void main() {
     ..startDate = 0
   );
 
-  /// Only generate food records for single meal
-  BuiltList<MealData> onlyMeal(int mealIndex, String foodName) => BuiltList(<MealData>[
-    for (var i in List<int>.generate(4, (e) => e))
-      MealData((b) => b
-        ..foodRecords = ListBuilder(<FoodRecord>[
-          if (mealIndex == i)
-            FoodRecord((b) => b
-              ..foodName = foodName
-              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
-            ),
-        ])
-      )
-  ]);
-
   // Constant current date
   final daysSinceEpoch = currentDaysSinceEpoch();
 
@@ -55,14 +41,8 @@ void main() {
     FoodDiaryLoaded((b) => b
       ..currentDate = daysSinceEpoch
       ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-        23: FoodDiaryDay((b) => b
-          ..date = 23
-          ..meals = BuiltList<MealData>()
-        ),
-        24: FoodDiaryDay((b) => b
-          ..date = 24
-          ..meals = onlyMeal(0, "Apple")
-        ),
+        23: generateFoodDiaryDay(23, []),
+        24: generateFoodDiaryDay(24, [["Apple"]]),
       })
       ..diets = ListBuilder(<Diet>[
         diet,
@@ -86,14 +66,8 @@ void main() {
   void _setupDefaultMocks() {
     when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromFutures([
       Future.value(BuiltList(<FoodDiaryDay>[
-        FoodDiaryDay((b) => b
-          ..date = 23
-          ..meals = BuiltList<MealData>()
-        ),
-        FoodDiaryDay((b) => b
-          ..date = 24
-          ..meals = onlyMeal(0, "Apple")
-        ),
+        generateFoodDiaryDay(23, []),
+        generateFoodDiaryDay(24, [["Apple"]])
       ])), //
     ]));
 
@@ -146,24 +120,12 @@ void main() {
       when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromFutures([
         Future.value(BuiltList(<FoodDiaryDay>[])),
         Future.delayed(ticks(2), () => BuiltList(<FoodDiaryDay>[
-          FoodDiaryDay((b) => b
-            ..date = 23
-            ..meals = BuiltList<MealData>()
-          ),
-          FoodDiaryDay((b) => b
-            ..date = 24
-            ..meals = onlyMeal(0, "Apple")
-          ),
+          generateFoodDiaryDay(23, []),
+          generateFoodDiaryDay(24, [["Apple"]]),
         ])), //
         Future.delayed(ticks(3), () => BuiltList(<FoodDiaryDay>[
-          FoodDiaryDay((b) => b
-            ..date = 24
-            ..meals = onlyMeal(1, "Apricot")
-          ),
-          FoodDiaryDay((b) => b
-            ..date = 25
-            ..meals = BuiltList<MealData>()
-          ),
+          generateFoodDiaryDay(24, [[], ["Apricot"]]),
+          generateFoodDiaryDay(25, []),
         ])),
       ]));
       when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromFutures([
@@ -195,14 +157,8 @@ void main() {
           FoodDiaryLoaded((b) => b
             ..currentDate = daysSinceEpoch
             ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: FoodDiaryDay((b) => b
-                ..date = 23
-                ..meals = BuiltList<MealData>()
-              ),
-              24: FoodDiaryDay((b) => b
-                ..date = 24
-                ..meals = onlyMeal(0, "Apple")
-              ),
+              23: generateFoodDiaryDay(23, []),
+              24: generateFoodDiaryDay(24, [["Apple"]]),
             })
             ..diets = ListBuilder(<Diet>[
               diet,
@@ -212,18 +168,9 @@ void main() {
           FoodDiaryLoaded((b) => b
             ..currentDate = daysSinceEpoch
             ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: FoodDiaryDay((b) => b // Persists while not being in list
-                ..date = 23
-                ..meals = BuiltList<MealData>()
-              ),
-              24: FoodDiaryDay((b) => b // Overridden by new value
-                ..date = 24
-                ..meals = onlyMeal(1, "Apricot")
-              ),
-              25: FoodDiaryDay((b) => b
-                ..date = 25
-                ..meals = BuiltList<MealData>()
-              ),
+              23: generateFoodDiaryDay(23, []), // Persists while not being in list
+              24: generateFoodDiaryDay(24, [[], ["Apricot"]]), // Overridden by new value
+              25: generateFoodDiaryDay(25, []),
             })
             ..diets = ListBuilder(<Diet>[
               diet,
@@ -238,14 +185,8 @@ void main() {
     test("Fail on food diary error", () async {
       when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromFutures([
         Future.value(BuiltList(<FoodDiaryDay>[
-          FoodDiaryDay((b) => b
-            ..date = 23
-            ..meals = BuiltList<MealData>()
-          ),
-          FoodDiaryDay((b) => b
-            ..date = 24
-            ..meals = onlyMeal(0, "Apple")
-          ),
+          generateFoodDiaryDay(23, []),
+          generateFoodDiaryDay(24, [["Apple"]]),
         ])), //
         Future.delayed(ticks(1), () => Future.error(Exception("Food diary failed"))), // Ends at first error
         Future.delayed(ticks(2), () => Future.error(Exception("Food diary failed 2"))),
@@ -277,14 +218,8 @@ void main() {
     test("Fail on all time diets error", () async {
       when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromFutures([
         Future.value(BuiltList(<FoodDiaryDay>[
-          FoodDiaryDay((b) => b
-            ..date = 23
-            ..meals = BuiltList<MealData>()
-          ),
-          FoodDiaryDay((b) => b
-            ..date = 24
-            ..meals = onlyMeal(0, "Apple")
-          ),
+          generateFoodDiaryDay(23, []),
+          generateFoodDiaryDay(24, [["Apple"]]),
         ])), //
       ]));
       when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromFutures([
@@ -357,9 +292,7 @@ void main() {
           BuiltErrorMatcher("Expected error to delay end of test"),
         ])
       ).then((void _) {
-        final foodDiaryDay = FoodDiaryDay((b) => b
-          ..date = 24
-          ..meals = onlyMeal(0, "Apple")
+        final foodDiaryDay = generateFoodDiaryDay(24, [["Apple"]]).rebuild((b) => b
           ..addFoodRecords(0, foods)
         );
 
@@ -493,40 +426,16 @@ void main() {
     });
 
     test("Filled diary", () async {
-      final customMeals = BuiltList<MealData>(<MealData>[
-        MealData((b) => b
-          ..foodRecords = ListBuilder(<FoodRecord>[
-            FoodRecord((b) => b
-              ..foodName = "Orange"
-              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
-            ),
-            FoodRecord((b) => b
-              ..foodName = "Apple"
-              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
-            ),
-            FoodRecord((b) => b
-              ..foodName = "Potato"
-              ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
-            ),
-          ])
-        )
-      ]);
+      // Ignore future dates
+      final tomorrow = currentDaysSinceEpoch() + 1;
 
       when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromIterable([
         BuiltList(<FoodDiaryDay>[]),
         BuiltList(<FoodDiaryDay>[
-          FoodDiaryDay((b) => b
-            ..date = 23
-            ..meals = BuiltList<MealData>()
-          ),
-          FoodDiaryDay((b) => b
-            ..date = 24
-            ..meals = customMeals
-          ),
-          FoodDiaryDay((b) => b
-            ..date = 25
-            ..meals = onlyMeal(0, "Apple")
-          ),
+          generateFoodDiaryDay(23, []),
+          generateFoodDiaryDay(24, [["Orange", "Apple", "Potato"]]),
+          generateFoodDiaryDay(25, [["Apple"]]),
+          generateFoodDiaryDay(tomorrow, [["Potato"]])
         ]),
       ]));
       when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromIterable([
@@ -545,19 +454,10 @@ void main() {
           FoodDiaryLoaded((b) => b
             ..currentDate = daysSinceEpoch
             ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: FoodDiaryDay((b) => b
-                ..date = 23
-                ..meals = BuiltList<MealData>()
-              ),
-              24: FoodDiaryDay((b) => b
-                ..date = 24
-                ..meals = customMeals
-              ),
-              25: FoodDiaryDay((b) => b
-                ..date = 25
-                ..meals = onlyMeal(0, "Apple")
-              ),
-              // TODO: test future date!
+              23: generateFoodDiaryDay(23, []),
+              24: generateFoodDiaryDay(24, [["Orange", "Apple", "Potato"]]),
+              25: generateFoodDiaryDay(25, [["Apple"]]),
+              tomorrow: generateFoodDiaryDay(tomorrow, [["Potato"]]),
             })
             ..diets = ListBuilder<Diet>()
           ),
@@ -577,7 +477,6 @@ void main() {
       ]));
     });
   });
-
 
   test("Frequent foods", () {
     expect(foodDiaryBloc.frequentFoods, BuiltList<FoodRecord>(<FoodRecord>[]));

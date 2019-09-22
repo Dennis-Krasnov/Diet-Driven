@@ -43,7 +43,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       assert(currentState is FoodDiaryDayUninitialized);
 
       _foodDiaryDayEventSubscription = Observable<FoodDiaryState>(foodDiaryBloc.state)
-        .ofType(const TypeToken<FoodDiaryLoaded>())
+        .whereType<FoodDiaryLoaded>()
         .map<FoodDiaryDayEvent>((loadedDiaryState) => RemoteFoodDiaryDayArrived((b) => b
           ..foodDiaryDay = loadedDiaryState.diaryDays[date]?.toBuilder()
           ..diet = loadedDiaryState.dietForDate(date).toBuilder()
