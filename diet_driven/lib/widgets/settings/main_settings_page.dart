@@ -5,54 +5,38 @@
  */
 
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/widgets/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-// TODOCUMENT
-String getRouteOfParent(String baseRoute, BuiltList<String> deepLink) {
-  final allButLast = deepLink.toList();
-  if (allButLast.isNotEmpty) {
-    allButLast.removeLast();
-  }
-  return "$baseRoute${allButLast.isEmpty ? "" : "/" + allButLast.join("/")}";
-}
 
 class MainSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<NavigationBloc, NavigationState>(
-      listener: (BuildContext context, NavigationState state) { // TODO: rename state to convention
+      // Avoid firing deep link logic on pops to avoid unnecessary animations.
+      condition: (NavigationState previous, NavigationState current) => !current.wasPopped,
+      listener: (BuildContext context, NavigationState navigationState) {
         // Settings deep link handler
-        if (state is SettingsTab && state.deepLink != null) {
+        if (navigationState is SettingsTab && navigationState.deepLink != null) {
           // Single push with animation
-          final currentRoute = ModalRoute.of(context).settings.name;
-          if (getRouteOfParent(Routes.settings, state.deepLink) == currentRoute) {
-            final path = "${Routes.settings}/${state.deepLink.join("/")}";
-            Navigator.of(context).pushNamed(path, arguments: true);
-
-            // FIXME:
-//            BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToSettings());
+          if (navigationState.wasSinglePush) {
+            Navigator.of(context).pushNamed(navigationState.path(Routes.settings), arguments: true);
           }
-          // No animation
+          // No animation for multiple pushes
           else {
-            // Start at root settings page
+            // Reset to root settings page
             Navigator.of(context).popUntil(ModalRoute.withName(Routes.settings));
 
-            // Push ...
-            for (int i = 1; i <= state.deepLink.length; i++) {
-              final path = "${Routes.settings}/${state.deepLink.sublist(0, i).join("/")}";
-              Navigator.of(context).pushNamed(path, arguments: false);
+            // Push each sublist of deep link
+            for (int i = 1; i <= navigationState.deepLink.length; i++) {
+              Navigator.of(context).pushNamed(navigationState.path(Routes.settings, until: i), arguments: false);
             }
           }
         }
       },
         // TODO: remove unused bloc builder!?
       child: BlocBuilder<UserDataBloc, UserDataState>(
-        condition: (previous, current) => true,
+//        condition: (previous, current) => true,
         builder: (BuildContext context, UserDataState userDataState) {
 //          if (userDataState is UserDataLoaded) {
           return Scaffold(

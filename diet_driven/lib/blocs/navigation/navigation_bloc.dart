@@ -40,7 +40,8 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
     if (event is NavigateToDiary) {
       yield DiaryTab((b) => b
-        ..deepLink = event.deepLink?.toBuilder()
+        ..previousDeepLink = currentState.deepLink?.toBuilder()
+        ..deepLink = event.deepLink?.toBuilder() ?? currentState.deepLink?.toBuilder()
       );
     }
 
@@ -54,7 +55,8 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
     if (event is NavigateToSettings) {
       yield SettingsTab((b) => b
-        ..deepLink = event.deepLink?.toBuilder()
+        ..previousDeepLink = currentState.deepLink?.toBuilder()
+        ..deepLink = event.deepLink?.toBuilder() ?? currentState.deepLink?.toBuilder()
       );
     }
 

@@ -11,9 +11,17 @@ import 'package:diet_driven/blocs/navigation/navigation.dart';
 
 part 'navigation_events.g.dart';
 
-abstract class NavigationEvent {}
+@BuiltValue(instantiable: false)
+abstract class NavigationEvent {
+  @nullable
+  BuiltList<DeepLink> get deepLink;
+
+  NavigationEvent rebuild(void Function(NavigationEventBuilder) updates);
+  NavigationEventBuilder toBuilder();
+}
 
 /// Subscribes to bloc state stream, navigates to default page.
+/// Doesn't use [deepLink] and [fullPage] fields.
 abstract class InitNavigation implements NavigationEvent, Built<InitNavigation, InitNavigationBuilder> {
   factory InitNavigation([void Function(InitNavigationBuilder) updates]) = _$InitNavigation;
   InitNavigation._();
@@ -21,17 +29,21 @@ abstract class InitNavigation implements NavigationEvent, Built<InitNavigation, 
 
 /// Navigate to diary tab.
 abstract class NavigateToDiary implements NavigationEvent, Built<NavigateToDiary, NavigateToDiaryBuilder> {
-  @nullable
-  BuiltList<String> get deepLink;
-
   factory NavigateToDiary([void Function(NavigateToDiaryBuilder) updates]) = _$NavigateToDiary;
   NavigateToDiary._();
 
   /// Hard reset sub navigation.
-  factory NavigateToDiary.root() => NavigateToDiary((b) => b..deepLink = ListBuilder());
+  factory NavigateToDiary.root() => NavigateToDiary((b) => b
+    ..deepLink = ListBuilder()
+  );
 
   /// Convenience constructor for diary on [date].
-  factory NavigateToDiary.day(int date) => NavigateToDiary((b) => b..deepLink = ListBuilder(<String>[date.toString()]));
+  factory NavigateToDiary.day(int date) => NavigateToDiary((b) => b
+    ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink((b) => b
+      ..path = "diary"
+      ..data = date.toString() // TODO: generics
+    )])
+  );
 }
 
 /// Navigate to track tab.
@@ -48,23 +60,28 @@ abstract class NavigateToReports implements NavigationEvent, Built<NavigateToRep
 
 /// Navigate to settings tab.
 abstract class NavigateToSettings implements NavigationEvent, Built<NavigateToSettings, NavigateToSettingsBuilder> {
-  @nullable
-  BuiltList<String> get deepLink;
-
   factory NavigateToSettings([void Function(NavigateToSettingsBuilder) updates]) = _$NavigateToSettings;
   NavigateToSettings._();
 
   ///
-  factory NavigateToSettings.root() => NavigateToSettings((b) => b..deepLink = ListBuilder(<String>[]));
+  factory NavigateToSettings.root() => NavigateToSettings((b) => b
+    ..deepLink = ListBuilder()
+  );
 
   /// ...
-  factory NavigateToSettings.general() => NavigateToSettings((b) => b..deepLink = ListBuilder(<String>[Routes.generalSettings]));
+  factory NavigateToSettings.general() => NavigateToSettings((b) => b
+    ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "general")])
+  );
 
   ///
-  factory NavigateToSettings.theme() => NavigateToSettings((b) => b..deepLink = ListBuilder(<String>[Routes.themeSettings]));
+  factory NavigateToSettings.theme() => NavigateToSettings((b) => b
+    ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "theme")])
+  );
 
   ///
-  factory NavigateToSettings.diary() => NavigateToSettings((b) => b..deepLink = ListBuilder(<String>[Routes.diarySettings]));
+  factory NavigateToSettings.diary() => NavigateToSettings((b) => b
+    ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "diary")])
+  );
 }
 
 /// Navigate to logging tab.

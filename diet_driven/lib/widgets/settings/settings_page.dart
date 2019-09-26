@@ -4,29 +4,39 @@
  * in the LICENSE file.
  */
 
-import 'package:diet_driven/repositories/repositories.dart';
-import 'package:diet_driven/widgets/settings/settings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:built_collection/built_collection.dart';
 
+import 'package:diet_driven/widgets/settings/settings.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
-///
-class SettingsPage extends StatelessWidget {
-  // Persists navigation across tabs
-  final GlobalKey<NavigatorState> navigationKey;
+/// must be ...
+class SettingsPage extends StatefulWidget {
+  @override
+  _SettingsPageState createState() => _SettingsPageState();
+}
 
-  final NavigatorObserver navigatorObserver;
+class _SettingsPageState extends State<SettingsPage> {
+  /// Persists navigation across tabs.
+  final navigatorKey = GlobalKey<NavigatorState>();
 
-  const SettingsPage({Key key, @required this.navigationKey, @required this.navigatorObserver}) : super(key: key);
+  ///
+//  PopObserver navigatorObserver;
 
   @override
   Widget build(BuildContext context) {
-    return Navigator(
-      key: navigationKey,
-      observers: [navigatorObserver],
-      initialRoute: Routes.settings,
-      onGenerateRoute: (RouteSettings settings) => generateRoute(context, settings),
+    // Need to specify custom back button behaviour
+    return WillPopScope(
+      // Navigator vetoes a pop if they're the first route in the history
+      // This behavior prevents the user from popping the first route off the history and being stranded at a blank screen
+      onWillPop: () async => !await navigatorKey.currentState.maybePop(),
+      child: Navigator(
+        key: navigatorKey,
+        observers: [PopObserver(BlocProvider.of<NavigationBloc>(context))],
+        initialRoute: Routes.settings,
+        onGenerateRoute: (RouteSettings settings) => generateRoute(context, settings),
+      ),
     );
   }
 
@@ -87,4 +97,15 @@ class NoAnimationMaterialPageRoute<T> extends MaterialPageRoute<T> {
       Animation<double> secondaryAnimation, Widget child) {
     return child;
   }
+}
+
+class PopObserver extends NavigatorObserver {
+  final NavigationBloc navigationBloc;
+
+  PopObserver(this.navigationBloc);
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) => navigationBloc.dispatch(NavigateToSettings((b) => b
+    ..deepLink = navigationBloc.currentState.deepLink?.rebuild((b) => b..removeLast())?.toBuilder()
+  ));
 }

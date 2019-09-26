@@ -8,6 +8,8 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:built_value/built_value.dart';
+import 'package:built_collection/built_collection.dart';
+
 import 'package:diet_driven/models/models.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 

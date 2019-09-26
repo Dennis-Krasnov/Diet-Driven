@@ -25,7 +25,7 @@
 [![Codemagic build status](https://api.codemagic.io/apps/5c06ef582e049200090a4954/5c7871872dea180008e1d030/status_badge.svg)](https://codemagic.io/apps/5c06ef582e049200090a4954/5c7871872dea180008e1d030/latest_build)
 
 ...
-This is the directory containing the Flutter mobile app...
+This is the directory containing the Flutter mobile app!...
 ...
 
 ## What is Diet Driven?
@@ -69,6 +69,11 @@ Diet Driven uses a BLoC architecture implemented using the [bloc](https://felang
 
 ## Building from Source
 Diet Driven is written in dart and Flutter. See the [installation instructions](https://flutter.dev/docs/get-started/install).
+
+### Android
+- Create .signing in home folder, add key.jks
+- Create key.properties
+- Add google-services.json to /app/
 
 ### Firebase
 (see ... directory (link) README for firebase instructions)

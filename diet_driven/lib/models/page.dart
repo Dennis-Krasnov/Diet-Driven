@@ -37,7 +37,7 @@ class Page extends EnumClass {
   NavigationEvent get navigationEvent {
     switch (this) {
       case diary:
-        return NavigateToDiary();
+        return NavigateToDiary( );
         break;
       case track:
         return NavigateToTrack();

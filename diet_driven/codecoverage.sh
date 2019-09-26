@@ -7,8 +7,8 @@ flutter test --merge-coverage
 genhtml coverage/lcov.info -o coverage/html
 
 # Open results in google chrome
-google-chrome-stable coverage/html/index.html
+# google-chrome-stable coverage/html/index.html
 
 # Experiments
 #genhtml lcov.info -o coverage --no-function-coverage -s -p `pwd`
-#open coverage/html/index.html
+open coverage/html/index.html

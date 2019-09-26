@@ -4,6 +4,7 @@
  * in the LICENSE file.
  */
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/widgets/loading/loading.dart';
 import 'package:diet_driven/widgets/logging/logging_page.dart';
 import 'package:flutter/material.dart';
@@ -17,26 +18,7 @@ import 'package:diet_driven/widgets/message/message.dart';
 import 'package:diet_driven/widgets/settings/settings.dart';
 
 /// Manages bottom navigation and displays respective page.
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  /// Must be stateful widget to persist navigation state throughout builds.
-  Map<Page, GlobalKey<NavigatorState>> navigatorKeys = Map<Page, GlobalKey<NavigatorState>>.fromIterable(
-    Page.values,
-    key: (dynamic page) => page,
-    value: (dynamic page) => GlobalKey<NavigatorState>(),
-  );
-
-  /// Must be stateful widget to persist observer state throughout builds.
-  Map<Page, NavigatorObserver> navigatorObservers = Map<Page, NavigatorObserver>.fromIterable(
-    Page.values,
-    key: (dynamic page) => page,
-    value: (dynamic page) => PopObserver(),
-  );
-
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<UserDataBloc, UserDataState>(
@@ -58,32 +40,22 @@ class _HomeScreenState extends State<HomeScreen> {
               return const SplashPage();
             }
 
-            // Index of currently selected page (ignoring deep links)
-            final int tabIndex = bottomNavPages.indexWhere((page) => page.navigationState == navigationState.rebuild((b) => b..deepLink = null));
+            // TODO: make custom bottom navigation that uses pages natively (take screenshot before replacing)
+            // Index of currently selected page (ignoring deep links and full page)
+            final int tabIndex = bottomNavPages.indexWhere((page) => page.navigationState == navigationState.rebuild((b) => b
+              ..deepLink = null
+              ..previousDeepLink = null
+            ));
             assert(tabIndex != -1);
 
             return Scaffold(
-              // Need to specify custom back button behaviour
-              // Otherwise app is dismissed and we are back to the home screen
-              // If returns false, the enclosing route will not be popped
-              body: WillPopScope(
-                onWillPop: () async {
-                  final Page currentPage = bottomNavPages[tabIndex];
-                  // Page doesn't have nested navigation
-                  if (navigatorKeys[currentPage].currentState == null)
-                    return true;
-                  // Navigator vetoes a pop if they're the first route in the history
-                  // This behavior prevents the user from popping the first route off the history and being stranded at a blank screen
-                  return !await navigatorKeys[currentPage].currentState.maybePop();
-                },
-                // Shows one page at a time while persisting nested navigation
-                child: IndexedStack(
-                  index: tabIndex,
-                  children: <Widget>[
-                    for (var page in bottomNavPages)
-                      pageToWidget(page, navigatorKeys[page], navigatorObservers[page])
-                  ],
-                ),
+              // Shows one page at a time while persisting nested navigation
+              body: IndexedStack(
+                index: tabIndex,
+                children: <Widget>[
+                  for (var page in bottomNavPages)
+                    pageToWidget(page)
+                ],
               ),
               bottomNavigationBar: BottomNavigationBar(
                 type: BottomNavigationBarType.fixed,
@@ -144,7 +116,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// Creates respective page widget based on page enum.
-  Widget pageToWidget(Page page, GlobalKey<NavigatorState> navigationKey, NavigatorObserver navigatorObserver) {
+  Widget pageToWidget(Page page) {
     switch (page) {
       case Page.diary:
         return FoodDiaryPage(); // TODO: wrap with provider here?!
@@ -156,7 +128,7 @@ class _HomeScreenState extends State<HomeScreen> {
         return const UnderConstruction(page: "Reports");
         break;
       case Page.settings:
-        return SettingsPage(navigationKey: navigationKey, navigatorObserver: navigatorObserver);
+        return SettingsPage();
         break;
       case Page.logging:
         return LoggingPage();
@@ -164,13 +136,5 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         return Container(child: Center(child: Text("couldn't find your $page"))); // OPTIMIZE
     }
-  }
-}
-
-
-class PopObserver extends NavigatorObserver {
-  @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    LoggingBloc().verbose("NAVIGATION OBSERVER!!!!");
   }
 }
