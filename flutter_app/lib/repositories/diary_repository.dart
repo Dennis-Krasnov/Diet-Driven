@@ -1,0 +1,96 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found
+ * in the LICENSE file.
+ */
+
+import 'package:built_collection/built_collection.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/providers/firestore_paths.dart';
+import 'package:diet_driven/providers/firestore_serializer.dart';
+
+/// Data access object for food and exercise diaries.
+class DiaryRepository {
+  final Firestore _firestore;
+
+  // Dependency injection
+  DiaryRepository({Firestore firestore}) : _firestore = firestore ?? Firestore.instance;
+
+  /// Streams [userId]'s [FoodDiaryDay] on [daysSinceEpoch] using `cloud_firestore` library.
+  ///
+  /// Returns empty stream if Firestore document doesn't exist.
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Stream<FoodDiaryDay> foodDiaryDay$(String userId, int daysSinceEpoch) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
+
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
+    return docRef.snapshots().transform(deserializeDocumentTransform<FoodDiaryDay>());
+  }
+
+  /// Streams [userId]'s all-time [FoodDiaryDay]s using `cloud_firestore` library.
+  ///
+  /// Returns empty stream if Firestore documents don't exist.
+  /// Throws [PlatformException] if [userId] is empty.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Stream<BuiltList<FoodDiaryDay>> allTimeFoodDiary$(String userId) {
+    assert(userId != null && userId.isNotEmpty);
+
+    final colRef = _firestore.collection(FirestorePaths.foodDiary(userId));
+    return colRef.snapshots().transform(deserializeCollectionTransform<FoodDiaryDay>());
+  }
+
+  /// Replaces [userId]'s [FoodDiaryDay] on its respective day using `cloud_firestore` library.
+  ///
+  /// Cloud functions triggers on edit:
+  /// -
+  ///
+  /// Throws [PlatformException] if [userId] is empty.
+  Future<void> saveFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) async {
+    assert(userId != null && userId.isNotEmpty);
+    assert(foodDiaryDay != null);
+
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
+    return docRef.setData(serializeDocument(foodDiaryDay), merge: false);
+  }
+
+  /// Deletes [userId]'s [FoodDiaryDay] on [daysSinceEpoch] using `cloud_firestore` library.
+  /// `Future.sync()` runs future immediately to enable proper exception handling.
+  ///
+  /// Cloud functions triggers on delete:
+  /// - If [dayCompleted], calculates score for the day, saves in aggregate score.
+  /// - Calculates aggregate global statistics.
+  ///
+  /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
+  /// Throws [Exception] if food diary day document doesn't exist.
+  Future<void> deleteFoodDiaryDay(String userId, int daysSinceEpoch) {
+    assert(userId != null && userId.isNotEmpty);
+    assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
+
+    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
+    return docRef.delete();
+  }
+
+  /// Streams [userId]'s all-time [Diet]s using `cloud_firestore` library.
+  ///
+  /// Returns empty stream if Firestore documents don't exist.
+  /// Throws [PlatformException] if [userId] is empty.
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Stream<BuiltList<Diet>> allTimeDiet$(String userId) {
+    assert(userId != null && userId.isNotEmpty);
+
+    return Stream.fromFuture(Future.value(BuiltList(<Diet>[ // FIXME
+      Diet((b) => b
+        ..calories = 2000
+        ..startDate = 0
+      ),
+      Diet((b) => b
+        ..calories = 2125
+        ..startDate = 18128
+      ),
+    ])));
+  }
+}
