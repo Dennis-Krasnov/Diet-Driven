@@ -88,7 +88,7 @@ void main() {
 
   group("Suggest foods", () {
     test("Load from uninitialized", () {
-      when(foodDiaryBloc.recentFoods).thenReturn(searchSuggestions);
+//      when(foodDiaryBloc.recentFoods).thenReturn(searchSuggestions);
 
       expectLater(
         foodSearchBloc.state,
@@ -107,7 +107,7 @@ void main() {
     });
 
     test("Load from uninitialized with query", () {
-      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
+//      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
 
       expectLater(
         foodSearchBloc.state,
@@ -159,7 +159,7 @@ void main() {
     });
 
     test("From loaded", () {
-      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
+//      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
 
       final loadedState = FoodSearchLoaded((b) => b
         ..query = ""
@@ -201,7 +201,7 @@ void main() {
         ..foods = foodResults.toBuilder()
       )));
 
-      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
+//      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
 
       expectLater(
         foodSearchBloc.state,
@@ -245,7 +245,7 @@ void main() {
     test("Fail on search failure", () async {
       when(foodRepository.searchFoodsByQuery(any)).thenThrow(eventFailedException);
 
-      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
+//      when(foodDiaryBloc.recentFoods).thenAnswer((_) => searchSuggestions);
 
       expectLater(
         foodSearchBloc.state,

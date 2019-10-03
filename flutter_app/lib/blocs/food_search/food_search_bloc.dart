@@ -42,7 +42,8 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
         // Suggesting foods from loaded state clears the query
         ..query = currentState is FoodSearchUninitialized ? currentState.query : ""
         // Load suggested results based on recently logged foods
-        ..results = foodDiaryBloc.recentFoods.toBuilder()
+//        ..results = foodDiaryBloc.recentFoods.toBuilder() FIXME: no longer valid!
+        ..results = null
         // Carry over query only if started from uninitialized state (started searching before suggestions were loaded)
         // Suggesting foods from loaded state also clears queryChanged
         ..queryChanged = currentState is FoodSearchUninitialized && currentState.queryChanged

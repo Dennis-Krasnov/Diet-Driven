@@ -20,6 +20,7 @@ import '../test_utils.dart';
 
 void main() {
   FoodDiaryBloc foodDiaryBloc;
+  // TODO: rename this to sut, make another file for historical food diary bloc!!! -> add asserts that length of diary days is always one!
 
   /// Mocks
   DiaryRepository diaryRepository;
@@ -34,12 +35,11 @@ void main() {
   );
 
   // Constant current date
-  final daysSinceEpoch = currentDaysSinceEpoch();
+  final daysSinceEpoch = currentDaysSinceEpoch(); // TODO: test historical days!
 
   final expectedState = <FoodDiaryState>[
     FoodDiaryUninitialized(),
     FoodDiaryLoaded((b) => b
-      ..currentDate = daysSinceEpoch
       ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
         23: generateFoodDiaryDay(23, []),
         24: generateFoodDiaryDay(24, [["Apple"]]),
@@ -84,7 +84,7 @@ void main() {
   });
 
   /// Tests
-  test("Initialize properly", () {
+  test("Initialize properly", () { // TODO: test historical version!
     expect(foodDiaryBloc.userId, userId);
     expect(foodDiaryBloc.initialState, FoodDiaryUninitialized());
   });
@@ -95,15 +95,9 @@ void main() {
       emitsInOrder(<dynamic>[
         FoodDiaryUninitialized(),
         BuiltErrorMatcher("Food diary bloc must be loaded"),
-        BuiltErrorMatcher("Food diary bloc must be loaded"),
         BuiltErrorMatcher("Food diary bloc must be uninitialized"),
       ])
     );
-
-    foodDiaryBloc.dispatch(UpdateCurrentDate((b) => b
-      ..currentDate = 2145
-    ));
-    await Future<void>.delayed(ticks(1));
 
     foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
       ..date = 5232
@@ -141,13 +135,11 @@ void main() {
           FoodDiaryUninitialized(),
           // Tick #0
           FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
             ..diaryDays = MapBuilder<int, FoodDiaryDay>()
             ..diets = ListBuilder<Diet>()
           ),
           // Tick #1
           FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
             ..diaryDays = MapBuilder<int, FoodDiaryDay>()
             ..diets = ListBuilder(<Diet>[
               diet,
@@ -155,7 +147,6 @@ void main() {
           ),
           // Tick #2
           FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
             ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
               23: generateFoodDiaryDay(23, []),
               24: generateFoodDiaryDay(24, [["Apple"]]),
@@ -166,10 +157,9 @@ void main() {
           ),
           // Tick #3
           FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
+            // Results are completely overridden
             ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: generateFoodDiaryDay(23, []), // Persists while not being in list
-              24: generateFoodDiaryDay(24, [[], ["Apricot"]]), // Overridden by new value
+              24: generateFoodDiaryDay(24, [[], ["Apricot"]]),
               25: generateFoodDiaryDay(25, []),
             })
             ..diets = ListBuilder(<Diet>[
@@ -251,27 +241,27 @@ void main() {
     });
   });
 
-  test("Update current date", () async {
-    _setupDefaultMocks();
-
-    expectLater(
-      foodDiaryBloc.state,
-      emitsInOrder(<FoodDiaryState>[
-        ...expectedState,
-        (expectedState.last as FoodDiaryLoaded).rebuild((b) => b
-          ..currentDate = daysSinceEpoch + 1
-        ),
-      ])
-    );
-
-    // Wait for bloc to be fully initialized
-    foodDiaryBloc.dispatch(InitFoodDiary());
-    await Future<void>.delayed(ticks(1));
-
-    foodDiaryBloc.dispatch(UpdateCurrentDate((b) => b
-      ..currentDate = daysSinceEpoch + 1
-    ));
-  });
+//  test("Update current date", () async {
+//    _setupDefaultMocks();
+//
+//    expectLater(
+//      foodDiaryBloc.state,
+//      emitsInOrder(<FoodDiaryState>[
+//        ...expectedState,
+//        (expectedState.last as FoodDiaryLoaded).rebuild((b) => b
+//          ..currentDate = daysSinceEpoch + 1
+//        ),
+//      ])
+//    );
+//
+//    // Wait for bloc to be fully initialized
+//    foodDiaryBloc.dispatch(InitFoodDiary());
+//    await Future<void>.delayed(ticks(1));
+//
+//    foodDiaryBloc.dispatch(UpdateCurrentDate((b) => b
+//      ..currentDate = daysSinceEpoch + 1
+//    ));
+//  });
 
   // TOTEST
 //  group("Copy food diary days", () {
@@ -393,92 +383,5 @@ void main() {
         // Catch expected exception (must be called synchronously)
         .catchError((Object e) => expect(e, eventFailedException));
     });
-  });
-
-  // TODO: other full day operations!!!
-
-  group("Recent foods", () {
-    test("Empty diary", () async {
-      when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromIterable([
-        BuiltList(<FoodDiaryDay>[]),
-      ]));
-      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromIterable([
-        BuiltList(<Diet>[]),
-      ]));
-
-      expectLater(
-        foodDiaryBloc.state,
-        emitsInOrder(<FoodDiaryState>[
-          FoodDiaryUninitialized(),
-          FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
-            ..diaryDays = MapBuilder<int, FoodDiaryDay>()
-            ..diets = ListBuilder<Diet>()
-          ),
-        ]),
-      );
-
-      // Wait for bloc to be fully initialized
-      foodDiaryBloc.dispatch(InitFoodDiary());
-      await Future<void>.delayed(ticks(1));
-
-      expect(foodDiaryBloc.recentFoods, BuiltList<FoodRecord>(<FoodRecord>[]));
-    });
-
-    test("Filled diary", () async {
-      // Ignore future dates
-      final tomorrow = currentDaysSinceEpoch() + 1;
-
-      when(diaryRepository.allTimeFoodDiary$(userId)).thenAnswer((_) => Stream<BuiltList<FoodDiaryDay>>.fromIterable([
-        BuiltList(<FoodDiaryDay>[]),
-        BuiltList(<FoodDiaryDay>[
-          generateFoodDiaryDay(23, []),
-          generateFoodDiaryDay(24, [["Orange", "Apple", "Potato"]]),
-          generateFoodDiaryDay(25, [["Apple"]]),
-          generateFoodDiaryDay(tomorrow, [["Potato"]])
-        ]),
-      ]));
-      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) => Stream<BuiltList<Diet>>.fromIterable([
-        BuiltList(<Diet>[]),
-      ]));
-
-      expectLater(
-        foodDiaryBloc.state,
-        emitsInOrder(<FoodDiaryState>[
-          FoodDiaryUninitialized(),
-          FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
-            ..diaryDays = MapBuilder<int, FoodDiaryDay>()
-            ..diets = ListBuilder<Diet>()
-          ),
-          FoodDiaryLoaded((b) => b
-            ..currentDate = daysSinceEpoch
-            ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: generateFoodDiaryDay(23, []),
-              24: generateFoodDiaryDay(24, [["Orange", "Apple", "Potato"]]),
-              25: generateFoodDiaryDay(25, [["Apple"]]),
-              tomorrow: generateFoodDiaryDay(tomorrow, [["Potato"]]),
-            })
-            ..diets = ListBuilder<Diet>()
-          ),
-        ]),
-      );
-
-      // Wait for bloc to be fully initialized
-      foodDiaryBloc.dispatch(InitFoodDiary());
-      await Future<void>.delayed(ticks(1));
-
-      expect(foodDiaryBloc.recentFoods, BuiltList<FoodRecord>(<FoodRecord>[
-        for (final name in ["Apple", "Orange", "Potato"])
-          FoodRecord((b) => b
-            ..foodName = name
-            ..totalNutrients = NutrientMap.fromMacros(1, 2, 3)
-          ),
-      ]));
-    });
-  });
-
-  test("Frequent foods", () {
-    expect(foodDiaryBloc.frequentFoods, BuiltList<FoodRecord>(<FoodRecord>[]));
   });
 }

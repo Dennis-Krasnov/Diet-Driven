@@ -28,9 +28,6 @@ abstract class FoodDiaryFailed implements BuiltError, FoodDiaryState, Built<Food
 
 /// Food diary day switcher.
 abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-  /// Actual date.
-  int get currentDate;
-
   /// Map from [int] daysFromEpoch to [FoodDiaryDay]s.
   BuiltMap<int, FoodDiaryDay> get diaryDays;
 

@@ -38,14 +38,6 @@ abstract class FoodDiaryError implements BuiltError, FoodDiaryEvent, Built<FoodD
   FoodDiaryError._();
 }
 
-/// Updates actual date.
-abstract class UpdateCurrentDate implements FoodDiaryEvent, Built<UpdateCurrentDate, UpdateCurrentDateBuilder> {
-  int get currentDate;
-
-  factory UpdateCurrentDate([void Function(UpdateCurrentDateBuilder) updates]) = _$UpdateCurrentDate;
-  UpdateCurrentDate._();
-}
-
 /// Adds [foodRecords] to specified [mealIndex] on [date].
 /// Assumes [mealIndex] is within range of corresponding diet's meals.
 abstract class GlobalAddFoodRecords implements Completable, FoodDiaryEvent, Built<GlobalAddFoodRecords, GlobalAddFoodRecordsBuilder> {
