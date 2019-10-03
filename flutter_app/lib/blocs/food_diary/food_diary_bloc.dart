@@ -66,9 +66,10 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
           ..diets = diets.toBuilder()
         )
       ))
-      .distinct()
+      .timeout(Duration(seconds: 10)) // TO TEST (manually)
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => FoodDiaryError((b) => b..error = error))
+      .distinct()
       .listen(dispatch);
     }
 

@@ -56,8 +56,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         .switchMap<UserDataEvent>((auth) => CombineLatestStream.combine4(
           userRepository.userDocument$(auth.uid),
           settingsRepository.defaultSettings$(),
-          settingsRepository.userSettings$(auth.uid),
-          Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
+          Observable(settingsRepository.userSettings$(auth.uid)).startWith(null),
+          Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases).map(...) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
           (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
             ..authentication = auth.toBuilder()
             ..userDocument = userDocument.toBuilder()
@@ -67,6 +67,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
             ..subscription = subscriptionType
           ),
         ))
+        .timeout(Duration(seconds: 10)) // TO TEST (manually)
         // Unrecoverable failure
         .onErrorReturnWith((dynamic error) => UserDataError((b) => b..error = error))
         .distinct();

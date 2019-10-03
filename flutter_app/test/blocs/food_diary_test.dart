@@ -8,10 +8,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
@@ -19,8 +19,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 import '../test_utils.dart';
 
 void main() {
-  FoodDiaryBloc foodDiaryBloc;
-  // TODO: rename this to sut, make another file for historical food diary bloc!!! -> add asserts that length of diary days is always one!
+  FoodDiaryBloc sut;
 
   /// Mocks
   DiaryRepository diaryRepository;
@@ -57,7 +56,7 @@ void main() {
     diaryRepository = MockDiaryRepository();
     completer = Completer();
 
-    foodDiaryBloc = FoodDiaryBloc(
+    sut = FoodDiaryBloc(
       diaryRepository: diaryRepository,
       userId: userId,
     );
@@ -80,18 +79,19 @@ void main() {
   }
 
   tearDown(() {
-    foodDiaryBloc?.dispose();
+    sut?.dispose();
   });
 
   /// Tests
-  test("Initialize properly", () { // TODO: test historical version!
-    expect(foodDiaryBloc.userId, userId);
-    expect(foodDiaryBloc.initialState, FoodDiaryUninitialized());
+  test("Initialize with initial state", () {
+    expect(sut.userId, userId);
+    expect(sut.date, null);
+    expect(sut.initialState, FoodDiaryUninitialized());
   });
 
-  test("Fail on invalid events", () async {
+  test("Yield error state on invalid events", () async {
     expectLater(
-      foodDiaryBloc.state,
+      sut.state,
       emitsInOrder(<dynamic>[
         FoodDiaryUninitialized(),
         BuiltErrorMatcher("Food diary bloc must be loaded"),
@@ -99,14 +99,14 @@ void main() {
       ])
     );
 
-    foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+    sut.dispatch(GlobalAddFoodRecords((b) => b
       ..date = 5232
       ..mealIndex = 0
       ..foodRecords = ListBuilder()
     ));
     await Future<void>.delayed(ticks(1));
 
-    foodDiaryBloc.dispatch(InitFoodDiary());
+    sut.dispatch(InitFoodDiary());
   });
 
   group("React to streams", () {
@@ -130,7 +130,7 @@ void main() {
       ]));
 
       expectLater(
-        foodDiaryBloc.state,
+        sut.state,
         emitsInOrder(<FoodDiaryState>[
           FoodDiaryUninitialized(),
           // Tick #0
@@ -169,7 +169,7 @@ void main() {
         ])
       );
 
-      foodDiaryBloc.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary());
     });
 
     test("Fail on food diary error", () async {
@@ -189,7 +189,7 @@ void main() {
       ]));
 
       expectLater(
-        foodDiaryBloc.state,
+        sut.state,
         emitsInOrder(<dynamic>[
           ...expectedState,
           BuiltErrorMatcher("Food diary failed"),
@@ -197,12 +197,12 @@ void main() {
         ])
       );
 
-      foodDiaryBloc.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary());
 
       // Ensure first error was last state before stream close
       // Extra time is given to avoid flaky tests
       await Future<void>.delayed(ticks(5));
-      foodDiaryBloc.dispose();
+      sut.dispose();
     });
 
     test("Fail on all time diets error", () async {
@@ -224,7 +224,7 @@ void main() {
       ]));
 
       expectLater(
-        foodDiaryBloc.state,
+        sut.state,
         emitsInOrder(<dynamic>[
           ...expectedState,
           BuiltErrorMatcher("Diet failed"),
@@ -232,12 +232,12 @@ void main() {
         ])
       );
 
-      foodDiaryBloc.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary());
 
       // Ensure first error was last state before stream close
       // Extra time is given to avoid flaky tests
       await Future<void>.delayed(ticks(5));
-      foodDiaryBloc.dispose();
+      sut.dispose();
     });
   });
 
@@ -276,7 +276,7 @@ void main() {
       final foods = BuiltList<FoodRecord>(<FoodRecord>[FoodRecord.random(), FoodRecord.random()]);
 
       expectLater(
-        foodDiaryBloc.state,
+        sut.state,
         emitsInOrder(<dynamic>[
           ...expectedState,
           BuiltErrorMatcher("Expected error to delay end of test"),
@@ -291,10 +291,10 @@ void main() {
       });
 
       // Wait for bloc to be fully initialized
-      foodDiaryBloc.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary());
       await Future<void>.delayed(ticks(1));
 
-      foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+      sut.dispatch(GlobalAddFoodRecords((b) => b
         ..date = 24
         ..mealIndex = 0
         ..foodRecords = foods.toBuilder()
@@ -311,7 +311,7 @@ void main() {
       final foods = BuiltList<FoodRecord>(<FoodRecord>[FoodRecord.random(), FoodRecord.random()]);
 
       expectLater(
-        foodDiaryBloc.state,
+        sut.state,
         emitsInOrder(<dynamic>[
           ...expectedState,
           BuiltErrorMatcher("Expected error to delay end of test"),
@@ -328,10 +328,10 @@ void main() {
       });
 
       // Wait for bloc to be fully initialized
-      foodDiaryBloc.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary());
       await Future<void>.delayed(ticks(1));
 
-      foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+      sut.dispatch(GlobalAddFoodRecords((b) => b
         ..date = 25
         ..mealIndex = 1
         ..foodRecords = foods.toBuilder()
@@ -349,7 +349,7 @@ void main() {
       final foods = BuiltList<FoodRecord>(<FoodRecord>[FoodRecord.random(), FoodRecord.random()]);
 
       expectLater(
-        foodDiaryBloc.state,
+        sut.state,
         emitsInOrder(<dynamic>[
           ...expectedState,
           BuiltErrorMatcher("Expected error to delay end of test"),
@@ -367,10 +367,10 @@ void main() {
       });
 
       // Wait for bloc to be fully initialized
-      foodDiaryBloc.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary());
       await Future<void>.delayed(ticks(1));
 
-      foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+      sut.dispatch(GlobalAddFoodRecords((b) => b
         ..date = 25
         ..mealIndex = 1
         ..foodRecords = foods.toBuilder()
@@ -383,5 +383,9 @@ void main() {
         // Catch expected exception (must be called synchronously)
         .catchError((Object e) => expect(e, eventFailedException));
     });
+  });
+
+  test("Diet for date", () {
+
   });
 }

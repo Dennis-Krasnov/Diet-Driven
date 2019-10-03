@@ -28,6 +28,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
     if (event is InitNavigation) {
+      // Navigation has no error state
       assert(currentState is NavigationUninitialized);
 
       // Go to default page if navigation bloc hasn't yet been initialized

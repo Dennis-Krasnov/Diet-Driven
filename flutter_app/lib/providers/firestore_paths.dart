@@ -17,7 +17,7 @@ class FirestorePaths {
   static String user(String userId) => "users/$userId";
 
   /// [userId]'s configuration collection.
-  static String userConfiguration(String userId) => "${user(userId)}/metadata";
+  static String userConfiguration(String userId) => "${user(userId)}/config";
 
   /// [userId]'s settings document.
   static String userSettings(String userId) => "${userConfiguration(userId)}/settings";

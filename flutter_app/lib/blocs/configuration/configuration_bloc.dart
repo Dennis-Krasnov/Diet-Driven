@@ -43,7 +43,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         return;
       }
 
-      // Maintain single instance of stream subscriptions
+      // Maintain single instance of stream subscription
       _configurationEventSubscription ??= Observable<ConfigurationEvent>(CombineLatestStream.combine3(
         Observable<RemoteConfiguration>.fromFuture(configurationRepository.fetchRemoteConfig())
           .doOnError((Object error, StackTrace trace) => LoggingBloc().expectedError("Default configuration used", error, trace))
@@ -56,9 +56,10 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
           ..connectivity = connectivity
         ),
       ))
-      .distinct()
+//      .timeout(Duration(seconds: 10)) // TO TEST (manually)
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => ConfigurationError((b) => b..error = error))
+      .distinct()
       .listen(dispatch);
     }
 
