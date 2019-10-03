@@ -49,7 +49,8 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
           .doOnError((Object error, StackTrace trace) => LoggingBloc().expectedError("Default configuration used", error, trace))
           .onErrorReturn(RemoteConfiguration()),
         Observable<PackageInfo>.fromFuture(configurationRepository.fetchPackageInfo()),
-        Observable<ConnectivityResult>(configurationRepository.connectivity$()),
+``        // FIXME: start with needed on ios for some reason...
+        Observable<ConnectivityResult>(configurationRepository.connectivity$()).startWith(ConnectivityResult.none).doOnData((data) => "CONNECTIVITY ARRIVED: $data"),
         (RemoteConfiguration remoteConfiguration, PackageInfo packageInfo, ConnectivityResult connectivity) => RemoteConfigurationArrived((b) => b
           ..remoteConfiguration = remoteConfiguration.toBuilder()
           ..packageInfo = packageInfo
