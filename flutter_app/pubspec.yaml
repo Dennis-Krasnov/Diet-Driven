@@ -1,7 +1,7 @@
 name: diet_driven
 author: Dennis Krasnov <dennis@krasnov.dev>
 description: No compromises calorie counter.
-
+# TODO: homepage?
 version: 1.1.0+6
 
 environment:
@@ -35,8 +35,9 @@ dependencies:
   flare_flutter: ^1.5.5
   shimmer: ^1.0.0
   flutter_material_color_picker: ^1.0.3
-  sticky_headers: "^0.1.8"
+  sticky_headers: ^0.1.8
   flutter_circular_chart: ^0.1.0
+  rest_router: ^0.1.0 # My own library https://github.com/Dennis-Krasnov/Flutter-Rest-Router
 
   ## DART UTILS
   ansicolor: ^1.0.2

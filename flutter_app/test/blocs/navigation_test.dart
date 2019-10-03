@@ -89,10 +89,20 @@ void main() {
           ReportsTab(),
           DiaryTab(),
           DiaryTab((b) => b
-            ..deepLink = ListBuilder(<String>["24"])
+            ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
+              ..path = "diary"
+              ..data = 24
+            )])
           ),
           DiaryTab((b) => b
-            ..deepLink = ListBuilder(<String>["35"])
+            ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
+              ..path = "diary"
+              ..data = 35
+            )])
+            ..previousDeepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
+              ..path = "diary"
+              ..data = 24
+            )])
           ),
         ])
       );
@@ -151,13 +161,15 @@ void main() {
           ReportsTab(),
           SettingsTab(),
           SettingsTab((b) => b
-            ..deepLink = ListBuilder(<String>[Routes.generalSettings])
+            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "general")])
           ),
           SettingsTab((b) => b
-            ..deepLink = ListBuilder(<String>[Routes.themeSettings])
+            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "theme")])
+            ..previousDeepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "general")])
           ),
           SettingsTab((b) => b
-            ..deepLink = ListBuilder(<String>[Routes.diarySettings])
+            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "diary")])
+            ..previousDeepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "theme")])
           ),
         ])
       );

@@ -39,9 +39,9 @@ abstract class NavigateToDiary implements NavigationEvent, Built<NavigateToDiary
 
   /// Convenience constructor for diary on [date].
   factory NavigateToDiary.day(int date) => NavigateToDiary((b) => b
-    ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink((b) => b
+    ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
       ..path = "diary"
-      ..data = date.toString() // TODO: generics
+      ..data = date
     )])
   );
 }

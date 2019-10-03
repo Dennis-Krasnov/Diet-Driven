@@ -6,12 +6,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:built_collection/built_collection.dart';
+import 'package:rest_router/parser.dart';
+import 'package:rest_router/rest_navigator.dart';
 
 import 'package:diet_driven/widgets/settings/settings.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 
-/// must be ...
+///
 class SettingsPage extends StatefulWidget {
   @override
   _SettingsPageState createState() => _SettingsPageState();
@@ -21,8 +22,17 @@ class _SettingsPageState extends State<SettingsPage> {
   /// Persists navigation across tabs.
   final navigatorKey = GlobalKey<NavigatorState>();
 
-  ///
-//  PopObserver navigatorObserver;
+  /// Profile page's navigator routes.
+  final router = Router({
+    Routes.settings: (BuildContext context, parameters) => MainSettingsPage(),
+    "${Routes.settings}/${Routes.generalSettings}": (BuildContext context, parameters) => GeneralSettingsPage(),
+    "${Routes.settings}/${Routes.diarySettings}": (BuildContext context, parameters) => DiarySettingsPage(),
+    "${Routes.settings}/${Routes.themeSettings}": (BuildContext context, parameters) => BlocProvider.value(
+      value: BlocProvider.of<UserDataBloc>(context),
+      child: ThemeSettingsPage(),
+    ),
+    // TODO: handle unknown route gracefully, don't push an arbitrary number of invalid deep link pages on top of each other...
+  }, onUnknownRouteHandler: (BuildContext context, parameters) => throw Exception('Invalid deep link: ${parameters[urlPathKey]}'));
 
   @override
   Widget build(BuildContext context) {
@@ -33,79 +43,23 @@ class _SettingsPageState extends State<SettingsPage> {
       onWillPop: () async => !await navigatorKey.currentState.maybePop(),
       child: Navigator(
         key: navigatorKey,
-        observers: [PopObserver(BlocProvider.of<NavigationBloc>(context))],
+        observers: [SettingsPopObserver(BlocProvider.of<NavigationBloc>(context))],
         initialRoute: Routes.settings,
-        onGenerateRoute: (RouteSettings settings) => generateRoute(context, settings),
+        onGenerateRoute: router.generator,
       ),
     );
   }
-
-  /// Profile page's navigator routes.
-  Route generateRoute(BuildContext context, RouteSettings settings) {
-    final bool withAnimation = settings?.arguments ?? true;
-    LoggingBloc().verbose(withAnimation.toString());
-
-    WidgetBuilder builder;
-    switch (settings.name) {
-      case Routes.settings:
-        builder = (BuildContext _) => MainSettingsPage();
-        break;
-      case "${Routes.settings}/${Routes.generalSettings}":
-        builder = (BuildContext _) => GeneralSettingsPage();
-        break;
-      case "${Routes.settings}/${Routes.diarySettings}":
-        builder = (BuildContext _) => DiarySettingsPage();
-        break;
-        // ,,,
-      case "${Routes.settings}/${Routes.themeSettings}":
-        builder = (BuildContext _) => BlocProvider.value(
-          value: BlocProvider.of<UserDataBloc>(context),
-          child: ThemeSettingsPage(),
-        );
-        break;
-        // ,,,
-      default:
-        throw Exception('Invalid deep link: ${settings.name}');
-    }
-
-    // TODO: make global navigator follow this builder pattern as well
-
-    if (withAnimation) {
-      return MaterialPageRoute<void>(builder: builder, settings: settings);
-    }
-    else {
-      return NoAnimationMaterialPageRoute<void>(builder: builder, settings: settings);
-    }
-    // TODO: debug back button!! - unmute breakpoints, document all these decisions!
-  }
 }
 
-class NoAnimationMaterialPageRoute<T> extends MaterialPageRoute<T> {
-  NoAnimationMaterialPageRoute({
-    @required WidgetBuilder builder,
-    RouteSettings settings,
-    bool maintainState = true,
-    bool fullscreenDialog = false,
-  }) : super(
-      builder: builder,
-      maintainState: maintainState,
-      settings: settings,
-      fullscreenDialog: fullscreenDialog);
-
-  @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
-    return child;
-  }
-}
-
-class PopObserver extends NavigatorObserver {
+/// Removes settings's last deep link on navigator pop.
+class SettingsPopObserver extends NavigatorObserver {
   final NavigationBloc navigationBloc;
 
-  PopObserver(this.navigationBloc);
+  SettingsPopObserver(this.navigationBloc);
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) => navigationBloc.dispatch(NavigateToSettings((b) => b
+    // The [deepLink] list must not be empty
     ..deepLink = navigationBloc.currentState.deepLink?.rebuild((b) => b..removeLast())?.toBuilder()
   ));
 }

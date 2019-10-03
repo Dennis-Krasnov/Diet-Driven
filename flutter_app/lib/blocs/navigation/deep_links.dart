@@ -51,39 +51,37 @@ abstract class PathDeepLinkBuilder implements DeepLinkBuilder, Builder<PathDeepL
 
 
 ///
-abstract class ValueDeepLink implements DeepLink, Built<ValueDeepLink, ValueDeepLinkBuilder> {
-  // TODO: generic data class
+abstract class ValueDeepLink<T> implements DeepLink, Built<ValueDeepLink<T>, ValueDeepLinkBuilder<T>> {
   ///
-  String get data;
+  T get data;
 
-  factory ValueDeepLink([void Function(ValueDeepLinkBuilder) updates]) = _$ValueDeepLink;
+  factory ValueDeepLink([void Function(ValueDeepLinkBuilder<T>) updates]) = _$ValueDeepLink<T>;
   ValueDeepLink._();
 
   @override
   String toString() => "$path/$data";
 }
 
-abstract class ValueDeepLinkBuilder implements DeepLinkBuilder, Builder<ValueDeepLink, ValueDeepLinkBuilder> {
+abstract class ValueDeepLinkBuilder<T> implements DeepLinkBuilder, Builder<ValueDeepLink<T>, ValueDeepLinkBuilder<T>> {
   @override
   String path;
 
   @override
   bool fullPage = false;
 
-  String data;
+  T data;
 
-  factory ValueDeepLinkBuilder() = _$ValueDeepLinkBuilder;
+  factory ValueDeepLinkBuilder() = _$ValueDeepLinkBuilder<T>;
   ValueDeepLinkBuilder._();
 }
 
 
 ///
-abstract class SerializedDeepLink implements DeepLink, Built<SerializedDeepLink, SerializedDeepLinkBuilder> {
-  // TODO: generic data class
+abstract class SerializedDeepLink<T> implements DeepLink, Built<SerializedDeepLink<T>, SerializedDeepLinkBuilder<T>> {
   ///
-  Object get data;
+  T get data;
 
-  factory SerializedDeepLink([void Function(SerializedDeepLinkBuilder) updates]) = _$SerializedDeepLink;
+  factory SerializedDeepLink([void Function(SerializedDeepLinkBuilder<T>) updates]) = _$SerializedDeepLink<T>;
   SerializedDeepLink._();
 
   @override
@@ -91,16 +89,16 @@ abstract class SerializedDeepLink implements DeepLink, Built<SerializedDeepLink,
 }
 
 
-abstract class SerializedDeepLinkBuilder implements DeepLinkBuilder, Builder<SerializedDeepLink, SerializedDeepLinkBuilder> {
+abstract class SerializedDeepLinkBuilder<T> implements DeepLinkBuilder, Builder<SerializedDeepLink<T>, SerializedDeepLinkBuilder<T>> {
   @override
   String path;
 
   @override
   bool fullPage = false;
 
-  Object data;
+  T data;
 
-  factory SerializedDeepLinkBuilder() = _$SerializedDeepLinkBuilder;
+  factory SerializedDeepLinkBuilder() = _$SerializedDeepLinkBuilder<T>;
   SerializedDeepLinkBuilder._();
 }
 

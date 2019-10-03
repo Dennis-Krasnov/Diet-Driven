@@ -116,16 +116,17 @@ class _$PathDeepLinkBuilder extends PathDeepLinkBuilder {
   }
 }
 
-class _$ValueDeepLink extends ValueDeepLink {
+class _$ValueDeepLink<T> extends ValueDeepLink<T> {
   @override
-  final String data;
+  final T data;
   @override
   final String path;
   @override
   final bool fullPage;
 
-  factory _$ValueDeepLink([void Function(ValueDeepLinkBuilder) updates]) =>
-      (new ValueDeepLinkBuilder()..update(updates)).build() as _$ValueDeepLink;
+  factory _$ValueDeepLink([void Function(ValueDeepLinkBuilder<T>) updates]) =>
+      (new ValueDeepLinkBuilder<T>()..update(updates)).build()
+          as _$ValueDeepLink<T>;
 
   _$ValueDeepLink._({this.data, this.path, this.fullPage}) : super._() {
     if (data == null) {
@@ -137,15 +138,18 @@ class _$ValueDeepLink extends ValueDeepLink {
     if (fullPage == null) {
       throw new BuiltValueNullFieldError('ValueDeepLink', 'fullPage');
     }
+    if (T == dynamic) {
+      throw new BuiltValueMissingGenericsError('ValueDeepLink', 'T');
+    }
   }
 
   @override
-  ValueDeepLink rebuild(void Function(ValueDeepLinkBuilder) updates) =>
+  ValueDeepLink<T> rebuild(void Function(ValueDeepLinkBuilder<T>) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$ValueDeepLinkBuilder toBuilder() =>
-      new _$ValueDeepLinkBuilder()..replace(this);
+  _$ValueDeepLinkBuilder<T> toBuilder() =>
+      new _$ValueDeepLinkBuilder<T>()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -163,17 +167,17 @@ class _$ValueDeepLink extends ValueDeepLink {
   }
 }
 
-class _$ValueDeepLinkBuilder extends ValueDeepLinkBuilder {
-  _$ValueDeepLink _$v;
+class _$ValueDeepLinkBuilder<T> extends ValueDeepLinkBuilder<T> {
+  _$ValueDeepLink<T> _$v;
 
   @override
-  String get data {
+  T get data {
     _$this;
     return super.data;
   }
 
   @override
-  set data(String data) {
+  set data(T data) {
     _$this;
     super.data = data;
   }
@@ -204,7 +208,7 @@ class _$ValueDeepLinkBuilder extends ValueDeepLinkBuilder {
 
   _$ValueDeepLinkBuilder() : super._();
 
-  ValueDeepLinkBuilder get _$this {
+  ValueDeepLinkBuilder<T> get _$this {
     if (_$v != null) {
       super.data = _$v.data;
       super.path = _$v.path;
@@ -215,39 +219,39 @@ class _$ValueDeepLinkBuilder extends ValueDeepLinkBuilder {
   }
 
   @override
-  void replace(covariant ValueDeepLink other) {
+  void replace(covariant ValueDeepLink<T> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ValueDeepLink;
+    _$v = other as _$ValueDeepLink<T>;
   }
 
   @override
-  void update(void Function(ValueDeepLinkBuilder) updates) {
+  void update(void Function(ValueDeepLinkBuilder<T>) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ValueDeepLink build() {
+  _$ValueDeepLink<T> build() {
     final _$result = _$v ??
-        new _$ValueDeepLink._(data: data, path: path, fullPage: fullPage);
+        new _$ValueDeepLink<T>._(data: data, path: path, fullPage: fullPage);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$SerializedDeepLink extends SerializedDeepLink {
+class _$SerializedDeepLink<T> extends SerializedDeepLink<T> {
   @override
-  final Object data;
+  final T data;
   @override
   final String path;
   @override
   final bool fullPage;
 
   factory _$SerializedDeepLink(
-          [void Function(SerializedDeepLinkBuilder) updates]) =>
-      (new SerializedDeepLinkBuilder()..update(updates)).build()
-          as _$SerializedDeepLink;
+          [void Function(SerializedDeepLinkBuilder<T>) updates]) =>
+      (new SerializedDeepLinkBuilder<T>()..update(updates)).build()
+          as _$SerializedDeepLink<T>;
 
   _$SerializedDeepLink._({this.data, this.path, this.fullPage}) : super._() {
     if (data == null) {
@@ -259,16 +263,19 @@ class _$SerializedDeepLink extends SerializedDeepLink {
     if (fullPage == null) {
       throw new BuiltValueNullFieldError('SerializedDeepLink', 'fullPage');
     }
+    if (T == dynamic) {
+      throw new BuiltValueMissingGenericsError('SerializedDeepLink', 'T');
+    }
   }
 
   @override
-  SerializedDeepLink rebuild(
-          void Function(SerializedDeepLinkBuilder) updates) =>
+  SerializedDeepLink<T> rebuild(
+          void Function(SerializedDeepLinkBuilder<T>) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$SerializedDeepLinkBuilder toBuilder() =>
-      new _$SerializedDeepLinkBuilder()..replace(this);
+  _$SerializedDeepLinkBuilder<T> toBuilder() =>
+      new _$SerializedDeepLinkBuilder<T>()..replace(this);
 
   @override
   bool operator ==(Object other) {
@@ -286,17 +293,17 @@ class _$SerializedDeepLink extends SerializedDeepLink {
   }
 }
 
-class _$SerializedDeepLinkBuilder extends SerializedDeepLinkBuilder {
-  _$SerializedDeepLink _$v;
+class _$SerializedDeepLinkBuilder<T> extends SerializedDeepLinkBuilder<T> {
+  _$SerializedDeepLink<T> _$v;
 
   @override
-  Object get data {
+  T get data {
     _$this;
     return super.data;
   }
 
   @override
-  set data(Object data) {
+  set data(T data) {
     _$this;
     super.data = data;
   }
@@ -327,7 +334,7 @@ class _$SerializedDeepLinkBuilder extends SerializedDeepLinkBuilder {
 
   _$SerializedDeepLinkBuilder() : super._();
 
-  SerializedDeepLinkBuilder get _$this {
+  SerializedDeepLinkBuilder<T> get _$this {
     if (_$v != null) {
       super.data = _$v.data;
       super.path = _$v.path;
@@ -338,22 +345,23 @@ class _$SerializedDeepLinkBuilder extends SerializedDeepLinkBuilder {
   }
 
   @override
-  void replace(covariant SerializedDeepLink other) {
+  void replace(covariant SerializedDeepLink<T> other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$SerializedDeepLink;
+    _$v = other as _$SerializedDeepLink<T>;
   }
 
   @override
-  void update(void Function(SerializedDeepLinkBuilder) updates) {
+  void update(void Function(SerializedDeepLinkBuilder<T>) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$SerializedDeepLink build() {
+  _$SerializedDeepLink<T> build() {
     final _$result = _$v ??
-        new _$SerializedDeepLink._(data: data, path: path, fullPage: fullPage);
+        new _$SerializedDeepLink<T>._(
+            data: data, path: path, fullPage: fullPage);
     replace(_$result);
     return _$result;
   }

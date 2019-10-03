@@ -41,7 +41,7 @@ class ConfigurationRepository {
 
     return RemoteConfiguration((b) => b
       ..liveConfiguration = true
-      ..bonus = config.getInt("bonus")
+      ..bonus = config.getInt("landing_page_version") // OPTIMIZE
     );
   });
 
@@ -51,4 +51,4 @@ class ConfigurationRepository {
   /// Streams [ConnectivityResult] using `connectivity` library.
   Stream<ConnectivityResult> connectivity$() => _connectivity.onConnectivityChanged;
 }
-// TODO: use built classes for package info and connectivity result!
+// TODO: use built classes for package info and connectivity result (easier to test)
