@@ -58,7 +58,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           settingsRepository.defaultSettings$(),
           Observable(settingsRepository.userSettings$(auth.uid)).startWith(null),
           Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases).map(...) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
-          (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
+          (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => IngressUserDataArrived((b) => b
             ..authentication = auth.toBuilder()
             ..userDocument = userDocument.toBuilder()
             ..settings = _mergeSettings(userSettings, defaultSettings).toBuilder()
@@ -67,7 +67,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
             ..subscription = subscriptionType
           ),
         ))
-        .timeout(Duration(seconds: 10)) // TO TEST (manually)
         // Unrecoverable failure
         .onErrorReturnWith((dynamic error) => UserDataError((b) => b..error = error))
         .distinct();
@@ -76,7 +75,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       _userDataEventSubscription ??= Observable(MergeStream([onboard$, dataArrival$])).listen(dispatch);
     }
 
-    if (event is RemoteUserDataArrived) {
+    if (event is IngressUserDataArrived) {
       yield UserDataLoaded((b) => b
         ..authentication = event.authentication.toBuilder()
         ..userDocument = event.userDocument.toBuilder()

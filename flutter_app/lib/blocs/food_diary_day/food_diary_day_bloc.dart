@@ -10,25 +10,27 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/food_diary_day/food_diary_day.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repositories/repositories.dart';
 
 class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
   /// All food diary days and diets.
   final FoodDiaryBloc foodDiaryBloc;
+
+  final DiaryRepository diaryRepository;
 
   /// Food diary day's date.
   final int date;
 
   StreamSubscription<FoodDiaryDayEvent> _foodDiaryDayEventSubscription;
 
-  FoodDiaryDayBloc({@required this.foodDiaryBloc, @required this.date})
-    : assert(foodDiaryBloc != null), assert(date != null);
+  FoodDiaryDayBloc({@required this.foodDiaryBloc, @required this.diaryRepository, @required this.date})
+    : assert(foodDiaryBloc != null), assert(diaryRepository != null), assert(date != null);
 
   @override
-  FoodDiaryDayState get initialState => FoodDiaryDayUninitialized(); // TOTEST: ensure initialized when bloc is created
+  FoodDiaryDayState get initialState => FoodDiaryDayUninitialized();
 
   @override
   void dispose() {
@@ -44,7 +46,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
 
       _foodDiaryDayEventSubscription = Observable<FoodDiaryState>(foodDiaryBloc.state)
         .whereType<FoodDiaryLoaded>()
-        .map<FoodDiaryDayEvent>((loadedDiaryState) => RemoteFoodDiaryDayArrived((b) => b
+        .map<FoodDiaryDayEvent>((loadedDiaryState) => IngressFoodDiaryDayArrived((b) => b
           ..foodDiaryDay = loadedDiaryState.diaryDays[date]?.toBuilder()
           ..diet = loadedDiaryState.dietForDate(date).toBuilder()
         ))
@@ -52,11 +54,14 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
         .listen(dispatch);
     }
 
-    if (event is RemoteFoodDiaryDayArrived) {
+    if (event is IngressFoodDiaryDayArrived) {
       yield FoodDiaryDayLoaded((b) => b
         ..foodDiaryDay = event.foodDiaryDay?.toBuilder()
         ..diet = event.diet.toBuilder()
       );
+
+      // TODO: remove slightly differently coloured empty fr states, this would show 0 vs null !!!
+      LoggingBloc().info("Food diary day #$date loaded with ${event?.foodDiaryDay?.meals?.expand((meal) => meal.foodRecords)?.length} food records");
     }
 
     if (event is AddFoodRecords) {
@@ -68,9 +73,11 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
         ..date = date
         ..mealIndex = event.mealIndex
         ..foodRecords = event.foodRecords.toBuilder()
+        ..completer = event.completer
       ));
     }
 
+    // TODO: disable these food records from further action; finally block removes them from disabled list
     if (event is ReplaceFoodRecord) {
       // Food diary day has no error state
       assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
@@ -79,7 +86,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
         final diaryDayBuilder = _foodDiaryDay.toBuilder()
           ..replaceFoodRecord(event.oldRecord, event.newRecord);
 
-        await foodDiaryBloc.diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
+        await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
 
         LoggingBloc().info("Updated ${event.oldRecord.foodName} on $date");
         event?.completer?.complete();
@@ -89,8 +96,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       }
     }
 
-    // TODO: disable these food records from further action
-    // TODO: cloud function deletes document if no food records left!
+    // TODO: disable these food records from further action; finally block removes them from disabled list
     if (event is DeleteFoodRecords) {
       // Food diary day has no error state
       assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
@@ -99,7 +105,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
         final diaryDayBuilder = _foodDiaryDay.toBuilder()
           ..deleteFoodRecords(event.foodRecords);
 
-        await foodDiaryBloc.diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
+        await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
 
         LoggingBloc().info("Deleted ${event.foodRecords.length} foods from $date");
         event?.completer?.complete();

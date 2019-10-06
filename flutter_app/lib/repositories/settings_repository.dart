@@ -9,14 +9,14 @@ import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/providers/firestore_paths.dart';
 import 'package:diet_driven/providers/firestore_serializer.dart';
 
-/// Data access object for user settings.
+/// Data access object for user settings using `cloud_firestore` library.
 class SettingsRepository {
   final Firestore _firestore;
 
   // Dependency injection
   SettingsRepository({Firestore firestore}) : _firestore = firestore ?? Firestore.instance;
 
-  /// Streams global default [Settings] using `cloud_firestore` library.
+  /// Streams global default [Settings].
   ///
   /// Returns empty stream if Firestore document doesn't exist.
   /// Throws [DeserializationError] if Firestore data is corrupt.
@@ -25,7 +25,7 @@ class SettingsRepository {
     return docRef.snapshots().transform(deserializeDocumentTransform<Settings>());
   }
 
-  /// Streams [userId]'s custom [Settings] using `cloud_firestore` library.
+  /// Streams [userId]'s custom [Settings].
   ///
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns empty stream if Firestore document doesn't exist.
@@ -37,7 +37,7 @@ class SettingsRepository {
     return docRef.snapshots().transform(deserializeDocumentTransform<Settings>());
   }
 
-  /// Replaces [userId]'s [Settings] using `cloud_firestore` library.
+  /// Replaces [userId]'s [Settings].
   /// `Future.sync()` runs future immediately to enable proper exception handling.
   ///
   /// Cloud functions triggers on edit:

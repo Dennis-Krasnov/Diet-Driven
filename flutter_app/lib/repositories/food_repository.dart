@@ -10,7 +10,7 @@ import 'package:cloud_functions/cloud_functions.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/providers/cloud_functions.dart';
 
-/// Data access object for food search and nutritional information.
+/// Data access object for food search and nutritional information using `cloud_functions` library.
 class FoodRepository {
   final CloudFunctions _cloudFunctions;
 
@@ -45,4 +45,11 @@ class FoodRepository {
   // TODO: natural language processing using edamam / fat secret
 
   // TODO: by UPC barcode ...
+
+  /// TODO ???
+  Future<BuiltList<FoodRecord>> recentFoods(String userId) async {
+    assert(userId != null && userId.isNotEmpty);
+
+    return BuiltList(); // TODO
+  }
 }

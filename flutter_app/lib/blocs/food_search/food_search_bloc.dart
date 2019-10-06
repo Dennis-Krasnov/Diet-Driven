@@ -6,26 +6,23 @@
 
 import 'dart:async';
 
-import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/repositories/food_repository.dart';
-import 'package:meta/meta.dart';
-import 'package:built_collection/built_collection.dart';
 import 'package:bloc/bloc.dart';
+import 'package:built_collection/built_collection.dart';
+import 'package:meta/meta.dart';
+
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/repositories/food_repository.dart';
 
 ///
 class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
-  /// All food diary days and diets.
-  final FoodDiaryBloc foodDiaryBloc;
-
-  ///
   final FoodRepository foodRepository;
 
   /// Pre-fill search box with initial text.
+  /// Empty string by default.
   final String initialQuery;
 
-  FoodSearchBloc({@required this.foodDiaryBloc, @required this.foodRepository, this.initialQuery = ""})
-    : assert(foodDiaryBloc != null), assert(foodRepository != null);
+  FoodSearchBloc({@required this.foodRepository, this.initialQuery = ""})
+    : assert(foodRepository != null);
 
   @override
   FoodSearchState get initialState => FoodSearchUninitialized((b) => b
@@ -37,15 +34,16 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
   @override
   Stream<FoodSearchState> mapEventToState(FoodSearchEvent event) async* {
     if (event is SuggestFoodRecords) {
+      final suggestions = await foodRepository.recentFoods("123"); // TODO: take userId as constructor parameter
+
       yield FoodSearchLoaded((b) => b
-        // Carry over query only if started from uninitialized state
+        // Carry over only if started from uninitialized state
         // Suggesting foods from loaded state clears the query
         ..query = currentState is FoodSearchUninitialized ? currentState.query : ""
         // Load suggested results based on recently logged foods
-//        ..results = foodDiaryBloc.recentFoods.toBuilder() FIXME: no longer valid!
-        ..results = null
-        // Carry over query only if started from uninitialized state (started searching before suggestions were loaded)
-        // Suggesting foods from loaded state also clears queryChanged
+        ..results = suggestions.toBuilder()
+        // Carry over only if started from uninitialized state and started typing before suggestions were loaded
+        // Suggesting foods from loaded state clears queryChanged
         ..queryChanged = currentState is FoodSearchUninitialized && currentState.queryChanged
         ..loading = false
       );
@@ -56,6 +54,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
       yield currentState.rebuild((b) => b
         ..query = event.query
         ..queryChanged = true
+        // TODO: loading = false (only if loaded state) ???
       );
     }
 
@@ -76,11 +75,12 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
 
       try {
         final searchResult = await foodRepository.searchFoodsByQuery(loadedState.query);
-        // TODO: also keep track of last loaded page
+        // TODO: also keep track of last loaded page for infinite scroll
 
         // Results arrived
         yield loadedState.rebuild((b) => b
-          ..results = searchResult.foods.toBuilder() // TODO: only add to list if arrived page is one page higher than current max
+          // TODO: only add to list if arrived page is one page higher than current max (if request came very slowly, another page already loaded)
+          ..results = searchResult.foods.toBuilder()
           ..queryChanged = false
           ..loading = false
         );

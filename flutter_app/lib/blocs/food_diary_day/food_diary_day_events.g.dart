@@ -65,35 +65,35 @@ class InitFoodDiaryDayBuilder
   }
 }
 
-class _$RemoteFoodDiaryDayArrived extends RemoteFoodDiaryDayArrived {
+class _$IngressFoodDiaryDayArrived extends IngressFoodDiaryDayArrived {
   @override
   final FoodDiaryDay foodDiaryDay;
   @override
   final Diet diet;
 
-  factory _$RemoteFoodDiaryDayArrived(
-          [void Function(RemoteFoodDiaryDayArrivedBuilder) updates]) =>
-      (new RemoteFoodDiaryDayArrivedBuilder()..update(updates)).build();
+  factory _$IngressFoodDiaryDayArrived(
+          [void Function(IngressFoodDiaryDayArrivedBuilder) updates]) =>
+      (new IngressFoodDiaryDayArrivedBuilder()..update(updates)).build();
 
-  _$RemoteFoodDiaryDayArrived._({this.foodDiaryDay, this.diet}) : super._() {
+  _$IngressFoodDiaryDayArrived._({this.foodDiaryDay, this.diet}) : super._() {
     if (diet == null) {
-      throw new BuiltValueNullFieldError('RemoteFoodDiaryDayArrived', 'diet');
+      throw new BuiltValueNullFieldError('IngressFoodDiaryDayArrived', 'diet');
     }
   }
 
   @override
-  RemoteFoodDiaryDayArrived rebuild(
-          void Function(RemoteFoodDiaryDayArrivedBuilder) updates) =>
+  IngressFoodDiaryDayArrived rebuild(
+          void Function(IngressFoodDiaryDayArrivedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  RemoteFoodDiaryDayArrivedBuilder toBuilder() =>
-      new RemoteFoodDiaryDayArrivedBuilder()..replace(this);
+  IngressFoodDiaryDayArrivedBuilder toBuilder() =>
+      new IngressFoodDiaryDayArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is RemoteFoodDiaryDayArrived &&
+    return other is IngressFoodDiaryDayArrived &&
         foodDiaryDay == other.foodDiaryDay &&
         diet == other.diet;
   }
@@ -105,17 +105,17 @@ class _$RemoteFoodDiaryDayArrived extends RemoteFoodDiaryDayArrived {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('RemoteFoodDiaryDayArrived')
+    return (newBuiltValueToStringHelper('IngressFoodDiaryDayArrived')
           ..add('foodDiaryDay', foodDiaryDay)
           ..add('diet', diet))
         .toString();
   }
 }
 
-class RemoteFoodDiaryDayArrivedBuilder
+class IngressFoodDiaryDayArrivedBuilder
     implements
-        Builder<RemoteFoodDiaryDayArrived, RemoteFoodDiaryDayArrivedBuilder> {
-  _$RemoteFoodDiaryDayArrived _$v;
+        Builder<IngressFoodDiaryDayArrived, IngressFoodDiaryDayArrivedBuilder> {
+  _$IngressFoodDiaryDayArrived _$v;
 
   FoodDiaryDayBuilder _foodDiaryDay;
   FoodDiaryDayBuilder get foodDiaryDay =>
@@ -127,9 +127,9 @@ class RemoteFoodDiaryDayArrivedBuilder
   DietBuilder get diet => _$this._diet ??= new DietBuilder();
   set diet(DietBuilder diet) => _$this._diet = diet;
 
-  RemoteFoodDiaryDayArrivedBuilder();
+  IngressFoodDiaryDayArrivedBuilder();
 
-  RemoteFoodDiaryDayArrivedBuilder get _$this {
+  IngressFoodDiaryDayArrivedBuilder get _$this {
     if (_$v != null) {
       _foodDiaryDay = _$v.foodDiaryDay?.toBuilder();
       _diet = _$v.diet?.toBuilder();
@@ -139,24 +139,24 @@ class RemoteFoodDiaryDayArrivedBuilder
   }
 
   @override
-  void replace(RemoteFoodDiaryDayArrived other) {
+  void replace(IngressFoodDiaryDayArrived other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$RemoteFoodDiaryDayArrived;
+    _$v = other as _$IngressFoodDiaryDayArrived;
   }
 
   @override
-  void update(void Function(RemoteFoodDiaryDayArrivedBuilder) updates) {
+  void update(void Function(IngressFoodDiaryDayArrivedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$RemoteFoodDiaryDayArrived build() {
-    _$RemoteFoodDiaryDayArrived _$result;
+  _$IngressFoodDiaryDayArrived build() {
+    _$IngressFoodDiaryDayArrived _$result;
     try {
       _$result = _$v ??
-          new _$RemoteFoodDiaryDayArrived._(
+          new _$IngressFoodDiaryDayArrived._(
               foodDiaryDay: _foodDiaryDay?.build(), diet: diet.build());
     } catch (_) {
       String _$failedField;
@@ -167,7 +167,7 @@ class RemoteFoodDiaryDayArrivedBuilder
         diet.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'RemoteFoodDiaryDayArrived', _$failedField, e.toString());
+            'IngressFoodDiaryDayArrived', _$failedField, e.toString());
       }
       rethrow;
     }

@@ -5,8 +5,6 @@
  */
 
 import 'package:built_value/built_value.dart';
-import 'package:connectivity/connectivity.dart' show ConnectivityResult;
-import 'package:package_info/package_info.dart' show PackageInfo;
 
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
@@ -33,10 +31,10 @@ abstract class ConfigurationLoaded implements ConfigurationState, Built<Configur
   RemoteConfiguration get remoteConfiguration;
 
   /// App information.
-  PackageInfo get packageInfo;
+  PackageInformation get packageInfo;
 
   /// Internet connection status.
-  ConnectivityResult get connectivity;
+  ConnectivityStatus get connectivity;
 
   factory ConfigurationLoaded([void Function(ConfigurationLoadedBuilder b)]) = _$ConfigurationLoaded;
   ConfigurationLoaded._();

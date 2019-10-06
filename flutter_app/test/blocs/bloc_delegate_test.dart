@@ -13,27 +13,24 @@ import 'package:diet_driven/repositories/repositories.dart';
 import '../test_utils.dart';
 
 void main() {
-  BlocSupervisor.delegate = LoggingBlocDelegate();
+  LoggingBlocDelegate sut;
 
   /// Mocks
-  AnalyticsRepository analyticsRepository;
-  UserDataBloc userDataBloc;
+  // TODO: mock logging repository
 
   /// Data
-  NavigationBloc navigationBloc;
+//  NavigationBloc navigationBloc;
+  // TODO: pick simplest bloc with easy transitions
 
   /// Configuration
   setUp(() {
-    analyticsRepository = MockAnalyticsRepository();
-    userDataBloc = MockUserDataBloc();
+    // repo = mockLoggingRepo()
 
-    navigationBloc = NavigationBloc(
-      analyticsRepository: analyticsRepository,
-      userDataBloc: userDataBloc
-    );
+    // bloc = realBloc();
+
+    sut = LoggingBlocDelegate();
+
+    // ...
+    BlocSupervisor.delegate = sut; // TODO: BlocSupervisor.delegate = Logging.blocDelegate !!!! - test in separate library!, follow similar template!
   });
-
-  // TODO: expect LoggingBloc() to have certain state!
-  // TODO: clear LoggingBloc() events after each test, or match end of stream only!
-  // TODO: do LoggingBloc and NavigationBloc tests first!
 }

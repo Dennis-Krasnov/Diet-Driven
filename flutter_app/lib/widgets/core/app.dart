@@ -17,7 +17,9 @@ import 'package:diet_driven/widgets/message/message.dart';
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // FIXME: this get called twice!?
+    // Fixme: called twice....
+    LoggingBloc().verbose("");
+    LoggingBloc().verbose("======================");
     LoggingBloc().verbose("App started");
 
     return BlocBuilder<ConfigurationBloc, ConfigurationState>(

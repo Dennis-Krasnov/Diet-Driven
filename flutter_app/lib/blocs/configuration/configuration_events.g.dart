@@ -65,48 +65,48 @@ class InitConfigurationBuilder
   }
 }
 
-class _$RemoteConfigurationArrived extends RemoteConfigurationArrived {
+class _$IngressConfigurationArrived extends IngressConfigurationArrived {
   @override
   final RemoteConfiguration remoteConfiguration;
   @override
-  final PackageInfo packageInfo;
+  final PackageInformation packageInfo;
   @override
-  final ConnectivityResult connectivity;
+  final ConnectivityStatus connectivity;
 
-  factory _$RemoteConfigurationArrived(
-          [void Function(RemoteConfigurationArrivedBuilder) updates]) =>
-      (new RemoteConfigurationArrivedBuilder()..update(updates)).build();
+  factory _$IngressConfigurationArrived(
+          [void Function(IngressConfigurationArrivedBuilder) updates]) =>
+      (new IngressConfigurationArrivedBuilder()..update(updates)).build();
 
-  _$RemoteConfigurationArrived._(
+  _$IngressConfigurationArrived._(
       {this.remoteConfiguration, this.packageInfo, this.connectivity})
       : super._() {
     if (remoteConfiguration == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteConfigurationArrived', 'remoteConfiguration');
+          'IngressConfigurationArrived', 'remoteConfiguration');
     }
     if (packageInfo == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteConfigurationArrived', 'packageInfo');
+          'IngressConfigurationArrived', 'packageInfo');
     }
     if (connectivity == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteConfigurationArrived', 'connectivity');
+          'IngressConfigurationArrived', 'connectivity');
     }
   }
 
   @override
-  RemoteConfigurationArrived rebuild(
-          void Function(RemoteConfigurationArrivedBuilder) updates) =>
+  IngressConfigurationArrived rebuild(
+          void Function(IngressConfigurationArrivedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  RemoteConfigurationArrivedBuilder toBuilder() =>
-      new RemoteConfigurationArrivedBuilder()..replace(this);
+  IngressConfigurationArrivedBuilder toBuilder() =>
+      new IngressConfigurationArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is RemoteConfigurationArrived &&
+    return other is IngressConfigurationArrived &&
         remoteConfiguration == other.remoteConfiguration &&
         packageInfo == other.packageInfo &&
         connectivity == other.connectivity;
@@ -121,7 +121,7 @@ class _$RemoteConfigurationArrived extends RemoteConfigurationArrived {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('RemoteConfigurationArrived')
+    return (newBuiltValueToStringHelper('IngressConfigurationArrived')
           ..add('remoteConfiguration', remoteConfiguration)
           ..add('packageInfo', packageInfo)
           ..add('connectivity', connectivity))
@@ -129,10 +129,11 @@ class _$RemoteConfigurationArrived extends RemoteConfigurationArrived {
   }
 }
 
-class RemoteConfigurationArrivedBuilder
+class IngressConfigurationArrivedBuilder
     implements
-        Builder<RemoteConfigurationArrived, RemoteConfigurationArrivedBuilder> {
-  _$RemoteConfigurationArrived _$v;
+        Builder<IngressConfigurationArrived,
+            IngressConfigurationArrivedBuilder> {
+  _$IngressConfigurationArrived _$v;
 
   RemoteConfigurationBuilder _remoteConfiguration;
   RemoteConfigurationBuilder get remoteConfiguration =>
@@ -140,21 +141,23 @@ class RemoteConfigurationArrivedBuilder
   set remoteConfiguration(RemoteConfigurationBuilder remoteConfiguration) =>
       _$this._remoteConfiguration = remoteConfiguration;
 
-  PackageInfo _packageInfo;
-  PackageInfo get packageInfo => _$this._packageInfo;
-  set packageInfo(PackageInfo packageInfo) => _$this._packageInfo = packageInfo;
+  PackageInformationBuilder _packageInfo;
+  PackageInformationBuilder get packageInfo =>
+      _$this._packageInfo ??= new PackageInformationBuilder();
+  set packageInfo(PackageInformationBuilder packageInfo) =>
+      _$this._packageInfo = packageInfo;
 
-  ConnectivityResult _connectivity;
-  ConnectivityResult get connectivity => _$this._connectivity;
-  set connectivity(ConnectivityResult connectivity) =>
+  ConnectivityStatus _connectivity;
+  ConnectivityStatus get connectivity => _$this._connectivity;
+  set connectivity(ConnectivityStatus connectivity) =>
       _$this._connectivity = connectivity;
 
-  RemoteConfigurationArrivedBuilder();
+  IngressConfigurationArrivedBuilder();
 
-  RemoteConfigurationArrivedBuilder get _$this {
+  IngressConfigurationArrivedBuilder get _$this {
     if (_$v != null) {
       _remoteConfiguration = _$v.remoteConfiguration?.toBuilder();
-      _packageInfo = _$v.packageInfo;
+      _packageInfo = _$v.packageInfo?.toBuilder();
       _connectivity = _$v.connectivity;
       _$v = null;
     }
@@ -162,35 +165,37 @@ class RemoteConfigurationArrivedBuilder
   }
 
   @override
-  void replace(RemoteConfigurationArrived other) {
+  void replace(IngressConfigurationArrived other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$RemoteConfigurationArrived;
+    _$v = other as _$IngressConfigurationArrived;
   }
 
   @override
-  void update(void Function(RemoteConfigurationArrivedBuilder) updates) {
+  void update(void Function(IngressConfigurationArrivedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$RemoteConfigurationArrived build() {
-    _$RemoteConfigurationArrived _$result;
+  _$IngressConfigurationArrived build() {
+    _$IngressConfigurationArrived _$result;
     try {
       _$result = _$v ??
-          new _$RemoteConfigurationArrived._(
+          new _$IngressConfigurationArrived._(
               remoteConfiguration: remoteConfiguration.build(),
-              packageInfo: packageInfo,
+              packageInfo: packageInfo.build(),
               connectivity: connectivity);
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'remoteConfiguration';
         remoteConfiguration.build();
+        _$failedField = 'packageInfo';
+        packageInfo.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'RemoteConfigurationArrived', _$failedField, e.toString());
+            'IngressConfigurationArrived', _$failedField, e.toString());
       }
       rethrow;
     }

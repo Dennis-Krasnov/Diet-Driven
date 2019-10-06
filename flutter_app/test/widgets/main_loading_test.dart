@@ -10,51 +10,51 @@ import 'package:flutter_test/flutter_test.dart';
 import '../test_utils.dart';
 
 void main() {
-  UserRepository userRepository;
-  DiaryRepository diaryRepository;
-  FoodRepository foodRepository;
-//  AnalyticsRepository analyticsRepository;
-
-  setUp(() {
-    userRepository = MockUserRepository();
-    foodRepository = MockFoodRepository();
-    diaryRepository = MockDiaryRepository();
-  });
-
-  group("Splash page", () {
-    testWidgets("Starts off on splash screen", (WidgetTester tester) async {
-//      await tester.pumpWidget(App(
-//        userRepository: userRepository,
-//        diaryRepository: diaryRepository,
-//        foodRepository: foodRepository,
-//        analyticsRepository: AnalyticsRepository(),
-//      ));
-
-//      final messageFinder = find.text('M');
-//      expect(find.text('T'), findsOneWidget);
-//      expect(messageFinder, findsOneWidget);
-    });
-  });
-
-  group("Login page", () {
-
-  });
-
-  group("Loading page", () {
-
-  });
-
-  group("Error page", () {
-
-  });
-
-  group("Application", () {
-
-  });
-
-  group("Re-authentication", () {
-
-  });
+//  UserRepository userRepository;
+//  DiaryRepository diaryRepository;
+//  FoodRepository foodRepository;
+////  AnalyticsRepository analyticsRepository;
+//
+//  setUp(() {
+//    userRepository = MockUserRepository();
+//    foodRepository = MockFoodRepository();
+//    diaryRepository = MockDiaryRepository();
+//  });
+//
+//  group("Splash page", () {
+//    testWidgets("Starts off on splash screen", (WidgetTester tester) async {
+////      await tester.pumpWidget(App(
+////        userRepository: userRepository,
+////        diaryRepository: diaryRepository,
+////        foodRepository: foodRepository,
+////        analyticsRepository: AnalyticsRepository(),
+////      ));
+//
+////      final messageFinder = find.text('M');
+////      expect(find.text('T'), findsOneWidget);
+////      expect(messageFinder, findsOneWidget);
+//    });
+//  });
+//
+//  group("Login page", () {
+//
+//  });
+//
+//  group("Loading page", () {
+//
+//  });
+//
+//  group("Error page", () {
+//
+//  });
+//
+//  group("Application", () {
+//
+//  });
+//
+//  group("Re-authentication", () {
+//
+//  });
 }
 
 //tester.pump()

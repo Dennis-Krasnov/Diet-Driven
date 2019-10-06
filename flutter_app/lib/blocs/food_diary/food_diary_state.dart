@@ -39,5 +39,11 @@ abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded,
   Diet dietForDate(int date) => diets.lastWhere((diet) => diet.startDate <= date);
 
   factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
-  FoodDiaryLoaded._();
+
+  /// Data validation
+  FoodDiaryLoaded._() {
+    if (diets.isEmpty) {
+      throw StateError("Diets list can't be empty");
+    }
+  }
 }
