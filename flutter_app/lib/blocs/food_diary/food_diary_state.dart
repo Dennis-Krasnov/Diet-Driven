@@ -28,9 +28,6 @@ abstract class FoodDiaryFailed implements BuiltError, FoodDiaryState, Built<Food
 
 /// Food diary day switcher.
 abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
-  /// Actual date.
-  int get currentDate;
-
   /// Map from [int] daysFromEpoch to [FoodDiaryDay]s.
   BuiltMap<int, FoodDiaryDay> get diaryDays;
 
@@ -42,5 +39,11 @@ abstract class FoodDiaryLoaded implements FoodDiaryState, Built<FoodDiaryLoaded,
   Diet dietForDate(int date) => diets.lastWhere((diet) => diet.startDate <= date);
 
   factory FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder b)]) = _$FoodDiaryLoaded;
-  FoodDiaryLoaded._();
+
+  /// Data validation
+  FoodDiaryLoaded._() {
+    if (diets.isEmpty) {
+      throw StateError("Diets list can't be empty");
+    }
+  }
 }

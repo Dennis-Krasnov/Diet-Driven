@@ -63,38 +63,39 @@ class InitFoodDiaryBuilder
   }
 }
 
-class _$RemoteFoodDiaryArrived extends RemoteFoodDiaryArrived {
+class _$IngressFoodDiaryArrived extends IngressFoodDiaryArrived {
   @override
   final BuiltList<FoodDiaryDay> diaryDays;
   @override
   final BuiltList<Diet> diets;
 
-  factory _$RemoteFoodDiaryArrived(
-          [void Function(RemoteFoodDiaryArrivedBuilder) updates]) =>
-      (new RemoteFoodDiaryArrivedBuilder()..update(updates)).build();
+  factory _$IngressFoodDiaryArrived(
+          [void Function(IngressFoodDiaryArrivedBuilder) updates]) =>
+      (new IngressFoodDiaryArrivedBuilder()..update(updates)).build();
 
-  _$RemoteFoodDiaryArrived._({this.diaryDays, this.diets}) : super._() {
+  _$IngressFoodDiaryArrived._({this.diaryDays, this.diets}) : super._() {
     if (diaryDays == null) {
-      throw new BuiltValueNullFieldError('RemoteFoodDiaryArrived', 'diaryDays');
+      throw new BuiltValueNullFieldError(
+          'IngressFoodDiaryArrived', 'diaryDays');
     }
     if (diets == null) {
-      throw new BuiltValueNullFieldError('RemoteFoodDiaryArrived', 'diets');
+      throw new BuiltValueNullFieldError('IngressFoodDiaryArrived', 'diets');
     }
   }
 
   @override
-  RemoteFoodDiaryArrived rebuild(
-          void Function(RemoteFoodDiaryArrivedBuilder) updates) =>
+  IngressFoodDiaryArrived rebuild(
+          void Function(IngressFoodDiaryArrivedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  RemoteFoodDiaryArrivedBuilder toBuilder() =>
-      new RemoteFoodDiaryArrivedBuilder()..replace(this);
+  IngressFoodDiaryArrivedBuilder toBuilder() =>
+      new IngressFoodDiaryArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is RemoteFoodDiaryArrived &&
+    return other is IngressFoodDiaryArrived &&
         diaryDays == other.diaryDays &&
         diets == other.diets;
   }
@@ -106,16 +107,17 @@ class _$RemoteFoodDiaryArrived extends RemoteFoodDiaryArrived {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('RemoteFoodDiaryArrived')
+    return (newBuiltValueToStringHelper('IngressFoodDiaryArrived')
           ..add('diaryDays', diaryDays)
           ..add('diets', diets))
         .toString();
   }
 }
 
-class RemoteFoodDiaryArrivedBuilder
-    implements Builder<RemoteFoodDiaryArrived, RemoteFoodDiaryArrivedBuilder> {
-  _$RemoteFoodDiaryArrived _$v;
+class IngressFoodDiaryArrivedBuilder
+    implements
+        Builder<IngressFoodDiaryArrived, IngressFoodDiaryArrivedBuilder> {
+  _$IngressFoodDiaryArrived _$v;
 
   ListBuilder<FoodDiaryDay> _diaryDays;
   ListBuilder<FoodDiaryDay> get diaryDays =>
@@ -127,9 +129,9 @@ class RemoteFoodDiaryArrivedBuilder
   ListBuilder<Diet> get diets => _$this._diets ??= new ListBuilder<Diet>();
   set diets(ListBuilder<Diet> diets) => _$this._diets = diets;
 
-  RemoteFoodDiaryArrivedBuilder();
+  IngressFoodDiaryArrivedBuilder();
 
-  RemoteFoodDiaryArrivedBuilder get _$this {
+  IngressFoodDiaryArrivedBuilder get _$this {
     if (_$v != null) {
       _diaryDays = _$v.diaryDays?.toBuilder();
       _diets = _$v.diets?.toBuilder();
@@ -139,24 +141,24 @@ class RemoteFoodDiaryArrivedBuilder
   }
 
   @override
-  void replace(RemoteFoodDiaryArrived other) {
+  void replace(IngressFoodDiaryArrived other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$RemoteFoodDiaryArrived;
+    _$v = other as _$IngressFoodDiaryArrived;
   }
 
   @override
-  void update(void Function(RemoteFoodDiaryArrivedBuilder) updates) {
+  void update(void Function(IngressFoodDiaryArrivedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$RemoteFoodDiaryArrived build() {
-    _$RemoteFoodDiaryArrived _$result;
+  _$IngressFoodDiaryArrived build() {
+    _$IngressFoodDiaryArrived _$result;
     try {
       _$result = _$v ??
-          new _$RemoteFoodDiaryArrived._(
+          new _$IngressFoodDiaryArrived._(
               diaryDays: diaryDays.build(), diets: diets.build());
     } catch (_) {
       String _$failedField;
@@ -167,7 +169,7 @@ class RemoteFoodDiaryArrivedBuilder
         diets.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'RemoteFoodDiaryArrived', _$failedField, e.toString());
+            'IngressFoodDiaryArrived', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -263,86 +265,6 @@ class FoodDiaryErrorBuilder
   _$FoodDiaryError build() {
     final _$result =
         _$v ?? new _$FoodDiaryError._(error: error, stacktrace: stacktrace);
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$UpdateCurrentDate extends UpdateCurrentDate {
-  @override
-  final int currentDate;
-
-  factory _$UpdateCurrentDate(
-          [void Function(UpdateCurrentDateBuilder) updates]) =>
-      (new UpdateCurrentDateBuilder()..update(updates)).build();
-
-  _$UpdateCurrentDate._({this.currentDate}) : super._() {
-    if (currentDate == null) {
-      throw new BuiltValueNullFieldError('UpdateCurrentDate', 'currentDate');
-    }
-  }
-
-  @override
-  UpdateCurrentDate rebuild(void Function(UpdateCurrentDateBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  UpdateCurrentDateBuilder toBuilder() =>
-      new UpdateCurrentDateBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is UpdateCurrentDate && currentDate == other.currentDate;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, currentDate.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('UpdateCurrentDate')
-          ..add('currentDate', currentDate))
-        .toString();
-  }
-}
-
-class UpdateCurrentDateBuilder
-    implements Builder<UpdateCurrentDate, UpdateCurrentDateBuilder> {
-  _$UpdateCurrentDate _$v;
-
-  int _currentDate;
-  int get currentDate => _$this._currentDate;
-  set currentDate(int currentDate) => _$this._currentDate = currentDate;
-
-  UpdateCurrentDateBuilder();
-
-  UpdateCurrentDateBuilder get _$this {
-    if (_$v != null) {
-      _currentDate = _$v.currentDate;
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(UpdateCurrentDate other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$UpdateCurrentDate;
-  }
-
-  @override
-  void update(void Function(UpdateCurrentDateBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$UpdateCurrentDate build() {
-    final _$result = _$v ?? new _$UpdateCurrentDate._(currentDate: currentDate);
     replace(_$result);
     return _$result;
   }

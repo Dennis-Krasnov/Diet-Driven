@@ -12,3 +12,4 @@ export 'food_record_tile.dart';
 export 'manual_food_record_edit.dart';
 export 'number_form_field.dart';
 export 'nutrition_header.dart';
+export 'page_controller_date.dart';

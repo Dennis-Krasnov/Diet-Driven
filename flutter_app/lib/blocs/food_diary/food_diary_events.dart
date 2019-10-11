@@ -23,27 +23,19 @@ abstract class InitFoodDiary implements FoodDiaryEvent, Built<InitFoodDiary, Ini
 }
 
 /// Reactively updates current [diaryDays], [diets].
-abstract class RemoteFoodDiaryArrived implements FoodDiaryEvent, Built<RemoteFoodDiaryArrived, RemoteFoodDiaryArrivedBuilder> {
+abstract class IngressFoodDiaryArrived implements FoodDiaryEvent, Built<IngressFoodDiaryArrived, IngressFoodDiaryArrivedBuilder> {
   BuiltList<FoodDiaryDay> get diaryDays;
 
   BuiltList<Diet> get diets;
 
-  factory RemoteFoodDiaryArrived([void Function(RemoteFoodDiaryArrivedBuilder) updates]) = _$RemoteFoodDiaryArrived;
-  RemoteFoodDiaryArrived._();
+  factory IngressFoodDiaryArrived([void Function(IngressFoodDiaryArrivedBuilder) updates]) = _$IngressFoodDiaryArrived;
+  IngressFoodDiaryArrived._();
 }
 
 /// Throws unrecoverable exception.
 abstract class FoodDiaryError implements BuiltError, FoodDiaryEvent, Built<FoodDiaryError, FoodDiaryErrorBuilder> {
   factory FoodDiaryError([void Function(FoodDiaryErrorBuilder b)]) = _$FoodDiaryError;
   FoodDiaryError._();
-}
-
-/// Updates actual date.
-abstract class UpdateCurrentDate implements FoodDiaryEvent, Built<UpdateCurrentDate, UpdateCurrentDateBuilder> {
-  int get currentDate;
-
-  factory UpdateCurrentDate([void Function(UpdateCurrentDateBuilder) updates]) = _$UpdateCurrentDate;
-  UpdateCurrentDate._();
 }
 
 /// Adds [foodRecords] to specified [mealIndex] on [date].

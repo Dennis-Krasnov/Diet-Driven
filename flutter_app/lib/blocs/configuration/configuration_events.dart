@@ -5,9 +5,7 @@
  */
 
 import 'package:built_value/built_value.dart';
-import 'package:connectivity/connectivity.dart' show ConnectivityResult;
 import 'package:diet_driven/blocs/bloc_utils.dart';
-import 'package:package_info/package_info.dart' show PackageInfo;
 
 import 'package:diet_driven/models/models.dart';
 
@@ -22,15 +20,15 @@ abstract class InitConfiguration implements ConfigurationEvent, Built<InitConfig
 }
 
 /// Reactively updates current [remoteConfiguration], [packageInfo], [connectivity].
-abstract class RemoteConfigurationArrived implements ConfigurationEvent, Built<RemoteConfigurationArrived, RemoteConfigurationArrivedBuilder> {
+abstract class IngressConfigurationArrived implements ConfigurationEvent, Built<IngressConfigurationArrived, IngressConfigurationArrivedBuilder> {
   RemoteConfiguration get remoteConfiguration;
 
-  PackageInfo get packageInfo;
+  PackageInformation get packageInfo;
 
-  ConnectivityResult get connectivity;
+  ConnectivityStatus get connectivity;
 
-  factory RemoteConfigurationArrived([void Function(RemoteConfigurationArrivedBuilder) updates]) = _$RemoteConfigurationArrived;
-  RemoteConfigurationArrived._();
+  factory IngressConfigurationArrived([void Function(IngressConfigurationArrivedBuilder) updates]) = _$IngressConfigurationArrived;
+  IngressConfigurationArrived._();
 }
 
 /// Throws unrecoverable exception.

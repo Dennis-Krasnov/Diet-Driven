@@ -13,7 +13,6 @@ import 'package:diet_driven/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 //import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mockito/mockito.dart';
-//import 'package:package_info/package_info.dart' show PackageInfo;
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
@@ -23,6 +22,9 @@ final StreamMatcher doesNotEmit = emitsInOrder(<dynamic>[]);
 
 ///
 Duration ticks(int ticksCount, {int tickDuration = 20}) => Duration(milliseconds: ticksCount * tickDuration);
+
+///
+Future<void> delay(int ticksCount, {int tickDuration = 20}) => Future<void>.delayed(ticks(ticksCount, tickDuration: tickDuration));
 
 /// Mock repositories
 class MockAnalyticsRepository extends Mock implements AnalyticsRepository {}

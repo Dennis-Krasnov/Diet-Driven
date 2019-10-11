@@ -12,7 +12,7 @@ import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/providers/firestore_paths.dart';
 import 'package:diet_driven/providers/firestore_serializer.dart';
 
-/// Data access object for authentication and user data.
+/// Data access object for authentication and user data using `firebase_auth` library.
 class UserRepository {
   final FirebaseAuth _firebaseAuth;
   final Firestore _firestore;
@@ -21,7 +21,7 @@ class UserRepository {
   UserRepository({FirebaseAuth fbAuth, Firestore firestore})
     : _firebaseAuth = fbAuth ?? FirebaseAuth.instance, _firestore = firestore ?? Firestore.instance;
 
-  /// Streams [Authentication] authentication status using `firebase_auth` library.
+  /// Streams [Authentication] authentication status.
   ///
   /// Emits [null] if unauthenticated.
   Stream<Authentication> authStateChanged$() => _firebaseAuth.onAuthStateChanged.map((user) => user == null
@@ -35,13 +35,13 @@ class UserRepository {
       ..isEmailVerified = user.isEmailVerified
     ));
 
-  /// Signs in anonymously using `firebase_auth` library.
+  /// Signs in anonymously.
   ///
   /// Returns authenticated [FirebaseUser].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
   Future<AuthResult> signInAnonymously() => _firebaseAuth.signInAnonymously();
 
-  /// Signs in with email and password using `firebase_auth` library.
+  /// Signs in with email and password.
   ///
   /// Returns authenticated [AuthResult].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
@@ -52,7 +52,7 @@ class UserRepository {
     return _firebaseAuth.signInWithEmailAndPassword(email: email, password: password);
   }
 
-  /// Creates email-password account using `firebase_auth` library.
+  /// Creates email-password account.
   ///
   /// Returns authenticated [AuthResult].
   /// Throws [AuthException] or [PlatformException] if unsuccessful.
@@ -63,11 +63,11 @@ class UserRepository {
     return _firebaseAuth.createUserWithEmailAndPassword(email: email, password: password);
   }
 
-  /// Signs out using `firebase_auth` library.
+  /// Signs out.
   Future<void> signOut() => _firebaseAuth.signOut();
 
 
-  /// Streams [userId]'s [UserDocument] using `cloud_firestore` library.
+  /// Streams [userId]'s [UserDocument].
   ///
   /// Throws [PlatformException] if [userId] is empty.
   /// Returns empty stream if Firestore document doesn't exist.

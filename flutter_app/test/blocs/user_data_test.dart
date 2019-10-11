@@ -4,7 +4,10 @@
  * in the LICENSE file.
  */
 
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -15,7 +18,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 import '../test_utils.dart';
 
 void main() {
-  UserDataBloc userDataBloc;
+  UserDataBloc sut;
 
   /// Mocks
   UserRepository userRepository;
@@ -34,6 +37,7 @@ void main() {
     ..isEmailVerified = false
   );
 
+  // TODO: different values for user document
   final userDocument = UserDocument();
 
   final settingsLight = Settings((b) => b
@@ -55,24 +59,24 @@ void main() {
     userRepository = MockUserRepository();
     settingsRepository = MockSettingsRepository();
 
-    userDataBloc = UserDataBloc(
+    sut = UserDataBloc(
       userRepository: userRepository,
       settingsRepository: settingsRepository,
     );
   });
 
   tearDown(() {
-    userDataBloc?.dispose();
+    sut?.dispose();
   });
 
   /// Tests
-  test("Initialize properly", () {
-    expect(userDataBloc.initialState, UserDataUninitialized());
+  test("Start with initial state", () {
+    expect(sut.initialState, UserDataUninitialized());
   });
 
-  test("Fail on invalid state", () async {
+  test("Yield error state on invalid events", () async {
     expectLater(
-      userDataBloc.state,
+      sut.state,
       emitsInOrder(<dynamic>[
         UserDataUninitialized(),
         BuiltErrorMatcher("User data bloc must be loaded"),
@@ -81,28 +85,29 @@ void main() {
       ])
     );
 
-    userDataBloc.dispatch(UpdateDarkMode((b) => b
+    sut.dispatch(UpdateDarkMode((b) => b
       ..darkMode = true
     ));
-    await Future<void>.delayed(ticks(1));
 
-    userDataBloc.dispatch(UpdatePrimaryColour((b) => b
+    await delay(1);
+    sut.dispatch(UpdatePrimaryColour((b) => b
       ..colourValue = 0xffb76b01
     ));
-    await Future<void>.delayed(ticks(1));
 
-    userDataBloc.dispatch(InitUserData());
+    await delay(1);
+    sut.dispatch(InitUserData());
   });
 
-  group("React to streams", () {
-    test("Process authentication stream", () {
+  group("Reactive ingress streams", () {
+    test("Yield loaded state for valid authentication stream", () {
+      // Must be broadcast stream
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA, null, userB]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 
       expectLater(
-        userDataBloc.state,
+        sut.state,
         emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
@@ -124,30 +129,36 @@ void main() {
         ])
       );
 
-      userDataBloc.dispatch(InitUserData());
+      sut.dispatch(InitUserData());
     });
 
-    test("Process data arrival stream", () {
+    test("Yield loaded state for valid streams", () {
+      // Must be broadcast stream
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(3)),
+        Future.delayed(ticks(4)),
       ]).asBroadcastStream());
-      // TODO: different values for user document
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
-        Future.value(userDocument),
-        Future.delayed(ticks(2), () => userDocument), // Duplicate
-      ]));
-      when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromFutures([
-        Future.value(settingsLight),
-        Future.delayed(ticks(1), () => settingsDark),
-        Future.delayed(ticks(2), () => settingsDark), // Duplicate
-      ]));
+      when(userRepository.userDocument$(any)).thenAnswer((_) async* {
+        yield userDocument;
+
+        await delay(2);
+        yield userDocument;
+      });
+      when(settingsRepository.defaultSettings$()).thenAnswer((_) async* {
+        yield settingsLight;
+
+        await delay(1);
+        yield settingsDark;
+
+        await delay(2);
+        yield settingsLight;
+      });
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
       // TODO: also mock subscription arriving at different times
 
       expectLater(
-        userDataBloc.state,
+        sut.state,
         emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
@@ -167,31 +178,49 @@ void main() {
             ..userSettings = SettingsBuilder()
             ..subscription = SubscriptionType.all_access
           ),
+          // Tick #2
+          // TODO: also change user document, as it the bloc takes distinct states!
+//          UserDataLoaded((b) => b
+//            ..authentication = userA.toBuilder()
+//            ..userDocument = UserDocumentBuilder()
+//            ..settings = settingsDark.toBuilder()
+//            ..userSettings = SettingsBuilder()
+//            ..subscription = SubscriptionType.all_access
+//          ),
           // Tick #3
+          UserDataLoaded((b) => b
+            ..authentication = userA.toBuilder()
+            ..userDocument = UserDocumentBuilder()
+            ..settings = settingsLight.toBuilder()
+            ..userSettings = SettingsBuilder()
+            ..subscription = SubscriptionType.all_access
+          ),
+          // Tick #4
           UserDataUnauthenticated(),
         ])
       );
 
-      userDataBloc.dispatch(InitUserData());
+      sut.dispatch(InitUserData());
     });
 
-    test("Fail on user document error", () {
+    test("Yield error state on errorous user document stream", () {
+      // Must be broadcast stream
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(5)),
+        Future.delayed(ticks(3)),
       ]).asBroadcastStream());
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromFutures([
-        Future.value(userDocument),
-        Future.delayed(ticks(1), () => Future.error(Exception("User document failed"))), // Ends at first error
-        Future.delayed(ticks(2), () => Future.error(Exception("User document failed 2"))),
-        Future.delayed(ticks(2), () => userDocument),
-      ]));
+      when(userRepository.userDocument$(any)).thenAnswer((_) async* {
+        yield userDocument;
+
+        await delay(1);
+        throw Exception("User document failed");
+      });
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 
       expectLater(
-        userDataBloc.state,
+        sut.state,
         emitsInOrder(<dynamic>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
@@ -207,26 +236,27 @@ void main() {
         ])
       );
 
-      userDataBloc.dispatch(InitUserData());
+      sut.dispatch(InitUserData());
     });
 
-    test("Fail on settings error", () {
+    test("Yield error state on errorous default settings stream", () {
+      // Must be broadcast stream
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(5)),
+        Future.delayed(ticks(3)),
       ]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
-      when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromFutures([
-        Future.value(settingsLight),
-        Future.delayed(ticks(1), () => Future.error(Exception("Settings failed"))), // Ends at first error
-        Future.delayed(ticks(2), () => Future.error(Exception("Settings failed 2"))),
-        Future.delayed(ticks(3), () => settingsLight),
-      ]));
+      when(settingsRepository.defaultSettings$()).thenAnswer((_) async* {
+        yield settingsLight;
+
+        await delay(1);
+        throw Exception("Default settings failed");
+      });
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 
       expectLater(
-        userDataBloc.state,
+        sut.state,
         emitsInOrder(<dynamic>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
@@ -237,24 +267,27 @@ void main() {
             ..userSettings = SettingsBuilder()
             ..subscription = SubscriptionType.all_access
           ),
-          BuiltErrorMatcher("Settings failed"),
+          BuiltErrorMatcher("Default settings failed"),
           UserDataUnauthenticated(),
         ])
       );
 
-      userDataBloc.dispatch(InitUserData());
+      sut.dispatch(InitUserData());
     });
+
+    // TODO: same for user settings?!
   });
 
-  group("Merge user and default settings", () {
-    test("Exclusively use default settings", () {
+  group("UserDataBloc::_mergeSettings", () {
+    test("Merge using exclusively default settings", () {
+      // Must be broadcast stream
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
 
       expectLater(
-        userDataBloc.state,
+        sut.state,
         emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
@@ -268,10 +301,11 @@ void main() {
         ])
       );
 
-      userDataBloc.dispatch(InitUserData());
+      sut.dispatch(InitUserData());
     });
 
-    test("Use mix of user and default settings", () {
+    test("Merge using mix of user and default settings", () {
+      // Must be broadcast stream
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([Settings((b) => b
@@ -283,7 +317,7 @@ void main() {
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([settingsDark]));
 
       expectLater(
-        userDataBloc.state,
+        sut.state,
         emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
@@ -302,17 +336,18 @@ void main() {
         ])
       );
 
-      userDataBloc.dispatch(InitUserData());
+      sut.dispatch(InitUserData());
     });
 
-    test("Exclusively use user settings", () {
+    test("Merge using exclusively use user settings", () {
+      // Must be broadcast stream
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
       when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
       when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([settingsDark]));
 
       expectLater(
-        userDataBloc.state,
+        sut.state,
         emitsInOrder(<UserDataState>[
           UserDataUninitialized(),
           UserDataUnauthenticated(),
@@ -326,7 +361,7 @@ void main() {
         ])
       );
 
-      userDataBloc.dispatch(InitUserData());
+      sut.dispatch(InitUserData());
     });
   });
 }

@@ -16,11 +16,11 @@ import 'package:diet_driven/blocs/navigation/navigation.dart';
 
 /// Manages bottom navigation and deep linking.
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
-  final AnalyticsRepository analyticsRepository;
   final UserDataBloc userDataBloc;
+  final AnalyticsRepository analyticsRepository;
 
-  NavigationBloc({@required this.analyticsRepository, @required this.userDataBloc})
-    : assert(analyticsRepository != null), assert(userDataBloc != null);
+  NavigationBloc({@required this.userDataBloc, @required this.analyticsRepository})
+    : assert(userDataBloc != null), assert(analyticsRepository != null);
 
   @override
   NavigationState get initialState => NavigationUninitialized();
@@ -28,6 +28,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
   @override
   Stream<NavigationState> mapEventToState(NavigationEvent event) async* {
     if (event is InitNavigation) {
+      // Navigation has no error state
       assert(currentState is NavigationUninitialized);
 
       // Go to default page if navigation bloc hasn't yet been initialized

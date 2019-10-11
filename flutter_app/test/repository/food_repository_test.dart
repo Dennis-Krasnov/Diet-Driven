@@ -4,8 +4,6 @@
  * in the LICENSE file.
  */
 
-import 'dart:async';
-
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_functions/cloud_functions.dart';
@@ -44,13 +42,13 @@ void main() {
   });
 
   /// Tests
-  group("Search foods", () {
-    test("Succesfully search", () async {
+  group("Food search", () {
+    test("Search food records", () async {
       final result = MockHttpsCallableResult();
       when<dynamic>(result.data).thenReturn(jsonSerializers.serialize(expectedSearchResult));
 
       final callable = MockHttpCallable();
-      when(callable.call(any)).thenAnswer((_) => Future.value(result));
+      when(callable.call(any)).thenAnswer((_) async => result);
 
       when(cloudFunctions.getHttpsCallable(functionName: anyNamed("functionName"))).thenReturn(callable);
 
@@ -59,7 +57,8 @@ void main() {
       verify(callable(<String, dynamic>{"query": "apple"})).called(1);
     });
 
-    test("Fail on search error", () {
+    test("Throw exception on errorous search cloud function call", () {
+      // TODO: create fake, always throws https://pub.dev/packages/mockito, put in test utils
       final callable = MockHttpCallable();
       when(callable.call(any)).thenThrow(eventFailedException);
 
@@ -71,13 +70,13 @@ void main() {
     });
   });
 
-  group("Fetch autocomplete suggestions", () {
-    test("Succesfully suggest", () async {
+  group("Autocomplete suggestions", () {
+    test("Suggest food records", () async {
       final result = MockHttpsCallableResult();
       when<dynamic>(result.data).thenReturn(["Apples", "Apple pie"]);
 
       final callable = MockHttpCallable();
-      when(callable.call(any)).thenAnswer((_) => Future.value(result));
+      when(callable.call(any)).thenAnswer((_) async => result);
 
       when(cloudFunctions.getHttpsCallable(functionName: anyNamed("functionName"))).thenReturn(callable);
 
@@ -86,7 +85,8 @@ void main() {
       verify(callable("appl")).called(1);
     });
 
-    test("Fail on suggest error", () {
+    test("Throw exception on errorous suggestions cloud function call", () {
+      // TODO: create fake, always throws https://pub.dev/packages/mockito, put in test utils
       final callable = MockHttpCallable();
       when(callable.call(any)).thenThrow(eventFailedException);
 

@@ -63,7 +63,7 @@ class InitUserDataBuilder
   }
 }
 
-class _$RemoteUserDataArrived extends RemoteUserDataArrived {
+class _$IngressUserDataArrived extends IngressUserDataArrived {
   @override
   final Authentication authentication;
   @override
@@ -75,11 +75,11 @@ class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   @override
   final SubscriptionType subscription;
 
-  factory _$RemoteUserDataArrived(
-          [void Function(RemoteUserDataArrivedBuilder) updates]) =>
-      (new RemoteUserDataArrivedBuilder()..update(updates)).build();
+  factory _$IngressUserDataArrived(
+          [void Function(IngressUserDataArrivedBuilder) updates]) =>
+      (new IngressUserDataArrivedBuilder()..update(updates)).build();
 
-  _$RemoteUserDataArrived._(
+  _$IngressUserDataArrived._(
       {this.authentication,
       this.userDocument,
       this.settings,
@@ -88,38 +88,38 @@ class _$RemoteUserDataArrived extends RemoteUserDataArrived {
       : super._() {
     if (authentication == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteUserDataArrived', 'authentication');
+          'IngressUserDataArrived', 'authentication');
     }
     if (userDocument == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteUserDataArrived', 'userDocument');
+          'IngressUserDataArrived', 'userDocument');
     }
     if (settings == null) {
-      throw new BuiltValueNullFieldError('RemoteUserDataArrived', 'settings');
+      throw new BuiltValueNullFieldError('IngressUserDataArrived', 'settings');
     }
     if (userSettings == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteUserDataArrived', 'userSettings');
+          'IngressUserDataArrived', 'userSettings');
     }
     if (subscription == null) {
       throw new BuiltValueNullFieldError(
-          'RemoteUserDataArrived', 'subscription');
+          'IngressUserDataArrived', 'subscription');
     }
   }
 
   @override
-  RemoteUserDataArrived rebuild(
-          void Function(RemoteUserDataArrivedBuilder) updates) =>
+  IngressUserDataArrived rebuild(
+          void Function(IngressUserDataArrivedBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  RemoteUserDataArrivedBuilder toBuilder() =>
-      new RemoteUserDataArrivedBuilder()..replace(this);
+  IngressUserDataArrivedBuilder toBuilder() =>
+      new IngressUserDataArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is RemoteUserDataArrived &&
+    return other is IngressUserDataArrived &&
         authentication == other.authentication &&
         userDocument == other.userDocument &&
         settings == other.settings &&
@@ -139,7 +139,7 @@ class _$RemoteUserDataArrived extends RemoteUserDataArrived {
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('RemoteUserDataArrived')
+    return (newBuiltValueToStringHelper('IngressUserDataArrived')
           ..add('authentication', authentication)
           ..add('userDocument', userDocument)
           ..add('settings', settings)
@@ -149,9 +149,9 @@ class _$RemoteUserDataArrived extends RemoteUserDataArrived {
   }
 }
 
-class RemoteUserDataArrivedBuilder
-    implements Builder<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
-  _$RemoteUserDataArrived _$v;
+class IngressUserDataArrivedBuilder
+    implements Builder<IngressUserDataArrived, IngressUserDataArrivedBuilder> {
+  _$IngressUserDataArrived _$v;
 
   AuthenticationBuilder _authentication;
   AuthenticationBuilder get authentication =>
@@ -180,9 +180,9 @@ class RemoteUserDataArrivedBuilder
   set subscription(SubscriptionType subscription) =>
       _$this._subscription = subscription;
 
-  RemoteUserDataArrivedBuilder();
+  IngressUserDataArrivedBuilder();
 
-  RemoteUserDataArrivedBuilder get _$this {
+  IngressUserDataArrivedBuilder get _$this {
     if (_$v != null) {
       _authentication = _$v.authentication?.toBuilder();
       _userDocument = _$v.userDocument?.toBuilder();
@@ -195,24 +195,24 @@ class RemoteUserDataArrivedBuilder
   }
 
   @override
-  void replace(RemoteUserDataArrived other) {
+  void replace(IngressUserDataArrived other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$RemoteUserDataArrived;
+    _$v = other as _$IngressUserDataArrived;
   }
 
   @override
-  void update(void Function(RemoteUserDataArrivedBuilder) updates) {
+  void update(void Function(IngressUserDataArrivedBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$RemoteUserDataArrived build() {
-    _$RemoteUserDataArrived _$result;
+  _$IngressUserDataArrived build() {
+    _$IngressUserDataArrived _$result;
     try {
       _$result = _$v ??
-          new _$RemoteUserDataArrived._(
+          new _$IngressUserDataArrived._(
               authentication: authentication.build(),
               userDocument: userDocument.build(),
               settings: settings.build(),
@@ -231,7 +231,7 @@ class RemoteUserDataArrivedBuilder
         userSettings.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'RemoteUserDataArrived', _$failedField, e.toString());
+            'IngressUserDataArrived', _$failedField, e.toString());
       }
       rethrow;
     }

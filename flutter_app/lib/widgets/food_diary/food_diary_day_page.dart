@@ -53,188 +53,176 @@ class FoodDiaryDayPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<FoodDiaryDayBloc, FoodDiaryDayState>(
-      listener: (BuildContext context, FoodDiaryDayState state) {
-        if (state is FoodDiaryDayLoaded) {
-          final NutrientMap totalNutrients = state.foodDiaryDay?.meals
-              ?.expand<FoodRecord>((meal) => meal.foodRecords)
-              ?.map<NutrientMap>((fr) => fr.totalNutrients)
-              ?.reduce((curr, next) => curr + next);
+    return BlocBuilder<FoodDiaryDayBloc, FoodDiaryDayState>(
+      builder: (BuildContext context, FoodDiaryDayState foodDiaryDayState) {
+        LoggingBloc().verbose("Food diary day #${BlocProvider.of<FoodDiaryDayBloc>(context).date} rebuild");
 
-          _chartKey?.currentState?.updateData(generatePieChart(totalNutrients, [Nutrient.protein, Nutrient.fat, Nutrient.carbs]));
+        // White screen with skeleton food records
+        if (foodDiaryDayState is FoodDiaryDayUninitialized) {
+          // TODO: skeleton page
+          return Container(child: Center(child: Text(BlocProvider.of<FoodDiaryDayBloc>(context).currentState.toString()),),);
         }
-      },
-      child: BlocBuilder<FoodDiaryDayBloc, FoodDiaryDayState>(
-        builder: (BuildContext context, FoodDiaryDayState foodDiaryDayState) {
-          LoggingBloc().verbose("Food diary day #${BlocProvider.of<FoodDiaryDayBloc>(context).date} rebuild");
 
-          // White screen with skeleton food records
-          if (foodDiaryDayState is FoodDiaryDayUninitialized) {
-            // TODO: skeleton page
-            return Container(child: Center(child: Text(BlocProvider.of<FoodDiaryDayBloc>(context).currentState.toString()),),);
-          }
-
-          // ????? failed TODOCUMENT - do I need a fail state??
+        // ????? failed TODOCUMENT - do I need a fail state??
 //        if (foodDiaryDayState is FoodDiaryDayFailed) {}
 
-          // Food diary day is loaded from now on
-          assert(foodDiaryDayState is FoodDiaryDayLoaded);
+        // Food diary day is loaded from now on
+        assert(foodDiaryDayState is FoodDiaryDayLoaded);
 
-          final loadedState = foodDiaryDayState as FoodDiaryDayLoaded;
+        final loadedState = foodDiaryDayState as FoodDiaryDayLoaded;
 
-          // TODO: bloc listener to update charts!!!
-          final NutrientMap totalNutrients = loadedState.foodDiaryDay?.meals
-            ?.expand<FoodRecord>((meal) => meal.foodRecords)
-            ?.map<NutrientMap>((fr) => fr.totalNutrients)
-            ?.reduce((curr, next) => curr + next);
+        // TODO: bloc listener to update charts!!!
+        final NutrientMap totalNutrients = loadedState.foodDiaryDay?.meals
+          ?.expand<FoodRecord>((meal) => meal.foodRecords)
+          ?.map<NutrientMap>((fr) => fr.totalNutrients)
+          ?.reduce((curr, next) => curr + next);
 
-          return CustomScrollView(
-            slivers: <Widget>[
-              // TODO: create custom sliver widget, all it does is stick to top like sliver app bar, and collapses when not scrolled to top
-              SliverPersistentHeader(
-                pinned: false,
-                delegate: _SliverAppBarDelegate(
-                  minHeight: 50, // size of nutrition header (40) plus padding (10)
-                  maxHeight: 160,
-                  // Must be ListView to stop overflow errors
-                  child: ListView(
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: [
-                      const NutritionHeader(
-                        mealName: "Daily stats",
-                        nutrients: [Nutrient.protein, Nutrient.fat, Nutrient.carbs], // TODO: dynamic from diary settings // TODO: 'headername' - shortform
-                        stuckAmount: 0, // Always visible
-                      ),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // ...
-                          Expanded(
-                            child: AnimatedCircularChart(
-                              key: _chartKey,
-                              size: const Size(110, 110),
+        return CustomScrollView(
+          slivers: <Widget>[
+            // TODO: create custom sliver widget, all it does is stick to top like sliver app bar, and collapses when not scrolled to top
+            SliverPersistentHeader(
+              pinned: false,
+              delegate: _SliverAppBarDelegate(
+                minHeight: 50, // size of nutrition header (40) plus padding (10)
+                maxHeight: 160,
+                // Must be ListView to stop overflow errors
+                child: ListView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    const NutritionHeader(
+                      mealName: "Daily stats",
+                      nutrients: [Nutrient.protein, Nutrient.fat, Nutrient.carbs], // TODO: dynamic from diary settings // TODO: 'headername' - shortform
+                      stuckAmount: 0, // Always visible
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        // ...
+                        Expanded(
+                          child: AnimatedCircularChart(
+                            key: _chartKey,
+                            size: const Size(110, 110),
 //                              duration: const Duration(milliseconds: 0),
-                              initialChartData: generatePieChart(totalNutrients ?? NutrientMap.random(), [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
-                              chartType: CircularChartType.Pie,
-                            ),
+                            initialChartData: generatePieChart(totalNutrients ?? NutrientMap.random(), [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
+                            chartType: CircularChartType.Pie,
                           ),
-                          for (var nutrient in [Nutrient.protein, Nutrient.fat, Nutrient.carbs])
-                            SizedBox(
-                              width: 60, // OPTIMIZE
-                              child: Column(
-                                children: <Widget>[
-                                  const Text("23g"),
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 10),
-                                    child: Divider(height: 8),
-                                  ),
-                                  const Text("23g"),
-                                  const SizedBox(height: 8),
-                                  AnimatedCircularChart(
-                                    size: const Size(50, 50),
-//                                    duration: const Duration(milliseconds: 0),
-                                    initialChartData: generatePieChart(totalNutrients ?? NutrientMap.random(), [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
-                                    chartType: CircularChartType.Pie,
-                                  ),
-                                ],
-                              ),
-                            ),
+                        ),
+                        for (var nutrient in [Nutrient.protein, Nutrient.fat, Nutrient.carbs])
                           SizedBox(
                             width: 60, // OPTIMIZE
                             child: Column(
                               children: <Widget>[
-                                const Text("232"),
+                                const Text("23g"),
                                 const Padding(
                                   padding: EdgeInsets.symmetric(horizontal: 10),
                                   child: Divider(height: 8),
                                 ),
-                                const Text("235"),
+                                const Text("23g"),
                                 const SizedBox(height: 8),
                                 AnimatedCircularChart(
                                   size: const Size(50, 50),
-//                                  duration: const Duration(milliseconds: 0),
+//                                    duration: const Duration(milliseconds: 0),
                                   initialChartData: generatePieChart(totalNutrients ?? NutrientMap.random(), [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
                                   chartType: CircularChartType.Pie,
                                 ),
                               ],
-                            )
+                            ),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        SizedBox(
+                          width: 60, // OPTIMIZE
+                          child: Column(
+                            children: <Widget>[
+                              const Text("232"),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 10),
+                                child: Divider(height: 8),
+                              ),
+                              const Text("235"),
+                              const SizedBox(height: 8),
+                              AnimatedCircularChart(
+                                size: const Size(50, 50),
+//                                  duration: const Duration(milliseconds: 0),
+                                initialChartData: generatePieChart(totalNutrients ?? NutrientMap.random(), [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
+                                chartType: CircularChartType.Pie,
+                              ),
+                            ],
+                          )
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
-                  return StickyHeaderBuilder(
-                    builder: (BuildContext context, double stuckAmount) {
-                      return NutritionHeader(
-                        mealName: loadedState.diet.meals[index].mealName,
-                        nutrients: const [Nutrient.protein, Nutrient.fat, Nutrient.carbs], // TODO: dynamic from diary settings // TODO: 'headername' - shortform
-                        stuckAmount: stuckAmount,
-                        onTap: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(AddFoodRecords((b) => b
-                          ..mealIndex = index
-                          ..foodRecords = ListBuilder(<FoodRecord>[
-                            FoodRecord.random()
-                          ])
-                          ..completer = infoSnackBarCompleter(context, "successfully added food")
-                        )),
-                      );
-                    },
-                    content: Column(
-                      children: <Widget>[
-                        // No FoodDiaryDay found in database
-                        if (loadedState.foodDiaryDay == null)
-                          Container(
-                            height: 72,
-                            color: Colors.grey[2 * 100],
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
+                return StickyHeaderBuilder(
+                  builder: (BuildContext context, double stuckAmount) {
+                    return NutritionHeader(
+                      mealName: loadedState.diet.meals[index].mealName,
+                      nutrients: const [Nutrient.protein, Nutrient.fat, Nutrient.carbs], // TODO: dynamic from diary settings // TODO: 'headername' - shortform
+                      stuckAmount: stuckAmount,
+                      onTap: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(AddFoodRecords((b) => b
+                        ..mealIndex = index
+                        ..foodRecords = ListBuilder(<FoodRecord>[
+                          FoodRecord.random()
+                        ])
+                        ..completer = infoSnackBarCompleter(context, "successfully added food")
+                      )),
+                    );
+                  },
+                  content: Column(
+                    children: <Widget>[
+                      // No FoodDiaryDay found in database
+                      if (loadedState.foodDiaryDay == null)
+                        Container(
+                          height: 72,
+                          color: Colors.grey[2 * 100],
+                        ),
+                      // No food records in meal
+                      if (loadedState.foodDiaryDay != null && loadedState.foodDiaryDay.meals[index].foodRecords.isEmpty)
+                        Container(
+                          height: 72,
+                          color: Colors.grey[5 * 100],
+                        ),
+                      if (loadedState.foodDiaryDay != null)
+                        // Show every food record in meal
+                        for (var fr in loadedState.foodDiaryDay.meals[index].foodRecords)
+                          FoodRecordTile(
+                            foodRecord: fr,
+                            onTap: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(ReplaceFoodRecord((b) => b
+                              ..oldRecord = fr.toBuilder()
+                              ..newRecord = fr.rebuild((b) => b
+                                ..totalNutrients = NutrientMap.random()
+                              ).toBuilder()
+    //                          ..completer = infoSnackBarCompleter(context, "successfully updated ${fr.foodName}")
+                            )),
+                            onLongPress: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(DeleteFoodRecords((b) => b
+                              ..foodRecords = ListBuilder(<FoodRecord>[fr])
+                              ..completer = infoSnackBarCompleter(context, "successfully deleted ${fr.foodName}")
+                            )),
                           ),
-                        // No food records in meal
-                        if (loadedState.foodDiaryDay != null && loadedState.foodDiaryDay.meals[index].foodRecords.isEmpty)
-                          Container(
-                            height: 72,
-                            color: Colors.grey[5 * 100],
-                          ),
-                        if (loadedState.foodDiaryDay != null)
-                          // Show every food record in meal
-                          for (var fr in loadedState.foodDiaryDay.meals[index].foodRecords)
-                            FoodRecordTile(
-                              foodRecord: fr,
-                              onTap: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(ReplaceFoodRecord((b) => b
-                                ..oldRecord = fr.toBuilder()
-                                ..newRecord = fr.rebuild((b) => b
-                                  ..totalNutrients = NutrientMap.random()
-                                ).toBuilder()
-      //                          ..completer = infoSnackBarCompleter(context, "successfully updated ${fr.foodName}")
-                              )),
-                              onLongPress: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(DeleteFoodRecords((b) => b
-                                ..foodRecords = ListBuilder(<FoodRecord>[fr])
-                                ..completer = infoSnackBarCompleter(context, "successfully deleted ${fr.foodName}")
-                              )),
-                            ),
-                        // Space between bottom of list and header
-                        const SizedBox(height: 32),
-                      ],
-                    )
-                  );
-                },
-                childCount: loadedState.diet.meals.length,
-                ),
-              )
-            ],
-          );
+                      // Space between bottom of list and header
+                      const SizedBox(height: 32),
+                    ],
+                  )
+                );
+              },
+              childCount: loadedState.diet.meals.length,
+              ),
+            )
+          ],
+        );
 
-          // ListView.builder() is more efficient than ListView()
-          // TODO: sponsored meal/food records
-          return ListView.builder(
-            itemCount: loadedState.diet.meals.length,
-            itemBuilder: (BuildContext context, int index) {
-              return ;
-            },
-          );
-        }
-      ),
+        // ListView.builder() is more efficient than ListView()
+        // TODO: sponsored meal/food records
+        return ListView.builder(
+          itemCount: loadedState.diet.meals.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ;
+          },
+        );
+      }
     );
   }
 }

@@ -56,9 +56,9 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         .switchMap<UserDataEvent>((auth) => CombineLatestStream.combine4(
           userRepository.userDocument$(auth.uid),
           settingsRepository.defaultSettings$(),
-          settingsRepository.userSettings$(auth.uid),
-          Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
-          (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => RemoteUserDataArrived((b) => b
+          Observable(settingsRepository.userSettings$(auth.uid)).startWith(null),
+          Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases).map(...) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
+          (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => IngressUserDataArrived((b) => b
             ..authentication = auth.toBuilder()
             ..userDocument = userDocument.toBuilder()
             ..settings = _mergeSettings(userSettings, defaultSettings).toBuilder()
@@ -75,7 +75,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       _userDataEventSubscription ??= Observable(MergeStream([onboard$, dataArrival$])).listen(dispatch);
     }
 
-    if (event is RemoteUserDataArrived) {
+    if (event is IngressUserDataArrived) {
       yield UserDataLoaded((b) => b
         ..authentication = event.authentication.toBuilder()
         ..userDocument = event.userDocument.toBuilder()

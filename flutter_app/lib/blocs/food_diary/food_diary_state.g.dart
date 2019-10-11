@@ -160,8 +160,6 @@ class FoodDiaryFailedBuilder
 
 class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   @override
-  final int currentDate;
-  @override
   final BuiltMap<int, FoodDiaryDay> diaryDays;
   @override
   final BuiltList<Diet> diets;
@@ -169,11 +167,7 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   factory _$FoodDiaryLoaded([void Function(FoodDiaryLoadedBuilder) updates]) =>
       (new FoodDiaryLoadedBuilder()..update(updates)).build();
 
-  _$FoodDiaryLoaded._({this.currentDate, this.diaryDays, this.diets})
-      : super._() {
-    if (currentDate == null) {
-      throw new BuiltValueNullFieldError('FoodDiaryLoaded', 'currentDate');
-    }
+  _$FoodDiaryLoaded._({this.diaryDays, this.diets}) : super._() {
     if (diaryDays == null) {
       throw new BuiltValueNullFieldError('FoodDiaryLoaded', 'diaryDays');
     }
@@ -194,21 +188,18 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is FoodDiaryLoaded &&
-        currentDate == other.currentDate &&
         diaryDays == other.diaryDays &&
         diets == other.diets;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc(0, currentDate.hashCode), diaryDays.hashCode), diets.hashCode));
+    return $jf($jc($jc(0, diaryDays.hashCode), diets.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryLoaded')
-          ..add('currentDate', currentDate)
           ..add('diaryDays', diaryDays)
           ..add('diets', diets))
         .toString();
@@ -218,10 +209,6 @@ class _$FoodDiaryLoaded extends FoodDiaryLoaded {
 class FoodDiaryLoadedBuilder
     implements Builder<FoodDiaryLoaded, FoodDiaryLoadedBuilder> {
   _$FoodDiaryLoaded _$v;
-
-  int _currentDate;
-  int get currentDate => _$this._currentDate;
-  set currentDate(int currentDate) => _$this._currentDate = currentDate;
 
   MapBuilder<int, FoodDiaryDay> _diaryDays;
   MapBuilder<int, FoodDiaryDay> get diaryDays =>
@@ -237,7 +224,6 @@ class FoodDiaryLoadedBuilder
 
   FoodDiaryLoadedBuilder get _$this {
     if (_$v != null) {
-      _currentDate = _$v.currentDate;
       _diaryDays = _$v.diaryDays?.toBuilder();
       _diets = _$v.diets?.toBuilder();
       _$v = null;
@@ -264,9 +250,7 @@ class FoodDiaryLoadedBuilder
     try {
       _$result = _$v ??
           new _$FoodDiaryLoaded._(
-              currentDate: currentDate,
-              diaryDays: diaryDays.build(),
-              diets: diets.build());
+              diaryDays: diaryDays.build(), diets: diets.build());
     } catch (_) {
       String _$failedField;
       try {

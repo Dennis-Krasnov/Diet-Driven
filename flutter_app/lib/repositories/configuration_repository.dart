@@ -10,7 +10,7 @@ import 'package:package_info/package_info.dart';
 
 import 'package:diet_driven/models/models.dart';
 
-/// Data access object for runtime configuration.
+/// Data access object for runtime configuration using `firebase_remote_config` library.
 class ConfigurationRepository {
   final Future<RemoteConfig> _remoteConfig;
   final Future<PackageInfo> _packageInfo;
@@ -22,7 +22,7 @@ class ConfigurationRepository {
       _packageInfo = packageInfo ?? PackageInfo.fromPlatform(),
       _connectivity = connectivity ?? Connectivity();
 
-  /// Fetches [RemoteConfiguration] using `firebase_remote_config` library.
+  /// Fetches [RemoteConfiguration].
   /// `Future.sync()` runs future immediately to enable proper exception handling.
   ///
   /// Throws [FetchThrottledException] or [Exception] on failure to fetch live Firebase Remote Config data.
@@ -41,14 +41,13 @@ class ConfigurationRepository {
 
     return RemoteConfiguration((b) => b
       ..liveConfiguration = true
-      ..bonus = config.getInt("bonus")
+      ..bonus = config.getInt("landing_page_version") // OPTIMIZE
     );
   });
 
-  /// Fetches [PackageInfo] using `package_info` library.
-  Future<PackageInfo> fetchPackageInfo() => _packageInfo;
+  /// Fetches [PackageInformation] using `package_info` library.
+  Future<PackageInformation> fetchPackageInfo() async => PackageInformation.fromPackageInfo(await _packageInfo);
 
   /// Streams [ConnectivityResult] using `connectivity` library.
-  Stream<ConnectivityResult> connectivity$() => _connectivity.onConnectivityChanged;
+  Stream<ConnectivityStatus> connectivity$() => _connectivity.onConnectivityChanged.map(ConnectivityStatus.fromConnectivity);
 }
-// TODO: use built classes for package info and connectivity result!

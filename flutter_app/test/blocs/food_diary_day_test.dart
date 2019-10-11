@@ -4,9 +4,10 @@
  * in the LICENSE file.
  */
 
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -17,13 +18,24 @@ import 'package:diet_driven/repositories/repositories.dart';
 import '../test_utils.dart';
 
 void main() {
-  FoodDiaryDayBloc foodDiaryDayBloc;
+  FoodDiaryDayBloc sut;
 
   /// Mocks
   FoodDiaryBloc foodDiaryBloc;
+  DiaryRepository diaryRepository;
+  Completer<void> completer;
 
   /// Data
-  const date = 1234;
+  const userId = "1234";
+
+  const date = 24;
+
+  const mealIndex = 2;
+
+  final foodRecords = BuiltList<FoodRecord>(<FoodRecord>[
+    FoodRecord.random(),
+    FoodRecord.random(),
+  ]);
 
   final diet = Diet((b) => b
     ..calories = 2000
@@ -35,42 +47,173 @@ void main() {
     BlocSupervisor.delegate = LoggingBlocDelegate();
 
     foodDiaryBloc = MockFoodDiaryBloc();
+    when(foodDiaryBloc.userId).thenReturn(userId);
 
-    foodDiaryDayBloc = FoodDiaryDayBloc(
+    diaryRepository = MockDiaryRepository();
+    completer = Completer();
+
+    sut = FoodDiaryDayBloc(
       foodDiaryBloc: foodDiaryBloc,
+      diaryRepository: diaryRepository,
       date: date,
     );
   });
 
   tearDown(() {
-    foodDiaryDayBloc?.dispose();
+    sut?.dispose();
   });
 
   /// Tests
-  test("Initialize properly", () {
-    expect(foodDiaryDayBloc.date, date);
-    expect(foodDiaryDayBloc.initialState, FoodDiaryDayUninitialized());
+  test("Start with initial state", () {
+    expect(sut.date, date);
+    expect(sut.initialState, FoodDiaryDayUninitialized());
   });
 
-  group("React to streams", () {
-    test("Process food diary bloc stream", () {
-      when(foodDiaryBloc.state).thenAnswer((_) => Stream.fromFutures(<Future<FoodDiaryState>>[
-        Future.value(FoodDiaryUninitialized()),
-        Future.delayed(ticks(1), () => null), // FIXME
-        // error state, check that doesn't update!
-      ]).asBroadcastStream());
+  group("Reactive ingress streams", () {
+    test("Yield loaded state for valid food diary bloc state stream", () {
+      when(foodDiaryBloc.state).thenAnswer((_) async* {
+        yield FoodDiaryUninitialized();
 
-      foodDiaryDayBloc.dispatch(InitFoodDiaryDay());
+        await delay(1);
+        yield FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder({
+            23: generateFoodDiaryDay(23, []),
+            24: generateFoodDiaryDay(24, [["Apple"]]),
+          })
+          ..diets = ListBuilder(<Diet>[diet])
+        );
+
+        await delay(1);
+        yield FoodDiaryLoaded((b) => b
+        // Results are completely overridden
+          ..diaryDays = MapBuilder({
+            24: generateFoodDiaryDay(24, [[], ["Apricot"]]),
+            25: generateFoodDiaryDay(25, []),
+          })
+          ..diets = ListBuilder(<Diet>[diet])
+        );
+
+        await delay(1);
+        yield FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder()
+          ..diets = ListBuilder(<Diet>[diet])
+        );
+      });
+
+      expectLater(
+        sut.state,
+        emitsInOrder(<FoodDiaryDayState>[
+          FoodDiaryDayUninitialized(),
+          // Tick #1
+          FoodDiaryDayLoaded((b) => b
+            ..foodDiaryDay = generateFoodDiaryDay(24, [["Apple"]]).toBuilder()
+            ..diet = diet.toBuilder()
+          ),
+          // Tick #2
+          FoodDiaryDayLoaded((b) => b
+            ..foodDiaryDay = generateFoodDiaryDay(24, [[], ["Apricot"]]).toBuilder()
+            ..diet = diet.toBuilder()
+          ),
+          // Tick #3
+          FoodDiaryDayLoaded((b) => b
+            ..foodDiaryDay = null
+            ..diet = diet.toBuilder()
+          ),
+        ])
+      );
+
+      sut.dispatch(InitFoodDiaryDay());
     });
   });
 
-  group("Add food records", () {
-    test("Sucessfully add", () async {
-
+  test("Add food records using FoodDiaryBloc's GlobalAddFoodRecords", () async {
+    when(foodDiaryBloc.state).thenAnswer((_) async* {
+      yield FoodDiaryUninitialized();
+      yield FoodDiaryLoaded((b) => b
+        ..diaryDays = MapBuilder()
+        ..diets = ListBuilder(<Diet>[diet])
+      );
     });
 
-    test("Fail on add error", () async {
+    sut.dispatch(InitFoodDiaryDay());
 
+    await delay(1);
+    sut.dispatch(AddFoodRecords((b) => b
+      ..mealIndex = mealIndex
+      ..foodRecords = foodRecords.toBuilder()
+      ..completer = completer
+    ));
+
+    await delay(1);
+    verify(foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+      ..date = date
+      ..mealIndex = mealIndex
+      ..foodRecords = foodRecords.toBuilder()
+      ..completer = completer
+    ))).called(1);
+  });
+
+  group("Food record replacement", () {
+    final foodDiaryDay = generateFoodDiaryDay(24, [["Apple"]]);
+    final foodRecord = foodDiaryDay.meals.first.foodRecords.first;
+
+    test("Replce food records", () async {
+      when(foodDiaryBloc.state).thenAnswer((_) async* {
+        yield FoodDiaryUninitialized();
+        yield FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder({
+            24: foodDiaryDay,
+          })
+          ..diets = ListBuilder(<Diet>[diet])
+        );
+      });
+
+      sut.dispatch(InitFoodDiaryDay());
+
+      await delay(1);
+      sut.dispatch(ReplaceFoodRecord((b) => b
+        ..oldRecord = foodRecord.toBuilder()
+        ..newRecord = foodRecord.rebuild((b) => b..foodName = "Apricot").toBuilder()
+        ..completer = completer
+      ));
+
+      await expectLater(completer.future, completes);
+      expect(completer.isCompleted, true);
+
+      verify(diaryRepository.saveFoodDiaryDay(
+        userId,
+        generateFoodDiaryDay(24, [["Apricot"]])
+      )).called(1);
+    });
+
+    test("Reject completer on replace error", () async {
+      when(foodDiaryBloc.state).thenAnswer((_) async* {
+        yield FoodDiaryUninitialized();
+        yield FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder({
+            24: foodDiaryDay
+          })
+          ..diets = ListBuilder(<Diet>[diet])
+        );
+      });
+      when(diaryRepository.saveFoodDiaryDay(any, any)).thenThrow(eventFailedException);
+
+      sut.dispatch(InitFoodDiaryDay());
+
+      await delay(1);
+      sut.dispatch(ReplaceFoodRecord((b) => b
+        ..oldRecord = foodRecord.toBuilder()
+        ..newRecord = foodRecord.rebuild((b) => b..foodName = "Apricot").toBuilder()
+        ..completer = completer
+      ));
+
+      await expectLater(completer.future, throwsException);
+      expect(completer.isCompleted, true);
+
+      verify(diaryRepository.saveFoodDiaryDay(
+        userId,
+        generateFoodDiaryDay(24, [["Apricot"]])
+      )).called(1);
     });
   });
 

@@ -20,8 +20,17 @@ bool _wasPopped(BuiltList<DeepLink> deepLink, BuiltList<DeepLink> previousDeepLi
 bool _wasSinglePush(BuiltList<DeepLink> deepLink, BuiltList<DeepLink> previousDeepLink) =>
     (deepLink?.length ?? 0) - (previousDeepLink?.length ?? 0) == 1;
 
-String _path(BuiltList<DeepLink> deepLink, BuiltList<DeepLink> previousDeepLink, String root, {int until}) =>
-    "$root/${deepLink.sublist(0, until ?? deepLink.length).join("/")}";
+String _path(BuiltList<DeepLink> deepLink, String root, {int until}) => "$root/${deepLink.sublist(0, until ?? deepLink.length).join("/")}";
+
+// TODO: use splitMapJoin on _path(deepLink, root)
+String _analyticsPath(BuiltList<DeepLink> deepLink, String root, {int until}) {
+  final path = _path(deepLink, root);
+  final parts = path.split("/").toList();
+  // Remove variables
+  parts.removeWhere((str) => str.startsWith(":"));
+  return parts.join("/");
+}
+
 
 @BuiltValue(instantiable: false)
 abstract class NavigationState {
@@ -42,7 +51,10 @@ abstract class NavigationState {
   bool get wasSinglePush => _wasSinglePush(deepLink, previousDeepLink);
 
   /// Construct deep link path using [root] path and optionally truncated deep link.
-  String path(String root, {int until}) => _path(deepLink, previousDeepLink, root, until: until);
+  String path(String root, {int until}) => _path(deepLink, root, until: until);
+
+  /// Construct deep link path using [root] path with parameter fields stripped out.
+  String analyticsPath(String root) => _analyticsPath(deepLink, root);
 
   NavigationState rebuild(void Function(NavigationStateBuilder) updates);
   NavigationStateBuilder toBuilder();
@@ -58,7 +70,10 @@ abstract class NavigationUninitialized implements NavigationState, Built<Navigat
   bool get wasSinglePush => _wasSinglePush(deepLink, previousDeepLink);
 
   @override
-  String path(String root, {int until}) => _path(deepLink, previousDeepLink, root, until: until);
+  String path(String root, {int until}) => _path(deepLink, root, until: until);
+
+  @override
+  String analyticsPath(String root) => _analyticsPath(deepLink, root);
 
   factory NavigationUninitialized([void Function(NavigationUninitializedBuilder b)]) = _$NavigationUninitialized;
   NavigationUninitialized._();
@@ -72,7 +87,10 @@ abstract class DiaryTab implements NavigationState, Built<DiaryTab, DiaryTabBuil
   bool get wasSinglePush => _wasSinglePush(deepLink, previousDeepLink);
 
   @override
-  String path(String root, {int until}) => _path(deepLink, previousDeepLink, root, until: until);
+  String path(String root, {int until}) => _path(deepLink, root, until: until);
+
+  @override
+  String analyticsPath(String root) => _analyticsPath(deepLink, root);
 
   factory DiaryTab([void Function(DiaryTabBuilder) updates]) = _$DiaryTab;
   DiaryTab._();
@@ -86,7 +104,10 @@ abstract class TrackTab implements NavigationState, Built<TrackTab, TrackTabBuil
   bool get wasSinglePush => _wasSinglePush(deepLink, previousDeepLink);
 
   @override
-  String path(String root, {int until}) => _path(deepLink, previousDeepLink, root, until: until);
+  String path(String root, {int until}) => _path(deepLink, root, until: until);
+
+  @override
+  String analyticsPath(String root) => _analyticsPath(deepLink, root);
 
   factory TrackTab([void Function(TrackTabBuilder) updates]) = _$TrackTab;
   TrackTab._();
@@ -100,7 +121,10 @@ abstract class ReportsTab implements NavigationState, Built<ReportsTab, ReportsT
   bool get wasSinglePush => _wasSinglePush(deepLink, previousDeepLink);
 
   @override
-  String path(String root, {int until}) => _path(deepLink, previousDeepLink, root, until: until);
+  String path(String root, {int until}) => _path(deepLink, root, until: until);
+
+  @override
+  String analyticsPath(String root) => _analyticsPath(deepLink, root);
 
   factory ReportsTab([void Function(ReportsTabBuilder) updates]) = _$ReportsTab;
   ReportsTab._();
@@ -114,7 +138,10 @@ abstract class SettingsTab implements NavigationState, Built<SettingsTab, Settin
   bool get wasSinglePush => _wasSinglePush(deepLink, previousDeepLink);
 
   @override
-  String path(String root, {int until}) => _path(deepLink, previousDeepLink, root, until: until);
+  String path(String root, {int until}) => _path(deepLink, root, until: until);
+
+  @override
+  String analyticsPath(String root) => _analyticsPath(deepLink, root);
 
   factory SettingsTab([void Function(SettingsTabBuilder) updates]) = _$SettingsTab;
   SettingsTab._();
@@ -128,7 +155,10 @@ abstract class LoggingTab implements NavigationState, Built<LoggingTab, LoggingT
   bool get wasSinglePush => _wasSinglePush(deepLink, previousDeepLink);
 
   @override
-  String path(String root, {int until}) => _path(deepLink, previousDeepLink, root, until: until);
+  String path(String root, {int until}) => _path(deepLink, root, until: until);
+
+  @override
+  String analyticsPath(String root) => _analyticsPath(deepLink, root);
 
   factory LoggingTab([void Function(LoggingTabBuilder) updates]) = _$LoggingTab;
   LoggingTab._();

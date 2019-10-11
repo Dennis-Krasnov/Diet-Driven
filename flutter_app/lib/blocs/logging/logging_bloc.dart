@@ -8,6 +8,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:ansicolor/ansicolor.dart';
+import 'package:diet_driven/blocs/blocs.dart';
 
 import 'package:diet_driven/blocs/logging/logging.dart';
 
@@ -50,7 +51,33 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
       );
 
       loggingBuilder.logs.add(messageLog);
-      _printWrapped(messageLog);
+
+      final pen = AnsiPen();
+      String emoji = " ";
+
+      // TODO: level for rebuild: 🔨 (hammer)
+
+      switch(event.level) {
+        case MessageLoggingLevel.verbose:
+          pen.gray(level: 0.5);
+          break;
+        case MessageLoggingLevel.debug:
+          pen.gray(level: 0.75);
+          break;
+        case MessageLoggingLevel.info:
+          emoji = "ℹ️";
+          break;
+        case MessageLoggingLevel.warning:
+          pen.yellow();
+          emoji = "⚠️";
+          break;
+        case MessageLoggingLevel.error:
+          pen.red();
+          emoji = "🐛";
+          break;
+      }
+
+      print(pen("$emoji   ${event.message}"));
     }
 
     if (event is LogError) {
@@ -75,8 +102,15 @@ class LoggingBloc extends Bloc<LoggingEvent, LoggingState> {
         ..nextState = event.nextState
       );
 
+      String emoji = "➡️";
+
+      if (event.event is NavigationEvent) {
+        emoji = "🧭";
+      }
+
+      print("$emoji   ${event.currentState.runtimeType.toString().substring(2)} -> ${event.nextState.runtimeType.toString().substring(2)}");
+
 //      loggingBuilder.logs.add(blocTransition); OPTIMIZE: try to fix crash
-//      _printWrapped(blocTransition); // OPTIMIZE: try to fix crash
     }
 
     yield loggingBuilder.build();

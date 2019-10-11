@@ -7,9 +7,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:connectivity/connectivity.dart' show ConnectivityResult;
 import 'package:meta/meta.dart';
-import 'package:package_info/package_info.dart' show PackageInfo;
 import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
@@ -43,29 +41,30 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         return;
       }
 
-      // Maintain single instance of stream subscriptions
+      // Maintain single instance of stream subscription
       _configurationEventSubscription ??= Observable<ConfigurationEvent>(CombineLatestStream.combine3(
         Observable<RemoteConfiguration>.fromFuture(configurationRepository.fetchRemoteConfig())
           .doOnError((Object error, StackTrace trace) => LoggingBloc().expectedError("Default configuration used", error, trace))
           .onErrorReturn(RemoteConfiguration()),
-        Observable<PackageInfo>.fromFuture(configurationRepository.fetchPackageInfo()),
-        Observable<ConnectivityResult>(configurationRepository.connectivity$()),
-        (RemoteConfiguration remoteConfiguration, PackageInfo packageInfo, ConnectivityResult connectivity) => RemoteConfigurationArrived((b) => b
+        Observable<PackageInformation>.fromFuture(configurationRepository.fetchPackageInfo()),
+        // FIXME: start with needed on ios for some reason...
+        Observable<ConnectivityStatus>(configurationRepository.connectivity$()).startWith(ConnectivityStatus.disconnected), // TODO .doOnData((data) => "CONNECTIVITY ARRIVED: $data")
+        (RemoteConfiguration remoteConfiguration, PackageInformation packageInfo, ConnectivityStatus connectivity) => IngressConfigurationArrived((b) => b
           ..remoteConfiguration = remoteConfiguration.toBuilder()
-          ..packageInfo = packageInfo
+          ..packageInfo = packageInfo.toBuilder()
           ..connectivity = connectivity
         ),
       ))
-      .distinct()
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => ConfigurationError((b) => b..error = error))
+      .distinct()
       .listen(dispatch);
     }
 
-    if (event is RemoteConfigurationArrived) {
+    if (event is IngressConfigurationArrived) {
       yield ConfigurationLoaded((b) => b
         ..remoteConfiguration = event.remoteConfiguration.toBuilder()
-        ..packageInfo = event.packageInfo
+        ..packageInfo = event.packageInfo.toBuilder()
         ..connectivity = event.connectivity
       );
 

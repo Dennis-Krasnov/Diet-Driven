@@ -165,9 +165,9 @@ class _$ConfigurationLoaded extends ConfigurationLoaded {
   @override
   final RemoteConfiguration remoteConfiguration;
   @override
-  final PackageInfo packageInfo;
+  final PackageInformation packageInfo;
   @override
-  final ConnectivityResult connectivity;
+  final ConnectivityStatus connectivity;
 
   factory _$ConfigurationLoaded(
           [void Function(ConfigurationLoadedBuilder) updates]) =>
@@ -233,13 +233,15 @@ class ConfigurationLoadedBuilder
   set remoteConfiguration(RemoteConfigurationBuilder remoteConfiguration) =>
       _$this._remoteConfiguration = remoteConfiguration;
 
-  PackageInfo _packageInfo;
-  PackageInfo get packageInfo => _$this._packageInfo;
-  set packageInfo(PackageInfo packageInfo) => _$this._packageInfo = packageInfo;
+  PackageInformationBuilder _packageInfo;
+  PackageInformationBuilder get packageInfo =>
+      _$this._packageInfo ??= new PackageInformationBuilder();
+  set packageInfo(PackageInformationBuilder packageInfo) =>
+      _$this._packageInfo = packageInfo;
 
-  ConnectivityResult _connectivity;
-  ConnectivityResult get connectivity => _$this._connectivity;
-  set connectivity(ConnectivityResult connectivity) =>
+  ConnectivityStatus _connectivity;
+  ConnectivityStatus get connectivity => _$this._connectivity;
+  set connectivity(ConnectivityStatus connectivity) =>
       _$this._connectivity = connectivity;
 
   ConfigurationLoadedBuilder();
@@ -247,7 +249,7 @@ class ConfigurationLoadedBuilder
   ConfigurationLoadedBuilder get _$this {
     if (_$v != null) {
       _remoteConfiguration = _$v.remoteConfiguration?.toBuilder();
-      _packageInfo = _$v.packageInfo;
+      _packageInfo = _$v.packageInfo?.toBuilder();
       _connectivity = _$v.connectivity;
       _$v = null;
     }
@@ -274,13 +276,15 @@ class ConfigurationLoadedBuilder
       _$result = _$v ??
           new _$ConfigurationLoaded._(
               remoteConfiguration: remoteConfiguration.build(),
-              packageInfo: packageInfo,
+              packageInfo: packageInfo.build(),
               connectivity: connectivity);
     } catch (_) {
       String _$failedField;
       try {
         _$failedField = 'remoteConfiguration';
         remoteConfiguration.build();
+        _$failedField = 'packageInfo';
+        packageInfo.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'ConfigurationLoaded', _$failedField, e.toString());

@@ -8,10 +8,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
 import 'package:diet_driven/models/models.dart';
@@ -25,14 +25,16 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   /// Authenticated user's id.
   final String userId;
 
-  /// Fixed point to distinguish 'ongoing' and 'historical' food diary subscriptions.
-  /// [today] stays constant regardless of real-world time.
-  final int today = currentDaysSinceEpoch();
+  /// Optional parameter to view historical data from single day.
+  final int date;
 
   StreamSubscription<FoodDiaryEvent> _foodDiaryEventSubscription;
 
-  FoodDiaryBloc({@required this.diaryRepository, @required this.userId})
-    : assert(diaryRepository != null), assert(userId != null && userId.isNotEmpty);
+  FoodDiaryBloc({@required this.diaryRepository, @required this.userId, this.date})
+    : assert(diaryRepository != null),
+      assert(userId != null && userId.isNotEmpty),
+      // A -> B === !A OR B
+      assert(date == null || date >= 0);
 
   @override
   FoodDiaryState get initialState => FoodDiaryUninitialized();
@@ -51,54 +53,61 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         return;
       }
 
+      // Common interface for both the ongoing and historical versions of food diary bloc
+      Observable<BuiltList<FoodDiaryDay>> diaryDays$;
+
+      // Whether food diary day document(s) exist for the given time period
+      bool diaryDaysExist;
+
+      // Ongoing subscription
+      if (!historical) {
+        // A month ago from today
+        final startDate = currentDaysSinceEpoch() - 30;
+        diaryDays$ = Observable<BuiltList<FoodDiaryDay>>(diaryRepository.allTimeFoodDiary$(userId, startAt: startDate));
+
+        diaryDaysExist = await diaryRepository.allTimeFoodDiaryExists(userId, startAt: startDate);
+      }
+      // Historical date
+      else {
+        diaryDays$ = Observable<FoodDiaryDay>(diaryRepository.foodDiaryDay$(userId, date))
+          .map((day) => BuiltList(<FoodDiaryDay>[day]));
+
+        diaryDaysExist = await diaryRepository.foodDiaryDayExists(userId, date);
+      }
+
+      // If nothing found in the time period, then start off with an empty diary.
+      if (!diaryDaysExist) {
+        diaryDays$ = diaryDays$.startWith(BuiltList());
+      }
+
+      // Maintain single instance of stream subscription
       _foodDiaryEventSubscription ??= Observable<FoodDiaryEvent>(CombineLatestStream.combine2(
-        Observable<BuiltList<FoodDiaryDay>>(diaryRepository.allTimeFoodDiary$(userId)),
+        Observable<BuiltList<FoodDiaryDay>>(diaryDays$),
         Observable<BuiltList<Diet>>(diaryRepository.allTimeDiet$(userId)),
-        (BuiltList<FoodDiaryDay> diaryDays, BuiltList<Diet> diets) => RemoteFoodDiaryArrived((b) => b
+        (BuiltList<FoodDiaryDay> diaryDays, BuiltList<Diet> diets) => IngressFoodDiaryArrived((b) => b
           ..diaryDays = diaryDays.toBuilder()
           ..diets = diets.toBuilder()
         )
       ))
-      .distinct()
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => FoodDiaryError((b) => b..error = error))
+      .distinct()
       .listen(dispatch);
     }
 
-    if (event is RemoteFoodDiaryArrived) {
-      // optimize with compute(method, params)
-      // The callback argument must be a top-level function, not a closure or an instance or static method of a class.
-//      int result = await compute(_calculate, 5);
-//      int _calculate(int value) {
-//        // this runs on another isolate
-//        return value * 2;
-//      }
-
-
-      /// Initializes default DiaryDayBloc currentDate as today.
-      var currentDate = currentDaysSinceEpoch();
-      final diaryDaysBuilder = MapBuilder<int, FoodDiaryDay>();
-
-      // Load previous state
-      if (currentState is FoodDiaryLoaded) {
-        currentDate = (currentState as FoodDiaryLoaded).currentDate;
-        diaryDaysBuilder.replace((currentState as FoodDiaryLoaded).diaryDays); // OPTIMIZE?: when last food record deletes, cloud function deletes day but this still shows... is this ok?
-      }
-
-      // Override with new food diary days
-      diaryDaysBuilder.addIterable(
+    if (event is IngressFoodDiaryArrived) {
+      final diaryDaysMap = BuiltMap<int, FoodDiaryDay>.from(Map<int, FoodDiaryDay>.fromIterable(
         event.diaryDays,
-        key: (FoodDiaryDay day) => day.date,
-        value: (FoodDiaryDay day) => day
-      );
+        key: (dynamic day) => day.date,
+        value: (dynamic day) => day
+      ));
 
       yield FoodDiaryLoaded((b) => b
-        ..currentDate = currentDate
-        ..diaryDays = diaryDaysBuilder
+        ..diaryDays = diaryDaysMap.toBuilder()
         ..diets = event.diets.toBuilder()
       );
 
-      LoggingBloc().info("Food diary loaded with ${diaryDaysBuilder.length} days");
+      LoggingBloc().info("${historical ? "Historical ($date) " : ""}Food diary loaded with ${event.diaryDays.length} days");
     }
 
     if (event is FoodDiaryError) {
@@ -108,17 +117,6 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       );
 
       LoggingBloc().unexpectedError("Food diary failed", event.error, event.stacktrace);
-    }
-
-    if (event is UpdateCurrentDate) {
-      if (currentState is! FoodDiaryLoaded) {
-        dispatch(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be loaded")));
-        return;
-      }
-
-      yield (currentState as FoodDiaryLoaded).rebuild((b) => b
-        ..currentDate = event.currentDate
-      );
     }
 
     if (event is GlobalAddFoodRecords) {
@@ -157,31 +155,11 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         event?.completer?.completeError(error, stacktrace);
       }
     }
+
+    // TODO: copy event copies onto self, instead of copying into another bloc
   }
 
-  /// Current diary's recently logged foods.
-  /// Only use when it's certain that [currentState] is [FoodDiaryLoaded].
-  BuiltList<FoodRecord> get recentFoods {
-    final loadedState = currentState as FoodDiaryLoaded;
-
-    final foodRecords = loadedState.diaryDays.keys
-      // Don't consider future foods
-      .where((date) => date <= loadedState.currentDate)
-      // ...
-      .map((date) => loadedState.diaryDays[date].meals.expand((meal) => meal.foodRecords))
-      // ...
-      .expand<FoodRecord>((mealFoods) => mealFoods);
-
-    // OPTIMIZE: this is mega inefficient
-    return BuiltList((foodRecords.toList()
-      ..sort((a, b) =>
-        foodRecords.where((fr) => fr == b).length - foodRecords.where((fr) => fr == a).length))
-        // Distinct elements
-        .toSet().toList()
-    );
-  }
-
-  /// Current diary's frequently logged foods.
-  /// Only use when it's certain that [currentState] is [FoodDiaryLoaded].
-  BuiltList<FoodRecord> get frequentFoods => BuiltList(<FoodRecord>[]);
+  /// ...
+  /// TODO: use this everywhere!
+  bool get historical => date != null;
 }

@@ -23,14 +23,14 @@ abstract class InitFoodDiaryDay implements FoodDiaryDayEvent, Built<InitFoodDiar
 }
 
 /// Reactively updates current [foodDiaryDay], [diet].
-abstract class RemoteFoodDiaryDayArrived implements FoodDiaryDayEvent, Built<RemoteFoodDiaryDayArrived, RemoteFoodDiaryDayArrivedBuilder> {
+abstract class IngressFoodDiaryDayArrived implements FoodDiaryDayEvent, Built<IngressFoodDiaryDayArrived, IngressFoodDiaryDayArrivedBuilder> {
   @nullable
   FoodDiaryDay get foodDiaryDay;
 
   Diet get diet;
 
-  factory RemoteFoodDiaryDayArrived([void Function(RemoteFoodDiaryDayArrivedBuilder) updates]) = _$RemoteFoodDiaryDayArrived;
-  RemoteFoodDiaryDayArrived._();
+  factory IngressFoodDiaryDayArrived([void Function(IngressFoodDiaryDayArrivedBuilder) updates]) = _$IngressFoodDiaryDayArrived;
+  IngressFoodDiaryDayArrived._();
 }
 
 /// Adds [foodRecords] to specified [mealIndex].

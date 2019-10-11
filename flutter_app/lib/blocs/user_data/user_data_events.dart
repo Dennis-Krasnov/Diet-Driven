@@ -22,7 +22,7 @@ abstract class InitUserData implements UserDataEvent, Built<InitUserData, InitUs
 }
 
 /// Reactively updates current [authentication], [userDocument], [settings], [subscription].
-abstract class RemoteUserDataArrived implements UserDataEvent, Built<RemoteUserDataArrived, RemoteUserDataArrivedBuilder> {
+abstract class IngressUserDataArrived implements UserDataEvent, Built<IngressUserDataArrived, IngressUserDataArrivedBuilder> {
   Authentication get authentication;
 
   UserDocument get userDocument;
@@ -33,8 +33,8 @@ abstract class RemoteUserDataArrived implements UserDataEvent, Built<RemoteUserD
 
   SubscriptionType get subscription;
 
-  factory RemoteUserDataArrived([void Function(RemoteUserDataArrivedBuilder b)]) = _$RemoteUserDataArrived;
-  RemoteUserDataArrived._();
+  factory IngressUserDataArrived([void Function(IngressUserDataArrivedBuilder b)]) = _$IngressUserDataArrived;
+  IngressUserDataArrived._();
 }
 
 /// Throws unrecoverable exception.

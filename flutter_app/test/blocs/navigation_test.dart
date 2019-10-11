@@ -16,11 +16,11 @@ import 'package:diet_driven/repositories/repositories.dart';
 import '../test_utils.dart';
 
 void main() {
-  NavigationBloc navigationBloc;
+  NavigationBloc sut;
 
   /// Mocks
-  AnalyticsRepository analyticsRepository;
   UserDataBloc userDataBloc;
+  AnalyticsRepository analyticsRepository;
 
   /// Data
   final userDataStates = <UserDataState>[
@@ -51,64 +51,74 @@ void main() {
   setUp(() {
     BlocSupervisor.delegate = LoggingBlocDelegate();
 
-    analyticsRepository = MockAnalyticsRepository();
     userDataBloc = MockUserDataBloc();
-
     when(userDataBloc.state).thenAnswer((_) => Stream.fromIterable(userDataStates));
 
-    navigationBloc = NavigationBloc(
+    analyticsRepository = MockAnalyticsRepository();
+
+    sut = NavigationBloc(
       analyticsRepository: analyticsRepository,
       userDataBloc: userDataBloc
     );
   });
 
   /// Tests
-  test("Initialize properly", () {
-    expect(navigationBloc.initialState, NavigationUninitialized());
+  test("Start with initial state", () {
+    expect(sut.initialState, NavigationUninitialized());
   });
 
   // TODO: test analytics events for all events!!!
-  test("Navigate to default page", () {
+
+  test("Navigate to default page on initialization", () {
     expectLater(
-      navigationBloc.state,
+      sut.state,
       emitsInOrder(<NavigationState>[
         NavigationUninitialized(),
         ReportsTab(),
       ])
     );
 
-    navigationBloc.dispatch(InitNavigation());
+    sut.dispatch(InitNavigation());
   });
 
-  group("Navigate to pages", () {
-    test("Diary page", () async {
+  group("Page navigation", () {
+    test("Navigate to diary page", () async {
       expectLater(
-        navigationBloc.state,
+        sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
           ReportsTab(),
           DiaryTab(),
           DiaryTab((b) => b
-            ..deepLink = ListBuilder(<String>["24"])
+            ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
+              ..path = "diary"
+              ..data = 24
+            )])
           ),
           DiaryTab((b) => b
-            ..deepLink = ListBuilder(<String>["35"])
+            ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
+              ..path = "diary"
+              ..data = 35
+            )])
+            ..previousDeepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
+              ..path = "diary"
+              ..data = 24
+            )])
           ),
         ])
       );
 
-      // Wait for bloc to be fully initialized
-      navigationBloc.dispatch(InitNavigation());
-      await Future<void>.delayed(ticks(1));
+      sut.dispatch(InitNavigation());
 
-      navigationBloc.dispatch(NavigateToDiary());
-      navigationBloc.dispatch(NavigateToDiary.day(24));
-      navigationBloc.dispatch(NavigateToDiary.day(35));
+      await delay(1);
+      sut.dispatch(NavigateToDiary());
+      sut.dispatch(NavigateToDiary.day(24));
+      sut.dispatch(NavigateToDiary.day(35));
     });
 
-    test("Tracking page", () async {
+    test("Navigate to tracking page", () async {
       expectLater(
-        navigationBloc.state,
+        sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
           ReportsTab(),
@@ -116,16 +126,15 @@ void main() {
         ])
       );
 
-      // Wait for bloc to be fully initialized
-      navigationBloc.dispatch(InitNavigation());
-      await Future<void>.delayed(ticks(1));
+      sut.dispatch(InitNavigation());
 
-      navigationBloc.dispatch(NavigateToTrack());
+      await delay(1);
+      sut.dispatch(NavigateToTrack());
     });
 
-    test("Reports page", () async {
+    test("Navigate to reports page", () async {
       expectLater(
-        navigationBloc.state,
+        sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
           ReportsTab(),
@@ -134,47 +143,48 @@ void main() {
         ])
       );
 
-      // Wait for bloc to be fully initialized
-      navigationBloc.dispatch(InitNavigation());
-      await Future<void>.delayed(ticks(1));
+      sut.dispatch(InitNavigation());
 
+      await delay(1);
       // Navigate away from default page
-      navigationBloc.dispatch(NavigateToDiary());
-      navigationBloc.dispatch(NavigateToReports());
+      sut.dispatch(NavigateToDiary());
+      sut.dispatch(NavigateToReports());
     });
 
-    test("Settings page", () async {
+    test("Navigate to settings page", () async {
       expectLater(
-        navigationBloc.state,
+        sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
           ReportsTab(),
           SettingsTab(),
           SettingsTab((b) => b
-            ..deepLink = ListBuilder(<String>[Routes.generalSettings])
+            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "general")])
           ),
           SettingsTab((b) => b
-            ..deepLink = ListBuilder(<String>[Routes.themeSettings])
+            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "theme")])
+            ..previousDeepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "general")])
           ),
           SettingsTab((b) => b
-            ..deepLink = ListBuilder(<String>[Routes.diarySettings])
+            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "diary")])
+            ..previousDeepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "theme")])
           ),
         ])
       );
 
-      // Wait for bloc to be fully initialized
-      navigationBloc.dispatch(InitNavigation());
-      await Future<void>.delayed(ticks(1));
+      sut.dispatch(InitNavigation());
 
-      navigationBloc.dispatch(NavigateToSettings());
-      navigationBloc.dispatch(NavigateToSettings.general());
-      navigationBloc.dispatch(NavigateToSettings.theme());
-      navigationBloc.dispatch(NavigateToSettings.diary());
+      await delay(1);
+      sut.dispatch(NavigateToSettings());
+      sut.dispatch(NavigateToSettings.general());
+      sut.dispatch(NavigateToSettings.theme());
+      sut.dispatch(NavigateToSettings.diary());
     });
 
-    test("Logging page", () async {
+    // TODO: remove completely!
+    test("Navigate to logging page", () async {
       expectLater(
-        navigationBloc.state,
+        sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
           ReportsTab(),
@@ -182,11 +192,10 @@ void main() {
         ])
       );
 
-      // Wait for bloc to be fully initialized
-      navigationBloc.dispatch(InitNavigation());
-      await Future<void>.delayed(ticks(1));
+      sut.dispatch(InitNavigation());
 
-      navigationBloc.dispatch(NavigateToLogging());
+      await delay(1);
+      sut.dispatch(NavigateToLogging());
     });
   });
 }
