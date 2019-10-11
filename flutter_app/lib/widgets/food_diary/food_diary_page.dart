@@ -91,6 +91,7 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
             builder: (BuildContext context) => FoodDiaryDayBloc(
               date: page,
               foodDiaryBloc: BlocProvider.of<FoodDiaryBloc>(context),
+              diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
             )..dispatch(InitFoodDiaryDay()),
             child: FoodDiaryDayPage(),
           );

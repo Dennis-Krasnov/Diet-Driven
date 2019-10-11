@@ -84,7 +84,7 @@ class _LoginFormState extends State<LoginForm> {
                 },
               ),
               FlatButton(
-                child: Text("Enter Dennis' cridentials"),
+                child: Text("Enter Dennis' cridentials", key: Key("cridentials_button"),),
                 onPressed: () {
                   _emailController.text = "dennis.krasnov@gmail.com";
                   _passwordController.text = "123456";
