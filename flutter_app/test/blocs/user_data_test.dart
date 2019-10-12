@@ -137,7 +137,7 @@ void main() {
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
-        Future.delayed(ticks(4)),
+        Future.delayed(ticks(5)),
       ]).asBroadcastStream());
       when(userRepository.userDocument$(any)).thenAnswer((_) async* {
         yield userDocument;
@@ -195,7 +195,7 @@ void main() {
             ..userSettings = SettingsBuilder()
             ..subscription = SubscriptionType.all_access
           ),
-          // Tick #4
+          // Tick #5
           UserDataUnauthenticated(),
         ])
       );
