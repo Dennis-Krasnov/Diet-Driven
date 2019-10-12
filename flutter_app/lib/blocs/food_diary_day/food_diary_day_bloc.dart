@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -61,7 +62,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       );
 
       // TODO: remove slightly differently coloured empty fr states, this would show 0 vs null !!!
-      LoggingBloc().info("Food diary day #$date loaded with ${event?.foodDiaryDay?.meals?.expand((meal) => meal.foodRecords)?.length} food records");
+      BlocLogger().info("Food diary day #$date loaded with ${event?.foodDiaryDay?.meals?.expand((meal) => meal.foodRecords)?.length} food records");
     }
 
     if (event is AddFoodRecords) {
@@ -88,10 +89,10 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
 
         await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
 
-        LoggingBloc().info("Updated ${event.oldRecord.foodName} on $date");
+        BlocLogger().info("Updated ${event.oldRecord.foodName} on $date");
         event?.completer?.complete();
       } catch(error, stacktrace) {
-        LoggingBloc().unexpectedError("Updating ${event.oldRecord.foodName} failed on $date", error, stacktrace);
+        BlocLogger().unexpectedError("Updating ${event.oldRecord.foodName} failed on $date", error, stacktrace);
         event?.completer?.completeError(error, stacktrace);
       }
     }
@@ -107,10 +108,10 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
 
         await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
 
-        LoggingBloc().info("Deleted ${event.foodRecords.length} foods from $date");
+        BlocLogger().info("Deleted ${event.foodRecords.length} foods from $date");
         event?.completer?.complete();
       } catch(error, stacktrace) {
-        LoggingBloc().unexpectedError("Deleting ${event.foodRecords.length} foods from $date failed", error, stacktrace);
+        BlocLogger().unexpectedError("Deleting ${event.foodRecords.length} foods from $date failed", error, stacktrace);
         event?.completer?.completeError(error, stacktrace);
       }
     }

@@ -5,8 +5,7 @@ author: Dennis Krasnov <dennis@krasnov.dev>
 homepage: https://github.com/Dennis-Krasnov/Diet-Driven
 
 environment:
-#  sdk: ">=2.2.2 <3.0.0"
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -42,13 +41,15 @@ dependencies:
     path: ../../rest_router
 
   ## DART UTILS
-  ansicolor: ^1.0.2
+
 #  date_utils: ^0.1.0+2
   dio: ^3.0.3
 #  intl: ^0.15.8 # ^0.16.0
   intl: ^0.15.8 # ^0.16.0
   merge_map: ^1.0.2
   uuid: ^2.0.2
+  bloc_logging:
+    path: ../bloc_logging
 
 dev_dependencies:
   flutter_test:

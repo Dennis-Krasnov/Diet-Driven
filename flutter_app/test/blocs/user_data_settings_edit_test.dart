@@ -40,7 +40,7 @@ void main() {
       ..bottomNavigationPages = ListBuilder(<Page>[
         Page.reports,
         Page.diary,
-        Page.logging,
+        Page.settings,
       ])
     ).toBuilder()
     ..themeSettings = ThemeSettings((b) => b

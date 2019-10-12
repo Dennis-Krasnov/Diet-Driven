@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:meta/meta.dart';
 
@@ -85,7 +86,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
           ..loading = false
         );
 
-        LoggingBloc().info("Found ${searchResult.foods.length} results for query ${loadedState.query}");
+        BlocLogger().info("Found ${searchResult.foods.length} results for query ${loadedState.query}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
         // Don't change results on failure
@@ -94,7 +95,7 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
           ..loading = false
         );
 
-        LoggingBloc().unexpectedError("${loadedState.query} search failed", error, stacktrace);
+        BlocLogger().unexpectedError("${loadedState.query} search failed", error, stacktrace);
         event?.completer?.completeError(error, stacktrace);
       }
     }

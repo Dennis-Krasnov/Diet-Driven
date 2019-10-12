@@ -6,7 +6,6 @@
 
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/widgets/loading/loading.dart';
-import 'package:diet_driven/widgets/logging/logging_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -107,9 +106,6 @@ class HomeScreen extends StatelessWidget {
       case Page.settings:
         return FontAwesomeIcons.userCog; // cog
         break;
-      case Page.logging:
-        return FontAwesomeIcons.stream;
-        break;
       default:
         return FontAwesomeIcons.bug;
     }
@@ -129,9 +125,6 @@ class HomeScreen extends StatelessWidget {
         break;
       case Page.settings:
         return SettingsPage();
-        break;
-      case Page.logging:
-        return LoggingPage();
         break;
       default:
         return Container(child: Center(child: Text("couldn't find your $page"))); // OPTIMIZE

@@ -5,33 +5,25 @@
  */
 
 import 'package:bloc/bloc.dart';
-
-import 'package:diet_driven/blocs/blocs.dart';
+import 'package:bloc_logging/bloc_logging.dart';
 
 /// Middleware to log transitions and errors from all blocs.
 class LoggingBlocDelegate extends BlocDelegate {
   @override
+  void onEvent(Bloc bloc, Object event) {
+    super.onEvent(bloc, event);
+    BlocLogger().blocEvent(bloc, event);
+  }
+
+  @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
-
-    // Prevent recursion
-    if (bloc is! LoggingBloc) { // TODO: && bloc is! FilteredLoggingBloc
-      LoggingBloc().dispatch(LogBlocTransition((b) => b
-        ..message = bloc.runtimeType.toString()
-        ..currentState = transition.currentState
-        ..event = transition.event
-        ..nextState = transition.nextState
-      ));
-    }
+    BlocLogger().blocTransition(bloc, transition.currentState, transition.event, transition.nextState);
   }
 
   @override
   void onError(Bloc bloc, Object error, Object stacktrace) {
     super.onError(bloc, error, stacktrace);
-
-    // Prevent recursion
-    if (bloc is! LoggingBloc) { // TODO: && bloc is! FilteredLoggingBloc
-      LoggingBloc().unexpectedError("${bloc.runtimeType} error", error, stacktrace);
-    }
+    BlocLogger().unexpectedError("${bloc.runtimeType} delegate error", error, stacktrace);
   }
 }

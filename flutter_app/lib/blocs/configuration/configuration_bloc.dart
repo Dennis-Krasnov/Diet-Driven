@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -44,7 +45,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
       // Maintain single instance of stream subscription
       _configurationEventSubscription ??= Observable<ConfigurationEvent>(CombineLatestStream.combine3(
         Observable<RemoteConfiguration>.fromFuture(configurationRepository.fetchRemoteConfig())
-          .doOnError((Object error, StackTrace trace) => LoggingBloc().expectedError("Default configuration used", error, trace))
+          .doOnError((Object error, StackTrace stacktrace) => BlocLogger().expectedError("Default configuration used", error, stacktrace))
           .onErrorReturn(RemoteConfiguration()),
         Observable<PackageInformation>.fromFuture(configurationRepository.fetchPackageInfo()),
         // FIXME: start with needed on ios for some reason...
@@ -68,7 +69,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         ..connectivity = event.connectivity
       );
 
-      LoggingBloc().info("Configuration loaded");
+      BlocLogger().info("Configuration loaded");
     }
 
     if (event is ConfigurationError) {
@@ -77,7 +78,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
         ..stacktrace = event.stacktrace
       );
 
-      LoggingBloc().unexpectedError("Configuration failed", event.error, event.stacktrace);
+      BlocLogger().unexpectedError("Configuration failed", event.error, event.stacktrace);
     }
   }
 }

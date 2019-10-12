@@ -6,6 +6,7 @@
 
 import 'dart:math' as math;
 
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:flutter/cupertino.dart';
@@ -55,7 +56,7 @@ class FoodDiaryDayPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<FoodDiaryDayBloc, FoodDiaryDayState>(
       builder: (BuildContext context, FoodDiaryDayState foodDiaryDayState) {
-        LoggingBloc().verbose("Food diary day #${BlocProvider.of<FoodDiaryDayBloc>(context).date} rebuild");
+        BlocLogger().ui("Food diary day #${BlocProvider.of<FoodDiaryDayBloc>(context).date} rebuild");
 
         // White screen with skeleton food records
         if (foodDiaryDayState is FoodDiaryDayUninitialized) {
@@ -72,10 +73,12 @@ class FoodDiaryDayPage extends StatelessWidget {
         final loadedState = foodDiaryDayState as FoodDiaryDayLoaded;
 
         // TODO: bloc listener to update charts!!!
-        final NutrientMap totalNutrients = loadedState.foodDiaryDay?.meals
-          ?.expand<FoodRecord>((meal) => meal.foodRecords)
-          ?.map<NutrientMap>((fr) => fr.totalNutrients)
-          ?.reduce((curr, next) => curr + next);
+        final NutrientMap totalNutrients = NutrientMap.random();
+        // FIXME: this breaks a lot of things!!
+//        final NutrientMap totalNutrients = loadedState.foodDiaryDay?.meals
+//          ?.expand<FoodRecord>((meal) => meal.foodRecords)
+//          ?.map<NutrientMap>((fr) => fr.totalNutrients)
+//          ?.reduce((curr, next) => curr + next);
 
         return CustomScrollView(
           slivers: <Widget>[

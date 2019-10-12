@@ -4,6 +4,7 @@
  * in the LICENSE file.
  */
 
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,13 +19,13 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Fixme: called twice....
-    LoggingBloc().verbose("");
-    LoggingBloc().verbose("======================");
-    LoggingBloc().verbose("App started");
+    BlocLogger().fine("");
+    BlocLogger().fine("======================");
+    BlocLogger().fine("App started");
 
     return BlocBuilder<ConfigurationBloc, ConfigurationState>(
       builder: (BuildContext context, ConfigurationState configurationState) {
-        LoggingBloc().verbose("Configuration rebuild");
+        BlocLogger().ui("Configuration rebuild");
 
         return BlocBuilder<UserDataBloc, UserDataState>(
             condition: (previous, current) {
@@ -36,7 +37,7 @@ class App extends StatelessWidget {
               return (previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings;
             },
             builder: (BuildContext context, UserDataState userDataState) {
-              LoggingBloc().verbose("Theme rebuild");
+              BlocLogger().ui("Theme rebuild");
 
               return MaterialApp(
                 home: ConfigurationSettingsDecision(configurationState: configurationState, userDataState: userDataState),
