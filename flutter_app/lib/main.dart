@@ -5,22 +5,27 @@
  */
 
 import 'package:bloc/bloc.dart';
-import 'package:diet_driven/repositories/repositories.dart';
+import 'package:bloc_logging/bloc_logging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'package:diet_driven/blocs/blocs.dart';
-import 'package:diet_driven/widgets/core/core.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
-  // Configure global logger
-  // TODO: set LoggingBloc() logging level
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/widgets/core/core.dart';
 
-  // Logs every bloc event and state transition
+void main() {
+  // Configure logging
+  BlocLogger().messageThreshold = LogLevel.ui;
+  BlocLogger().enabled = !kReleaseMode;
+  BlocLogger().blocEventsEnabled = false;
+  BlocLogger().blocTransitionsEnabled = false;
+
+  // Log every bloc event and state transition
   BlocSupervisor.delegate = LoggingBlocDelegate();
 
-  // Locks to portrait mode
+  // Lock to portrait mode
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,

@@ -6,6 +6,7 @@
 
 import 'dart:async';
 
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
@@ -36,7 +37,7 @@ StreamTransformer<DocumentSnapshot, T> deserializeDocumentTransform<T>() =>
       }
     },
     handleError: (Object error, StackTrace stackTrace, EventSink<T> sink) {
-      LoggingBloc().unexpectedError("Deserialization document transform failed", error, stackTrace);
+      BlocLogger().unexpectedError("Deserialization document transform failed", error, stackTrace);
     }
   );
 
@@ -53,7 +54,7 @@ StreamTransformer<QuerySnapshot, BuiltList<T>> deserializeCollectionTransform<T>
       }
     },
     handleError: (Object error, StackTrace stackTrace, EventSink<BuiltList<T>> sink) {
-      LoggingBloc().unexpectedError("Deserialization collection transform failed", error, stackTrace);
+      BlocLogger().unexpectedError("Deserialization collection transform failed", error, stackTrace);
     }
   );
 

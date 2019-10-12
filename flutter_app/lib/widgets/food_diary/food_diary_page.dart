@@ -4,6 +4,7 @@
  * in the LICENSE file.
  */
 
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -36,7 +37,7 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
           // Rebuild only if state changed
           condition: (previous, current) => previous is! FoodDiaryLoaded || current is! FoodDiaryLoaded,
           builder: (BuildContext context, FoodDiaryState foodDiaryState) {
-            LoggingBloc().verbose("Food diary app bar rebuild");
+            BlocLogger().ui("Food diary app bar rebuild");
 
             // Skeleton diary app bar
             if (foodDiaryState is FoodDiaryUninitialized) {

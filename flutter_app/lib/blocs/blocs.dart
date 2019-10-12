@@ -13,7 +13,6 @@ export 'food_diary/food_diary.dart';
 export 'food_diary_day/food_diary_day.dart';
 export 'food_record_edit/food_record_edit.dart';
 export 'food_search/food_search.dart';
-export 'logging/logging.dart';
 export 'login/login.dart';
 export 'navigation/navigation.dart';
 export 'subscription_edit/subscription_edit.dart';

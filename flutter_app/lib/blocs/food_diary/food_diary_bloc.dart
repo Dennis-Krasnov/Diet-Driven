@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:meta/meta.dart';
@@ -107,7 +108,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         ..diets = event.diets.toBuilder()
       );
 
-      LoggingBloc().info("${historical ? "Historical ($date) " : ""}Food diary loaded with ${event.diaryDays.length} days");
+      BlocLogger().info("${historical ? "Historical ($date) " : ""}Food diary loaded with ${event.diaryDays.length} days");
     }
 
     if (event is FoodDiaryError) {
@@ -116,7 +117,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         ..stacktrace = event.stacktrace
       );
 
-      LoggingBloc().unexpectedError("Food diary failed", event.error, event.stacktrace);
+      BlocLogger().unexpectedError("Food diary failed", event.error, event.stacktrace);
     }
 
     if (event is GlobalAddFoodRecords) {
@@ -148,10 +149,10 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
         await diaryRepository.saveFoodDiaryDay(userId, diaryDayBuilder.build());
 
-        LoggingBloc().info("Added ${event.foodRecords.length} foods to ${event.date}");
+        BlocLogger().info("Added ${event.foodRecords.length} foods to ${event.date}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
-        LoggingBloc().unexpectedError("Adding ${event.foodRecords.length} foods to ${event.date} failed", error, stacktrace);
+        BlocLogger().unexpectedError("Adding ${event.foodRecords.length} foods to ${event.date} failed", error, stacktrace);
         event?.completer?.completeError(error, stacktrace);
       }
     }

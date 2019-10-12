@@ -7,6 +7,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:bloc_logging/bloc_logging.dart';
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:merge_map/merge_map.dart';
 import 'package:meta/meta.dart';
@@ -84,13 +85,13 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..subscription = event.subscription
       );
 
-      LoggingBloc().info("User data loaded");
+      BlocLogger().info("User data loaded");
     }
 
     if (event is OnboardUser) {
       yield UserDataUnauthenticated();
 
-      LoggingBloc().info("Onboarded user");
+      BlocLogger().info("Onboarded user");
     }
 
     if (event is UserDataError) {
@@ -99,7 +100,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         ..stacktrace = event.stacktrace
       );
 
-      LoggingBloc().unexpectedError("User data failed", event.error, event.stacktrace);
+      BlocLogger().unexpectedError("User data failed", event.error, event.stacktrace);
     }
 
     ///    ######  ######## ######## ######## #### ##    ##  ######    ######
@@ -124,10 +125,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
         await settingsRepository.saveSettings(userId, settingsBuilder.build());
 
-        LoggingBloc().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
+        BlocLogger().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
-        LoggingBloc().unexpectedError("Dark mode update failed", error, stacktrace);
+        BlocLogger().unexpectedError("Dark mode update failed", error, stacktrace);
         event?.completer?.completeError(error, stacktrace);
       }
     }
@@ -146,10 +147,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
         await settingsRepository.saveSettings(userId, settingsBuilder.build());
 
-        LoggingBloc().info("Primary colour now ${event.colourValue}");
+        BlocLogger().info("Primary colour now ${event.colourValue}");
         event?.completer?.complete();
       } catch(error, stacktrace) {
-        LoggingBloc().unexpectedError("Primary colour update failed", error, stacktrace);
+        BlocLogger().unexpectedError("Primary colour update failed", error, stacktrace);
         event?.completer?.completeError(error, stacktrace);
       }
     }
