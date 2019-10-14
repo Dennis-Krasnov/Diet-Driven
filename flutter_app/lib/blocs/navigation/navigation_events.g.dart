@@ -6,21 +6,11 @@ part of 'navigation_events.dart';
 // BuiltValueGenerator
 // **************************************************************************
 
-abstract class NavigationEventBuilder {
-  void replace(NavigationEvent other);
-  void update(void Function(NavigationEventBuilder) updates);
-  ListBuilder<DeepLink> get deepLink;
-  set deepLink(ListBuilder<DeepLink> deepLink);
-}
-
 class _$InitNavigation extends InitNavigation {
-  @override
-  final BuiltList<DeepLink> deepLink;
-
   factory _$InitNavigation([void Function(InitNavigationBuilder) updates]) =>
       (new InitNavigationBuilder()..update(updates)).build();
 
-  _$InitNavigation._({this.deepLink}) : super._();
+  _$InitNavigation._() : super._();
 
   @override
   InitNavigation rebuild(void Function(InitNavigationBuilder) updates) =>
@@ -33,45 +23,28 @@ class _$InitNavigation extends InitNavigation {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is InitNavigation && deepLink == other.deepLink;
+    return other is InitNavigation;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, deepLink.hashCode));
+    return 596236327;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('InitNavigation')
-          ..add('deepLink', deepLink))
-        .toString();
+    return newBuiltValueToStringHelper('InitNavigation').toString();
   }
 }
 
 class InitNavigationBuilder
-    implements
-        Builder<InitNavigation, InitNavigationBuilder>,
-        NavigationEventBuilder {
+    implements Builder<InitNavigation, InitNavigationBuilder> {
   _$InitNavigation _$v;
-
-  ListBuilder<DeepLink> _deepLink;
-  ListBuilder<DeepLink> get deepLink =>
-      _$this._deepLink ??= new ListBuilder<DeepLink>();
-  set deepLink(ListBuilder<DeepLink> deepLink) => _$this._deepLink = deepLink;
 
   InitNavigationBuilder();
 
-  InitNavigationBuilder get _$this {
-    if (_$v != null) {
-      _deepLink = _$v.deepLink?.toBuilder();
-      _$v = null;
-    }
-    return this;
-  }
-
   @override
-  void replace(covariant InitNavigation other) {
+  void replace(InitNavigation other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
@@ -85,385 +58,189 @@ class InitNavigationBuilder
 
   @override
   _$InitNavigation build() {
-    _$InitNavigation _$result;
-    try {
-      _$result = _$v ?? new _$InitNavigation._(deepLink: _deepLink?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'deepLink';
-        _deepLink?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'InitNavigation', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ?? new _$InitNavigation._();
     replace(_$result);
     return _$result;
   }
 }
 
-class _$NavigateToDiary extends NavigateToDiary {
+class _$ResetNavigation extends ResetNavigation {
   @override
-  final BuiltList<DeepLink> deepLink;
+  final Page defaultPage;
 
-  factory _$NavigateToDiary([void Function(NavigateToDiaryBuilder) updates]) =>
-      (new NavigateToDiaryBuilder()..update(updates)).build();
+  factory _$ResetNavigation([void Function(ResetNavigationBuilder) updates]) =>
+      (new ResetNavigationBuilder()..update(updates)).build();
 
-  _$NavigateToDiary._({this.deepLink}) : super._();
+  _$ResetNavigation._({this.defaultPage}) : super._() {
+    if (defaultPage == null) {
+      throw new BuiltValueNullFieldError('ResetNavigation', 'defaultPage');
+    }
+  }
 
   @override
-  NavigateToDiary rebuild(void Function(NavigateToDiaryBuilder) updates) =>
+  ResetNavigation rebuild(void Function(ResetNavigationBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigateToDiaryBuilder toBuilder() =>
-      new NavigateToDiaryBuilder()..replace(this);
+  ResetNavigationBuilder toBuilder() =>
+      new ResetNavigationBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToDiary && deepLink == other.deepLink;
+    return other is ResetNavigation && defaultPage == other.defaultPage;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, deepLink.hashCode));
+    return $jf($jc(0, defaultPage.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToDiary')
-          ..add('deepLink', deepLink))
+    return (newBuiltValueToStringHelper('ResetNavigation')
+          ..add('defaultPage', defaultPage))
         .toString();
   }
 }
 
-class NavigateToDiaryBuilder
-    implements
-        Builder<NavigateToDiary, NavigateToDiaryBuilder>,
-        NavigationEventBuilder {
-  _$NavigateToDiary _$v;
+class ResetNavigationBuilder
+    implements Builder<ResetNavigation, ResetNavigationBuilder> {
+  _$ResetNavigation _$v;
 
-  ListBuilder<DeepLink> _deepLink;
-  ListBuilder<DeepLink> get deepLink =>
-      _$this._deepLink ??= new ListBuilder<DeepLink>();
-  set deepLink(ListBuilder<DeepLink> deepLink) => _$this._deepLink = deepLink;
+  Page _defaultPage;
+  Page get defaultPage => _$this._defaultPage;
+  set defaultPage(Page defaultPage) => _$this._defaultPage = defaultPage;
 
-  NavigateToDiaryBuilder();
+  ResetNavigationBuilder();
 
-  NavigateToDiaryBuilder get _$this {
+  ResetNavigationBuilder get _$this {
     if (_$v != null) {
-      _deepLink = _$v.deepLink?.toBuilder();
+      _defaultPage = _$v.defaultPage;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant NavigateToDiary other) {
+  void replace(ResetNavigation other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$NavigateToDiary;
+    _$v = other as _$ResetNavigation;
   }
 
   @override
-  void update(void Function(NavigateToDiaryBuilder) updates) {
+  void update(void Function(ResetNavigationBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$NavigateToDiary build() {
-    _$NavigateToDiary _$result;
-    try {
-      _$result = _$v ?? new _$NavigateToDiary._(deepLink: _deepLink?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'deepLink';
-        _deepLink?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'NavigateToDiary', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+  _$ResetNavigation build() {
+    final _$result = _$v ?? new _$ResetNavigation._(defaultPage: defaultPage);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$NavigateToTrack extends NavigateToTrack {
+class _$Navigate extends Navigate {
   @override
-  final BuiltList<DeepLink> deepLink;
+  final Page page;
+  @override
+  final BuiltList<DeepLink> deepLinks;
 
-  factory _$NavigateToTrack([void Function(NavigateToTrackBuilder) updates]) =>
-      (new NavigateToTrackBuilder()..update(updates)).build();
+  factory _$Navigate([void Function(NavigateBuilder) updates]) =>
+      (new NavigateBuilder()..update(updates)).build();
 
-  _$NavigateToTrack._({this.deepLink}) : super._();
+  _$Navigate._({this.page, this.deepLinks}) : super._() {
+    if (page == null) {
+      throw new BuiltValueNullFieldError('Navigate', 'page');
+    }
+    if (deepLinks == null) {
+      throw new BuiltValueNullFieldError('Navigate', 'deepLinks');
+    }
+  }
 
   @override
-  NavigateToTrack rebuild(void Function(NavigateToTrackBuilder) updates) =>
+  Navigate rebuild(void Function(NavigateBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigateToTrackBuilder toBuilder() =>
-      new NavigateToTrackBuilder()..replace(this);
+  NavigateBuilder toBuilder() => new NavigateBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToTrack && deepLink == other.deepLink;
+    return other is Navigate &&
+        page == other.page &&
+        deepLinks == other.deepLinks;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, deepLink.hashCode));
+    return $jf($jc($jc(0, page.hashCode), deepLinks.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToTrack')
-          ..add('deepLink', deepLink))
+    return (newBuiltValueToStringHelper('Navigate')
+          ..add('page', page)
+          ..add('deepLinks', deepLinks))
         .toString();
   }
 }
 
-class NavigateToTrackBuilder
-    implements
-        Builder<NavigateToTrack, NavigateToTrackBuilder>,
-        NavigationEventBuilder {
-  _$NavigateToTrack _$v;
+class NavigateBuilder implements Builder<Navigate, NavigateBuilder> {
+  _$Navigate _$v;
 
-  ListBuilder<DeepLink> _deepLink;
-  ListBuilder<DeepLink> get deepLink =>
-      _$this._deepLink ??= new ListBuilder<DeepLink>();
-  set deepLink(ListBuilder<DeepLink> deepLink) => _$this._deepLink = deepLink;
+  Page _page;
+  Page get page => _$this._page;
+  set page(Page page) => _$this._page = page;
 
-  NavigateToTrackBuilder();
+  ListBuilder<DeepLink> _deepLinks;
+  ListBuilder<DeepLink> get deepLinks =>
+      _$this._deepLinks ??= new ListBuilder<DeepLink>();
+  set deepLinks(ListBuilder<DeepLink> deepLinks) =>
+      _$this._deepLinks = deepLinks;
 
-  NavigateToTrackBuilder get _$this {
+  NavigateBuilder();
+
+  NavigateBuilder get _$this {
     if (_$v != null) {
-      _deepLink = _$v.deepLink?.toBuilder();
+      _page = _$v.page;
+      _deepLinks = _$v.deepLinks?.toBuilder();
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant NavigateToTrack other) {
+  void replace(Navigate other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$NavigateToTrack;
+    _$v = other as _$Navigate;
   }
 
   @override
-  void update(void Function(NavigateToTrackBuilder) updates) {
+  void update(void Function(NavigateBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$NavigateToTrack build() {
-    _$NavigateToTrack _$result;
-    try {
-      _$result = _$v ?? new _$NavigateToTrack._(deepLink: _deepLink?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'deepLink';
-        _deepLink?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'NavigateToTrack', _$failedField, e.toString());
-      }
-      rethrow;
-    }
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$NavigateToReports extends NavigateToReports {
-  @override
-  final BuiltList<DeepLink> deepLink;
-
-  factory _$NavigateToReports(
-          [void Function(NavigateToReportsBuilder) updates]) =>
-      (new NavigateToReportsBuilder()..update(updates)).build();
-
-  _$NavigateToReports._({this.deepLink}) : super._();
-
-  @override
-  NavigateToReports rebuild(void Function(NavigateToReportsBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  NavigateToReportsBuilder toBuilder() =>
-      new NavigateToReportsBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is NavigateToReports && deepLink == other.deepLink;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, deepLink.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('NavigateToReports')
-          ..add('deepLink', deepLink))
-        .toString();
-  }
-}
-
-class NavigateToReportsBuilder
-    implements
-        Builder<NavigateToReports, NavigateToReportsBuilder>,
-        NavigationEventBuilder {
-  _$NavigateToReports _$v;
-
-  ListBuilder<DeepLink> _deepLink;
-  ListBuilder<DeepLink> get deepLink =>
-      _$this._deepLink ??= new ListBuilder<DeepLink>();
-  set deepLink(ListBuilder<DeepLink> deepLink) => _$this._deepLink = deepLink;
-
-  NavigateToReportsBuilder();
-
-  NavigateToReportsBuilder get _$this {
-    if (_$v != null) {
-      _deepLink = _$v.deepLink?.toBuilder();
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant NavigateToReports other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$NavigateToReports;
-  }
-
-  @override
-  void update(void Function(NavigateToReportsBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$NavigateToReports build() {
-    _$NavigateToReports _$result;
-    try {
-      _$result = _$v ?? new _$NavigateToReports._(deepLink: _deepLink?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'deepLink';
-        _deepLink?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'NavigateToReports', _$failedField, e.toString());
-      }
-      rethrow;
-    }
-    replace(_$result);
-    return _$result;
-  }
-}
-
-class _$NavigateToSettings extends NavigateToSettings {
-  @override
-  final BuiltList<DeepLink> deepLink;
-
-  factory _$NavigateToSettings(
-          [void Function(NavigateToSettingsBuilder) updates]) =>
-      (new NavigateToSettingsBuilder()..update(updates)).build();
-
-  _$NavigateToSettings._({this.deepLink}) : super._();
-
-  @override
-  NavigateToSettings rebuild(
-          void Function(NavigateToSettingsBuilder) updates) =>
-      (toBuilder()..update(updates)).build();
-
-  @override
-  NavigateToSettingsBuilder toBuilder() =>
-      new NavigateToSettingsBuilder()..replace(this);
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(other, this)) return true;
-    return other is NavigateToSettings && deepLink == other.deepLink;
-  }
-
-  @override
-  int get hashCode {
-    return $jf($jc(0, deepLink.hashCode));
-  }
-
-  @override
-  String toString() {
-    return (newBuiltValueToStringHelper('NavigateToSettings')
-          ..add('deepLink', deepLink))
-        .toString();
-  }
-}
-
-class NavigateToSettingsBuilder
-    implements
-        Builder<NavigateToSettings, NavigateToSettingsBuilder>,
-        NavigationEventBuilder {
-  _$NavigateToSettings _$v;
-
-  ListBuilder<DeepLink> _deepLink;
-  ListBuilder<DeepLink> get deepLink =>
-      _$this._deepLink ??= new ListBuilder<DeepLink>();
-  set deepLink(ListBuilder<DeepLink> deepLink) => _$this._deepLink = deepLink;
-
-  NavigateToSettingsBuilder();
-
-  NavigateToSettingsBuilder get _$this {
-    if (_$v != null) {
-      _deepLink = _$v.deepLink?.toBuilder();
-      _$v = null;
-    }
-    return this;
-  }
-
-  @override
-  void replace(covariant NavigateToSettings other) {
-    if (other == null) {
-      throw new ArgumentError.notNull('other');
-    }
-    _$v = other as _$NavigateToSettings;
-  }
-
-  @override
-  void update(void Function(NavigateToSettingsBuilder) updates) {
-    if (updates != null) updates(this);
-  }
-
-  @override
-  _$NavigateToSettings build() {
-    _$NavigateToSettings _$result;
+  _$Navigate build() {
+    _$Navigate _$result;
     try {
       _$result =
-          _$v ?? new _$NavigateToSettings._(deepLink: _deepLink?.build());
+          _$v ?? new _$Navigate._(page: page, deepLinks: deepLinks.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'deepLink';
-        _deepLink?.build();
+        _$failedField = 'deepLinks';
+        deepLinks.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-            'NavigateToSettings', _$failedField, e.toString());
+            'Navigate', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -472,93 +249,220 @@ class NavigateToSettingsBuilder
   }
 }
 
-class _$NavigateToLogging extends NavigateToLogging {
+class _$SwitchTab extends SwitchTab {
   @override
-  final BuiltList<DeepLink> deepLink;
+  final Page to;
 
-  factory _$NavigateToLogging(
-          [void Function(NavigateToLoggingBuilder) updates]) =>
-      (new NavigateToLoggingBuilder()..update(updates)).build();
+  factory _$SwitchTab([void Function(SwitchTabBuilder) updates]) =>
+      (new SwitchTabBuilder()..update(updates)).build();
 
-  _$NavigateToLogging._({this.deepLink}) : super._();
+  _$SwitchTab._({this.to}) : super._() {
+    if (to == null) {
+      throw new BuiltValueNullFieldError('SwitchTab', 'to');
+    }
+  }
 
   @override
-  NavigateToLogging rebuild(void Function(NavigateToLoggingBuilder) updates) =>
+  SwitchTab rebuild(void Function(SwitchTabBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  NavigateToLoggingBuilder toBuilder() =>
-      new NavigateToLoggingBuilder()..replace(this);
+  SwitchTabBuilder toBuilder() => new SwitchTabBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigateToLogging && deepLink == other.deepLink;
+    return other is SwitchTab && to == other.to;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, deepLink.hashCode));
+    return $jf($jc(0, to.hashCode));
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigateToLogging')
-          ..add('deepLink', deepLink))
-        .toString();
+    return (newBuiltValueToStringHelper('SwitchTab')..add('to', to)).toString();
   }
 }
 
-class NavigateToLoggingBuilder
-    implements
-        Builder<NavigateToLogging, NavigateToLoggingBuilder>,
-        NavigationEventBuilder {
-  _$NavigateToLogging _$v;
+class SwitchTabBuilder implements Builder<SwitchTab, SwitchTabBuilder> {
+  _$SwitchTab _$v;
 
-  ListBuilder<DeepLink> _deepLink;
-  ListBuilder<DeepLink> get deepLink =>
-      _$this._deepLink ??= new ListBuilder<DeepLink>();
-  set deepLink(ListBuilder<DeepLink> deepLink) => _$this._deepLink = deepLink;
+  Page _to;
+  Page get to => _$this._to;
+  set to(Page to) => _$this._to = to;
 
-  NavigateToLoggingBuilder();
+  SwitchTabBuilder();
 
-  NavigateToLoggingBuilder get _$this {
+  SwitchTabBuilder get _$this {
     if (_$v != null) {
-      _deepLink = _$v.deepLink?.toBuilder();
+      _to = _$v.to;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant NavigateToLogging other) {
+  void replace(SwitchTab other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$NavigateToLogging;
+    _$v = other as _$SwitchTab;
   }
 
   @override
-  void update(void Function(NavigateToLoggingBuilder) updates) {
+  void update(void Function(SwitchTabBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$NavigateToLogging build() {
-    _$NavigateToLogging _$result;
-    try {
-      _$result = _$v ?? new _$NavigateToLogging._(deepLink: _deepLink?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'deepLink';
-        _deepLink?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'NavigateToLogging', _$failedField, e.toString());
-      }
-      rethrow;
+  _$SwitchTab build() {
+    final _$result = _$v ?? new _$SwitchTab._(to: to);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$Push extends Push {
+  @override
+  final DeepLink deepLink;
+  @override
+  final Completer completer;
+
+  factory _$Push([void Function(PushBuilder) updates]) =>
+      (new PushBuilder()..update(updates)).build();
+
+  _$Push._({this.deepLink, this.completer}) : super._() {
+    if (deepLink == null) {
+      throw new BuiltValueNullFieldError('Push', 'deepLink');
     }
+  }
+
+  @override
+  Push rebuild(void Function(PushBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  PushBuilder toBuilder() => new PushBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is Push &&
+        deepLink == other.deepLink &&
+        completer == other.completer;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, deepLink.hashCode), completer.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('Push')
+          ..add('deepLink', deepLink)
+          ..add('completer', completer))
+        .toString();
+  }
+}
+
+class PushBuilder implements Builder<Push, PushBuilder> {
+  _$Push _$v;
+
+  DeepLink _deepLink;
+  DeepLink get deepLink => _$this._deepLink;
+  set deepLink(DeepLink deepLink) => _$this._deepLink = deepLink;
+
+  Completer _completer;
+  Completer get completer => _$this._completer;
+  set completer(Completer completer) => _$this._completer = completer;
+
+  PushBuilder();
+
+  PushBuilder get _$this {
+    if (_$v != null) {
+      _deepLink = _$v.deepLink;
+      _completer = _$v.completer;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(Push other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$Push;
+  }
+
+  @override
+  void update(void Function(PushBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$Push build() {
+    final _$result =
+        _$v ?? new _$Push._(deepLink: deepLink, completer: completer);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$Pop extends Pop {
+  factory _$Pop([void Function(PopBuilder) updates]) =>
+      (new PopBuilder()..update(updates)).build();
+
+  _$Pop._() : super._();
+
+  @override
+  Pop rebuild(void Function(PopBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  PopBuilder toBuilder() => new PopBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is Pop;
+  }
+
+  @override
+  int get hashCode {
+    return 27312366;
+  }
+
+  @override
+  String toString() {
+    return newBuiltValueToStringHelper('Pop').toString();
+  }
+}
+
+class PopBuilder implements Builder<Pop, PopBuilder> {
+  _$Pop _$v;
+
+  PopBuilder();
+
+  @override
+  void replace(Pop other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$Pop;
+  }
+
+  @override
+  void update(void Function(PopBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$Pop build() {
+    final _$result = _$v ?? new _$Pop._();
     replace(_$result);
     return _$result;
   }

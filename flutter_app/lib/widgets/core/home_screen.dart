@@ -40,11 +40,8 @@ class HomeScreen extends StatelessWidget {
             }
 
             // TODO: make custom bottom navigation that uses pages natively (take screenshot before replacing)
-            // Index of currently selected page (ignoring deep links and full page)
-            final int tabIndex = bottomNavPages.indexWhere((page) => page.navigationState == navigationState.rebuild((b) => b
-              ..deepLink = null
-              ..previousDeepLink = null
-            ));
+            // Index of currently selected page
+            final int tabIndex = bottomNavPages.indexOf((navigationState as NavigationRoute).page);
             assert(tabIndex != -1);
 
             return Scaffold(
@@ -76,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                     )
                 ],
                 currentIndex: tabIndex,
-                onTap: (index) => BlocProvider.of<NavigationBloc>(context).dispatch(bottomNavPages[index].navigationEvent),
+                onTap: (index) => BlocProvider.of<NavigationBloc>(context).dispatch(SwitchTab((b) => b..to = bottomNavPages[index])),
                 elevation: 4,
                 iconSize: 24,
                 selectedItemColor: Theme.of(context).primaryColor,

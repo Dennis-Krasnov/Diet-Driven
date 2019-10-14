@@ -20,7 +20,7 @@ void main() {
   BlocLogger().messageThreshold = LogLevel.ui;
   BlocLogger().enabled = !kReleaseMode;
   BlocLogger().blocEventsEnabled = false;
-  BlocLogger().blocTransitionsEnabled = false;
+  BlocLogger().blocTransitionsEnabled = true;
 
   // Log every bloc event and state transition
   BlocSupervisor.delegate = LoggingBlocDelegate();

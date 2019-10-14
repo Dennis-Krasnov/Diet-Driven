@@ -4,34 +4,94 @@
  * in the LICENSE file.
  */
 
+import 'package:bloc_logging/bloc_logger.dart';
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/blocs/blocs.dart' as prefix0;
+import 'package:diet_driven/models/models.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+// TODO: move to utils
+class MalformedDeepLink implements Exception {
+  String path;
+  MalformedDeepLink(this.path);
+
+  @override
+  String toString() => "Invalid route: $path";
+}
+
+void pushIfNecessary(BuildContext context, {@required String path, bool animate = false, Object arguments}) {
+  if (!ModalRoute.of(context).settings.name.startsWith(path)) {
+//    if (animate) {
+      Navigator.of(context).pushNamed(path, arguments: arguments);
+//    }
+//    else {
+      // TODO
+//    }
+  }
+}
 
 class MainSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<NavigationBloc, NavigationState>(
-      // Avoid firing deep link logic on pops to avoid unnecessary animations.
-      condition: (NavigationState previous, NavigationState current) => !current.wasPopped,
-      listener: (BuildContext context, NavigationState navigationState) {
-        // Settings deep link handler
-        if (navigationState is SettingsTab && navigationState.deepLink != null) {
-          // Single push with animation
-          if (navigationState.wasSinglePush) {
-            Navigator.of(context).pushNamed(navigationState.path(Routes.settings), arguments: true);
-          }
-          // No animation for multiple pushes
-          else {
-            // Reset to root settings page
-            Navigator.of(context).popUntil(ModalRoute.withName(Routes.settings));
+      condition: (NavigationState previous, NavigationState current) =>
+        previous is NavigationRoute && current is NavigationRoute
+        && current.page == Page.settings
+        // Avoid firing deep link logic on pops
+        && !(previous.page == Page.settings && current.currentDeepLinks().length - previous.currentDeepLinks().length < 0),
+        listener: (BuildContext context, NavigationState navigationState) {
+        final routeState = navigationState as NavigationRoute;
 
-            // Push each sublist of deep link
-            for (int i = 1; i <= navigationState.deepLink.length; i++) {
-              Navigator.of(context).pushNamed(navigationState.path(Routes.settings, until: i), arguments: false);
-            }
+        // Pop to most lowest common ancestor
+        if (Navigator.of(context).canPop()) {
+          Navigator.of(context).popUntil((route) => routeState.currentPath().startsWith(route.settings.name));
+        }
+
+        //
+        final deepLinkIterator = routeState.currentDeepLinks().iterator..moveNext();
+
+        try {
+          final settingsDL = deepLinkIterator.current as SettingsDeepLink;
+          BlocLogger().fine("Halding settings deep link: $settingsDL");
+
+//          if (!ModalRoute.of(context).settings.name.startsWith("/diary")) {
+//            // pageController.animateToPage(...)
+//          }
+
+          if (!deepLinkIterator.moveNext()) {
+            return;
           }
+
+          if (deepLinkIterator.current is DiarySettingsDeepLink) {
+            final diarySettingsDL = deepLinkIterator.current as DiarySettingsDeepLink;
+            BlocLogger().fine("Halding diary settings deep link: $diarySettingsDL");
+
+            pushIfNecessary(context, path: "settings/diary", animate: routeState.shouldAnimatePush);
+          }
+          else if (deepLinkIterator.current is ThemeSettingsDeepLink) {
+            final themeSettingsDL = deepLinkIterator.current as ThemeSettingsDeepLink;
+            BlocLogger().fine("Halding theme settings deep link: $themeSettingsDL");
+
+            pushIfNecessary(context, path: "settings/theme", animate: routeState.shouldAnimatePush);
+
+            // update iterator (with cast)
+            // todo: nested if __ is nested...
+          }
+          else {
+            throw MalformedDeepLink(routeState.currentPath());
+          }
+        } on MalformedDeepLink catch (e) {
+          // Pop to root
+          while (Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+          }
+
+          // Go to non-existing page (404 error screen)
+          Navigator.of(context).pushNamed(routeState.currentPath());
+
+          BlocLogger().unexpectedError(null, e);
         }
       },
         // TODO: remove unused bloc builder!?
@@ -51,7 +111,7 @@ class MainSettingsPage extends StatelessWidget {
                     iconData: FontAwesomeIcons.gamepad,
                     titleText: "General",
                     subtitleText: "Language, Units, Time",
-                    navigationEvent: NavigateToSettings.general(),
+                    navigationEvent: null,//Push((b) => b..deepLink = null),
                   ),
 
                   const SettingsListTile(
@@ -66,7 +126,7 @@ class MainSettingsPage extends StatelessWidget {
                     iconData: FontAwesomeIcons.gamepad,
                     titleText: "Diary",
                     subtitleText: "Calories, Nutrients, Meals, Logging",
-                    navigationEvent: NavigateToSettings.diary(),
+                    navigationEvent: Push((b) => b..deepLink = DiarySettingsDeepLink()),
                   ),
 
                   const SettingsListTile(
@@ -88,7 +148,7 @@ class MainSettingsPage extends StatelessWidget {
                     iconData: FontAwesomeIcons.gamepad,
                     titleText: "Theme",  // TODO: rename bloc, from theme to visuals?
                     subtitleText: "Navigation, Dark mode, Colour scheme",
-                    navigationEvent: NavigateToSettings.theme(),
+                    navigationEvent: Push((b) => b..deepLink = ThemeSettingsDeepLink()),
                   ),
 
                   const SettingsListTile(

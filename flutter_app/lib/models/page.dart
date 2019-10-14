@@ -25,49 +25,7 @@ class Page extends EnumClass {
   static const Page reports = _$reports;
 
   /// ...
-  static const Page recipes = _$recipes;
-
-  /// ...
   static const Page settings = _$settings;
-
-  /// ... SOFT, initial route / switching tabs doesn't reset sub navigation!
-  NavigationEvent get navigationEvent {
-    switch (this) {
-      case diary:
-        return NavigateToDiary( );
-        break;
-      case track:
-        return NavigateToTrack();
-        break;
-      case reports:
-        return NavigateToReports();
-        break;
-      case settings:
-        return NavigateToSettings();
-        break;
-      default:
-        throw UnimplementedError();
-    }
-  }
-
-  NavigationState get navigationState {
-    switch (this) {
-      case diary:
-        return DiaryTab();
-        break;
-      case track:
-        return TrackTab();
-        break;
-      case reports:
-        return ReportsTab();
-        break;
-      case settings:
-        return SettingsTab();
-        break;
-      default:
-        throw UnimplementedError();
-    }
-  }
   
   const Page._(String name) : super(name);
 

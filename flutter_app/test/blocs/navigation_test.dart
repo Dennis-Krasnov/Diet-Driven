@@ -74,7 +74,9 @@ void main() {
       sut.state,
       emitsInOrder(<NavigationState>[
         NavigationUninitialized(),
-        ReportsTab(),
+        NavigationRoute((b) => b
+          ..page = Page.reports
+        ),
       ])
     );
 
@@ -179,23 +181,6 @@ void main() {
       sut.dispatch(NavigateToSettings.general());
       sut.dispatch(NavigateToSettings.theme());
       sut.dispatch(NavigateToSettings.diary());
-    });
-
-    // TODO: remove completely!
-    test("Navigate to logging page", () async {
-      expectLater(
-        sut.state,
-        emitsInOrder(<NavigationState>[
-          NavigationUninitialized(),
-          ReportsTab(),
-          LoggingTab(),
-        ])
-      );
-
-      sut.dispatch(InitNavigation());
-
-      await delay(1);
-      sut.dispatch(NavigateToLogging());
     });
   });
 }

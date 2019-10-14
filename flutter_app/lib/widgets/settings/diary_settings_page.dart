@@ -4,7 +4,10 @@
  * in the LICENSE file.
  */
 
+import 'package:built_collection/built_collection.dart';
+
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/widgets/completer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,16 +25,23 @@ class DiarySettingsPage extends StatelessWidget {
             actions: <Widget>[
               IconButton(
                 icon: const Icon(Icons.swap_horiz),
-                onPressed: () => BlocProvider.of<NavigationBloc>(context).dispatch(NavigateToDiary()),
+                onPressed: () => BlocProvider.of<NavigationBloc>(context).dispatch(Navigate((b) => b
+                  ..page = Page.diary
+                )),
               )
             ],
           ),
           body: SafeArea(
             child: Container(
               child: RaisedButton(
-                child: const Text("try out cloud function!"),
-//                onPressed: () => CloudFunctionsProvider().searchFoodsByQuery("apple"), FIXME
+                child: const Text("jump to theme settings"),
+                onPressed: () => BlocProvider.of<NavigationBloc>(context).dispatch(Navigate((b) => b
+                  ..page = Page.settings
+                  ..deepLinks = ListBuilder(<DeepLink>[SettingsDeepLink(), ThemeSettingsDeepLink()])
+                )),
               ),
+//                child: const Text("try out cloud function!"),
+//                onPressed: () => CloudFunctionsProvider().searchFoodsByQuery("apple"), FIXME
             ),
           )
         );

@@ -9,359 +9,562 @@ part of 'deep_links.dart';
 abstract class DeepLinkBuilder {
   void replace(DeepLink other);
   void update(void Function(DeepLinkBuilder) updates);
-  String get path;
-  set path(String path);
-
-  bool get fullPage;
-  set fullPage(bool fullPage);
+  bool get fullScreen;
+  set fullScreen(bool fullScreen);
 }
 
-class _$PathDeepLink extends PathDeepLink {
+class _$DiaryDeepLink extends DiaryDeepLink {
   @override
-  final String path;
+  final int date;
   @override
-  final bool fullPage;
+  final bool fullScreen;
 
-  factory _$PathDeepLink([void Function(PathDeepLinkBuilder) updates]) =>
-      (new PathDeepLinkBuilder()..update(updates)).build() as _$PathDeepLink;
+  factory _$DiaryDeepLink([void Function(DiaryDeepLinkBuilder) updates]) =>
+      (new DiaryDeepLinkBuilder()..update(updates)).build();
 
-  _$PathDeepLink._({this.path, this.fullPage}) : super._() {
-    if (path == null) {
-      throw new BuiltValueNullFieldError('PathDeepLink', 'path');
-    }
-    if (fullPage == null) {
-      throw new BuiltValueNullFieldError('PathDeepLink', 'fullPage');
+  _$DiaryDeepLink._({this.date, this.fullScreen}) : super._() {
+    if (date == null) {
+      throw new BuiltValueNullFieldError('DiaryDeepLink', 'date');
     }
   }
 
   @override
-  PathDeepLink rebuild(void Function(PathDeepLinkBuilder) updates) =>
+  DiaryDeepLink rebuild(void Function(DiaryDeepLinkBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$PathDeepLinkBuilder toBuilder() =>
-      new _$PathDeepLinkBuilder()..replace(this);
+  DiaryDeepLinkBuilder toBuilder() => new DiaryDeepLinkBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is PathDeepLink &&
-        path == other.path &&
-        fullPage == other.fullPage;
+    return other is DiaryDeepLink &&
+        date == other.date &&
+        fullScreen == other.fullScreen;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, path.hashCode), fullPage.hashCode));
+    return $jf($jc($jc(0, date.hashCode), fullScreen.hashCode));
   }
 }
 
-class _$PathDeepLinkBuilder extends PathDeepLinkBuilder {
-  _$PathDeepLink _$v;
+class DiaryDeepLinkBuilder
+    implements Builder<DiaryDeepLink, DiaryDeepLinkBuilder>, DeepLinkBuilder {
+  _$DiaryDeepLink _$v;
 
-  @override
-  String get path {
-    _$this;
-    return super.path;
-  }
+  int _date;
+  int get date => _$this._date;
+  set date(int date) => _$this._date = date;
 
-  @override
-  set path(String path) {
-    _$this;
-    super.path = path;
-  }
+  bool _fullScreen;
+  bool get fullScreen => _$this._fullScreen;
+  set fullScreen(bool fullScreen) => _$this._fullScreen = fullScreen;
 
-  @override
-  bool get fullPage {
-    _$this;
-    return super.fullPage;
-  }
+  DiaryDeepLinkBuilder();
 
-  @override
-  set fullPage(bool fullPage) {
-    _$this;
-    super.fullPage = fullPage;
-  }
-
-  _$PathDeepLinkBuilder() : super._();
-
-  PathDeepLinkBuilder get _$this {
+  DiaryDeepLinkBuilder get _$this {
     if (_$v != null) {
-      super.path = _$v.path;
-      super.fullPage = _$v.fullPage;
+      _date = _$v.date;
+      _fullScreen = _$v.fullScreen;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant PathDeepLink other) {
+  void replace(covariant DiaryDeepLink other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$PathDeepLink;
+    _$v = other as _$DiaryDeepLink;
   }
 
   @override
-  void update(void Function(PathDeepLinkBuilder) updates) {
+  void update(void Function(DiaryDeepLinkBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$PathDeepLink build() {
+  _$DiaryDeepLink build() {
     final _$result =
-        _$v ?? new _$PathDeepLink._(path: path, fullPage: fullPage);
+        _$v ?? new _$DiaryDeepLink._(date: date, fullScreen: fullScreen);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$ValueDeepLink<T> extends ValueDeepLink<T> {
+class _$DiaryFoodRecordDeepLink extends DiaryFoodRecordDeepLink {
   @override
-  final T data;
+  final String uid;
   @override
-  final String path;
-  @override
-  final bool fullPage;
+  final bool fullScreen;
 
-  factory _$ValueDeepLink([void Function(ValueDeepLinkBuilder<T>) updates]) =>
-      (new ValueDeepLinkBuilder<T>()..update(updates)).build()
-          as _$ValueDeepLink<T>;
+  factory _$DiaryFoodRecordDeepLink(
+          [void Function(DiaryFoodRecordDeepLinkBuilder) updates]) =>
+      (new DiaryFoodRecordDeepLinkBuilder()..update(updates)).build();
 
-  _$ValueDeepLink._({this.data, this.path, this.fullPage}) : super._() {
-    if (data == null) {
-      throw new BuiltValueNullFieldError('ValueDeepLink', 'data');
-    }
-    if (path == null) {
-      throw new BuiltValueNullFieldError('ValueDeepLink', 'path');
-    }
-    if (fullPage == null) {
-      throw new BuiltValueNullFieldError('ValueDeepLink', 'fullPage');
-    }
-    if (T == dynamic) {
-      throw new BuiltValueMissingGenericsError('ValueDeepLink', 'T');
+  _$DiaryFoodRecordDeepLink._({this.uid, this.fullScreen}) : super._() {
+    if (uid == null) {
+      throw new BuiltValueNullFieldError('DiaryFoodRecordDeepLink', 'uid');
     }
   }
 
   @override
-  ValueDeepLink<T> rebuild(void Function(ValueDeepLinkBuilder<T>) updates) =>
+  DiaryFoodRecordDeepLink rebuild(
+          void Function(DiaryFoodRecordDeepLinkBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$ValueDeepLinkBuilder<T> toBuilder() =>
-      new _$ValueDeepLinkBuilder<T>()..replace(this);
+  DiaryFoodRecordDeepLinkBuilder toBuilder() =>
+      new DiaryFoodRecordDeepLinkBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is ValueDeepLink &&
-        data == other.data &&
-        path == other.path &&
-        fullPage == other.fullPage;
+    return other is DiaryFoodRecordDeepLink &&
+        uid == other.uid &&
+        fullScreen == other.fullScreen;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc($jc(0, data.hashCode), path.hashCode), fullPage.hashCode));
+    return $jf($jc($jc(0, uid.hashCode), fullScreen.hashCode));
   }
 }
 
-class _$ValueDeepLinkBuilder<T> extends ValueDeepLinkBuilder<T> {
-  _$ValueDeepLink<T> _$v;
+class DiaryFoodRecordDeepLinkBuilder
+    implements
+        Builder<DiaryFoodRecordDeepLink, DiaryFoodRecordDeepLinkBuilder>,
+        DeepLinkBuilder {
+  _$DiaryFoodRecordDeepLink _$v;
 
-  @override
-  T get data {
-    _$this;
-    return super.data;
-  }
+  String _uid;
+  String get uid => _$this._uid;
+  set uid(String uid) => _$this._uid = uid;
 
-  @override
-  set data(T data) {
-    _$this;
-    super.data = data;
-  }
+  bool _fullScreen;
+  bool get fullScreen => _$this._fullScreen;
+  set fullScreen(bool fullScreen) => _$this._fullScreen = fullScreen;
 
-  @override
-  String get path {
-    _$this;
-    return super.path;
-  }
+  DiaryFoodRecordDeepLinkBuilder();
 
-  @override
-  set path(String path) {
-    _$this;
-    super.path = path;
-  }
-
-  @override
-  bool get fullPage {
-    _$this;
-    return super.fullPage;
-  }
-
-  @override
-  set fullPage(bool fullPage) {
-    _$this;
-    super.fullPage = fullPage;
-  }
-
-  _$ValueDeepLinkBuilder() : super._();
-
-  ValueDeepLinkBuilder<T> get _$this {
+  DiaryFoodRecordDeepLinkBuilder get _$this {
     if (_$v != null) {
-      super.data = _$v.data;
-      super.path = _$v.path;
-      super.fullPage = _$v.fullPage;
+      _uid = _$v.uid;
+      _fullScreen = _$v.fullScreen;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant ValueDeepLink<T> other) {
+  void replace(covariant DiaryFoodRecordDeepLink other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$ValueDeepLink<T>;
+    _$v = other as _$DiaryFoodRecordDeepLink;
   }
 
   @override
-  void update(void Function(ValueDeepLinkBuilder<T>) updates) {
+  void update(void Function(DiaryFoodRecordDeepLinkBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$ValueDeepLink<T> build() {
+  _$DiaryFoodRecordDeepLink build() {
     final _$result = _$v ??
-        new _$ValueDeepLink<T>._(data: data, path: path, fullPage: fullPage);
+        new _$DiaryFoodRecordDeepLink._(uid: uid, fullScreen: fullScreen);
     replace(_$result);
     return _$result;
   }
 }
 
-class _$SerializedDeepLink<T> extends SerializedDeepLink<T> {
+class _$DiaryLoggingDeepLink extends DiaryLoggingDeepLink {
   @override
-  final T data;
+  final String type;
   @override
-  final String path;
-  @override
-  final bool fullPage;
+  final bool fullScreen;
 
-  factory _$SerializedDeepLink(
-          [void Function(SerializedDeepLinkBuilder<T>) updates]) =>
-      (new SerializedDeepLinkBuilder<T>()..update(updates)).build()
-          as _$SerializedDeepLink<T>;
+  factory _$DiaryLoggingDeepLink(
+          [void Function(DiaryLoggingDeepLinkBuilder) updates]) =>
+      (new DiaryLoggingDeepLinkBuilder()..update(updates)).build();
 
-  _$SerializedDeepLink._({this.data, this.path, this.fullPage}) : super._() {
-    if (data == null) {
-      throw new BuiltValueNullFieldError('SerializedDeepLink', 'data');
-    }
-    if (path == null) {
-      throw new BuiltValueNullFieldError('SerializedDeepLink', 'path');
-    }
-    if (fullPage == null) {
-      throw new BuiltValueNullFieldError('SerializedDeepLink', 'fullPage');
-    }
-    if (T == dynamic) {
-      throw new BuiltValueMissingGenericsError('SerializedDeepLink', 'T');
+  _$DiaryLoggingDeepLink._({this.type, this.fullScreen}) : super._() {
+    if (type == null) {
+      throw new BuiltValueNullFieldError('DiaryLoggingDeepLink', 'type');
     }
   }
 
   @override
-  SerializedDeepLink<T> rebuild(
-          void Function(SerializedDeepLinkBuilder<T>) updates) =>
+  DiaryLoggingDeepLink rebuild(
+          void Function(DiaryLoggingDeepLinkBuilder) updates) =>
       (toBuilder()..update(updates)).build();
 
   @override
-  _$SerializedDeepLinkBuilder<T> toBuilder() =>
-      new _$SerializedDeepLinkBuilder<T>()..replace(this);
+  DiaryLoggingDeepLinkBuilder toBuilder() =>
+      new DiaryLoggingDeepLinkBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SerializedDeepLink &&
-        data == other.data &&
-        path == other.path &&
-        fullPage == other.fullPage;
+    return other is DiaryLoggingDeepLink &&
+        type == other.type &&
+        fullScreen == other.fullScreen;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc($jc(0, data.hashCode), path.hashCode), fullPage.hashCode));
+    return $jf($jc($jc(0, type.hashCode), fullScreen.hashCode));
   }
 }
 
-class _$SerializedDeepLinkBuilder<T> extends SerializedDeepLinkBuilder<T> {
-  _$SerializedDeepLink<T> _$v;
+class DiaryLoggingDeepLinkBuilder
+    implements
+        Builder<DiaryLoggingDeepLink, DiaryLoggingDeepLinkBuilder>,
+        DeepLinkBuilder {
+  _$DiaryLoggingDeepLink _$v;
 
-  @override
-  T get data {
-    _$this;
-    return super.data;
-  }
+  String _type;
+  String get type => _$this._type;
+  set type(String type) => _$this._type = type;
 
-  @override
-  set data(T data) {
-    _$this;
-    super.data = data;
-  }
+  bool _fullScreen;
+  bool get fullScreen => _$this._fullScreen;
+  set fullScreen(bool fullScreen) => _$this._fullScreen = fullScreen;
 
-  @override
-  String get path {
-    _$this;
-    return super.path;
-  }
+  DiaryLoggingDeepLinkBuilder();
 
-  @override
-  set path(String path) {
-    _$this;
-    super.path = path;
-  }
-
-  @override
-  bool get fullPage {
-    _$this;
-    return super.fullPage;
-  }
-
-  @override
-  set fullPage(bool fullPage) {
-    _$this;
-    super.fullPage = fullPage;
-  }
-
-  _$SerializedDeepLinkBuilder() : super._();
-
-  SerializedDeepLinkBuilder<T> get _$this {
+  DiaryLoggingDeepLinkBuilder get _$this {
     if (_$v != null) {
-      super.data = _$v.data;
-      super.path = _$v.path;
-      super.fullPage = _$v.fullPage;
+      _type = _$v.type;
+      _fullScreen = _$v.fullScreen;
       _$v = null;
     }
     return this;
   }
 
   @override
-  void replace(covariant SerializedDeepLink<T> other) {
+  void replace(covariant DiaryLoggingDeepLink other) {
     if (other == null) {
       throw new ArgumentError.notNull('other');
     }
-    _$v = other as _$SerializedDeepLink<T>;
+    _$v = other as _$DiaryLoggingDeepLink;
   }
 
   @override
-  void update(void Function(SerializedDeepLinkBuilder<T>) updates) {
+  void update(void Function(DiaryLoggingDeepLinkBuilder) updates) {
     if (updates != null) updates(this);
   }
 
   @override
-  _$SerializedDeepLink<T> build() {
+  _$DiaryLoggingDeepLink build() {
+    final _$result =
+        _$v ?? new _$DiaryLoggingDeepLink._(type: type, fullScreen: fullScreen);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$DiaryLoggingSearchDeepLink extends DiaryLoggingSearchDeepLink {
+  @override
+  final String query;
+  @override
+  final bool fullScreen;
+
+  factory _$DiaryLoggingSearchDeepLink(
+          [void Function(DiaryLoggingSearchDeepLinkBuilder) updates]) =>
+      (new DiaryLoggingSearchDeepLinkBuilder()..update(updates)).build();
+
+  _$DiaryLoggingSearchDeepLink._({this.query, this.fullScreen}) : super._() {
+    if (query == null) {
+      throw new BuiltValueNullFieldError('DiaryLoggingSearchDeepLink', 'query');
+    }
+  }
+
+  @override
+  DiaryLoggingSearchDeepLink rebuild(
+          void Function(DiaryLoggingSearchDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DiaryLoggingSearchDeepLinkBuilder toBuilder() =>
+      new DiaryLoggingSearchDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DiaryLoggingSearchDeepLink &&
+        query == other.query &&
+        fullScreen == other.fullScreen;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc($jc(0, query.hashCode), fullScreen.hashCode));
+  }
+}
+
+class DiaryLoggingSearchDeepLinkBuilder
+    implements
+        Builder<DiaryLoggingSearchDeepLink, DiaryLoggingSearchDeepLinkBuilder>,
+        DeepLinkBuilder {
+  _$DiaryLoggingSearchDeepLink _$v;
+
+  String _query;
+  String get query => _$this._query;
+  set query(String query) => _$this._query = query;
+
+  bool _fullScreen;
+  bool get fullScreen => _$this._fullScreen;
+  set fullScreen(bool fullScreen) => _$this._fullScreen = fullScreen;
+
+  DiaryLoggingSearchDeepLinkBuilder();
+
+  DiaryLoggingSearchDeepLinkBuilder get _$this {
+    if (_$v != null) {
+      _query = _$v.query;
+      _fullScreen = _$v.fullScreen;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant DiaryLoggingSearchDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DiaryLoggingSearchDeepLink;
+  }
+
+  @override
+  void update(void Function(DiaryLoggingSearchDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DiaryLoggingSearchDeepLink build() {
     final _$result = _$v ??
-        new _$SerializedDeepLink<T>._(
-            data: data, path: path, fullPage: fullPage);
+        new _$DiaryLoggingSearchDeepLink._(
+            query: query, fullScreen: fullScreen);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$SettingsDeepLink extends SettingsDeepLink {
+  @override
+  final bool fullScreen;
+
+  factory _$SettingsDeepLink(
+          [void Function(SettingsDeepLinkBuilder) updates]) =>
+      (new SettingsDeepLinkBuilder()..update(updates)).build();
+
+  _$SettingsDeepLink._({this.fullScreen}) : super._();
+
+  @override
+  SettingsDeepLink rebuild(void Function(SettingsDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  SettingsDeepLinkBuilder toBuilder() =>
+      new SettingsDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is SettingsDeepLink && fullScreen == other.fullScreen;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, fullScreen.hashCode));
+  }
+}
+
+class SettingsDeepLinkBuilder
+    implements
+        Builder<SettingsDeepLink, SettingsDeepLinkBuilder>,
+        DeepLinkBuilder {
+  _$SettingsDeepLink _$v;
+
+  bool _fullScreen;
+  bool get fullScreen => _$this._fullScreen;
+  set fullScreen(bool fullScreen) => _$this._fullScreen = fullScreen;
+
+  SettingsDeepLinkBuilder();
+
+  SettingsDeepLinkBuilder get _$this {
+    if (_$v != null) {
+      _fullScreen = _$v.fullScreen;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant SettingsDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$SettingsDeepLink;
+  }
+
+  @override
+  void update(void Function(SettingsDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$SettingsDeepLink build() {
+    final _$result = _$v ?? new _$SettingsDeepLink._(fullScreen: fullScreen);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$ThemeSettingsDeepLink extends ThemeSettingsDeepLink {
+  @override
+  final bool fullScreen;
+
+  factory _$ThemeSettingsDeepLink(
+          [void Function(ThemeSettingsDeepLinkBuilder) updates]) =>
+      (new ThemeSettingsDeepLinkBuilder()..update(updates)).build();
+
+  _$ThemeSettingsDeepLink._({this.fullScreen}) : super._();
+
+  @override
+  ThemeSettingsDeepLink rebuild(
+          void Function(ThemeSettingsDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  ThemeSettingsDeepLinkBuilder toBuilder() =>
+      new ThemeSettingsDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is ThemeSettingsDeepLink && fullScreen == other.fullScreen;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, fullScreen.hashCode));
+  }
+}
+
+class ThemeSettingsDeepLinkBuilder
+    implements
+        Builder<ThemeSettingsDeepLink, ThemeSettingsDeepLinkBuilder>,
+        DeepLinkBuilder {
+  _$ThemeSettingsDeepLink _$v;
+
+  bool _fullScreen;
+  bool get fullScreen => _$this._fullScreen;
+  set fullScreen(bool fullScreen) => _$this._fullScreen = fullScreen;
+
+  ThemeSettingsDeepLinkBuilder();
+
+  ThemeSettingsDeepLinkBuilder get _$this {
+    if (_$v != null) {
+      _fullScreen = _$v.fullScreen;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant ThemeSettingsDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$ThemeSettingsDeepLink;
+  }
+
+  @override
+  void update(void Function(ThemeSettingsDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$ThemeSettingsDeepLink build() {
+    final _$result =
+        _$v ?? new _$ThemeSettingsDeepLink._(fullScreen: fullScreen);
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$DiarySettingsDeepLink extends DiarySettingsDeepLink {
+  @override
+  final bool fullScreen;
+
+  factory _$DiarySettingsDeepLink(
+          [void Function(DiarySettingsDeepLinkBuilder) updates]) =>
+      (new DiarySettingsDeepLinkBuilder()..update(updates)).build();
+
+  _$DiarySettingsDeepLink._({this.fullScreen}) : super._();
+
+  @override
+  DiarySettingsDeepLink rebuild(
+          void Function(DiarySettingsDeepLinkBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DiarySettingsDeepLinkBuilder toBuilder() =>
+      new DiarySettingsDeepLinkBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DiarySettingsDeepLink && fullScreen == other.fullScreen;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, fullScreen.hashCode));
+  }
+}
+
+class DiarySettingsDeepLinkBuilder
+    implements
+        Builder<DiarySettingsDeepLink, DiarySettingsDeepLinkBuilder>,
+        DeepLinkBuilder {
+  _$DiarySettingsDeepLink _$v;
+
+  bool _fullScreen;
+  bool get fullScreen => _$this._fullScreen;
+  set fullScreen(bool fullScreen) => _$this._fullScreen = fullScreen;
+
+  DiarySettingsDeepLinkBuilder();
+
+  DiarySettingsDeepLinkBuilder get _$this {
+    if (_$v != null) {
+      _fullScreen = _$v.fullScreen;
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(covariant DiarySettingsDeepLink other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DiarySettingsDeepLink;
+  }
+
+  @override
+  void update(void Function(DiarySettingsDeepLinkBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DiarySettingsDeepLink build() {
+    final _$result =
+        _$v ?? new _$DiarySettingsDeepLink._(fullScreen: fullScreen);
     replace(_$result);
     return _$result;
   }

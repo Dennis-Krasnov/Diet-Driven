@@ -9,9 +9,7 @@ part of 'page.dart';
 const Page _$diary = const Page._('diary');
 const Page _$track = const Page._('track');
 const Page _$reports = const Page._('reports');
-const Page _$recipes = const Page._('recipes');
 const Page _$settings = const Page._('settings');
-const Page _$logging = const Page._('logging');
 
 Page _$valueOf(String name) {
   switch (name) {
@@ -21,12 +19,8 @@ Page _$valueOf(String name) {
       return _$track;
     case 'reports':
       return _$reports;
-    case 'recipes':
-      return _$recipes;
     case 'settings':
       return _$settings;
-    case 'logging':
-      return _$logging;
     default:
       throw new ArgumentError(name);
   }
@@ -36,9 +30,7 @@ final BuiltSet<Page> _$values = new BuiltSet<Page>(const <Page>[
   _$diary,
   _$track,
   _$reports,
-  _$recipes,
   _$settings,
-  _$logging,
 ]);
 
 Serializer<Page> _$pageSerializer = new _$PageSerializer();

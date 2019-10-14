@@ -7,110 +7,103 @@
 import 'dart:convert';
 
 import 'package:built_value/built_value.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
 
 import 'package:diet_driven/models/serializers.dart';
 
 part 'deep_links.g.dart';
 
 /// Base class for all deep links.
-//abstract class DeepLink {}
-
 @BuiltValue(instantiable: false)
 abstract class DeepLink {
-  ///
-  String get path;
-
   /// Whether to hide bottom navigation for this page and all sub-pages.
-  bool get fullPage;
-  // TODO: default to false
+  /// Null is equivalent to false.
+  @nullable
+  bool get fullScreen;
 
   DeepLink rebuild(void Function(DeepLinkBuilder) updates);
   DeepLinkBuilder toBuilder();
 }
 
+// TODO: create a method that strips second param if it exists for analytics - way simpler
 
 ///
-abstract class PathDeepLink implements DeepLink, Built<PathDeepLink, PathDeepLinkBuilder> {
-  factory PathDeepLink([void Function(PathDeepLinkBuilder) updates]) = _$PathDeepLink;
-  PathDeepLink._();
-
-  @override
-  String toString() => path;
-}
-
-abstract class PathDeepLinkBuilder implements DeepLinkBuilder, Builder<PathDeepLink, PathDeepLinkBuilder> {
-  @override
-  String path;
-
-  @override
-  bool fullPage = false;
-
-  factory PathDeepLinkBuilder() = _$PathDeepLinkBuilder;
-  PathDeepLinkBuilder._();
-}
-
-
-///
-abstract class ValueDeepLink<T> implements DeepLink, Built<ValueDeepLink<T>, ValueDeepLinkBuilder<T>> {
+abstract class DiaryDeepLink implements DeepLink, Built<DiaryDeepLink, DiaryDeepLinkBuilder> {
   ///
-  T get data;
+  int get date;
 
-  factory ValueDeepLink([void Function(ValueDeepLinkBuilder<T>) updates]) = _$ValueDeepLink<T>;
-  ValueDeepLink._();
+  factory DiaryDeepLink([void Function(DiaryDeepLinkBuilder) updates]) = _$DiaryDeepLink;
+  DiaryDeepLink._();
+
+  factory DiaryDeepLink.today() => DiaryDeepLink((b) => b
+    ..date = currentDaysSinceEpoch()
+  );
 
   @override
-  String toString() => "$path/$data";
+  String toString() => "diary";
 }
-
-abstract class ValueDeepLinkBuilder<T> implements DeepLinkBuilder, Builder<ValueDeepLink<T>, ValueDeepLinkBuilder<T>> {
-  @override
-  String path;
-
-  @override
-  bool fullPage = false;
-
-  T data;
-
-  factory ValueDeepLinkBuilder() = _$ValueDeepLinkBuilder<T>;
-  ValueDeepLinkBuilder._();
-}
-
 
 ///
-abstract class SerializedDeepLink<T> implements DeepLink, Built<SerializedDeepLink<T>, SerializedDeepLinkBuilder<T>> {
+abstract class DiaryFoodRecordDeepLink implements DeepLink, Built<DiaryFoodRecordDeepLink, DiaryFoodRecordDeepLinkBuilder> {
   ///
-  T get data;
+  String get uid;
 
-  factory SerializedDeepLink([void Function(SerializedDeepLinkBuilder<T>) updates]) = _$SerializedDeepLink<T>;
-  SerializedDeepLink._();
+  factory DiaryFoodRecordDeepLink([void Function(DiaryFoodRecordDeepLinkBuilder) updates]) = _$DiaryFoodRecordDeepLink;
+  DiaryFoodRecordDeepLink._();
 
   @override
-  String toString() => "$path/${base64.encode(utf8.encode(serializers.serialize(data)))}";
+  String toString() => "food-record/$uid";
 }
 
+///
+abstract class DiaryLoggingDeepLink implements DeepLink, Built<DiaryLoggingDeepLink, DiaryLoggingDeepLinkBuilder> {
+  ///
+  String get type; // TODO: recent/frequent/etc
 
-abstract class SerializedDeepLinkBuilder<T> implements DeepLinkBuilder, Builder<SerializedDeepLink<T>, SerializedDeepLinkBuilder<T>> {
+  factory DiaryLoggingDeepLink([void Function(DiaryLoggingDeepLinkBuilder) updates]) = _$DiaryLoggingDeepLink;
+  DiaryLoggingDeepLink._();
+
   @override
-  String path;
-
-  @override
-  bool fullPage = false;
-
-  T data;
-
-  factory SerializedDeepLinkBuilder() = _$SerializedDeepLinkBuilder<T>;
-  SerializedDeepLinkBuilder._();
+  String toString() => "logging/$type";
 }
 
+///
+abstract class DiaryLoggingSearchDeepLink implements DeepLink, Built<DiaryLoggingSearchDeepLink, DiaryLoggingSearchDeepLinkBuilder> {
+  ///
+  String get query;
 
-/// Flattened navigation route endpoints.
-class Routes {
-  static const String root = "";
+  factory DiaryLoggingSearchDeepLink([void Function(DiaryLoggingSearchDeepLinkBuilder) updates]) = _$DiaryLoggingSearchDeepLink;
+  DiaryLoggingSearchDeepLink._();
 
-  static const String diary = "diary";
+  @override
+  String toString() => "search/$query";
+}
 
-  static const String settings = "settings";
-  static const String generalSettings = "general";
-  static const String themeSettings = "theme";
-  static const String diarySettings = "diary";
+// TODO: large comments
+
+///
+abstract class SettingsDeepLink implements DeepLink, Built<SettingsDeepLink, SettingsDeepLinkBuilder> {
+  factory SettingsDeepLink([void Function(SettingsDeepLinkBuilder) updates]) = _$SettingsDeepLink;
+  SettingsDeepLink._();
+
+  @override
+  String toString() => "settings";
+}
+
+///
+abstract class ThemeSettingsDeepLink implements DeepLink, Built<ThemeSettingsDeepLink, ThemeSettingsDeepLinkBuilder> {
+  factory ThemeSettingsDeepLink([void Function(ThemeSettingsDeepLinkBuilder) updates]) = _$ThemeSettingsDeepLink;
+  ThemeSettingsDeepLink._();
+
+  @override
+  String toString() => "theme";
+}
+
+///
+abstract class DiarySettingsDeepLink implements DeepLink, Built<DiarySettingsDeepLink, DiarySettingsDeepLinkBuilder> {
+  factory DiarySettingsDeepLink([void Function(DiarySettingsDeepLinkBuilder) updates]) = _$DiarySettingsDeepLink;
+  DiarySettingsDeepLink._();
+
+  @override
+  String toString() => "diary";
 }

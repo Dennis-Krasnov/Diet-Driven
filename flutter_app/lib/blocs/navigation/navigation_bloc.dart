@@ -7,12 +7,15 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:rxdart/rxdart.dart';
+import 'package:bloc_logging/bloc_logging.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:meta/meta.dart';
+import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
-import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/blocs/navigation/navigation.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/repositories/repositories.dart';
 
 /// Manages bottom navigation and deep linking.
 class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
@@ -34,35 +37,82 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       // Go to default page if navigation bloc hasn't yet been initialized
       Observable<UserDataState>(userDataBloc.state)
         .whereType<UserDataLoaded>()
-        .map<NavigationEvent>((state) => state.settings.navigationSettings.defaultPage.navigationEvent)
+        .map<Page>((state) => state.settings.navigationSettings.defaultPage)
+        .map<NavigationEvent>((page) => ResetNavigation((b) => b..defaultPage = page))
         .first
         .then(dispatch);
     }
 
-    if (event is NavigateToDiary) {
-      yield DiaryTab((b) => b
-        ..previousDeepLink = currentState.deepLink?.toBuilder()
-        ..deepLink = event.deepLink?.toBuilder() ?? currentState.deepLink?.toBuilder()
+    // Can't use custom builder default values since it removes []= operator on pageDeepLinks
+    if (event is ResetNavigation) {
+      yield NavigationRoute((b) => b
+        ..page = event.defaultPage
+        ..pageDeepLinks = MapBuilder(<Page, BuiltList<DeepLink>>{
+          Page.diary: BuiltList(<DeepLink>[DiaryDeepLink.today()]),
+          Page.track: BuiltList(<DeepLink>[]),
+          Page.reports: BuiltList(<DeepLink>[]),
+          Page.settings: BuiltList(<DeepLink>[SettingsDeepLink()]),
+        })
+        ..shouldAnimatePush = false // TODO: shouldn't need to decide...
       );
+
+      BlocLogger().info("Reset navigation to defaults");
     }
 
-    if (event is NavigateToTrack) {
-      yield TrackTab();
-    }
+    if (event is Navigate) {
+      // Navigation has no error state
+      assert(currentState is NavigationRoute);
+      final routeState = currentState as NavigationRoute;
 
-    if (event is NavigateToReports) {
-      yield ReportsTab();
-    }
-
-    if (event is NavigateToSettings) {
-      yield SettingsTab((b) => b
-        ..previousDeepLink = currentState.deepLink?.toBuilder()
-        ..deepLink = event.deepLink?.toBuilder() ?? currentState.deepLink?.toBuilder()
+      yield routeState.rebuild((b) => b
+        ..page = event.page
+        ..pageDeepLinks[event.page] = event.deepLinks
+        ..shouldAnimatePush = false // TODO: decide
       );
+
+      BlocLogger().info("Navigated to ${event.page} - ${event.deepLinks} with${false ? "" : "out"} animation");
     }
 
-    if (event is NavigateToLogging) {
-      yield LoggingTab();
+    if (event is SwitchTab) {
+      // Navigation has no error state
+      assert(currentState is NavigationRoute);
+      final routeState = currentState as NavigationRoute;
+
+      yield routeState.rebuild((b) => b
+        ..page = event.to
+        ..shouldAnimatePush = false // TODO: shouldn't need to decide...
+      );
+
+      BlocLogger().info("Switched tabs to ${event.to}");
+    }
+
+    if (event is Push) {
+      // Navigation has no error state
+      assert(currentState is NavigationRoute);
+      final routeState = currentState as NavigationRoute;
+
+      yield routeState.rebuild((b) => b
+        ..pageDeepLinks[routeState.page] = b.pageDeepLinks[routeState.page].rebuild((b) => b
+          ..add(event.deepLink)
+        )
+        ..shouldAnimatePush = false // TODO: decide
+      );
+
+      BlocLogger().info("Pushed from ${routeState.currentPath()}");
+    }
+
+    if (event is Pop) {
+      // Navigation has no error state
+      assert(currentState is NavigationRoute);
+      final routeState = currentState as NavigationRoute;
+
+      yield routeState.rebuild((b) => b
+        ..pageDeepLinks[routeState.page] = b.pageDeepLinks[routeState.page].rebuild((b) => b
+          ..removeLast()
+        )
+      );
+
+      BlocLogger().info("Popped from ${routeState.currentPath()}");
     }
   }
 }

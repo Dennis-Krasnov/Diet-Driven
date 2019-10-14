@@ -64,6 +64,16 @@ class BlocLogger {
     final pen = levelToPen(level);
 
     print(pen("${levelToEmoji(level)}   $messageText"));
+
+    // Print error
+    if (error != null) {
+      print(error);
+    }
+
+    // Print stack trace
+    if (stacktrace != null) {
+      print(error);
+    }
   }
 
   void _logBlocEvent(dynamic bloc, dynamic event, LogLevel level) {
