@@ -73,12 +73,12 @@ class _$NavigationRoute extends NavigationRoute {
   @override
   final BuiltMap<Page, BuiltList<DeepLink>> pageDeepLinks;
   @override
-  final bool shouldAnimatePush;
+  final bool shouldAnimate;
 
   factory _$NavigationRoute([void Function(NavigationRouteBuilder) updates]) =>
       (new NavigationRouteBuilder()..update(updates)).build();
 
-  _$NavigationRoute._({this.page, this.pageDeepLinks, this.shouldAnimatePush})
+  _$NavigationRoute._({this.page, this.pageDeepLinks, this.shouldAnimate})
       : super._() {
     if (page == null) {
       throw new BuiltValueNullFieldError('NavigationRoute', 'page');
@@ -86,9 +86,8 @@ class _$NavigationRoute extends NavigationRoute {
     if (pageDeepLinks == null) {
       throw new BuiltValueNullFieldError('NavigationRoute', 'pageDeepLinks');
     }
-    if (shouldAnimatePush == null) {
-      throw new BuiltValueNullFieldError(
-          'NavigationRoute', 'shouldAnimatePush');
+    if (shouldAnimate == null) {
+      throw new BuiltValueNullFieldError('NavigationRoute', 'shouldAnimate');
     }
   }
 
@@ -106,13 +105,13 @@ class _$NavigationRoute extends NavigationRoute {
     return other is NavigationRoute &&
         page == other.page &&
         pageDeepLinks == other.pageDeepLinks &&
-        shouldAnimatePush == other.shouldAnimatePush;
+        shouldAnimate == other.shouldAnimate;
   }
 
   @override
   int get hashCode {
     return $jf($jc($jc($jc(0, page.hashCode), pageDeepLinks.hashCode),
-        shouldAnimatePush.hashCode));
+        shouldAnimate.hashCode));
   }
 
   @override
@@ -120,7 +119,7 @@ class _$NavigationRoute extends NavigationRoute {
     return (newBuiltValueToStringHelper('NavigationRoute')
           ..add('page', page)
           ..add('pageDeepLinks', pageDeepLinks)
-          ..add('shouldAnimatePush', shouldAnimatePush))
+          ..add('shouldAnimate', shouldAnimate))
         .toString();
   }
 }
@@ -139,10 +138,10 @@ class NavigationRouteBuilder
   set pageDeepLinks(MapBuilder<Page, BuiltList<DeepLink>> pageDeepLinks) =>
       _$this._pageDeepLinks = pageDeepLinks;
 
-  bool _shouldAnimatePush;
-  bool get shouldAnimatePush => _$this._shouldAnimatePush;
-  set shouldAnimatePush(bool shouldAnimatePush) =>
-      _$this._shouldAnimatePush = shouldAnimatePush;
+  bool _shouldAnimate;
+  bool get shouldAnimate => _$this._shouldAnimate;
+  set shouldAnimate(bool shouldAnimate) =>
+      _$this._shouldAnimate = shouldAnimate;
 
   NavigationRouteBuilder();
 
@@ -150,7 +149,7 @@ class NavigationRouteBuilder
     if (_$v != null) {
       _page = _$v.page;
       _pageDeepLinks = _$v.pageDeepLinks?.toBuilder();
-      _shouldAnimatePush = _$v.shouldAnimatePush;
+      _shouldAnimate = _$v.shouldAnimate;
       _$v = null;
     }
     return this;
@@ -177,7 +176,7 @@ class NavigationRouteBuilder
           new _$NavigationRoute._(
               page: page,
               pageDeepLinks: pageDeepLinks.build(),
-              shouldAnimatePush: shouldAnimatePush);
+              shouldAnimate: shouldAnimate);
     } catch (_) {
       String _$failedField;
       try {

@@ -53,7 +53,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
           Page.reports: BuiltList(<DeepLink>[]),
           Page.settings: BuiltList(<DeepLink>[SettingsDeepLink()]),
         })
-        ..shouldAnimatePush = false // TODO: shouldn't need to decide...
+        ..shouldAnimate = false
       );
 
       BlocLogger().info("Reset navigation to defaults");
@@ -67,7 +67,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
       yield routeState.rebuild((b) => b
         ..page = event.page
         ..pageDeepLinks[event.page] = event.deepLinks
-        ..shouldAnimatePush = false // TODO: decide
+        ..shouldAnimate = false
       );
 
       BlocLogger().info("Navigated to ${event.page} - ${event.deepLinks} with${false ? "" : "out"} animation");
@@ -80,7 +80,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
 
       yield routeState.rebuild((b) => b
         ..page = event.to
-        ..shouldAnimatePush = false // TODO: shouldn't need to decide...
+        ..shouldAnimate = false
       );
 
       BlocLogger().info("Switched tabs to ${event.to}");
@@ -95,7 +95,7 @@ class NavigationBloc extends Bloc<NavigationEvent, NavigationState> {
         ..pageDeepLinks[routeState.page] = b.pageDeepLinks[routeState.page].rebuild((b) => b
           ..add(event.deepLink)
         )
-        ..shouldAnimatePush = false // TODO: decide
+        ..shouldAnimate = true
       );
 
       BlocLogger().info("Pushed from ${routeState.currentPath()}");

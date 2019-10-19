@@ -65,14 +65,13 @@ class BlocLogger {
 
     print(pen("${levelToEmoji(level)}   $messageText"));
 
-    // Print error
+    // Print optional error and stack trace
     if (error != null) {
       print(error);
     }
 
-    // Print stack trace
     if (stacktrace != null) {
-      print(error);
+      print(stacktrace);
     }
   }
 

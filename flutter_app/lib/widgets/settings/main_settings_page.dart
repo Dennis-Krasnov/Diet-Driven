@@ -68,13 +68,13 @@ class MainSettingsPage extends StatelessWidget {
             final diarySettingsDL = deepLinkIterator.current as DiarySettingsDeepLink;
             BlocLogger().fine("Halding diary settings deep link: $diarySettingsDL");
 
-            pushIfNecessary(context, path: "settings/diary", animate: routeState.shouldAnimatePush);
+            pushIfNecessary(context, path: "settings/diary", animate: routeState.shouldAnimate);
           }
           else if (deepLinkIterator.current is ThemeSettingsDeepLink) {
             final themeSettingsDL = deepLinkIterator.current as ThemeSettingsDeepLink;
             BlocLogger().fine("Halding theme settings deep link: $themeSettingsDL");
 
-            pushIfNecessary(context, path: "settings/theme", animate: routeState.shouldAnimatePush);
+            pushIfNecessary(context, path: "settings/theme", animate: routeState.shouldAnimate);
 
             // update iterator (with cast)
             // todo: nested if __ is nested...

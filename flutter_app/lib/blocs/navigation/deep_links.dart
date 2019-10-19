@@ -40,7 +40,7 @@ abstract class DiaryDeepLink implements DeepLink, Built<DiaryDeepLink, DiaryDeep
   );
 
   @override
-  String toString() => "diary";
+  String toString() => "diary/$date";
 }
 
 ///

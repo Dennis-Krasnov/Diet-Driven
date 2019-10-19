@@ -36,7 +36,7 @@ void main() {
       ..userDocument = UserDocumentBuilder()
       ..settings = Settings((b) => b
         ..navigationSettings = NavigationSettings((b) => b
-          ..bottomNavigationPages = ListBuilder(<Page>[Page.diary, Page.reports, Page.recipes])
+          ..bottomNavigationPages = ListBuilder(<Page>[Page.diary, Page.reports, Page.track])
           ..defaultPage = Page.reports
         ).toBuilder()
       ).toBuilder()
@@ -46,6 +46,19 @@ void main() {
     // TODO: put second userDataLoaded, but with different default page??
     UserDataUnauthenticated(),
   ];
+
+  final pageDeepLinks = BuiltMap<Page, BuiltList<DeepLink>>(<Page, BuiltList<DeepLink>>{
+    Page.diary: BuiltList(<DeepLink>[DiaryDeepLink.today()]),
+    Page.track: BuiltList(<DeepLink>[]),
+    Page.reports: BuiltList(<DeepLink>[]),
+    Page.settings: BuiltList(<DeepLink>[SettingsDeepLink()]),
+  });
+
+  NavigationRoute generateNavigationRoute(Page page, bool animate, [List<DeepLink> deepLinks]) => NavigationRoute((b) => b
+    ..page = page
+    ..pageDeepLinks = (pageDeepLinks.toBuilder()..updateValue(page, (_old) => deepLinks != null ? BuiltList<DeepLink>(deepLinks) : _old))
+    ..shouldAnimate = animate
+  );
 
   /// Configuration
   setUp(() {
@@ -68,15 +81,14 @@ void main() {
   });
 
   // TODO: test analytics events for all events!!!
+  // TODO: test failure navigating to pages not in bottomNavigationStates, solution: only allow rearranging pages?
 
   test("Navigate to default page on initialization", () {
     expectLater(
       sut.state,
       emitsInOrder(<NavigationState>[
         NavigationUninitialized(),
-        NavigationRoute((b) => b
-          ..page = Page.reports
-        ),
+        generateNavigationRoute(Page.reports, false),
       ])
     );
 
@@ -89,33 +101,28 @@ void main() {
         sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
-          ReportsTab(),
-          DiaryTab(),
-          DiaryTab((b) => b
-            ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
-              ..path = "diary"
-              ..data = 24
-            )])
-          ),
-          DiaryTab((b) => b
-            ..deepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
-              ..path = "diary"
-              ..data = 35
-            )])
-            ..previousDeepLink = ListBuilder(<DeepLink>[ValueDeepLink<int>((b) => b
-              ..path = "diary"
-              ..data = 24
-            )])
-          ),
+          generateNavigationRoute(Page.reports, false),
+          generateNavigationRoute(Page.diary, false),
+          generateNavigationRoute(Page.diary, false, [
+            DiaryDeepLink((b) => b
+              ..date = 2523
+            ),
+          ]),
         ])
       );
 
       sut.dispatch(InitNavigation());
 
       await delay(1);
-      sut.dispatch(NavigateToDiary());
-      sut.dispatch(NavigateToDiary.day(24));
-      sut.dispatch(NavigateToDiary.day(35));
+      sut.dispatch(SwitchTab((b) => b
+        ..to = Page.diary
+      ));
+      sut.dispatch(Navigate((b) => b
+        ..page = Page.diary
+        ..deepLinks = ListBuilder(<DeepLink>[DiaryDeepLink((b) => b
+          ..date = 2523
+        )])
+      ));
     });
 
     test("Navigate to tracking page", () async {
@@ -123,15 +130,17 @@ void main() {
         sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
-          ReportsTab(),
-          TrackTab(),
+          generateNavigationRoute(Page.reports, false),
+          generateNavigationRoute(Page.track, false),
         ])
       );
 
       sut.dispatch(InitNavigation());
 
       await delay(1);
-      sut.dispatch(NavigateToTrack());
+      sut.dispatch(SwitchTab((b) => b
+        ..to = Page.track
+      ));
     });
 
     test("Navigate to reports page", () async {
@@ -139,9 +148,9 @@ void main() {
         sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
-          ReportsTab(),
-          DiaryTab(),
-          ReportsTab(),
+          generateNavigationRoute(Page.reports, false),
+          generateNavigationRoute(Page.diary, false),
+          generateNavigationRoute(Page.reports, false),
         ])
       );
 
@@ -149,8 +158,12 @@ void main() {
 
       await delay(1);
       // Navigate away from default page
-      sut.dispatch(NavigateToDiary());
-      sut.dispatch(NavigateToReports());
+      sut.dispatch(SwitchTab((b) => b
+        ..to = Page.diary
+      ));
+      sut.dispatch(SwitchTab((b) => b
+        ..to = Page.reports
+      ));
     });
 
     test("Navigate to settings page", () async {
@@ -158,29 +171,34 @@ void main() {
         sut.state,
         emitsInOrder(<NavigationState>[
           NavigationUninitialized(),
-          ReportsTab(),
-          SettingsTab(),
-          SettingsTab((b) => b
-            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "general")])
-          ),
-          SettingsTab((b) => b
-            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "theme")])
-            ..previousDeepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "general")])
-          ),
-          SettingsTab((b) => b
-            ..deepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "diary")])
-            ..previousDeepLink = ListBuilder(<DeepLink>[PathDeepLink((b) => b..path = "theme")])
-          ),
+          generateNavigationRoute(Page.reports, false),
+          generateNavigationRoute(Page.settings, false),
+          generateNavigationRoute(Page.settings, true, [
+            SettingsDeepLink(),
+            ThemeSettingsDeepLink(),
+          ]),
+          generateNavigationRoute(Page.settings, true, [
+            SettingsDeepLink(),
+            DiarySettingsDeepLink(),
+          ]),
+          generateNavigationRoute(Page.settings, false),
         ])
       );
 
       sut.dispatch(InitNavigation());
 
       await delay(1);
-      sut.dispatch(NavigateToSettings());
-      sut.dispatch(NavigateToSettings.general());
-      sut.dispatch(NavigateToSettings.theme());
-      sut.dispatch(NavigateToSettings.diary());
+      sut.dispatch(SwitchTab((b) => b
+        ..to = Page.settings
+      ));
+      sut.dispatch(Push((b) => b
+        ..deepLink = ThemeSettingsDeepLink()
+      ));
+      sut.dispatch(Navigate((b) => b
+        ..page = Page.settings
+        ..deepLinks = ListBuilder(<DeepLink>[SettingsDeepLink(), DiarySettingsDeepLink()])
+      ));
+      sut.dispatch(Pop());
     });
   });
 }
