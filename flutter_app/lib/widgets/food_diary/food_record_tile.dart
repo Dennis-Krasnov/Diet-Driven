@@ -4,11 +4,18 @@
  * in the LICENSE file.
  */
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
-import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:diet_driven/models/models.dart';
+
+class NutrientPair {
+  final Nutrient nutrient;
+  final int value;
+  final Color color;
+
+  NutrientPair(this.nutrient, this.value, [this.color]);
+}
 
 class FoodRecordTile extends StatelessWidget {
   ///
@@ -36,6 +43,22 @@ class FoodRecordTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final data = foodRecord.totalNutrients.quantities;
+
+    final List<NutrientPair> chartData = [
+      NutrientPair(Nutrient.protein, data[Nutrient.protein], Colors.redAccent),
+      NutrientPair(Nutrient.fat, data[Nutrient.fat], Colors.yellow),
+      NutrientPair(Nutrient.carbs, data[Nutrient.carbs], Colors.lightGreen),
+    ];
+
+//    final series = <PieSeries<NutrientPair, String>>[
+//      PieSeries<NutrientPair, String>(
+//        dataSource: pieData,
+//        xValueMapper: (NutrientPair data, _) => data.nutrient.toString(),
+//        yValueMapper: (NutrientPair data, _) => data.value,
+//        dataLabelSettings: DataLabelSettings(isVisible: false)),
+//    ];
+
     return InkWell(
       onTap: onTap,
       onLongPress: onLongPress,
@@ -48,16 +71,32 @@ class FoodRecordTile extends StatelessWidget {
         child: Row(
           children: <Widget>[
             SizedBox(
-//              key: ValueKey(foodRecord.normalizedNutrients), // OPTIMIZE: I Don't know if this changes anything...
-              width: 24,
-              child: AnimatedCircularChart(
-                size: const Size(30, 30),
-                duration: const Duration(milliseconds: 0),
-                initialChartData: generatePieChart(foodRecord.totalNutrients, [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
-                chartType: CircularChartType.Pie,
+//              width: 24,
+              width: 30,
+              child: //Placeholder(),
+              SfCircularChart(
+                series: <CircularSeries>[
+                  PieSeries<NutrientPair, String>(
+                    dataSource: chartData,
+                    pointColorMapper: (NutrientPair data, _) => data.color,
+                    xValueMapper: (NutrientPair data, _) => data.nutrient.toString(),
+                    yValueMapper: (NutrientPair data, _) => data.value,
+                    radius: "100%", // Default is 80%
+                    animationDuration: 0,
+                  )
+                ],
+//                backgroundColor: Colors.blue,
+                margin: EdgeInsets.zero,
               ),
+//              child: AnimatedCircularChart(
+//                size: const Size(30, 30),
+//                duration: const Duration(milliseconds: 0),
+//                initialChartData: generatePieChart(foodRecord.totalNutrients, [Nutrient.protein, Nutrient.fat, Nutrient.carbs]),
+//                chartType: CircularChartType.Pie,
+//              ),
             ),
-            const SizedBox(width: 16),
+//            const SizedBox(width: 16),
+            const SizedBox(width: 12),
             Expanded(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,

@@ -37,9 +37,6 @@ part 'serializers.g.dart';
   SubscriptionType,
   ThemeSettings,
   NavigationSettings,
-
-  // Other
-  Page,
 ])
 
 // Built value default serializer

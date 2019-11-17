@@ -21,6 +21,16 @@ abstract class FoodDiaryDay implements Built<FoodDiaryDay, FoodDiaryDayBuilder> 
   /// List of meals storing food records.
   BuiltList<MealData> get meals;
 
+  /// ...
+  List<NutrientMap> get allNutrients => meals
+    ?.expand<FoodRecord>((meal) => meal.foodRecords) // Returns non-null list
+    ?.map<NutrientMap>((fr) => fr.totalNutrients) // ?. not necessary
+    ?.toList(); // ?. not necessary
+
+  /// ...
+  NutrientMap get combinedNutrients => allNutrients?.isEmpty ?? true ? null :
+    allNutrients.reduce((curr, next) => curr + next);
+
   factory FoodDiaryDay([void Function(FoodDiaryDayBuilder b)]) = _$FoodDiaryDay;
 
   /// Data validation.

@@ -8,6 +8,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:built_collection/built_collection.dart';
+import 'package:deep_link_navigation/deep_link_navigation.dart';
+import 'package:diet_driven/navigation/navigation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -36,12 +38,13 @@ void main() {
 
   final Settings settingsFull = Settings((b) => b
     ..navigationSettings = NavigationSettings((b) => b
-      ..defaultPage = Page.reports
-      ..bottomNavigationPages = ListBuilder(<Page>[
-        Page.reports,
-        Page.diary,
-        Page.settings,
-      ])
+//      ..defaultPage = DiaryDateDL.today()
+//      ..bottomNavigationPages = ListBuilder(<DeepLink>[
+//        DiaryDateDL.today(),
+//        MeasureDL(),
+//        ReportsDL(),
+//        UserDL("TODO"),
+//      ])
     ).toBuilder()
     ..themeSettings = ThemeSettings((b) => b
       ..darkMode = false

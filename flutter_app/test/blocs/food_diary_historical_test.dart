@@ -26,7 +26,7 @@ void main() {
   const date = 52342;
 
   final diet = Diet((b) => b
-    ..calories = 2000
+    ..idealNutrients = NutrientMap.random()
     ..startDate = 0
   );
 

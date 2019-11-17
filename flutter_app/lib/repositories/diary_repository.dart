@@ -112,11 +112,11 @@ class DiaryRepository {
 
     return Stream.fromFuture(Future.value(BuiltList(<Diet>[ // FIXME
       Diet((b) => b
-        ..calories = 2000
+        ..idealNutrients = NutrientMap.fromMacros(64, 23, 235)
         ..startDate = 0
       ),
       Diet((b) => b
-        ..calories = 2125
+        ..idealNutrients = NutrientMap.fromMacros(123, 42, 397)
         ..startDate = 18128
       ),
     ])));

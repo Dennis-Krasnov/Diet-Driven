@@ -33,7 +33,7 @@ void main() {
   ]);
 
   final diet = Diet((b) => b
-    ..calories = 2000
+    ..idealNutrients = NutrientMap.random()
     ..startDate = 0
   );
 
@@ -353,7 +353,7 @@ void main() {
 
   group("FoodDiaryLoaded::dietForDate", () {
     final secondDiet = Diet((b) => b
-      ..calories = 2402
+      ..idealNutrients = NutrientMap.random()
       ..startDate = 100
     );
 

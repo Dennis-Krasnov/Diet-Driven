@@ -7,8 +7,7 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
-
-import 'package:diet_driven/models/models.dart';
+import 'package:deep_link_navigation/deep_link_navigation.dart';
 
 part 'settings.g.dart';
 
@@ -30,11 +29,11 @@ abstract class Settings implements Built<Settings, SettingsBuilder> {
 abstract class NavigationSettings implements Built<NavigationSettings, NavigationSettingsBuilder> {
   static Serializer<NavigationSettings> get serializer => _$navigationSettingsSerializer;
 
-  @nullable
-  Page get defaultPage;
-
-  @nullable
-  BuiltList<Page> get bottomNavigationPages;
+//  @nullable
+//  DeepLink get defaultPage;
+//
+//  @nullable
+//  BuiltList<DeepLink> get bottomNavigationPages;
 
   factory NavigationSettings([void Function(NavigationSettingsBuilder b)]) = _$NavigationSettings;
   NavigationSettings._();

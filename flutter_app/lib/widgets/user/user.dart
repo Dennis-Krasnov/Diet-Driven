@@ -4,7 +4,6 @@
  * in the LICENSE file.
  */
 
-export 'deep_links.dart';
-export 'navigation_bloc.dart';
-export 'navigation_events.dart';
-export 'navigation_state.dart';
+library user_widgets;
+
+export 'user_page.dart';

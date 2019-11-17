@@ -4,6 +4,7 @@
  * in the LICENSE file.
  */
 
+import 'package:bloc_logging/bloc_logger.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
@@ -49,9 +50,11 @@ class AnalyticsRepository {
 
   /// ...
   /// TODO: include deep link
-  Future<void> goToPage(String pageName) {
+  Future<void> currentScreen(String pageName) {
     assert(pageName != null);
 
+    // TODO: type of severity for analytics, rewrite threshold level to a white/black list!
+    BlocLogger().fine("Analtytics - current screen: $pageName");
     return _analytics.setCurrentScreen(screenName: pageName);
   }
 

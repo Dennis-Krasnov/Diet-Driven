@@ -74,49 +74,14 @@ class _$NavigationSettingsSerializer
   @override
   Iterable<Object> serialize(Serializers serializers, NavigationSettings object,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = <Object>[];
-    if (object.defaultPage != null) {
-      result
-        ..add('defaultPage')
-        ..add(serializers.serialize(object.defaultPage,
-            specifiedType: const FullType(Page)));
-    }
-    if (object.bottomNavigationPages != null) {
-      result
-        ..add('bottomNavigationPages')
-        ..add(serializers.serialize(object.bottomNavigationPages,
-            specifiedType:
-                const FullType(BuiltList, const [const FullType(Page)])));
-    }
-    return result;
+    return <Object>[];
   }
 
   @override
   NavigationSettings deserialize(
       Serializers serializers, Iterable<Object> serialized,
       {FullType specifiedType = FullType.unspecified}) {
-    final result = new NavigationSettingsBuilder();
-
-    final iterator = serialized.iterator;
-    while (iterator.moveNext()) {
-      final key = iterator.current as String;
-      iterator.moveNext();
-      final dynamic value = iterator.current;
-      switch (key) {
-        case 'defaultPage':
-          result.defaultPage = serializers.deserialize(value,
-              specifiedType: const FullType(Page)) as Page;
-          break;
-        case 'bottomNavigationPages':
-          result.bottomNavigationPages.replace(serializers.deserialize(value,
-                  specifiedType:
-                      const FullType(BuiltList, const [const FullType(Page)]))
-              as BuiltList<dynamic>);
-          break;
-      }
-    }
-
-    return result.build();
+    return new NavigationSettingsBuilder().build();
   }
 }
 
@@ -279,17 +244,11 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
 }
 
 class _$NavigationSettings extends NavigationSettings {
-  @override
-  final Page defaultPage;
-  @override
-  final BuiltList<Page> bottomNavigationPages;
-
   factory _$NavigationSettings(
           [void Function(NavigationSettingsBuilder) updates]) =>
       (new NavigationSettingsBuilder()..update(updates)).build();
 
-  _$NavigationSettings._({this.defaultPage, this.bottomNavigationPages})
-      : super._();
+  _$NavigationSettings._() : super._();
 
   @override
   NavigationSettings rebuild(
@@ -303,23 +262,17 @@ class _$NavigationSettings extends NavigationSettings {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is NavigationSettings &&
-        defaultPage == other.defaultPage &&
-        bottomNavigationPages == other.bottomNavigationPages;
+    return other is NavigationSettings;
   }
 
   @override
   int get hashCode {
-    return $jf(
-        $jc($jc(0, defaultPage.hashCode), bottomNavigationPages.hashCode));
+    return 933924940;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('NavigationSettings')
-          ..add('defaultPage', defaultPage)
-          ..add('bottomNavigationPages', bottomNavigationPages))
-        .toString();
+    return newBuiltValueToStringHelper('NavigationSettings').toString();
   }
 }
 
@@ -327,26 +280,7 @@ class NavigationSettingsBuilder
     implements Builder<NavigationSettings, NavigationSettingsBuilder> {
   _$NavigationSettings _$v;
 
-  Page _defaultPage;
-  Page get defaultPage => _$this._defaultPage;
-  set defaultPage(Page defaultPage) => _$this._defaultPage = defaultPage;
-
-  ListBuilder<Page> _bottomNavigationPages;
-  ListBuilder<Page> get bottomNavigationPages =>
-      _$this._bottomNavigationPages ??= new ListBuilder<Page>();
-  set bottomNavigationPages(ListBuilder<Page> bottomNavigationPages) =>
-      _$this._bottomNavigationPages = bottomNavigationPages;
-
   NavigationSettingsBuilder();
-
-  NavigationSettingsBuilder get _$this {
-    if (_$v != null) {
-      _defaultPage = _$v.defaultPage;
-      _bottomNavigationPages = _$v.bottomNavigationPages?.toBuilder();
-      _$v = null;
-    }
-    return this;
-  }
 
   @override
   void replace(NavigationSettings other) {
@@ -363,23 +297,7 @@ class NavigationSettingsBuilder
 
   @override
   _$NavigationSettings build() {
-    _$NavigationSettings _$result;
-    try {
-      _$result = _$v ??
-          new _$NavigationSettings._(
-              defaultPage: defaultPage,
-              bottomNavigationPages: _bottomNavigationPages?.build());
-    } catch (_) {
-      String _$failedField;
-      try {
-        _$failedField = 'bottomNavigationPages';
-        _bottomNavigationPages?.build();
-      } catch (e) {
-        throw new BuiltValueNestedFieldError(
-            'NavigationSettings', _$failedField, e.toString());
-      }
-      rethrow;
-    }
+    final _$result = _$v ?? new _$NavigationSettings._();
     replace(_$result);
     return _$result;
   }

@@ -69,11 +69,12 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           ),
         ))
         // Unrecoverable failure
-        .onErrorReturnWith((dynamic error) => UserDataError((b) => b..error = error))
-        .distinct();
+        .onErrorReturnWith((dynamic error) => UserDataError((b) => b..error = error));
 
       // Maintain single instance of stream subscription
-      _userDataEventSubscription ??= Observable(MergeStream([onboard$, dataArrival$])).listen(dispatch);
+      _userDataEventSubscription ??= Observable(MergeStream([onboard$, dataArrival$]))
+        .distinct()
+        .listen(dispatch);
     }
 
     if (event is IngressUserDataArrived) {

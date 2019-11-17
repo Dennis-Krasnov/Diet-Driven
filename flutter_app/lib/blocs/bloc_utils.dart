@@ -11,7 +11,6 @@ import 'package:built_value/built_value.dart';
 import 'package:built_collection/built_collection.dart';
 
 import 'package:diet_driven/models/models.dart';
-import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 
 part 'bloc_utils.g.dart';
 
@@ -47,29 +46,29 @@ String hexNumberCodeToString(int hexCode) => "0x${hexCode.toRadixString(16).padL
 
 
 // TODO: move to charting utils!
-List<CircularStackEntry> generatePieChart(NutrientMap nutrientMap, List<Nutrient> macroNutrientOrder) {
-  assert(nutrientMap != null);
-  assert(macroNutrientOrder != null);
-
-  return <CircularStackEntry>[
-    CircularStackEntry(
-      <CircularSegmentEntry>[
-        // TODO: take list (macronutrient order) from settings
-        for (final nutrient in macroNutrientOrder)
-          CircularSegmentEntry(
-              nutrientMap.quantities[nutrient].toDouble(), // OPTIMIZE
-              nutrient == Nutrient.protein // TODO: dynamic, store in map
-                  ? const Color(0xFFA23648)
-                  : nutrient == Nutrient.fat
-                  ? const Color(0xFFD3AF32)
-                  : const Color(0xFF4DAB75),
-              rankKey: nutrient.name
-          ),
-      ],
-      rankKey: 'Macronutrient distribution',
-    ),
-  ];
-}
+//List<CircularStackEntry> generatePieChart(NutrientMap nutrientMap, List<Nutrient> macroNutrientOrder) {
+//  assert(nutrientMap != null);
+//  assert(macroNutrientOrder != null);
+//
+//  return <CircularStackEntry>[
+//    CircularStackEntry(
+//      <CircularSegmentEntry>[
+//        // TODO: take list (macronutrient order) from settings
+//        for (final nutrient in macroNutrientOrder)
+//          CircularSegmentEntry(
+//              nutrientMap.quantities[nutrient].toDouble(), // OPTIMIZE
+//              nutrient == Nutrient.protein // TODO: dynamic, store in map
+//                  ? const Color(0xFFA23648)
+//                  : nutrient == Nutrient.fat
+//                  ? const Color(0xFFD3AF32)
+//                  : const Color(0xFF4DAB75),
+//              rankKey: nutrient.name
+//          ),
+//      ],
+//      rankKey: 'Macronutrient distribution',
+//    ),
+//  ];
+//}
 
 //@BuiltValue(instantiable: false)
 //abstract class FailState extends Object {
