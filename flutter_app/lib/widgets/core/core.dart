@@ -7,5 +7,6 @@
 library core_screens;
 
 export 'app.dart';
-export 'configuration_settings_decision.dart';
-export 'home_screen.dart';
+export 'authentication_change_notifier.dart';
+export 'bottom_navigation.dart';
+export 'theme.dart';

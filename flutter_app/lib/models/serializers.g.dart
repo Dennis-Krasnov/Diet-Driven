@@ -15,7 +15,6 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..add(Nutrient.serializer)
       ..add(NutrientMap.serializer)
       ..add(NutrientType.serializer)
-      ..add(Page.serializer)
       ..add(SearchResult.serializer)
       ..add(Settings.serializer)
       ..add(SubscriptionType.serializer)
@@ -30,9 +29,6 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(MealData)]),
           () => new ListBuilder<MealData>())
-      ..addBuilderFactory(
-          const FullType(BuiltList, const [const FullType(Page)]),
-          () => new ListBuilder<Page>())
       ..addBuilderFactory(
           const FullType(
               BuiltMap, const [const FullType(Nutrient), const FullType(num)]),

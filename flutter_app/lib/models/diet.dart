@@ -7,14 +7,14 @@
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
 
-import 'package:diet_driven/models/models.dart' show MealInfo;
+import 'package:diet_driven/models/models.dart' show MealInfo, NutrientMap;
 
 part 'diet.g.dart';
 
 /// ...
 abstract class Diet implements Built<Diet, DietBuilder> {
-  ///
-  num get calories;
+  /// ...
+  NutrientMap get idealNutrients;
 
   ///
   /// ... default ...
@@ -34,7 +34,7 @@ abstract class Diet implements Built<Diet, DietBuilder> {
 }
 
 abstract class DietBuilder implements Builder<Diet, DietBuilder> {
-  num calories;
+  NutrientMap idealNutrients;
   BuiltList<MealInfo> meals = BuiltList(<MealInfo>[
     MealInfo((b) => b
       ..mealName = "Breakfast"

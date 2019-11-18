@@ -30,15 +30,13 @@ dependencies:
   # device_info
 
   ## FLUTTER WIDGETS
-  charts_flutter: ^0.8.1
+  syncfusion_flutter_charts: ^17.3.26
   font_awesome_flutter: ^8.5.0
   flare_flutter: 1.5.12
   shimmer: ^1.0.1
   flutter_material_color_picker: ^1.0.5
   sticky_headers: ^0.1.8
-  flutter_circular_chart: ^0.1.0
-  rest_router:
-    path: ../../rest_router
+  deep_link_navigation: ^1.2.1
 
   ## DART UTILS
 

@@ -1,0 +1,67 @@
+import 'package:deep_link_navigation/deep_link_navigation.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/navigation/deep_link_mixins.dart';
+
+// errors
+
+class RouteNotFoundDL extends ValueDeepLink<RouteNotFound> with FullScreen {
+  RouteNotFoundDL(RouteNotFound e) : super("route-not-found", e, toString: (e) => e.route.join("/"));
+}
+
+// onboarding and login
+
+class LandingDL extends DeepLink with FullScreen {
+  LandingDL() : super("landing");
+}
+
+class LoginDL extends DeepLink {
+  LoginDL() : super("login");
+}
+
+class ForgotPasswordDL extends DeepLink {
+  ForgotPasswordDL() : super("forgot-password");
+}
+
+// TODO: optional goal enum
+class OnboardingGoalDL extends ValueDeepLink<String> {
+  OnboardingGoalDL([String goal]) : super("goal", goal);
+}
+
+// TODO: optional sex enum
+class OnboardingSexDL extends ValueDeepLink<bool> {
+  OnboardingSexDL([bool isMale]) : super("sex", isMale);
+}
+
+class OnboardingWeightDL extends ValueDeepLink<double> {
+  OnboardingWeightDL([double kilos]) : super("weight", kilos);
+}
+
+///   ########  ####    ###    ########  ##    ##
+///   ##     ##  ##    ## ##   ##     ##  ##  ##
+///   ##     ##  ##   ##   ##  ##     ##   ####
+///   ##     ##  ##  ##     ## ########     ##
+///   ##     ##  ##  ######### ##   ##      ##
+///   ##     ##  ##  ##     ## ##    ##     ##
+///   ########  #### ##     ## ##     ##    ##
+
+class DiaryDateDL extends ValueDeepLink<int> {
+  DiaryDateDL(int date) : super("diary", date);
+
+  DiaryDateDL.today() : super("diary", currentDaysSinceEpoch());
+}
+
+// TODO: custom built serializer for deep links!!!! - giant map both ways / use json serializer!?
+// TODO: other large comments
+
+class MeasureDL extends DeepLink {
+  MeasureDL() : super("measure");
+}
+
+class ReportsDL extends DeepLink {
+  ReportsDL() : super("reports");
+}
+
+// TODO: enum
+class UserDL extends ValueDeepLink<String> {
+  UserDL(String page) : super("user", page);
+}

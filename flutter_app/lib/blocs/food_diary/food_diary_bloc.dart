@@ -31,11 +31,10 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
   StreamSubscription<FoodDiaryEvent> _foodDiaryEventSubscription;
 
-  FoodDiaryBloc({@required this.diaryRepository, @required this.userId, this.date})
-    : assert(diaryRepository != null),
-      assert(userId != null && userId.isNotEmpty),
-      // A -> B === !A OR B
-      assert(date == null || date >= 0);
+  FoodDiaryBloc({@required this.diaryRepository, @required this.userId, this.date}) :
+    assert(diaryRepository != null),
+    assert(userId != null && userId.isNotEmpty),
+    assert(date == null || date >= 0);
 
   @override
   FoodDiaryState get initialState => FoodDiaryUninitialized();

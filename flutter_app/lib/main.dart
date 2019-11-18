@@ -10,12 +10,17 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:syncfusion_flutter_core/core.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/widgets/core/core.dart';
 
-void main() {
+
+/// Load file's contents from the main asset bundle.
+Future<String> loadFileContent(String path) => rootBundle.loadString(path);
+
+Future<void> main() async {
   // Configure logging
   BlocLogger().messageThreshold = LogLevel.ui;
   BlocLogger().enabled = !kReleaseMode;
@@ -31,7 +36,10 @@ void main() {
     DeviceOrientation.portraitDown,
   ]);
 
-  // Run Flutter app
+  // Configure SyncFusion license
+  // https://help.syncfusion.com/common/essential-studio/licensing/license-key#flutter
+  SyncfusionLicense.registerLicense(await loadFileContent("assets/syncfusion.txt"));
+
   runApp(
     // Inject global repositories into application
     MultiRepositoryProvider(

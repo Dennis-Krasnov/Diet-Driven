@@ -45,10 +45,11 @@ class NutritionHeader extends StatelessWidget {
       onLongPress: onLongPress,
       child: Container(
         // Opaque header container
-//        height: 30,
-        height: 40,
+        height: 30,
+//        height: 40,
 //        padding: const EdgeInsets.symmetric(horizontal: 16),
-        padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+//        padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
+        padding: const EdgeInsets.only(left: 16, right: 16),
 //        margin: const EdgeInsets.symmetric(vertical: 10),
         margin: const EdgeInsets.only(bottom: 10),
         alignment: Alignment.centerLeft,
@@ -57,7 +58,8 @@ class NutritionHeader extends StatelessWidget {
           color: Colors.white,
           border: Border(bottom: BorderSide(
             width: 1,
-            color: const Color.fromRGBO(0, 0, 0, 0.08),
+            color: const Color.fromRGBO(0, 0, 0, 0.08), // .withOpacity(stuckAmount.clamp(0.0, 1.0)),
+//            color: Color.fromRGBO(0, 0, 0, 0.08 * stuckAmount.clamp(0.0, 1.0)), // .withOpacity(stuckAmount.clamp(0.0, 1.0)),
           )),
         ),
         child: Row(
@@ -128,6 +130,7 @@ class NutritionHeader extends StatelessWidget {
 }
 
 /// Animates hiding sticky nutrition header elements.
+/// TODO: fade in (with small delay) to avoid all hidden stickies being visible at the very start (looks quite ugly)
 class HiddenSticky extends StatelessWidget {
   /// Determines visibility of nutrients.
   /// 0.0 <= value <= 1.0: about to be stuck

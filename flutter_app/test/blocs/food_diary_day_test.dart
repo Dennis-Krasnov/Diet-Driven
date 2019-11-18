@@ -38,7 +38,7 @@ void main() {
   ]);
 
   final diet = Diet((b) => b
-    ..calories = 2000
+    ..idealNutrients = NutrientMap.random()
     ..startDate = 0
   );
 
