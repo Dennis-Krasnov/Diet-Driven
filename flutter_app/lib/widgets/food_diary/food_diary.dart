@@ -1,13 +1,15 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 library food_diary;
 
+export 'daily_nutrition_stats_sliver.dart';
 export 'food_diary_day_page.dart';
+export 'food_diary_meal_sliver.dart';
 export 'food_diary_page.dart';
+export 'food_diary_sponsorship_sliver.dart';
 export 'food_record_tile.dart';
 export 'manual_food_record_edit.dart';
 export 'number_form_field.dart';

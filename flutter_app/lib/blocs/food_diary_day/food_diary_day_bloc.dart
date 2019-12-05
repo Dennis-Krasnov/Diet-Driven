@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -11,11 +10,11 @@ import 'package:bloc_logging/bloc_logging.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/blocs/food_diary/food_diary.dart';
 import 'package:diet_driven/blocs/food_diary_day/food_diary_day.dart';
-import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
+/// Manages single diary day and its diet.
 class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
   /// All food diary days and diets.
   final FoodDiaryBloc foodDiaryBloc;
@@ -24,6 +23,8 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
 
   /// Food diary day's date.
   final int date;
+
+  FoodDiaryDayLoaded get loadedState => currentState as FoodDiaryDayLoaded;
 
   StreamSubscription<FoodDiaryDayEvent> _foodDiaryDayEventSubscription;
 
@@ -42,9 +43,8 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
   @override
   Stream<FoodDiaryDayState> mapEventToState(FoodDiaryDayEvent event) async* {
     if (event is InitFoodDiaryDay) {
-      // Food diary day has no error state
-      assert(currentState is FoodDiaryDayUninitialized);
-
+      // Maintain single instance of stream subscription
+      await _foodDiaryDayEventSubscription?.cancel();
       _foodDiaryDayEventSubscription = Observable<FoodDiaryState>(foodDiaryBloc.state)
         .whereType<FoodDiaryLoaded>()
         .map<FoodDiaryDayEvent>((loadedDiaryState) => IngressFoodDiaryDayArrived((b) => b
@@ -61,7 +61,6 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
         ..diet = event.diet.toBuilder()
       );
 
-      // TODO: remove slightly differently coloured empty fr states, this would show 0 vs null !!!
       BlocLogger().info("Food diary day #$date loaded with ${event?.foodDiaryDay?.meals?.expand((meal) => meal.foodRecords)?.length} food records");
     }
 
@@ -84,7 +83,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
 
       try {
-        final diaryDayBuilder = _foodDiaryDay.toBuilder()
+        final diaryDayBuilder = loadedState.foodDiaryDay.toBuilder()
           ..replaceFoodRecord(event.oldRecord, event.newRecord);
 
         await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
@@ -103,7 +102,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
 
       try {
-        final diaryDayBuilder = _foodDiaryDay.toBuilder()
+        final diaryDayBuilder = loadedState.foodDiaryDay.toBuilder()
           ..deleteFoodRecords(event.foodRecords);
 
         await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
@@ -116,10 +115,4 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       }
     }
   }
-
-  /// Current food diary day.
-  /// Only use when it's certain that [currentState] is [FoodDiaryDayLoaded].
-  FoodDiaryDay get _foodDiaryDay => (currentState as FoodDiaryDayLoaded).foodDiaryDay;
 }
-
-// TODO: handle selection mode

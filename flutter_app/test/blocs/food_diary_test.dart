@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -46,7 +45,6 @@ void main() {
 
     sut = FoodDiaryBloc(
       diaryRepository: diaryRepository,
-      userId: userId,
     );
   });
 
@@ -70,7 +68,7 @@ void main() {
 
   /// Tests
   test("Start with initial state", () {
-    expect(sut.userId, userId);
+    expect(sut.userId, null);
     expect(sut.date, null);
     expect(sut.initialState, FoodDiaryUninitialized());
   });
@@ -81,7 +79,6 @@ void main() {
       emitsInOrder(<dynamic>[
         FoodDiaryUninitialized(),
         BuiltErrorMatcher("Food diary bloc must be loaded"),
-        BuiltErrorMatcher("Food diary bloc must be uninitialized"),
       ])
     );
 
@@ -90,9 +87,6 @@ void main() {
       ..mealIndex = 0
       ..foodRecords = ListBuilder()
     ));
-
-    await delay(1);
-    sut.dispatch(InitFoodDiary());
   });
 
   group("Reactive ingress streams", () {
@@ -139,7 +133,7 @@ void main() {
         ])
       );
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
     });
 
     test("Yield loaded state for valid empty streams", () {
@@ -190,7 +184,7 @@ void main() {
         ])
       );
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
     });
 
     test("Yield error state on errorous food diary stream", () async {
@@ -225,7 +219,7 @@ void main() {
         ])
       );
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
 
       // Extra time is given to avoid flakiness
       await delay(5);
@@ -264,7 +258,7 @@ void main() {
         ])
       );
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
 
       // Extra time is given to avoid flakiness
       await delay(5);
@@ -276,7 +270,7 @@ void main() {
     test("Add to existing day", () async {
       _setupEventTestMocks();
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
 
       await delay(1);
       sut.dispatch(GlobalAddFoodRecords((b) => b
@@ -300,7 +294,7 @@ void main() {
     test("Add to new day", () async {
       _setupEventTestMocks();
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
 
       await delay(1);
       sut.dispatch(GlobalAddFoodRecords((b) => b
@@ -327,7 +321,7 @@ void main() {
       _setupEventTestMocks();
       when(diaryRepository.saveFoodDiaryDay(any, any)).thenThrow(eventFailedException);
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
 
       await delay(1);
       sut.dispatch(GlobalAddFoodRecords((b) => b

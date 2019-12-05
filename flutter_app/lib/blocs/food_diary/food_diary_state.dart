@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
@@ -12,6 +11,7 @@ import 'package:diet_driven/models/models.dart';
 
 part 'food_diary_state.g.dart';
 
+/// Historical food diary blocs don't affect UI. // FIXME: what if it errors, app bar still shows as success...
 abstract class FoodDiaryState {}
 
 /// Skeleton diary app bar.

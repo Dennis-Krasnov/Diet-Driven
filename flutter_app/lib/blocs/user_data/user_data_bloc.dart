@@ -1,27 +1,31 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_logging/bloc_logging.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:merge_map/merge_map.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/blocs/user_data/user_data.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
 /// Aggregates and manages authentication and settings.
-/// App shows skeleton navigation until [UserDataBloc] is loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final UserRepository userRepository;
+
   final SettingsRepository settingsRepository;
+
+  UserDataLoaded get loadedState => currentState as UserDataLoaded;
+
+  /// Current user's id.
+  String get userId => loadedState.authentication.uid;
 
   StreamSubscription<UserDataEvent> _userDataEventSubscription;
 
@@ -40,11 +44,6 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
     if (event is InitUserData) {
-      if (currentState is! UserDataUninitialized) {
-        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be uninitialized")));
-        return;
-      }
-
       final auth$ = Observable<Authentication>(userRepository.authStateChanged$());
 
       final onboard$ = auth$
@@ -72,7 +71,8 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         .onErrorReturnWith((dynamic error) => UserDataError((b) => b..error = error));
 
       // Maintain single instance of stream subscription
-      _userDataEventSubscription ??= Observable(MergeStream([onboard$, dataArrival$]))
+      _userDataEventSubscription?.cancel();
+      _userDataEventSubscription = Observable(MergeStream([onboard$, dataArrival$]))
         .distinct()
         .listen(dispatch);
     }
@@ -119,7 +119,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       }
 
       try {
-        final settingsBuilder = _userSettings.toBuilder()
+        final settingsBuilder = loadedState.userSettings.toBuilder()
           ..themeSettings.update((b) => b
             ..darkMode = event.darkMode
           );
@@ -141,12 +141,19 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       }
 
       try {
-        final settingsBuilder = _userSettings.toBuilder()
+        final settingsBuilder = loadedState.userSettings.toBuilder()
           ..themeSettings.update((b) => b
-            ..primaryColour = hexNumberCodeToString(event.colourValue)
+            ..primaryColour = event.colourValue.asHexNumber
           );
 
         await settingsRepository.saveSettings(userId, settingsBuilder.build());
+
+        // Alternative syntax
+//        await settingsRepository.saveUserSettings(userId, (b) => b
+//          ..themeSettings.update((b) => b
+//            ..primaryColour = event.colourValue.asHexNumber
+//          )
+//        );
 
         BlocLogger().info("Primary colour now ${event.colourValue}");
         event?.completer?.complete();
@@ -157,18 +164,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     }
   }
 
-  /// Current user's id.
-  /// Only use when it's certain that [currentState] is [UserDataLoaded].
-  String get userId => (currentState as UserDataLoaded).authentication.uid;
-
-  /// Current user's user settings.
-  /// Only use when it's certain that [currentState] is [UserDataLoaded].
-  Settings get _userSettings => (currentState as UserDataLoaded).userSettings;
-
   /// Merges user [Settings] with default [Settings] field-by-field.
   /// Default settings are used unless explicitly overwritten by user's custom settings.
   Settings _mergeSettings(Settings userSettings, Settings defaultSettings) {
-    ArgumentError.checkNotNull(defaultSettings, "Default settings"); // TOTEST
+    ArgumentError.checkNotNull(defaultSettings, "Default settings");
 
     // userSettings may be null due to missing firestore document
     if (userSettings == null) {

@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -117,8 +116,17 @@ void main() {
     });
 
     test("Yield error state on errorous connectivity stream", () {
-      when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) async => remoteConfig);
-      when(configurationRepository.fetchPackageInfo()).thenAnswer((_) async => packageInfo);
+//      when(configurationRepository.fetchRemoteConfig()).thenAnswer((_) async => remoteConfig);
+//      when(configurationRepository.fetchPackageInfo()).thenAnswer((_) async => packageInfo);
+//      when(configurationRepository.connectivity$()).thenAnswer((_) async* {
+//        throw Exception("Connectivity failed");
+//      });
+
+      when(configurationRepository.fetchRemoteConfig()).future(remoteConfig);
+      when(configurationRepository.fetchPackageInfo()).future(packageInfo);
+      // FIXME: own method!?
+      // .throwStreamException(Exception("Connectivity failed"));
+      // .throwAsyncException(Exception("Connectivity failed"));
       when(configurationRepository.connectivity$()).thenAnswer((_) async* {
         throw Exception("Connectivity failed");
       });

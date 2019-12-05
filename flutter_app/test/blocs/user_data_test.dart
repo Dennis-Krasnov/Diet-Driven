@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -23,6 +22,8 @@ void main() {
   /// Mocks
   UserRepository userRepository;
   SettingsRepository settingsRepository;
+
+  // TODO: move common data to data file!!!
 
   /// Data
   final userA = Authentication((b) => b
@@ -65,9 +66,7 @@ void main() {
     );
   });
 
-  tearDown(() {
-    sut?.dispose();
-  });
+  tearDown(() => sut?.dispose());
 
   /// Tests
   test("Start with initial state", () {
@@ -81,7 +80,6 @@ void main() {
         UserDataUninitialized(),
         BuiltErrorMatcher("User data bloc must be loaded"),
         BuiltErrorMatcher("User data bloc must be loaded"),
-        BuiltErrorMatcher("User data bloc must be uninitialized"),
       ])
     );
 
@@ -93,18 +91,33 @@ void main() {
     sut.dispatch(UpdatePrimaryColour((b) => b
       ..colourValue = 0xffb76b01
     ));
-
-    await delay(1);
-    sut.dispatch(InitUserData());
   });
+
+  // TODO
+//  test("Yield error state on invalid events", () async {
+//    sut.dispatch(UpdateDarkMode((b) => b
+//      ..darkMode = true
+//    ));
+//
+//    await delay(1);
+//    sut.dispatch(UpdatePrimaryColour((b) => b
+//      ..colourValue = 0xffb76b01
+//    ));
+//
+//    await sut.emits([
+//      UserDataUninitialized(),
+//      BuiltErrorMatcher("User data bloc must be loaded"),
+//      BuiltErrorMatcher("User data bloc must be loaded"),
+//    ]);
+//  });
 
   group("Reactive ingress streams", () {
     test("Yield loaded state for valid authentication stream", () {
       // Must be broadcast stream
-      when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, userA, null, userB]).asBroadcastStream());
-      when(userRepository.userDocument$(any)).thenAnswer((_) => Stream.fromIterable([userDocument]));
-      when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsLight]));
-      when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
+      when(userRepository.authStateChanged$()).broadcastStream([null, userA, null, userB]);
+      when(userRepository.userDocument$(any)).stream([userDocument]);
+      when(settingsRepository.defaultSettings$()).stream([settingsLight]);
+      when(settingsRepository.userSettings$(any)).stream([null]);
 
       expectLater(
         sut.state,
@@ -134,6 +147,13 @@ void main() {
 
     test("Yield loaded state for valid streams", () {
       // Must be broadcast stream
+      // TODO: extension: thenBroadcastAnswer((_) async* {
+      //   yield null;
+      //   yield userA;
+      //
+      //   await delay(5);
+      //   yield null;
+      // });
       when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromFutures(<Future<Authentication>>[
         Future.value(),
         Future.value(userA),
@@ -142,6 +162,7 @@ void main() {
       when(userRepository.userDocument$(any)).thenAnswer((_) async* {
         yield userDocument;
 
+        // TODO: await 2.ticks;
         await delay(2);
         yield userDocument;
       });
@@ -154,7 +175,8 @@ void main() {
         await delay(2);
         yield settingsLight;
       });
-      when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
+      when(settingsRepository.userSettings$(any)).stream([null]);
+//      when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
       // TODO: also mock subscription arriving at different times
 
       expectLater(

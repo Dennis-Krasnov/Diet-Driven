@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -58,14 +57,12 @@ void main() {
 
     userRepository = MockUserRepository();
     // Must be broadcast stream
-    when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, user]).asBroadcastStream());
-    when(userRepository.userDocument$(any)).thenAnswer((_) async* {
-      yield userDocument;
-    });
+    when(userRepository.authStateChanged$()).broadcastStream([null, user]);
+    when(userRepository.userDocument$(any)).stream([userDocument]);
 
     settingsRepository = MockSettingsRepository();
-    when(settingsRepository.defaultSettings$()).thenAnswer((_) => Stream.fromIterable([settingsFull]));
-    when(settingsRepository.userSettings$(any)).thenAnswer((_) => Stream.fromIterable([null]));
+    when(settingsRepository.defaultSettings$()).stream([settingsFull]);
+    when(settingsRepository.userSettings$(any)).stream([null]);
 
     completer = Completer();
 
@@ -75,9 +72,8 @@ void main() {
     );
   });
 
-  tearDown(() {
-    sut?.dispose();
-  });
+  // TODO: all like this!
+  tearDown(() => sut?.dispose());
 
   /// Tests
   group("Dark mode updates", () {

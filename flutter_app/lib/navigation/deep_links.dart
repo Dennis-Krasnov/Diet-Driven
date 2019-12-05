@@ -1,4 +1,10 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
+ */
+
 import 'package:deep_link_navigation/deep_link_navigation.dart';
+
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/navigation/deep_link_mixins.dart';
 
@@ -47,7 +53,7 @@ class OnboardingWeightDL extends ValueDeepLink<double> {
 class DiaryDateDL extends ValueDeepLink<int> {
   DiaryDateDL(int date) : super("diary", date);
 
-  DiaryDateDL.today() : super("diary", currentDaysSinceEpoch());
+  DiaryDateDL.today() : super("diary", DateTime.now().asInt);
 }
 
 // TODO: custom built serializer for deep links!!!! - giant map both ways / use json serializer!?
@@ -60,6 +66,8 @@ class MeasureDL extends DeepLink {
 class ReportsDL extends DeepLink {
   ReportsDL() : super("reports");
 }
+
+// individual reports are: with SubscriberOnly
 
 // TODO: enum
 class UserDL extends ValueDeepLink<String> {

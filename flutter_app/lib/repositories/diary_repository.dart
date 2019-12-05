@@ -1,14 +1,13 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/providers/firestore_paths.dart';
+import 'package:diet_driven/providers/firestore_references.dart';
 import 'package:diet_driven/providers/firestore_serializer.dart';
 
 /// Data access object for food and exercise diaries using `cloud_firestore` library.
@@ -23,8 +22,10 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
-    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
-    final documentSnapshot = await docRef.get().asStream().first;
+    final documentSnapshot = await _firestore.foodDiaryDay(userId, daysSinceEpoch)
+      .get()
+      .asStream()
+      .first;
     return documentSnapshot.data != null;
   }
 
@@ -38,8 +39,8 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
-    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
-    return docRef.snapshots().transform(deserializeDocumentTransform<FoodDiaryDay>());
+    return _firestore.foodDiaryDay(userId, daysSinceEpoch)
+      .deserialize<FoodDiaryDay>();
   }
 
   /// Whether [userId] has [FoodDiaryDay]s.
@@ -49,11 +50,11 @@ class DiaryRepository {
   Future<bool> allTimeFoodDiaryExists(String userId, {int startAt = 0}) async {
     assert(userId != null && userId.isNotEmpty);
 
-    final colRef = _firestore.collection(FirestorePaths.foodDiary(userId))
+    final querySnapshot = await _firestore.foodDiary(userId)
       .where("date", isGreaterThanOrEqualTo: startAt)
       // Only require a single document to find out whether documents exist
-      .limit(1);
-    final querySnapshot = await colRef.getDocuments();
+      .limit(1)
+      .getDocuments();
     return querySnapshot.documents.isNotEmpty;
   }
 
@@ -66,9 +67,9 @@ class DiaryRepository {
   Stream<BuiltList<FoodDiaryDay>> allTimeFoodDiary$(String userId, {int startAt = 0}) {
     assert(userId != null && userId.isNotEmpty);
 
-    final colRef = _firestore.collection(FirestorePaths.foodDiary(userId))
-      .where("date", isGreaterThanOrEqualTo: startAt);
-    return colRef.snapshots().transform(deserializeCollectionTransform<FoodDiaryDay>());
+    return _firestore.foodDiary(userId)
+      .where("date", isGreaterThanOrEqualTo: startAt)
+      .deserialize<FoodDiaryDay>();
   }
 
   /// Replaces [userId]'s [FoodDiaryDay] on its respective day.
@@ -81,8 +82,8 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(foodDiaryDay != null);
 
-    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, foodDiaryDay.date));
-    return docRef.setData(serializeDocument(foodDiaryDay), merge: false);
+    return _firestore.foodDiaryDay(userId, foodDiaryDay.date)
+      .setSerialized(foodDiaryDay, merge: false);
   }
 
   /// Deletes [userId]'s [FoodDiaryDay] on [daysSinceEpoch].
@@ -98,8 +99,8 @@ class DiaryRepository {
     assert(userId != null && userId.isNotEmpty);
     assert(daysSinceEpoch != null && daysSinceEpoch >= 0);
 
-    final docRef = _firestore.document(FirestorePaths.foodDiaryDay(userId, daysSinceEpoch));
-    return docRef.delete();
+    return _firestore.foodDiaryDay(userId, daysSinceEpoch)
+      .delete();
   }
 
   /// Streams [userId]'s all-time [Diet]s.

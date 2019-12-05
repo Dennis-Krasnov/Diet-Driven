@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -18,6 +17,8 @@ abstract class FoodDiaryEvent {}
 
 /// Subscribes to data streams.
 abstract class InitFoodDiary implements FoodDiaryEvent, Built<InitFoodDiary, InitFoodDiaryBuilder> {
+  String get userId;
+
   factory InitFoodDiary([void Function(InitFoodDiaryBuilder) updates]) = _$InitFoodDiary;
   InitFoodDiary._();
 }

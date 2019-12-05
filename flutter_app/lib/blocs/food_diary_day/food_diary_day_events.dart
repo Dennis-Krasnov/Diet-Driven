@@ -1,22 +1,21 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
 
 import 'package:built_value/built_value.dart';
 import 'package:built_collection/built_collection.dart';
+
 import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
-import 'package:flutter/services.dart';
 
 part 'food_diary_day_events.g.dart';
 
 abstract class FoodDiaryDayEvent {}
 
-/// Subscribes to bloc state stream.
+/// Subscribes to food diary bloc state stream.
 abstract class InitFoodDiaryDay implements FoodDiaryDayEvent, Built<InitFoodDiaryDay, InitFoodDiaryDayBuilder> {
   factory InitFoodDiaryDay([void Function(InitFoodDiaryDayBuilder) updates]) = _$InitFoodDiaryDay;
   InitFoodDiaryDay._();
@@ -61,6 +60,3 @@ abstract class DeleteFoodRecords implements Completable, FoodDiaryDayEvent, Buil
   factory DeleteFoodRecords([void Function(DeleteFoodRecordsBuilder) updates]) = _$DeleteFoodRecords;
   DeleteFoodRecords._();
 }
-
-/// Moves [foodRecords] from this day to specified [mealIndex].
-//MoveFoodRecords

@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:bloc_logging/bloc_logging.dart';
@@ -45,42 +44,14 @@ class App extends StatelessWidget {
         return DeepLinkMaterialApp(
           // Representation of deep link navigation hierarchy
           navigation: (context) => Dispatcher()
-            // Route not found
-            ..exception<RouteNotFound>((exception, path) => [RouteNotFoundDL(exception)])
-            ..value<RouteNotFound, RouteNotFoundDL>((exception, path) => Scaffold(body: Container(color: Colors.yellow)))
-            // ...
-            // TODO: chunk these into static extension methods!
-            ..path<LandingDL>(
-              (path) => LandingPage(),
-              subNavigation: (context) => Dispatcher()
-                // Onboarding
-                ..value<String, OnboardingGoalDL>(
-                  (goal, path) => OnboardingGoalPage(goal: goal),
-                  subNavigation: (context, goal) => Dispatcher()
-                    ..value<bool, OnboardingSexDL>(
-                      (isMale, path) => OnboardingSexPage(goal: goal, isMale: isMale),
-                      subNavigation: (context, isMale) => Dispatcher()
-                        ..value<double, OnboardingWeightDL>((kilos, path) => OnboardingWeightPage(goal: goal, isMale: isMale, kilos: kilos)),
-                    ),
-                )
-                // Login
-                ..path<LoginDL>(
-                  (path) => Scaffold(),
-                  subNavigation: (context) => Dispatcher()
-                    ..path<ForgotPasswordDL>((path) => Scaffold()), // TODO: optional? email value
-                ),
-            )
-            // FIXME: initialized every time!!! - figure out a way to access user data's user id from higher up!, yet maintain widget lifecycle
-            ..value<int, DiaryDateDL>((date, path) => BlocProvider<FoodDiaryBloc>(
-              builder: (BuildContext context) => FoodDiaryBloc(
-                diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
-                userId: BlocProvider.of<UserDataBloc>(context).userId,
-              )..dispatch(InitFoodDiary()),
-              child: FoodDiaryPage(initialDate: date),
-            ))
-            ..path<MeasureDL>((path) => Scaffold(body: Container(color: Colors.orange)))
-            ..path<ReportsDL>((path) => Scaffold(body: Container(color: Colors.blue)))
-            ..value<String, UserDL>((tab, path) => UserPage(tab: tab)),
+            // Top-level
+            ..landingNavigation()
+            ..exceptionHandling()
+            // Bottom bar
+            ..diaryNavigation()
+            ..measureNavigation()
+            ..reportsNavigation()
+            ..userNavigation(),
           // Stay on splash screen until both [ConfigurationBloc] and [UserDataBloc] are loaded
           splashScreen: const SplashPage(),
           childBuilder: (BuildContext context, DeepLinkNavigator deepLinkNavigator, Widget child) => Scaffold(
@@ -90,7 +61,12 @@ class App extends StatelessWidget {
               configurationBloc: BlocProvider.of<ConfigurationBloc>(context),
               userDataBloc: BlocProvider.of<UserDataBloc>(context),
               // Navigate to user's default page
-              onAuthenticated: (userDataLoaded) => deepLinkNavigator.navigateTo([DiaryDateDL.today()]), // TODO: take from user data loaded!
+              onAuthenticated: (userDataLoaded) {
+                BlocProvider.of<FoodDiaryBloc>(context).dispatch(InitFoodDiary((b) => b
+                  ..userId = userDataLoaded.authentication.uid
+                ));
+                deepLinkNavigator.navigateTo([DiaryDateDL.today()]); // TODO: take from user data loaded!
+              },
               // Navigate to onboarding
               onUnauthenticated: () => deepLinkNavigator.navigateTo([LandingDL()]),
               onException: print, // TODO (e) => ... navigateTo...

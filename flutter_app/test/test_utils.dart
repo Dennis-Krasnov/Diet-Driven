@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
@@ -16,6 +15,40 @@ import 'package:mockito/mockito.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+
+extension WhenExtension on PostExpectation {
+  void future(dynamic answer) => thenAnswer((_) async => answer);
+
+  /// ...
+  /// when(userRepository.userDocument$(any)).thenAnswer((_) async* {
+  ///   yield userDocument;
+  /// });
+  void stream(Iterable answer) => thenAnswer((_) => Stream<dynamic>.fromIterable(answer));
+
+  /// ...
+  /// when(userRepository.authStateChanged$()).thenAnswer((_) => Stream.fromIterable([null, user]).asBroadcastStream());
+  void broadcastStream(Iterable answer) => thenAnswer((_) => Stream<dynamic>.fromIterable(answer).asBroadcastStream());
+}
+
+//import 'package:bloc_test/bloc_test.dart';
+//Because bloc_test >=2.0.0 depends on bloc ^2.0.0 and diet_driven depends on bloc ^0.15.0, bloc_test >=2.0.0 is forbidden.
+//So, because diet_driven depends on bloc_test ^2.2.2, version solving failed.
+//pub get failed (1; So, because diet_driven depends on bloc_test ^2.2.2, version solving failed.)
+//extension BlocTestExtensions on MockBloc<Event, State> {
+//  /// counterBloc.whenListenStream([0, 1, 2, 3]));
+//  /// whenListen(counterBloc, Stream.fromIterable([0, 1, 2, 3]));
+//  void whenListenStream(Iterable<State> answer) => whenListen(this, Stream.fromIterable(answer));
+//
+//  /// counterBloc.whenListen(() {
+//  /// [0, 1, 2, 3]));
+//  /// whenListen(counterBloc, Stream.fromIterable([0, 1, 2, 3]));
+//  void whenListen(Stream<State> stream) => whenListen(this, stream);
+
+//  await emits(bloc, [0, 1]);
+
+//  await bloc.emits([0, 1]);
+//  Future<void> emits([0, 1]);
+//}
 
 final eventFailedException = Exception("Event failed");
 final StreamMatcher doesNotEmit = emitsInOrder(<dynamic>[]);
@@ -35,6 +68,7 @@ class MockUserRepository extends Mock implements UserRepository {}
 class MockSettingsRepository extends Mock implements SettingsRepository {}
 
 /// Mock blocs
+/// TODO: class MockCounterBloc extends MockBloc<CounterEvent, int> implements CounterBloc {}
 class MockUserDataBloc extends Mock implements UserDataBloc {}
 class MockFoodDiaryBloc extends Mock implements FoodDiaryBloc {}
 

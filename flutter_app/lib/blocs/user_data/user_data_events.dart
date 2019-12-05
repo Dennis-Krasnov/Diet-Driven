@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -21,7 +20,7 @@ abstract class InitUserData implements UserDataEvent, Built<InitUserData, InitUs
   InitUserData._();
 }
 
-/// Reactively updates current [authentication], [userDocument], [settings], [subscription].
+/// Reactively updates current [authentication], [userDocument], [settings], [userSettings], [subscription].
 abstract class IngressUserDataArrived implements UserDataEvent, Built<IngressUserDataArrived, IngressUserDataArrivedBuilder> {
   Authentication get authentication;
 
@@ -43,7 +42,7 @@ abstract class UserDataError implements BuiltError, UserDataEvent, Built<UserDat
   UserDataError._();
 }
 
-/// Onboards unauthenticated users.
+/// Redirects unauthenticated users to onboarding / sign in.
 abstract class OnboardUser implements UserDataEvent, Built<OnboardUser, OnboardUserBuilder> {
   factory OnboardUser([void Function(OnboardUserBuilder b)]) = _$OnboardUser;
   OnboardUser._();
@@ -58,7 +57,7 @@ abstract class OnboardUser implements UserDataEvent, Built<OnboardUser, OnboardU
 ///    ######  ########    ##       ##    #### ##    ##  ######    ######
 
 /// Updates dark mode setting.
-abstract class UpdateDarkMode with Completable implements UserDataEvent, Built<UpdateDarkMode, UpdateDarkModeBuilder> {
+abstract class UpdateDarkMode implements Completable, UserDataEvent, Built<UpdateDarkMode, UpdateDarkModeBuilder> {
   bool get darkMode;
 
   factory UpdateDarkMode([void Function(UpdateDarkModeBuilder) updates]) = _$UpdateDarkMode;
@@ -66,7 +65,7 @@ abstract class UpdateDarkMode with Completable implements UserDataEvent, Built<U
 }
 
 /// Updates primary colour setting.
-abstract class UpdatePrimaryColour with Completable implements UserDataEvent, Built<UpdatePrimaryColour, UpdatePrimaryColourBuilder> {
+abstract class UpdatePrimaryColour implements Completable, UserDataEvent, Built<UpdatePrimaryColour, UpdatePrimaryColourBuilder> {
   int get colourValue;
 
   factory UpdatePrimaryColour([void Function(UpdatePrimaryColourBuilder) updates]) = _$UpdatePrimaryColour;

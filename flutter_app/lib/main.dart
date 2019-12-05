@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:bloc/bloc.dart';
@@ -16,21 +15,22 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/widgets/core/core.dart';
 
-
 /// Load file's contents from the main asset bundle.
 Future<String> loadFileContent(String path) => rootBundle.loadString(path);
 
 Future<void> main() async {
   // Configure logging
-  BlocLogger().messageThreshold = LogLevel.ui;
-  BlocLogger().enabled = !kReleaseMode;
-  BlocLogger().blocEventsEnabled = false;
-  BlocLogger().blocTransitionsEnabled = false;
+  BlocLogger()
+    ..messageThreshold = LogLevel.ui
+    ..enabled = !kReleaseMode
+    ..blocEventsEnabled = false
+    ..blocTransitionsEnabled = false;
 
   // Log every bloc event and state transition
   BlocSupervisor.delegate = LoggingBlocDelegate();
 
   // Lock to portrait mode
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -64,6 +64,11 @@ Future<void> main() async {
               userRepository: RepositoryProvider.of<UserRepository>(context),
               settingsRepository: RepositoryProvider.of<SettingsRepository>(context),
             )..dispatch(InitUserData())
+          ),
+          BlocProvider<FoodDiaryBloc>(builder: (context) =>
+            FoodDiaryBloc(
+              diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
+            )
           ),
         ],
         child: App(),

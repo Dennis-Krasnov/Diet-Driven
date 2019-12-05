@@ -1,0 +1,74 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
+ */
+
+import 'package:deep_link_navigation/deep_link_navigation.dart';
+import 'package:flutter/material.dart';
+
+import 'package:diet_driven/navigation/navigation.dart';
+import 'package:diet_driven/widgets/food_diary/food_diary.dart';
+import 'package:diet_driven/widgets/onboarding/onboarding.dart';
+import 'package:diet_driven/widgets/user/user.dart';
+
+extension RouteExtensions on List<DeepLink> {
+  // TODO: remove path from base library
+  /// ...
+  String get path => join("/");
+
+  // inline is more readable:
+//  bool get isFullScreen => any((dl) => dl is FullScreen);
+}
+
+extension DeepLinkNavigationExtensions on Dispatcher {
+  /// ...
+  void landingNavigation() {
+    path<LandingDL>(
+      (path) => LandingPage(),
+      subNavigation: (context) => Dispatcher()
+        ..value<String, OnboardingGoalDL>(
+          (goal, path) => OnboardingGoalPage(goal: goal),
+          subNavigation: (context, goal) => Dispatcher()
+            ..value<bool, OnboardingSexDL>(
+              (isMale, path) => OnboardingSexPage(goal: goal, isMale: isMale),
+              subNavigation: (context, isMale) => Dispatcher()
+                ..value<double, OnboardingWeightDL>((kilos, path) => OnboardingWeightPage(goal: goal, isMale: isMale, kilos: kilos)),
+            ),
+        )
+        ..path<LoginDL>(
+          (path) => Scaffold(),
+          subNavigation: (context) => Dispatcher()
+            ..path<ForgotPasswordDL>((path) => Scaffold()), // TODO: optional? email value
+        )
+    );
+  }
+
+  /// ...
+  void exceptionHandling() {
+    exception<RouteNotFound>((exception, path) => [RouteNotFoundDL(exception)]);
+    value<RouteNotFound, RouteNotFoundDL>((exception, path) => Scaffold(body: Container(color: Colors.yellow)));
+
+    exception<SubscriptionRequired>((exception, path) => [RouteNotFoundDL(exception)]);
+    // TODO subscriber only marketing page
+  }
+
+  /// ...
+  void diaryNavigation() {
+    value<int, DiaryDateDL>((date, path) => FoodDiaryPage(initialDate: date));
+  }
+
+  /// ...
+  void measureNavigation() {
+    path<MeasureDL>((path) => Scaffold(body: Container(color: Colors.orange)));
+  }
+
+  /// ...
+  void reportsNavigation() {
+    path<ReportsDL>((path) => Scaffold(body: Container(color: Colors.blue)));
+  }
+
+  /// ...
+  void userNavigation() {
+    value<String, UserDL>((tab, path) => UserPage(tab: tab));
+  }
+}

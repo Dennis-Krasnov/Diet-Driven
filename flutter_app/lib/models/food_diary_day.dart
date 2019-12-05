@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
@@ -108,7 +107,7 @@ abstract class FoodDiaryDayBuilder implements Builder<FoodDiaryDay, FoodDiaryDay
     ));
   }
 
-  /// Moves [foodRecords] from this day to specified [mealIndex].
+  /// Moves this day's [foodRecords] to specified [mealIndex].
   /// Throws [ArgumentError] on invalid input.
   void moveFoodRecords(int mealIndex, BuiltList<FoodRecord> foodRecords) {
     deleteFoodRecords(foodRecords);

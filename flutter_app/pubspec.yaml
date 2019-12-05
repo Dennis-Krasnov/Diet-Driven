@@ -5,7 +5,7 @@ author: Dennis Krasnov <dennis@krasnov.dev>
 homepage: https://github.com/Dennis-Krasnov/Diet-Driven
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -35,15 +35,17 @@ dependencies:
   flare_flutter: 1.5.12
   shimmer: ^1.0.1
   flutter_material_color_picker: ^1.0.5
-  sticky_headers: ^0.1.8
+  flutter_sticky_header: ^0.4.0
+#  sticky_headers: ^0.1.8
   deep_link_navigation: ^1.2.1
 
   ## DART UTILS
 
+  time: ^1.1.1
 #  date_utils: ^0.1.0+2
   dio: ^3.0.3
 #  intl: ^0.15.8 # ^0.16.0
-  intl: ^0.15.8 # ^0.16.0
+#  intl: ^0.15.8 # ^0.16.0
   merge_map: ^1.0.2
   uuid: ^2.0.2
   bloc_logging:
@@ -58,15 +60,16 @@ dev_dependencies:
 
   ## TESTING
   test: ^1.5.3
+#  bloc_test: ^2.2.2 TODO
 #  test: ^1.8.0 TODO
   mockito: ^4.0.0
 
   ## BUILT VALUE
-  build: ^1.2.0
-  build_runner: ^1.7.1
-  built_collection: ^4.2.2
-  built_value: ^6.7.1
-  built_value_generator: ^6.7.1
+  build: ^1.2.2
+  build_runner: ^1.7.2
+  built_collection: ^4.3.0
+  built_value: ^7.0.0
+  built_value_generator: ^7.0.0
 
 #  pedantic: ^1.7.0
   flutter_launcher_icons: ^0.7.3

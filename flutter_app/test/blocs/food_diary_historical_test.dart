@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:bloc/bloc.dart';
@@ -38,7 +37,6 @@ void main() {
 
     sut = FoodDiaryBloc(
       diaryRepository: diaryRepository,
-      userId: userId,
       date: date,
     );
   });
@@ -49,7 +47,7 @@ void main() {
 
   /// Tests
   test("Start with historical initial state", () {
-    expect(sut.userId, userId);
+    expect(sut.userId, null);
     expect(sut.date, date);
     expect(sut.initialState, FoodDiaryUninitialized());
   });
@@ -91,7 +89,7 @@ void main() {
         ])
       );
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
     });
 
     test("Yield loaded state for valid empty streams", () {
@@ -134,7 +132,7 @@ void main() {
         ])
       );
 
-      sut.dispatch(InitFoodDiary());
+      sut.dispatch(InitFoodDiary((b) => b..userId = userId));
     });
   });
 }

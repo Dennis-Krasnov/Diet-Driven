@@ -1,27 +1,23 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:flutter/material.dart';
+import 'package:time/time.dart';
 
-import 'package:diet_driven/models/models.dart' show Nutrient;
+import 'package:diet_driven/models/models.dart';
 
 /// Shows optionally sticky nutrition header.
 class NutritionHeader extends StatelessWidget {
   /// Meal name eg. Breakfast.
   final String mealName;
 
+  /// ...
+  final bool nutrientsVisible;
+
   /// List of nutrients to show in addition to calories.
   final List<Nutrient> nutrients;
-
-  /// Determines visibility of nutrients.
-  /// 0.0 <= value <= 1.0: about to be stuck
-  ///        0.0 == value: at top
-  /// 1.0 >= value >= 0.0: past stuck
-  /// Nutrients always hidden if not defined.
-  final double stuckAmount;
 
   /// Called when the user taps this nutrition header.
   final GestureTapCallback onTap;
@@ -31,8 +27,8 @@ class NutritionHeader extends StatelessWidget {
 
   const NutritionHeader({
     Key key,
-    this.stuckAmount = 0,
     @required this.mealName,
+    this.nutrientsVisible = false,
     @required this.nutrients,
     this.onTap,
     this.onLongPress
@@ -56,9 +52,9 @@ class NutritionHeader extends StatelessWidget {
 //        color: Colors.white,
         decoration: BoxDecoration(
           color: Colors.white,
-          border: Border(bottom: BorderSide(
+          border: const Border(bottom: BorderSide(
             width: 1,
-            color: const Color.fromRGBO(0, 0, 0, 0.08), // .withOpacity(stuckAmount.clamp(0.0, 1.0)),
+            color: Color.fromRGBO(0, 0, 0, 0.08), // .withOpacity(stuckAmount.clamp(0.0, 1.0)),
 //            color: Color.fromRGBO(0, 0, 0, 0.08 * stuckAmount.clamp(0.0, 1.0)), // .withOpacity(stuckAmount.clamp(0.0, 1.0)),
           )),
         ),
@@ -83,10 +79,11 @@ class NutritionHeader extends StatelessWidget {
 
             // Fixed sized nutrient headers are dynamically loaded
             for (var nutrient in nutrients)
-              HiddenSticky(
-                stuckAmount: stuckAmount,
+              AnimatedOpacity(
+                opacity: nutrientsVisible ? 1 : 0,
+                duration: 100.milliseconds,
                 child: SizedBox(
-                  width: 60, // OPTIMIZE
+                  width: 60,
                   child: Text(
                     nutrient.toString().toUpperCase(), // TODO: capitalize!
                     textAlign: TextAlign.right,
@@ -105,62 +102,23 @@ class NutritionHeader extends StatelessWidget {
               ),
 
             // Fixed sized calorie header
-            HiddenSticky(
-              stuckAmount: stuckAmount,
-              child: SizedBox(
-                width: 60, // OPTIMIZE
-                child: Text(
-                  "CALS",
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    fontSize: 9,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.3,
-                    color: const Color.fromRGBO(0, 0, 0, 0.9),
-                  ),
+            SizedBox(
+              width: 60,
+              child: Text(
+                "CALS",
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 0.3,
+                  color: const Color.fromRGBO(0, 0, 0, 0.9),
                 ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-/// Animates hiding sticky nutrition header elements.
-/// TODO: fade in (with small delay) to avoid all hidden stickies being visible at the very start (looks quite ugly)
-class HiddenSticky extends StatelessWidget {
-  /// Determines visibility of nutrients.
-  /// 0.0 <= value <= 1.0: about to be stuck
-  ///        0.0 == value: at top
-  /// 1.0 >= value >= 0.0: past stuck
-  final double stuckAmount;
-
-  /// The widget below this widget in the tree.
-  ///
-  /// {@macro flutter.widgets.child}
-  final Widget child;
-
-  const HiddenSticky({Key key, @required this.stuckAmount, @required this.child})
-      : assert(stuckAmount != null), assert(child != null), super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    // Normalized stuck amount
-    final clampedStuckAmount = stuckAmount.clamp(0.0, 1.0);
-
-    // Completely removes child from widget tree
-    // Doesn't hide headers above currently active header // OPTIMIZE
-    return Visibility(
-      visible: 1 - clampedStuckAmount > 0.0,
-        // Opacity animations aren't efficient // OPTIMIZE: wrap all nutrients/calories into single HiddenSticky
-        // FIXME: when quickly swiping pageview to see day to left, can see the headers for a split second!!!
-        child: Opacity(
-          opacity: 1 - clampedStuckAmount,
-          child: child,
-        )
     );
   }
 }

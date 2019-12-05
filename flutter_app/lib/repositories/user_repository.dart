@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:meta/meta.dart';
 
 import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/providers/firestore_paths.dart';
+import 'package:diet_driven/providers/firestore_references.dart';
 import 'package:diet_driven/providers/firestore_serializer.dart';
 
 /// Data access object for authentication and user data using `firebase_auth` library.
@@ -75,7 +74,7 @@ class UserRepository {
   Stream<UserDocument> userDocument$(String userId) {
     assert(userId != null && userId.isNotEmpty);
 
-    final docRef = _firestore.document(FirestorePaths.user(userId));
-    return docRef.snapshots().transform(deserializeDocumentTransform<UserDocument>());
+    return _firestore.user(userId)
+      .deserialize<UserDocument>();
   }
 }
