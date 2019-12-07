@@ -18,7 +18,7 @@ import 'package:diet_driven/repositories/repositories.dart';
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   final ConfigurationRepository configurationRepository;
 
-  ConfigurationLoaded get loadedState => currentState as ConfigurationLoaded;
+  ConfigurationLoaded get loadedState => state as ConfigurationLoaded;
 
   StreamSubscription<ConfigurationEvent> _configurationEventSubscription;
 
@@ -28,9 +28,9 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   ConfigurationState get initialState => ConfigurationUninitialized();
 
   @override
-  void dispose() {
+  Future<void> close() {
     _configurationEventSubscription?.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
@@ -43,8 +43,8 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
           .doOnError((Object error, StackTrace stacktrace) => BlocLogger().expectedError("Default configuration used", error, stacktrace))
           .onErrorReturn(RemoteConfiguration()),
         Observable<PackageInformation>.fromFuture(configurationRepository.fetchPackageInfo()),
-        // FIXME: start with needed on ios for some reason...
-        Observable<ConnectivityStatus>(configurationRepository.connectivity$()).startWith(ConnectivityStatus.disconnected),
+        // FIXME: start with needed on ios for some reason... .startWith(ConnectivityStatus.disconnected).doOnData(print),
+        Observable<ConnectivityStatus>(configurationRepository.connectivity$()),
         (RemoteConfiguration remoteConfiguration, PackageInformation packageInfo, ConnectivityStatus connectivity) => IngressConfigurationArrived((b) => b
           ..remoteConfiguration = remoteConfiguration.toBuilder()
           ..packageInfo = packageInfo.toBuilder()
@@ -54,7 +54,7 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => ConfigurationError((b) => b..error = error))
       .distinct()
-      .listen(dispatch);
+      .listen(add);
     }
 
     if (event is IngressConfigurationArrived) {

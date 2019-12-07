@@ -36,7 +36,7 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
     super.initState();
 
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
-    String userId = (_userDataBloc.currentState as UserDataLoaded).authentication.uid;
+    String userId = (_userDataBloc.state as UserDataLoaded).authentication.uid;
     int daysSinceEpoch = 124; // TODO: take from diary wrapper bloc
 
     _foodRecordEditBloc = FoodRecordEditBloc(
@@ -48,8 +48,8 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
   }
 
   @override
-  void dispose() {
-    _foodRecordEditBloc.dispose();
+  void dispose() async {
+    await _foodRecordEditBloc.close();
 //    quantityController.dispose();
     super.dispose();
   }
@@ -67,7 +67,7 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
                 IconButton(
                   icon: Icon(Icons.delete),
                   onPressed: () {
-                    _foodRecordEditBloc.dispatch(DeleteFoodRecord());
+                    _foodRecordEditBloc.add(DeleteFoodRecord());
                     Navigator.of(context).pop<FoodRecord>(null);
                   },
                 )
@@ -89,7 +89,7 @@ class _ManualFoodRecordEditState extends State<ManualFoodRecordEdit> {
                   textInputAction: TextInputAction.done, // pops with result!
                   errorText: state.quantityError,
                   autofocus: true,
-                  onChanged: (number) => _foodRecordEditBloc.dispatch(UpdateQuantity((b) => b
+                  onChanged: (number) => _foodRecordEditBloc.add(UpdateQuantity((b) => b
                     ..grams = number
                   ))
                 ),

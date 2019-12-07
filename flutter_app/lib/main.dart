@@ -44,28 +44,28 @@ Future<void> main() async {
     // Inject global repositories into application
     MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AnalyticsRepository>(builder: (context) => AnalyticsRepository()),
-        RepositoryProvider<ConfigurationRepository>(builder: (context) => ConfigurationRepository()),
-        RepositoryProvider<DiaryRepository>(builder: (context) => DiaryRepository()),
-        RepositoryProvider<FoodRepository>(builder: (context) => FoodRepository()),
-        RepositoryProvider<SettingsRepository>(builder: (context) => SettingsRepository()),
-        RepositoryProvider<UserRepository>(builder: (context) => UserRepository()),
+        RepositoryProvider<AnalyticsRepository>(create: (context) => AnalyticsRepository()),
+        RepositoryProvider<ConfigurationRepository>(create: (context) => ConfigurationRepository()),
+        RepositoryProvider<DiaryRepository>(create: (context) => DiaryRepository()),
+        RepositoryProvider<FoodRepository>(create: (context) => FoodRepository()),
+        RepositoryProvider<SettingsRepository>(create: (context) => SettingsRepository()),
+        RepositoryProvider<UserRepository>(create: (context) => UserRepository()),
       ],
       // Inject global blocs into application
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<ConfigurationBloc>(builder: (context) =>
+          BlocProvider<ConfigurationBloc>(create: (context) =>
             ConfigurationBloc(
               configurationRepository: RepositoryProvider.of<ConfigurationRepository>(context),
-            )..dispatch(InitConfiguration())
+            )..add(InitConfiguration())
           ),
-          BlocProvider<UserDataBloc>(builder: (context) =>
+          BlocProvider<UserDataBloc>(create: (context) =>
             UserDataBloc(
               userRepository: RepositoryProvider.of<UserRepository>(context),
               settingsRepository: RepositoryProvider.of<SettingsRepository>(context),
-            )..dispatch(InitUserData())
+            )..add(InitUserData())
           ),
-          BlocProvider<FoodDiaryBloc>(builder: (context) =>
+          BlocProvider<FoodDiaryBloc>(create: (context) =>
             FoodDiaryBloc(
               diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
             )

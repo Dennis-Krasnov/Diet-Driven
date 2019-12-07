@@ -38,13 +38,13 @@ class FoodRecordEditBloc extends Bloc<FoodRecordEditEvent, FoodRecordEditState> 
       assert(event.grams.isFinite);
       assert(event.grams <= 100000);
       if (event.grams.isNegative || event.grams == 0) {
-        yield currentState.rebuild((b) => b
+        yield state.rebuild((b) => b
           ..quantityError = "Grams must be positive"
         );
       }
       else {
-        yield currentState.rebuild((b) => b..
-          foodRecord = currentState.foodRecord.rebuild((b) => b
+        yield state.rebuild((b) => b..
+          foodRecord = state.foodRecord.rebuild((b) => b
             ..grams = event.grams // TODO: round here instead!? - function in bloc utils
           ).toBuilder()
           ..quantityError = null

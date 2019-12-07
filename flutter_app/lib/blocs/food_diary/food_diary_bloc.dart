@@ -30,7 +30,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   /// Whether diary loads single diary day instead of 30 days ago and onwards.
   bool get historical => date != null;
 
-  FoodDiaryLoaded get loadedState => currentState as FoodDiaryLoaded;
+  FoodDiaryLoaded get loadedState => state as FoodDiaryLoaded;
 
   StreamSubscription<FoodDiaryEvent> _foodDiaryEventSubscription;
 
@@ -42,9 +42,9 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   FoodDiaryState get initialState => FoodDiaryUninitialized();
 
   @override
-  void dispose() {
+  Future<void> close() {
     _foodDiaryEventSubscription?.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
@@ -91,7 +91,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       // Unrecoverable failure
       .onErrorReturnWith((error) => FoodDiaryError((b) => b..error = error))
       .distinct()
-      .listen(dispatch);
+      .listen(add);
     }
 
     if (event is IngressFoodDiaryArrived) {
@@ -119,8 +119,8 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     }
 
     if (event is GlobalAddFoodRecords) {
-      if (currentState is! FoodDiaryLoaded) {
-        dispatch(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be loaded")));
+      if (state is! FoodDiaryLoaded) {
+        add(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be loaded")));
         return;
       }
 

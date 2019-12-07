@@ -127,7 +127,7 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
               date: page,
               foodDiaryBloc: BlocProvider.of<FoodDiaryBloc>(context),
               diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
-            )..dispatch(InitFoodDiaryDay()),
+            )..add(InitFoodDiaryDay()),
             child: FoodDiaryDayPage(),
           );
 
@@ -144,7 +144,7 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
               builder: (BuildContext context) => FoodDiaryBloc(
                 diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
                 date: page,
-              )..dispatch(InitFoodDiary((b) => b
+              )..add(InitFoodDiary((b) => b
                 ..userId = BlocProvider.of<UserDataBloc>(context).userId
               )),
               child: foodDiaryDayProvider,

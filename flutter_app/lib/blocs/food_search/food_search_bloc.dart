@@ -39,19 +39,19 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
       yield FoodSearchLoaded((b) => b
         // Carry over only if started from uninitialized state
         // Suggesting foods from loaded state clears the query
-        ..query = currentState is FoodSearchUninitialized ? currentState.query : ""
+        ..query = state is FoodSearchUninitialized ? state.query : ""
         // Load suggested results based on recently logged foods
         ..results = suggestions.toBuilder()
         // Carry over only if started from uninitialized state and started typing before suggestions were loaded
         // Suggesting foods from loaded state clears queryChanged
-        ..queryChanged = currentState is FoodSearchUninitialized && currentState.queryChanged
+        ..queryChanged = state is FoodSearchUninitialized && state.queryChanged
         ..loading = false
       );
     }
 
     if (event is UpdateQuery) {
       // Query updates are agnostic to [currentState]
-      yield currentState.rebuild((b) => b
+      yield state.rebuild((b) => b
         ..query = event.query
         ..queryChanged = true
         // TODO: loading = false (only if loaded state) ???
@@ -60,9 +60,10 @@ class FoodSearchBloc extends Bloc<FoodSearchEvent, FoodSearchState> {
 
     if (event is SearchFoods) {
       // Food search has no error state
-      assert(currentState is FoodSearchLoaded);
+      assert(state is FoodSearchLoaded);
 
-      final loadedState = currentState as FoodSearchLoaded;
+      // FIXME: top-level!
+      final loadedState = state as FoodSearchLoaded;
 
       // May only search from typing state
       assert(loadedState.queryChanged && !loadedState.loading);

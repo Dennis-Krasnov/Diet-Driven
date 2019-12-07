@@ -54,7 +54,7 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
         // White screen with skeleton food records
         if (foodDiaryDayState is FoodDiaryDayUninitialized) {
           // TODO: skeleton page
-          return Container(child: Center(child: Text(BlocProvider.of<FoodDiaryDayBloc>(context).currentState.toString()),),);
+          return Container(child: Center(child: Text(BlocProvider.of<FoodDiaryDayBloc>(context).state.toString()),),);
         }
 
         // Food diary day is loaded from now on

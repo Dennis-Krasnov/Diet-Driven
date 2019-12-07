@@ -22,7 +22,7 @@ class UserPage extends StatelessWidget {
       color: Colors.purple,
       child: Center(
         child: RaisedButton(
-          child: Text("Logout ${(BlocProvider.of<UserDataBloc>(context).currentState as UserDataLoaded).authentication?.email ?? "anonymous"}"),
+          child: Text("Logout ${(BlocProvider.of<UserDataBloc>(context).state as UserDataLoaded).authentication?.email ?? "anonymous"}"),
           onPressed: () => RepositoryProvider.of<UserRepository>(context).signOut(),
         ),
       ),

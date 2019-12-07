@@ -62,7 +62,7 @@ class App extends StatelessWidget {
               userDataBloc: BlocProvider.of<UserDataBloc>(context),
               // Navigate to user's default page
               onAuthenticated: (userDataLoaded) {
-                BlocProvider.of<FoodDiaryBloc>(context).dispatch(InitFoodDiary((b) => b
+                BlocProvider.of<FoodDiaryBloc>(context).add(InitFoodDiary((b) => b
                   ..userId = userDataLoaded.authentication.uid
                 ));
                 deepLinkNavigator.navigateTo([DiaryDateDL.today()]); // TODO: take from user data loaded!

@@ -24,7 +24,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
   /// Food diary day's date.
   final int date;
 
-  FoodDiaryDayLoaded get loadedState => currentState as FoodDiaryDayLoaded;
+  FoodDiaryDayLoaded get loadedState => state as FoodDiaryDayLoaded;
 
   StreamSubscription<FoodDiaryDayEvent> _foodDiaryDayEventSubscription;
 
@@ -35,9 +35,9 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
   FoodDiaryDayState get initialState => FoodDiaryDayUninitialized();
 
   @override
-  void dispose() {
+  Future<void> close() {
     _foodDiaryDayEventSubscription?.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
@@ -45,14 +45,14 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
     if (event is InitFoodDiaryDay) {
       // Maintain single instance of stream subscription
       await _foodDiaryDayEventSubscription?.cancel();
-      _foodDiaryDayEventSubscription = Observable<FoodDiaryState>(foodDiaryBloc.state)
+      _foodDiaryDayEventSubscription = Observable<FoodDiaryState>(foodDiaryBloc)
         .whereType<FoodDiaryLoaded>()
         .map<FoodDiaryDayEvent>((loadedDiaryState) => IngressFoodDiaryDayArrived((b) => b
           ..foodDiaryDay = loadedDiaryState.diaryDays[date]?.toBuilder()
           ..diet = loadedDiaryState.dietForDate(date).toBuilder()
         ))
         .distinct()
-        .listen(dispatch);
+        .listen(add);
     }
 
     if (event is IngressFoodDiaryDayArrived) {
@@ -66,10 +66,10 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
 
     if (event is AddFoodRecords) {
       // Food diary day has no error state
-      assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
+      assert(state is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
 
       // Reuse FoodDiaryBloc's add food records functionality
-      foodDiaryBloc.dispatch(GlobalAddFoodRecords((b) => b
+      foodDiaryBloc.add(GlobalAddFoodRecords((b) => b
         ..date = date
         ..mealIndex = event.mealIndex
         ..foodRecords = event.foodRecords.toBuilder()
@@ -80,7 +80,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
     // TODO: disable these food records from further action; finally block removes them from disabled list
     if (event is ReplaceFoodRecord) {
       // Food diary day has no error state
-      assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
+      assert(state is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
 
       try {
         final diaryDayBuilder = loadedState.foodDiaryDay.toBuilder()
@@ -99,7 +99,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
     // TODO: disable these food records from further action; finally block removes them from disabled list
     if (event is DeleteFoodRecords) {
       // Food diary day has no error state
-      assert(currentState is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
+      assert(state is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
 
       try {
         final diaryDayBuilder = loadedState.foodDiaryDay.toBuilder()

@@ -22,7 +22,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
   final SettingsRepository settingsRepository;
 
-  UserDataLoaded get loadedState => currentState as UserDataLoaded;
+  UserDataLoaded get loadedState => state as UserDataLoaded;
 
   /// Current user's id.
   String get userId => loadedState.authentication.uid;
@@ -36,9 +36,9 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   UserDataState get initialState => UserDataUninitialized();
 
   @override
-  void dispose() {
+  Future<void> close() {
     _userDataEventSubscription?.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
@@ -74,7 +74,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       _userDataEventSubscription?.cancel();
       _userDataEventSubscription = Observable(MergeStream([onboard$, dataArrival$]))
         .distinct()
-        .listen(dispatch);
+        .listen(add);
     }
 
     if (event is IngressUserDataArrived) {
@@ -113,53 +113,36 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     ///    ######  ########    ##       ##    #### ##    ##  ######    ######
 
     if (event is UpdateDarkMode) {
-      if (currentState is! UserDataLoaded) {
-        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
-        return;
-      }
-
-      try {
-        final settingsBuilder = loadedState.userSettings.toBuilder()
-          ..themeSettings.update((b) => b
-            ..darkMode = event.darkMode
-          );
-
-        await settingsRepository.saveSettings(userId, settingsBuilder.build());
-
-        BlocLogger().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
-        event?.completer?.complete();
-      } catch(error, stacktrace) {
-        BlocLogger().unexpectedError("Dark mode update failed", error, stacktrace);
-        event?.completer?.completeError(error, stacktrace);
-      }
+      _updateUserSettings(event, (sb) => sb..themeSettings.update((b) => b
+        ..darkMode = event.darkMode
+      ));
     }
 
     if (event is UpdatePrimaryColour) {
-      if (currentState is! UserDataLoaded) {
-        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
-        return;
+      _updateUserSettings(event, (sb) => sb..themeSettings.update((b) => b
+        ..primaryColour = event.colourValue.asHexNumber
+      ));
+    }
+  }
+
+  /// ...
+  Future<void> _updateUserSettings(UserDataEvent event, void Function(SettingsBuilder) updates) async {
+    if (state is! UserDataLoaded) {
+      add(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
+      return;
+    }
+
+    try {
+      await settingsRepository.saveSettings(userId, loadedState.userSettings.rebuild(updates));
+
+      BlocLogger().info("${event.runtimeType} succeeded");
+      if (event is Completable) {
+        (event as Completable).completer?.complete();
       }
-
-      try {
-        final settingsBuilder = loadedState.userSettings.toBuilder()
-          ..themeSettings.update((b) => b
-            ..primaryColour = event.colourValue.asHexNumber
-          );
-
-        await settingsRepository.saveSettings(userId, settingsBuilder.build());
-
-        // Alternative syntax
-//        await settingsRepository.saveUserSettings(userId, (b) => b
-//          ..themeSettings.update((b) => b
-//            ..primaryColour = event.colourValue.asHexNumber
-//          )
-//        );
-
-        BlocLogger().info("Primary colour now ${event.colourValue}");
-        event?.completer?.complete();
-      } catch(error, stacktrace) {
-        BlocLogger().unexpectedError("Primary colour update failed", error, stacktrace);
-        event?.completer?.completeError(error, stacktrace);
+    } catch(error, stacktrace) {
+      BlocLogger().unexpectedError("${event.runtimeType} failed", error, stacktrace);
+      if (event is Completable) {
+        (event as Completable).completer?.completeError(error, stacktrace);
       }
     }
   }

@@ -63,7 +63,7 @@ class ThemeSettingsPage extends StatelessWidget {
                   secondary: const Icon(Icons.brightness_2),
                   value: (userDataState as UserDataLoaded).settings.themeSettings.darkMode,
                   /// TODO: make food diary follow similar pattern!
-                  onChanged: (bool value) => BlocProvider.of<UserDataBloc>(context).dispatch(UpdateDarkMode((b) => b
+                  onChanged: (bool value) => BlocProvider.of<UserDataBloc>(context).add(UpdateDarkMode((b) => b
                     ..darkMode = value
                     ..completer = infoSnackBarCompleter(context, "Dark mode ${value ? "enabled" : "disabled"}")
                   )),
@@ -76,7 +76,7 @@ class ThemeSettingsPage extends StatelessWidget {
                 ),
                 MaterialColorPicker(
                   allowShades: false,
-                  onMainColorChange: (ColorSwatch colour) => BlocProvider.of<UserDataBloc>(context).dispatch(UpdatePrimaryColour((b) => b
+                  onMainColorChange: (ColorSwatch colour) => BlocProvider.of<UserDataBloc>(context).add(UpdatePrimaryColour((b) => b
                     ..colourValue = colour.value
                   )),
                   selectedColor: primaryColour,
