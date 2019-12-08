@@ -3,12 +3,13 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/widgets/food_diary/food_diary.dart';
-import 'package:diet_driven/widgets/food_diary/food_diary_day_page.dart';
 
 /// ...
 class FoodDiaryMealSliver extends StatelessWidget {
@@ -22,20 +23,23 @@ class FoodDiaryMealSliver extends StatelessWidget {
   Widget build(BuildContext context) {
     return SliverStickyHeaderBuilder(
       builder: (context, state) {
-        // Only store current header's scroll status
-        print("${mealInfo.mealName} currently pinned: ${state.isPinned}, scroll percentage: ${state.scrollPercentage}");
-
+        // Only update state if this is the current header
         if (state.isPinned) {
-          FoodDiaryDayPage.currentMeal = mealIndex; // TODO: value notifier / simple bloc + builder (only current meal?)
-          FoodDiaryDayPage.scrollPercentage = state.scrollPercentage;
+          FoodDiaryScrollBloc.scrollPercentage = state.scrollPercentage;
+          // If header is being pushed out, set next header as active
+          BlocProvider.of<FoodDiaryScrollBloc>(context).add(state.scrollPercentage == 0
+            ? mealIndex
+            : mealIndex + 1
+          );
         }
 
-        return NutritionHeader(
-          mealName: mealInfo.mealName,
+        return BlocBuilder<FoodDiaryScrollBloc, int>(
+          builder: (BuildContext context, int currentMealIndex) => NutritionHeader(
+            mealName: mealInfo.mealName,
 //          nutrientsVisible: state.isPinned,
-          nutrientsVisible: mealIndex == FoodDiaryDayPage.currentMeal,
-          nutrients: const [Nutrient.protein, Nutrient.fat, Nutrient.carbs],
-          onTap: () => print("please work"),
+            nutrientsVisible: mealIndex == currentMealIndex,
+            nutrients: const [Nutrient.protein, Nutrient.fat, Nutrient.carbs],
+            onTap: () => print("please work"),
 //        onTap: () => BlocProvider.of<FoodDiaryDayBloc>(context).dispatch(AddFoodRecords((b) => b
 //          ..mealIndex = 0 // FIXME
 //          ..foodRecords = ListBuilder(<FoodRecord>[
@@ -43,6 +47,7 @@ class FoodDiaryMealSliver extends StatelessWidget {
 //          ])
 //          ..completer = infoSnackBarCompleter(context, "successfully added food")
 //        ))
+          ),
         );
       },
       sliver: SliverList(

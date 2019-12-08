@@ -121,13 +121,17 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
         controller: _controller,
         itemBuilder: (BuildContext context, int page) {
           // Food diary day is agnostic to how food diary bloc data is sourced
-          final foodDiaryDayProvider = BlocProvider<FoodDiaryDayBloc>(
-            key: ValueKey(page), // TODO: OPTIMIZE: is this necessary? // TODOCUMENT
-            builder: (BuildContext context) => FoodDiaryDayBloc(
-              date: page,
-              foodDiaryBloc: BlocProvider.of<FoodDiaryBloc>(context),
-              diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
-            )..add(InitFoodDiaryDay()),
+          final blocProviders = MultiBlocProvider(
+            providers: [
+              BlocProvider<FoodDiaryDayBloc>(create: (context) =>
+                FoodDiaryDayBloc(
+                  date: page,
+                  foodDiaryBloc: BlocProvider.of<FoodDiaryBloc>(context),
+                  diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
+                )..add(InitFoodDiaryDay())
+              ),
+              BlocProvider<FoodDiaryScrollBloc>(create: (context) => FoodDiaryScrollBloc()),
+            ],
             child: FoodDiaryDayPage(),
           );
 
@@ -136,7 +140,7 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
 
           // Ongoing subscription starts a month ago from today
           if (daysAheadOfToday >= -30) {
-            return foodDiaryDayProvider;
+            return blocProviders;
           }
           // Historical food diary bloc
           else {
@@ -147,7 +151,7 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
               )..add(InitFoodDiary((b) => b
                 ..userId = BlocProvider.of<UserDataBloc>(context).userId
               )),
-              child: foodDiaryDayProvider,
+              child: blocProviders,
             );
           }
         },

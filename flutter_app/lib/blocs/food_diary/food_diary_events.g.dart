@@ -1,8 +1,3 @@
-/*
- * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
- */
-
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 part of 'food_diary_events.dart';
@@ -16,7 +11,7 @@ class _$InitFoodDiary extends InitFoodDiary {
   final String userId;
 
   factory _$InitFoodDiary([void Function(InitFoodDiaryBuilder) updates]) =>
-    (new InitFoodDiaryBuilder()..update(updates)).build();
+      (new InitFoodDiaryBuilder()..update(updates)).build();
 
   _$InitFoodDiary._({this.userId}) : super._() {
     if (userId == null) {
@@ -26,7 +21,7 @@ class _$InitFoodDiary extends InitFoodDiary {
 
   @override
   InitFoodDiary rebuild(void Function(InitFoodDiaryBuilder) updates) =>
-    (toBuilder()..update(updates)).build();
+      (toBuilder()..update(updates)).build();
 
   @override
   InitFoodDiaryBuilder toBuilder() => new InitFoodDiaryBuilder()..replace(this);
@@ -45,12 +40,12 @@ class _$InitFoodDiary extends InitFoodDiary {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('InitFoodDiary')..add('userId', userId))
-      .toString();
+        .toString();
   }
 }
 
 class InitFoodDiaryBuilder
-  implements Builder<InitFoodDiary, InitFoodDiaryBuilder> {
+    implements Builder<InitFoodDiary, InitFoodDiaryBuilder> {
   _$InitFoodDiary _$v;
 
   String _userId;
@@ -95,13 +90,13 @@ class _$IngressFoodDiaryArrived extends IngressFoodDiaryArrived {
   final BuiltList<Diet> diets;
 
   factory _$IngressFoodDiaryArrived(
-    [void Function(IngressFoodDiaryArrivedBuilder) updates]) =>
-    (new IngressFoodDiaryArrivedBuilder()..update(updates)).build();
+          [void Function(IngressFoodDiaryArrivedBuilder) updates]) =>
+      (new IngressFoodDiaryArrivedBuilder()..update(updates)).build();
 
   _$IngressFoodDiaryArrived._({this.diaryDays, this.diets}) : super._() {
     if (diaryDays == null) {
       throw new BuiltValueNullFieldError(
-        'IngressFoodDiaryArrived', 'diaryDays');
+          'IngressFoodDiaryArrived', 'diaryDays');
     }
     if (diets == null) {
       throw new BuiltValueNullFieldError('IngressFoodDiaryArrived', 'diets');
@@ -110,19 +105,19 @@ class _$IngressFoodDiaryArrived extends IngressFoodDiaryArrived {
 
   @override
   IngressFoodDiaryArrived rebuild(
-    void Function(IngressFoodDiaryArrivedBuilder) updates) =>
-    (toBuilder()..update(updates)).build();
+          void Function(IngressFoodDiaryArrivedBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   IngressFoodDiaryArrivedBuilder toBuilder() =>
-    new IngressFoodDiaryArrivedBuilder()..replace(this);
+      new IngressFoodDiaryArrivedBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is IngressFoodDiaryArrived &&
-      diaryDays == other.diaryDays &&
-      diets == other.diets;
+        diaryDays == other.diaryDays &&
+        diets == other.diets;
   }
 
   @override
@@ -133,22 +128,22 @@ class _$IngressFoodDiaryArrived extends IngressFoodDiaryArrived {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('IngressFoodDiaryArrived')
-      ..add('diaryDays', diaryDays)
-      ..add('diets', diets))
-      .toString();
+          ..add('diaryDays', diaryDays)
+          ..add('diets', diets))
+        .toString();
   }
 }
 
 class IngressFoodDiaryArrivedBuilder
-  implements
-    Builder<IngressFoodDiaryArrived, IngressFoodDiaryArrivedBuilder> {
+    implements
+        Builder<IngressFoodDiaryArrived, IngressFoodDiaryArrivedBuilder> {
   _$IngressFoodDiaryArrived _$v;
 
   ListBuilder<FoodDiaryDay> _diaryDays;
   ListBuilder<FoodDiaryDay> get diaryDays =>
-    _$this._diaryDays ??= new ListBuilder<FoodDiaryDay>();
+      _$this._diaryDays ??= new ListBuilder<FoodDiaryDay>();
   set diaryDays(ListBuilder<FoodDiaryDay> diaryDays) =>
-    _$this._diaryDays = diaryDays;
+      _$this._diaryDays = diaryDays;
 
   ListBuilder<Diet> _diets;
   ListBuilder<Diet> get diets => _$this._diets ??= new ListBuilder<Diet>();
@@ -183,8 +178,8 @@ class IngressFoodDiaryArrivedBuilder
     _$IngressFoodDiaryArrived _$result;
     try {
       _$result = _$v ??
-        new _$IngressFoodDiaryArrived._(
-          diaryDays: diaryDays.build(), diets: diets.build());
+          new _$IngressFoodDiaryArrived._(
+              diaryDays: diaryDays.build(), diets: diets.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -194,7 +189,7 @@ class IngressFoodDiaryArrivedBuilder
         diets.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-          'IngressFoodDiaryArrived', _$failedField, e.toString());
+            'IngressFoodDiaryArrived', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -210,7 +205,7 @@ class _$FoodDiaryError extends FoodDiaryError {
   final StackTrace stacktrace;
 
   factory _$FoodDiaryError([void Function(FoodDiaryErrorBuilder) updates]) =>
-    (new FoodDiaryErrorBuilder()..update(updates)).build();
+      (new FoodDiaryErrorBuilder()..update(updates)).build();
 
   _$FoodDiaryError._({this.error, this.stacktrace}) : super._() {
     if (error == null) {
@@ -220,18 +215,18 @@ class _$FoodDiaryError extends FoodDiaryError {
 
   @override
   FoodDiaryError rebuild(void Function(FoodDiaryErrorBuilder) updates) =>
-    (toBuilder()..update(updates)).build();
+      (toBuilder()..update(updates)).build();
 
   @override
   FoodDiaryErrorBuilder toBuilder() =>
-    new FoodDiaryErrorBuilder()..replace(this);
+      new FoodDiaryErrorBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is FoodDiaryError &&
-      error == other.error &&
-      stacktrace == other.stacktrace;
+        error == other.error &&
+        stacktrace == other.stacktrace;
   }
 
   @override
@@ -242,16 +237,16 @@ class _$FoodDiaryError extends FoodDiaryError {
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryError')
-      ..add('error', error)
-      ..add('stacktrace', stacktrace))
-      .toString();
+          ..add('error', error)
+          ..add('stacktrace', stacktrace))
+        .toString();
   }
 }
 
 class FoodDiaryErrorBuilder
-  implements
-    Builder<FoodDiaryError, FoodDiaryErrorBuilder>,
-    BuiltErrorBuilder {
+    implements
+        Builder<FoodDiaryError, FoodDiaryErrorBuilder>,
+        BuiltErrorBuilder {
   _$FoodDiaryError _$v;
 
   Object _error;
@@ -289,7 +284,7 @@ class FoodDiaryErrorBuilder
   @override
   _$FoodDiaryError build() {
     final _$result =
-      _$v ?? new _$FoodDiaryError._(error: error, stacktrace: stacktrace);
+        _$v ?? new _$FoodDiaryError._(error: error, stacktrace: stacktrace);
     replace(_$result);
     return _$result;
   }
@@ -306,12 +301,12 @@ class _$GlobalAddFoodRecords extends GlobalAddFoodRecords {
   final Completer<void> completer;
 
   factory _$GlobalAddFoodRecords(
-    [void Function(GlobalAddFoodRecordsBuilder) updates]) =>
-    (new GlobalAddFoodRecordsBuilder()..update(updates)).build();
+          [void Function(GlobalAddFoodRecordsBuilder) updates]) =>
+      (new GlobalAddFoodRecordsBuilder()..update(updates)).build();
 
   _$GlobalAddFoodRecords._(
-    {this.date, this.mealIndex, this.foodRecords, this.completer})
-    : super._() {
+      {this.date, this.mealIndex, this.foodRecords, this.completer})
+      : super._() {
     if (date == null) {
       throw new BuiltValueNullFieldError('GlobalAddFoodRecords', 'date');
     }
@@ -325,44 +320,44 @@ class _$GlobalAddFoodRecords extends GlobalAddFoodRecords {
 
   @override
   GlobalAddFoodRecords rebuild(
-    void Function(GlobalAddFoodRecordsBuilder) updates) =>
-    (toBuilder()..update(updates)).build();
+          void Function(GlobalAddFoodRecordsBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
 
   @override
   GlobalAddFoodRecordsBuilder toBuilder() =>
-    new GlobalAddFoodRecordsBuilder()..replace(this);
+      new GlobalAddFoodRecordsBuilder()..replace(this);
 
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is GlobalAddFoodRecords &&
-      date == other.date &&
-      mealIndex == other.mealIndex &&
-      foodRecords == other.foodRecords &&
-      completer == other.completer;
+        date == other.date &&
+        mealIndex == other.mealIndex &&
+        foodRecords == other.foodRecords &&
+        completer == other.completer;
   }
 
   @override
   int get hashCode {
     return $jf($jc(
-      $jc($jc($jc(0, date.hashCode), mealIndex.hashCode),
-        foodRecords.hashCode),
-      completer.hashCode));
+        $jc($jc($jc(0, date.hashCode), mealIndex.hashCode),
+            foodRecords.hashCode),
+        completer.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('GlobalAddFoodRecords')
-      ..add('date', date)
-      ..add('mealIndex', mealIndex)
-      ..add('foodRecords', foodRecords)
-      ..add('completer', completer))
-      .toString();
+          ..add('date', date)
+          ..add('mealIndex', mealIndex)
+          ..add('foodRecords', foodRecords)
+          ..add('completer', completer))
+        .toString();
   }
 }
 
 class GlobalAddFoodRecordsBuilder
-  implements Builder<GlobalAddFoodRecords, GlobalAddFoodRecordsBuilder> {
+    implements Builder<GlobalAddFoodRecords, GlobalAddFoodRecordsBuilder> {
   _$GlobalAddFoodRecords _$v;
 
   int _date;
@@ -375,9 +370,9 @@ class GlobalAddFoodRecordsBuilder
 
   ListBuilder<FoodRecord> _foodRecords;
   ListBuilder<FoodRecord> get foodRecords =>
-    _$this._foodRecords ??= new ListBuilder<FoodRecord>();
+      _$this._foodRecords ??= new ListBuilder<FoodRecord>();
   set foodRecords(ListBuilder<FoodRecord> foodRecords) =>
-    _$this._foodRecords = foodRecords;
+      _$this._foodRecords = foodRecords;
 
   Completer<void> _completer;
   Completer<void> get completer => _$this._completer;
@@ -414,11 +409,11 @@ class GlobalAddFoodRecordsBuilder
     _$GlobalAddFoodRecords _$result;
     try {
       _$result = _$v ??
-        new _$GlobalAddFoodRecords._(
-          date: date,
-          mealIndex: mealIndex,
-          foodRecords: foodRecords.build(),
-          completer: completer);
+          new _$GlobalAddFoodRecords._(
+              date: date,
+              mealIndex: mealIndex,
+              foodRecords: foodRecords.build(),
+              completer: completer);
     } catch (_) {
       String _$failedField;
       try {
@@ -426,7 +421,7 @@ class GlobalAddFoodRecordsBuilder
         foodRecords.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
-          'GlobalAddFoodRecords', _$failedField, e.toString());
+            'GlobalAddFoodRecords', _$failedField, e.toString());
       }
       rethrow;
     }

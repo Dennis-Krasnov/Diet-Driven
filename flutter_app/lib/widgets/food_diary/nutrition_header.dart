@@ -81,7 +81,8 @@ class NutritionHeader extends StatelessWidget {
             for (var nutrient in nutrients)
               AnimatedOpacity(
                 opacity: nutrientsVisible ? 1 : 0,
-                duration: 100.milliseconds,
+                duration: 200.milliseconds,
+                curve: Curves.easeInOut, // linear
                 child: SizedBox(
                   width: 60,
                   child: Text(
@@ -102,17 +103,22 @@ class NutritionHeader extends StatelessWidget {
               ),
 
             // Fixed sized calorie header
-            SizedBox(
-              width: 60,
-              child: Text(
-                "CALS",
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  fontSize: 9,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                  color: const Color.fromRGBO(0, 0, 0, 0.9),
+            AnimatedOpacity(
+              opacity: nutrientsVisible ? 1 : 0,
+              duration: 200.milliseconds,
+              curve: Curves.easeInOut, // linear
+              child: SizedBox(
+                width: 60,
+                child: Text(
+                  "CALS",
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.3,
+                    color: const Color.fromRGBO(0, 0, 0, 0.9),
+                  ),
                 ),
               ),
             ),

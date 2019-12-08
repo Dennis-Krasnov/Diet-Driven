@@ -16,15 +16,6 @@ import 'package:diet_driven/widgets/no_scroll_behaviour.dart';
 
 /// Shows single diary day.
 class FoodDiaryDayPage extends StatefulWidget {
-  /// ...
-  static bool isScrolling = false;
-
-  /// ...
-  static double scrollPercentage = 0;
-
-  /// ...
-  static int currentMeal = 0;
-
   @override
   _FoodDiaryDayPageState createState() => _FoodDiaryDayPageState();
 }
@@ -65,18 +56,15 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
           onNotification: (ScrollNotification notification) {
             // Only scroll correct on end of scroll
             if (notification is ScrollEndNotification) {
-
               // Only scroll correct if pinned sticky header isn't fully visible and not currently correcting correcting
-              if (FoodDiaryDayPage.scrollPercentage != 0 && !FoodDiaryDayPage.isScrolling) {
-                FoodDiaryDayPage.isScrolling = true;
-                FoodDiaryDayPage.currentMeal++; // FIXME: this doesn't rebuild widget, put only this into a bloc! (descriptive event names)
-                print("current incremented to ${FoodDiaryDayPage.currentMeal}");
+              if (FoodDiaryScrollBloc.scrollPercentage != 0 && !FoodDiaryScrollBloc.isScrolling) {
+                FoodDiaryScrollBloc.isScrolling = true;
 
-                final pinnedHeaderStillVisible = (1 - FoodDiaryDayPage.scrollPercentage) * 30;
+                final pinnedHeaderStillVisible = (1 - FoodDiaryScrollBloc.scrollPercentage) * 30;
                 _controller.snapBy(pinnedHeaderStillVisible);
               }
-              else if (FoodDiaryDayPage.isScrolling) {
-                FoodDiaryDayPage.isScrolling = false;
+              else if (FoodDiaryScrollBloc.isScrolling) {
+                FoodDiaryScrollBloc.isScrolling = false;
               }
             }
 

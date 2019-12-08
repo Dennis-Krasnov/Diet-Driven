@@ -5,14 +5,20 @@
 
 import 'package:bloc/bloc.dart';
 
-import 'package:diet_driven/blocs/food_diary_scroll/food_diary_scroll.dart';
+class FoodDiaryScrollBloc extends Bloc<int, int> {
+  /// ...
+  static bool isScrolling = false;
 
-class FoodDiaryScrollBloc extends Bloc<FoodDiaryScrollEvent, FoodDiaryScrollState> {
-  @override
-  FoodDiaryScrollState get initialState => null;
+  /// ...
+  static double scrollPercentage = 0;
 
   @override
-  Stream<FoodDiaryScrollState> mapEventToState(FoodDiaryScrollEvent event) {
-    return null;
+  int get initialState => 0;
+
+  @override
+  Stream<int> mapEventToState(int event) async* {
+    // ...
+    yield event;
+    // TODO: log
   }
 }
