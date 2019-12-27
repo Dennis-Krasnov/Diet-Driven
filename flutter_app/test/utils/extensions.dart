@@ -10,7 +10,15 @@ import 'package:test/test.dart';
 import 'package:time/time.dart';
 
 extension WhenExtension on PostExpectation {
+  ///
+  /// when(foodRepository.recentFoods(userA.uid)).future(searchSuggestions);
   void future<T>(T answer) => thenAnswer((_) async => answer);
+
+  ///
+  /// when(foodRepository.recentFoods(userA.uid)).futureDelayed(2.ticks, searchSuggestions);
+  /// or consider
+  /// when(foodRepository.recentFoods(userA.uid)).futureDelayed(2.ticks.value(searchSuggestions));
+//  void futureDelayed<T>(Duration delay, T answer) => thenAnswer((_) async => delay.value(answer));
 
   /// ...
   /// when(userRepository.userDocument$(any)).thenAnswer((_) async* {

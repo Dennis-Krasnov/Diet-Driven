@@ -32,10 +32,12 @@ part 'serializers.g.dart';
   // User data
   Authentication,
   UserDocument,
-  Settings,
   SubscriptionType,
+
+  Settings,
   ThemeSettings,
   NavigationSettings,
+  DiarySettings
 ])
 
 // Built value default serializer

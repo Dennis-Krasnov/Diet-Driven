@@ -33,7 +33,7 @@ class ThemeSettingsPage extends StatelessWidget {
     return BlocBuilder<UserDataBloc, UserDataState>(
       builder: (BuildContext context, UserDataState userDataState) {
         // User's current primary colour
-        final primaryColour = Color((userDataState as UserDataLoaded).settings.themeSettings.primaryColourValue);
+        final primaryColour = Color((userDataState as UserDataLoaded).settings.theme.primaryColourValue);
 
         return Scaffold(
           appBar: AppBar(
@@ -61,7 +61,7 @@ class ThemeSettingsPage extends StatelessWidget {
                 SwitchListTile(
                   title: const Text('Dark mode'),
                   secondary: const Icon(Icons.brightness_2),
-                  value: (userDataState as UserDataLoaded).settings.themeSettings.darkMode,
+                  value: (userDataState as UserDataLoaded).settings.theme.darkMode,
                   /// TODO: make food diary follow similar pattern!
                   onChanged: (bool value) => BlocProvider.of<UserDataBloc>(context).add(UpdateDarkMode((b) => b
                     ..darkMode = value

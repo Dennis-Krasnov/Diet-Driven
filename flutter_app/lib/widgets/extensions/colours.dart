@@ -3,6 +3,9 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-export 'login_bloc.dart';
-export 'login_events.dart';
-export 'login_state.dart';
+import 'package:flutter/material.dart';
+
+extension StringExtensions on String {
+  // NULLABLE
+  Color get colour => Color(num.tryParse(this));
+}

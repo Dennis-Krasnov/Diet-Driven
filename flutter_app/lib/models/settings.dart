@@ -8,6 +8,8 @@ import 'package:built_value/built_value.dart';
 import 'package:built_value/serializer.dart';
 import 'package:deep_link_navigation/deep_link_navigation.dart';
 
+import 'models.dart';
+
 part 'settings.g.dart';
 
 /// Everything must be nullable due implicit settings.
@@ -15,13 +17,27 @@ abstract class Settings implements Built<Settings, SettingsBuilder> {
   static Serializer<Settings> get serializer => _$settingsSerializer;
 
   @nullable
-  NavigationSettings get navigationSettings;
+  DiarySettings get diary;
 
   @nullable
-  ThemeSettings get themeSettings;
+  NavigationSettings get navigation;
+
+  @nullable
+  ThemeSettings get theme;
 
   factory Settings([void Function(SettingsBuilder b)]) = _$Settings;
   Settings._();
+}
+
+/// Everything must be nullable due implicit settings.
+abstract class DiarySettings implements Built<DiarySettings, DiarySettingsBuilder> {
+  static Serializer<DiarySettings> get serializer => _$diarySettingsSerializer;
+
+  /// ...
+  BuiltList<Nutrient> get macroOrder;
+
+  factory DiarySettings([void Function(DiarySettingsBuilder b)]) = _$DiarySettings;
+  DiarySettings._();
 }
 
 /// Everything must be nullable due implicit settings.
@@ -49,9 +65,16 @@ abstract class ThemeSettings implements Built<ThemeSettings, ThemeSettingsBuilde
   @nullable
   String get primaryColour;
 
+  /// Map of macronutrients to hexadecimal strings starting with '0x'.
+  @nullable
+  BuiltMap<Nutrient, String> get macroColours;
+
+  /// Map of macronutrients to hexadecimal strings starting with '0x'.
+  @nullable
+  BuiltMap<Nutrient, String> get darkMacroColours;
+
   /// Integer representation of colour.
   int get primaryColourValue => num.parse(primaryColour);
-
 
   factory ThemeSettings([void Function(ThemeSettingsBuilder b)]) = _$ThemeSettings;
   ThemeSettings._();

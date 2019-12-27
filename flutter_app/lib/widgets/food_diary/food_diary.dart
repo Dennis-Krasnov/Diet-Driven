@@ -6,6 +6,7 @@
 library food_diary;
 
 export 'daily_nutrition_stats_sliver.dart';
+export 'food_diary_app_bar.dart';
 export 'food_diary_day_page.dart';
 export 'food_diary_meal_sliver.dart';
 export 'food_diary_page.dart';

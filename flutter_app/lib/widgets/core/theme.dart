@@ -6,21 +6,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/widgets/extensions/extensions.dart';
+
 
 /// Creates Flutter theme data from theme settings.
 ThemeData generateThemeSettings(ThemeSettings themeSettings) {
-
-  // Primary colour
-  final Color defaultPrimaryColour = Colors.deepOrange;
-  Color primaryColour;
-
-  // TODO: helper function
-  try {
-    primaryColour = Color(num.tryParse(themeSettings?.primaryColour) ?? defaultPrimaryColour.value);
-  } catch (e) {
-    primaryColour = defaultPrimaryColour;
-  }
-
   // TODO: polish
 
   return ThemeData(
@@ -118,7 +108,7 @@ ThemeData generateThemeSettings(ThemeSettings themeSettings) {
 //      ),
 
     // Colours
-    primaryColor: primaryColour,
+    primaryColor: themeSettings?.primaryColour?.colour ?? Colors.deepOrange,
 //      primaryColor: Colors.deepOrange,
     primaryColorDark: Colors.deepOrange,
 //      colorScheme: ColorScheme.light(

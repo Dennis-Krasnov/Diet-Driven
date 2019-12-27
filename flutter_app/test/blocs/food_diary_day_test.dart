@@ -122,11 +122,77 @@ void main() {
     ))).called(1);
   });
 
-  group("Food record replacement", () {
+//  group("Food record replacement", () {
+//    final foodDiaryDay = generateFoodDiaryDay(24, [["Apple"]]);
+//    final foodRecord = foodDiaryDay.meals.first.foodRecords.first;
+//
+//    test("Replce food records", () async {
+//      foodDiaryBloc.whenListenStream<FoodDiaryState>([
+//        FoodDiaryUninitialized(),
+//        FoodDiaryLoaded((b) => b
+//          ..diaryDays = MapBuilder({
+//            24: foodDiaryDay,
+//          })
+//          ..diets = ListBuilder(<Diet>[dietA])
+//        )
+//      ]);
+//
+//      sut.add(InitFoodDiaryDay());
+//
+//      await 1.tick.delay;
+//      sut.add(ReplaceFoodRecord((b) => b
+//        ..oldRecord = foodRecord.toBuilder()
+//        ..newRecord = foodRecord.rebuild((b) => b..foodName = "Apricot").toBuilder()
+//        ..completer = completer
+//      ));
+//
+//      await expectLater(completer.future, completes);
+//      expect(completer.isCompleted, true);
+//
+//      verify(diaryRepository.saveFoodDiaryDay(
+//        userA.uid,
+//        generateFoodDiaryDay(24, [["Apricot"]])
+//      )).called(1);
+//    });
+//
+//    test("Reject completer on replace error", () async {
+//      foodDiaryBloc.whenListenStream<FoodDiaryState>([
+//        FoodDiaryUninitialized(),
+//        FoodDiaryLoaded((b) => b
+//          ..diaryDays = MapBuilder({
+//            24: foodDiaryDay,
+//          })
+//          ..diets = ListBuilder(<Diet>[dietA])
+//        )
+//      ]);
+//      when(diaryRepository.saveFoodDiaryDay(any, any)).thenThrow(eventFailedException);
+//
+//      sut.add(InitFoodDiaryDay());
+//
+//      await 1.tick.delay;
+//      sut.add(ReplaceFoodRecord((b) => b
+//        ..oldRecord = foodRecord.toBuilder()
+//        ..newRecord = foodRecord.rebuild((b) => b..foodName = "Apricot").toBuilder()
+//        ..completer = completer
+//      ));
+//
+//      await expectLater(completer.future, throwsException);
+//      expect(completer.isCompleted, true);
+//
+//      verify(diaryRepository.saveFoodDiaryDay(
+//        userA.uid,
+//        generateFoodDiaryDay(24, [["Apricot"]])
+//      )).called(1);
+//    });
+//  });
+
+  group("FoodDiaryDayBloc::_saveFoodDiaryDay", () {
     final foodDiaryDay = generateFoodDiaryDay(24, [["Apple"]]);
     final foodRecord = foodDiaryDay.meals.first.foodRecords.first;
 
-    test("Replce food records", () async {
+    Completer<void> completer;
+
+    setUp(() {
       foodDiaryBloc.whenListenStream<FoodDiaryState>([
         FoodDiaryUninitialized(),
         FoodDiaryLoaded((b) => b
@@ -137,54 +203,40 @@ void main() {
         )
       ]);
 
+
+//      userRepository = MockUserRepository();
+//      // Must be broadcast stream
+//      when(userRepository.authStateChanged$()).broadcastStream([null, userA]);
+//      when(userRepository.userDocument$(any)).stream([userDocument]);
+//
+//      settingsRepository = MockSettingsRepository();
+//      when(settingsRepository.defaultSettings$()).stream([settingsFull]);
+//      when(settingsRepository.userSettings$(any)).stream([null]);
+//
+//      completer = Completer();
+//
+//      sut = UserDataBloc(
+//        userRepository: userRepository,
+//        settingsRepository: settingsRepository,
+//      );
+    });
+
+    test("Call diary repository", () async {
       sut.add(InitFoodDiaryDay());
 
       await 1.tick.delay;
       sut.add(ReplaceFoodRecord((b) => b
-        ..oldRecord = foodRecord.toBuilder()
-        ..newRecord = foodRecord.rebuild((b) => b..foodName = "Apricot").toBuilder()
-        ..completer = completer
+        ..foodRecord = foodRecord.rebuild((b) => b..foodName = "Apricot").toBuilder()
       ));
-
-      await expectLater(completer.future, completes);
-      expect(completer.isCompleted, true);
-
-      verify(diaryRepository.saveFoodDiaryDay(
-        userA.uid,
-        generateFoodDiaryDay(24, [["Apricot"]])
-      )).called(1);
-    });
-
-    test("Reject completer on replace error", () async {
-      foodDiaryBloc.whenListenStream<FoodDiaryState>([
-        FoodDiaryUninitialized(),
-        FoodDiaryLoaded((b) => b
-          ..diaryDays = MapBuilder({
-            24: foodDiaryDay,
-          })
-          ..diets = ListBuilder(<Diet>[dietA])
-        )
-      ]);
-      when(diaryRepository.saveFoodDiaryDay(any, any)).thenThrow(eventFailedException);
-
-      sut.add(InitFoodDiaryDay());
 
       await 1.tick.delay;
-      sut.add(ReplaceFoodRecord((b) => b
-        ..oldRecord = foodRecord.toBuilder()
-        ..newRecord = foodRecord.rebuild((b) => b..foodName = "Apricot").toBuilder()
-        ..completer = completer
+      sut.add(DeleteFoodRecords((b) => b
+        ..foodRecordUids = ListBuilder([foodRecord.uid])
       ));
 
-      await expectLater(completer.future, throwsException);
-      expect(completer.isCompleted, true);
-
-      verify(diaryRepository.saveFoodDiaryDay(
-        userA.uid,
-        generateFoodDiaryDay(24, [["Apricot"]])
-      )).called(1);
+      await 5.tick.delay;
+      verify(diaryRepository.saveFoodDiaryDay(userA.uid, any)).called(2);
     });
+
   });
-
-  // TODO: other operations
 }

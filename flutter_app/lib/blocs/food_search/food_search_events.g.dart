@@ -143,13 +143,10 @@ class UpdateQueryBuilder implements Builder<UpdateQuery, UpdateQueryBuilder> {
 }
 
 class _$SearchFoods extends SearchFoods {
-  @override
-  final Completer<void> completer;
-
   factory _$SearchFoods([void Function(SearchFoodsBuilder) updates]) =>
       (new SearchFoodsBuilder()..update(updates)).build();
 
-  _$SearchFoods._({this.completer}) : super._();
+  _$SearchFoods._() : super._();
 
   @override
   SearchFoods rebuild(void Function(SearchFoodsBuilder) updates) =>
@@ -161,38 +158,24 @@ class _$SearchFoods extends SearchFoods {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is SearchFoods && completer == other.completer;
+    return other is SearchFoods;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(0, completer.hashCode));
+    return 329577879;
   }
 
   @override
   String toString() {
-    return (newBuiltValueToStringHelper('SearchFoods')
-          ..add('completer', completer))
-        .toString();
+    return newBuiltValueToStringHelper('SearchFoods').toString();
   }
 }
 
 class SearchFoodsBuilder implements Builder<SearchFoods, SearchFoodsBuilder> {
   _$SearchFoods _$v;
 
-  Completer<void> _completer;
-  Completer<void> get completer => _$this._completer;
-  set completer(Completer<void> completer) => _$this._completer = completer;
-
   SearchFoodsBuilder();
-
-  SearchFoodsBuilder get _$this {
-    if (_$v != null) {
-      _completer = _$v.completer;
-      _$v = null;
-    }
-    return this;
-  }
 
   @override
   void replace(SearchFoods other) {
@@ -209,7 +192,7 @@ class SearchFoodsBuilder implements Builder<SearchFoods, SearchFoodsBuilder> {
 
   @override
   _$SearchFoods build() {
-    final _$result = _$v ?? new _$SearchFoods._(completer: completer);
+    final _$result = _$v ?? new _$SearchFoods._();
     replace(_$result);
     return _$result;
   }

@@ -3,10 +3,14 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:time/time.dart';
+import 'package:built_collection/built_collection.dart';
 
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/widgets/extensions/extensions.dart';
 
 /// Shows optionally sticky nutrition header.
 class NutritionHeader extends StatelessWidget {
@@ -17,7 +21,7 @@ class NutritionHeader extends StatelessWidget {
   final bool nutrientsVisible;
 
   /// List of nutrients to show in addition to calories.
-  final List<Nutrient> nutrients;
+  final BuiltList<Nutrient> nutrients;
 
   /// Called when the user taps this nutrition header.
   final GestureTapCallback onTap;
@@ -39,23 +43,17 @@ class NutritionHeader extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       onLongPress: onLongPress,
+      // Opaque header container
       child: Container(
-        // Opaque header container
         height: 30,
-//        height: 40,
-//        padding: const EdgeInsets.symmetric(horizontal: 16),
-//        padding: const EdgeInsets.only(top: 10, left: 16, right: 16),
         padding: const EdgeInsets.only(left: 16, right: 16),
-//        margin: const EdgeInsets.symmetric(vertical: 10),
         margin: const EdgeInsets.only(bottom: 10),
         alignment: Alignment.centerLeft,
-//        color: Colors.white,
         decoration: BoxDecoration(
           color: Colors.white,
           border: const Border(bottom: BorderSide(
             width: 1,
-            color: Color.fromRGBO(0, 0, 0, 0.08), // .withOpacity(stuckAmount.clamp(0.0, 1.0)),
-//            color: Color.fromRGBO(0, 0, 0, 0.08 * stuckAmount.clamp(0.0, 1.0)), // .withOpacity(stuckAmount.clamp(0.0, 1.0)),
+            color: Color.fromRGBO(0, 0, 0, 0.08),
           )),
         ),
         child: Row(
@@ -86,17 +84,13 @@ class NutritionHeader extends StatelessWidget {
                 child: SizedBox(
                   width: 60,
                   child: Text(
-                    nutrient.toString().toUpperCase(), // TODO: capitalize!
+                    nutrient.toString().toUpperCase(),
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       fontSize: 9,
                       fontWeight: FontWeight.w500,
                       letterSpacing: 0.3,
-                      color: nutrient == Nutrient.protein // TODO: dynamic, store in map
-                        ? const Color(0xFF8B041B)
-                        : nutrient == Nutrient.fat
-                          ? const Color(0xFFC89C00)
-                          : const Color(0xFF219653),
+                      color: BlocProvider.of<UserDataBloc>(context).loadedState.settings.theme.darkMacroColours[nutrient].colour
                     ),
                   ),
                 ),

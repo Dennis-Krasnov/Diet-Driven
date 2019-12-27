@@ -56,6 +56,10 @@ class DiaryDateDL extends ValueDeepLink<int> {
   DiaryDateDL.today() : super("diary", DateTime.now().asInt);
 }
 
+class SearchDL extends ValueDeepLink<String> with FullScreen {
+  SearchDL(String initialQuery) : super("search", initialQuery);
+}
+
 // TODO: custom built serializer for deep links!!!! - giant map both ways / use json serializer!?
 // TODO: other large comments
 

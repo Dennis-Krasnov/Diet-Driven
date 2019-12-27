@@ -4,6 +4,7 @@
  */
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/providers/firestore_references.dart';
 import 'package:diet_driven/providers/firestore_serializer.dart';
@@ -38,9 +39,6 @@ class SettingsRepository {
 
   /// Replaces [userId]'s [Settings].
   /// `Future.sync()` runs future immediately to enable proper exception handling.
-  ///
-  /// Cloud functions triggers on edit:
-  /// -
   ///
   /// Throws [PlatformException] if [userId] is empty.
    Future<void> saveSettings(String userId, Settings settings) async {

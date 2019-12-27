@@ -23,7 +23,6 @@ void main() {
   DiaryRepository diaryRepository;
   Completer<void> completer;
 
-
   /// Configuration
   setUp(() {
     BlocSupervisor.delegate = LoggingBlocDelegate();
@@ -42,7 +41,6 @@ void main() {
     expect(sut.date, null);
     expect(sut.initialState, FoodDiaryUninitialized());
   });
-
 
   test("Yield error state on invalid events", () async {
     sut.expectEmits([

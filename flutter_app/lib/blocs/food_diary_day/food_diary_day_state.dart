@@ -4,6 +4,7 @@
  */
 
 import 'package:built_value/built_value.dart';
+import 'package:built_collection/built_collection.dart';
 
 import 'package:diet_driven/models/models.dart';
 
@@ -27,6 +28,9 @@ abstract class FoodDiaryDayLoaded implements FoodDiaryDayState, Built<FoodDiaryD
 
   /// Most up-to-date diet for the day's date.
   Diet get diet;
+
+  /// Out of sync uids of food diary records with disabled interaction.
+  BuiltSet<String> get dirtyFoodRecordUids;
 
   factory FoodDiaryDayLoaded([void Function(FoodDiaryDayLoadedBuilder) updates]) = _$FoodDiaryDayLoaded;
   FoodDiaryDayLoaded._();

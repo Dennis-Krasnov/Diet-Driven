@@ -36,7 +36,7 @@ class App extends StatelessWidget {
           return true;
 
         // Rebuild only if theme settings changed
-        return (previous as UserDataLoaded).settings.themeSettings != (current as UserDataLoaded).settings.themeSettings;
+        return (previous as UserDataLoaded).settings.theme != (current as UserDataLoaded).settings.theme;
       },
       builder: (BuildContext context, UserDataState userDataState) {
         BlocLogger().ui("Theme rebuild");
@@ -79,7 +79,7 @@ class App extends StatelessWidget {
               bottomNavigationPages: BuiltList(<DeepLink>[DiaryDateDL.today(), UserDL("xyzTab")]) // TODO: from settings
             ),
           ),
-          theme: generateThemeSettings(userDataState is UserDataLoaded ? userDataState.settings.themeSettings : null),
+          theme: generateThemeSettings(userDataState is UserDataLoaded ? userDataState.settings.theme : null),
           debugShowCheckedModeBanner: false,
         );
       }

@@ -4,12 +4,16 @@
  */
 
 import 'package:deep_link_navigation/deep_link_navigation.dart';
+import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/widgets/search/search.dart';
 import 'package:flutter/material.dart';
 
 import 'package:diet_driven/navigation/navigation.dart';
 import 'package:diet_driven/widgets/food_diary/food_diary.dart';
 import 'package:diet_driven/widgets/onboarding/onboarding.dart';
 import 'package:diet_driven/widgets/user/user.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 extension RouteExtensions on List<DeepLink> {
   // TODO: remove path from base library
@@ -54,7 +58,18 @@ extension DeepLinkNavigationExtensions on Dispatcher {
 
   /// ...
   void diaryNavigation() {
-    value<int, DiaryDateDL>((date, path) => FoodDiaryPage(initialDate: date));
+    value<int, DiaryDateDL>(
+      (date, path) => FoodDiaryPage(initialDate: date),
+      subNavigation: (date, context) => Dispatcher()
+        ..value<String, SearchDL>((initialQuery, path) => BlocProvider<FoodSearchBloc>(create: (context) =>
+          FoodSearchBloc(
+            foodRepository: RepositoryProvider.of<FoodRepository>(context),
+            userId: BlocProvider.of<UserDataBloc>(context).userId,
+            initialQuery: initialQuery
+          )..add(SuggestFoodRecords()),
+          child: SearchPage(),
+        )),
+    );
   }
 
   /// ...

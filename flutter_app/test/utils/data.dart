@@ -48,19 +48,19 @@ final userB = Authentication((b) => b
 final userDocument = UserDocument();
 
 final settingsLight = Settings((b) => b
-  ..themeSettings = ThemeSettings((b) => b
+  ..theme = ThemeSettings((b) => b
     ..darkMode = false
   ).toBuilder()
 );
 
 final settingsDark = Settings((b) => b
-  ..themeSettings = ThemeSettings((b) => b
+  ..theme = ThemeSettings((b) => b
     ..darkMode = true
   ).toBuilder()
 );
 
 final Settings settingsFull = Settings((b) => b
-    ..navigationSettings = NavigationSettings((b) => b
+    ..navigation = NavigationSettings((b) => b
 //      ..defaultPage = DiaryDateDL.today()
 //      ..bottomNavigationPages = ListBuilder(<DeepLink>[
 //        DiaryDateDL.today(),
@@ -69,7 +69,7 @@ final Settings settingsFull = Settings((b) => b
 //        UserDL("TODO"),
 //      ])
   ).toBuilder()
-  ..themeSettings = ThemeSettings((b) => b
+  ..theme = ThemeSettings((b) => b
     ..darkMode = false
     ..primaryColour = "dark blue"
   ).toBuilder()
@@ -79,6 +79,13 @@ final foodRecords = BuiltList<FoodRecord>(<FoodRecord>[
   FoodRecord.random(),
   FoodRecord.random(),
 ]);
+
+final searchSuggestions = BuiltList<FoodRecord>(foodRecords.reversed.expand<FoodRecord>((e) => [e, e]));
+
+final searchResults = SearchResult((b) => b
+  ..foods = ListBuilder<FoodRecord>(foodRecords.reversed.take(1))
+  ..pagination = 0
+);
 
 final dietA = Diet((b) => b
   ..idealNutrients = NutrientMap.random()

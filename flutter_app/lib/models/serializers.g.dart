@@ -7,6 +7,7 @@ part of serializers;
 // **************************************************************************
 
 Serializers _$serializers = (new Serializers().toBuilder()
+      ..add(DiarySettings.serializer)
       ..add(FoodDiaryDay.serializer)
       ..add(FoodRecord.serializer)
       ..add(MealData.serializer)
@@ -29,6 +30,17 @@ Serializers _$serializers = (new Serializers().toBuilder()
       ..addBuilderFactory(
           const FullType(BuiltList, const [const FullType(MealData)]),
           () => new ListBuilder<MealData>())
+      ..addBuilderFactory(
+          const FullType(BuiltList, const [const FullType(Nutrient)]),
+          () => new ListBuilder<Nutrient>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap,
+              const [const FullType(Nutrient), const FullType(String)]),
+          () => new MapBuilder<Nutrient, String>())
+      ..addBuilderFactory(
+          const FullType(BuiltMap,
+              const [const FullType(Nutrient), const FullType(String)]),
+          () => new MapBuilder<Nutrient, String>())
       ..addBuilderFactory(
           const FullType(
               BuiltMap, const [const FullType(Nutrient), const FullType(num)]),

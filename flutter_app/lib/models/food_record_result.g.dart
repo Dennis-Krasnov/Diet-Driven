@@ -10,8 +10,6 @@ class _$FoodRecordResult extends FoodRecordResult {
   @override
   final FoodRecord foodRecord;
   @override
-  final FoodLoggingTab resultType;
-  @override
   final bool existsInDiary;
   @override
   final bool existsInSelection;
@@ -21,16 +19,10 @@ class _$FoodRecordResult extends FoodRecordResult {
       (new FoodRecordResultBuilder()..update(updates)).build();
 
   _$FoodRecordResult._(
-      {this.foodRecord,
-      this.resultType,
-      this.existsInDiary,
-      this.existsInSelection})
+      {this.foodRecord, this.existsInDiary, this.existsInSelection})
       : super._() {
     if (foodRecord == null) {
       throw new BuiltValueNullFieldError('FoodRecordResult', 'foodRecord');
-    }
-    if (resultType == null) {
-      throw new BuiltValueNullFieldError('FoodRecordResult', 'resultType');
     }
     if (existsInDiary == null) {
       throw new BuiltValueNullFieldError('FoodRecordResult', 'existsInDiary');
@@ -54,16 +46,13 @@ class _$FoodRecordResult extends FoodRecordResult {
     if (identical(other, this)) return true;
     return other is FoodRecordResult &&
         foodRecord == other.foodRecord &&
-        resultType == other.resultType &&
         existsInDiary == other.existsInDiary &&
         existsInSelection == other.existsInSelection;
   }
 
   @override
   int get hashCode {
-    return $jf($jc(
-        $jc($jc($jc(0, foodRecord.hashCode), resultType.hashCode),
-            existsInDiary.hashCode),
+    return $jf($jc($jc($jc(0, foodRecord.hashCode), existsInDiary.hashCode),
         existsInSelection.hashCode));
   }
 
@@ -71,7 +60,6 @@ class _$FoodRecordResult extends FoodRecordResult {
   String toString() {
     return (newBuiltValueToStringHelper('FoodRecordResult')
           ..add('foodRecord', foodRecord)
-          ..add('resultType', resultType)
           ..add('existsInDiary', existsInDiary)
           ..add('existsInSelection', existsInSelection))
         .toString();
@@ -88,10 +76,6 @@ class FoodRecordResultBuilder
   set foodRecord(FoodRecordBuilder foodRecord) =>
       _$this._foodRecord = foodRecord;
 
-  FoodLoggingTab _resultType;
-  FoodLoggingTab get resultType => _$this._resultType;
-  set resultType(FoodLoggingTab resultType) => _$this._resultType = resultType;
-
   bool _existsInDiary;
   bool get existsInDiary => _$this._existsInDiary;
   set existsInDiary(bool existsInDiary) =>
@@ -107,7 +91,6 @@ class FoodRecordResultBuilder
   FoodRecordResultBuilder get _$this {
     if (_$v != null) {
       _foodRecord = _$v.foodRecord?.toBuilder();
-      _resultType = _$v.resultType;
       _existsInDiary = _$v.existsInDiary;
       _existsInSelection = _$v.existsInSelection;
       _$v = null;
@@ -135,7 +118,6 @@ class FoodRecordResultBuilder
       _$result = _$v ??
           new _$FoodRecordResult._(
               foodRecord: foodRecord.build(),
-              resultType: resultType,
               existsInDiary: existsInDiary,
               existsInSelection: existsInSelection);
     } catch (_) {

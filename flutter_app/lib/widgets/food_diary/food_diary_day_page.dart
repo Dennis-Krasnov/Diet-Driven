@@ -76,7 +76,7 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
             child: CustomScrollView(
               controller: _controller,
               slivers: <Widget>[
-                 DailyNutritionStatsSliver(),
+                DailyNutritionStatsSliver(),
                 for (final mealInfoKV in loadedState.diet.meals.enumerate) ...[
                   FoodDiaryMealSliver(
                     mealIndex: mealInfoKV.key,

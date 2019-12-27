@@ -218,25 +218,18 @@ void main() {
     });
   });
 
-  group("UserDataBloc::_updateUserSettings", () {
+  group("UserDataBloc::_saveUserSettings", () {
     Completer<void> completer;
 
     setUp(() {
-      userRepository = MockUserRepository();
       // Must be broadcast stream
       when(userRepository.authStateChanged$()).broadcastStream([null, userA]);
       when(userRepository.userDocument$(any)).stream([userDocument]);
 
-      settingsRepository = MockSettingsRepository();
       when(settingsRepository.defaultSettings$()).stream([settingsFull]);
       when(settingsRepository.userSettings$(any)).stream([null]);
 
       completer = Completer();
-
-      sut = UserDataBloc(
-        userRepository: userRepository,
-        settingsRepository: settingsRepository,
-      );
     });
 
     test("Update setting", () async {
@@ -250,13 +243,6 @@ void main() {
 
       await expectLater(completer.future, completes);
       expect(completer.isCompleted, true);
-
-      verify(settingsRepository.saveSettings(
-        userA.uid,
-        Settings().rebuild((sb) => sb..themeSettings.update((b) => b
-          ..darkMode = true
-        ))
-      )).called(1);
     });
 
     test("Reject completer on setting update error", () async {
@@ -272,13 +258,17 @@ void main() {
 
       await expectLater(completer.future, throwsException);
       expect(completer.isCompleted, true);
+    });
 
-      verify(settingsRepository.saveSettings(
-        userA.uid,
-        Settings().rebuild((sb) => sb..themeSettings.update((b) => b
-          ..darkMode = true
-        ))
-      )).called(1);
+    test("Call settings repository", () async {
+      sut.add(InitUserData());
+
+      await 1.tick.delay;
+      sut.add(UpdateDarkMode((b) => b..darkMode = true));
+      sut.add(UpdatePrimaryColour((b) => b..colourValue = 1234));
+
+      await 1.tick.delay;
+      verify(settingsRepository.saveSettings(userA.uid, any)).called(2);
     });
   });
 
@@ -311,7 +301,7 @@ void main() {
       when(userRepository.userDocument$(any)).stream([userDocument]);
       when(settingsRepository.defaultSettings$()).stream([
         Settings((b) => b
-          ..themeSettings = ThemeSettings((b) => b
+          ..theme = ThemeSettings((b) => b
             ..darkMode = false
             ..primaryColour = "pink <3"
           ).toBuilder()
@@ -328,7 +318,7 @@ void main() {
           ..authentication = userA.toBuilder()
           ..userDocument = UserDocumentBuilder()
           ..settings = Settings((b) => b
-            ..themeSettings = ThemeSettings((b) => b
+            ..theme = ThemeSettings((b) => b
               ..darkMode = true // From user settings
               ..primaryColour = "pink <3" // From default settings
             ).toBuilder()

@@ -13,5 +13,4 @@ export 'food_diary_day/food_diary_day.dart';
 export 'food_diary_scroll/food_diary_scroll.dart';
 export 'food_record_edit/food_record_edit.dart';
 export 'food_search/food_search.dart';
-export 'login/login.dart';
 export 'user_data/user_data.dart';

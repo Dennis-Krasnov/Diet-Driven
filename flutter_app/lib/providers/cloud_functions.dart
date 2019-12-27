@@ -4,6 +4,7 @@
  */
 
 import 'package:cloud_functions/cloud_functions.dart';
+
 import 'package:diet_driven/models/serializers.dart';
 
 /// Firebase Cloud Functions provider using `cloud_functions` library.

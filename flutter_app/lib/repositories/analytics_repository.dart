@@ -4,6 +4,7 @@
  */
 
 import 'package:bloc_logging/bloc_logger.dart';
+import 'package:deep_link_navigation/deep_link_navigation.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart' show FirebaseUser;
 
@@ -13,10 +14,6 @@ class AnalyticsRepository {
 
   // Dependency injection
   AnalyticsRepository({FirebaseAnalytics analytics}) : _analytics = analytics ?? FirebaseAnalytics();
-
-  // TODO: log custom event (similar to bloc transition) for every analytics log (special filter in logging tab)
-  // TODO: bloc tests ensure proper analytics event was called
-  // TODO: https://medium.com/flutterpub/using-firebase-analytics-in-flutter-2da5be205e4
 
   /// ... .
   Future<void> startOnboarding() => _analytics.logTutorialBegin();
@@ -49,44 +46,11 @@ class AnalyticsRepository {
 
   /// ...
   /// TODO: include deep link
-  Future<void> currentScreen(String pageName) {
-    assert(pageName != null);
+  Future<void> currentScreen(List<DeepLink> route) {
+    assert(route != null);
 
     // TODO: type of severity for analytics, rewrite threshold level to a white/black list!
-    BlocLogger().fine("Analtytics - current screen: $pageName");
-    return _analytics.setCurrentScreen(screenName: pageName);
+    BlocLogger().fine("Analtytics - current screen: $route");
+    return _analytics.setCurrentScreen(screenName: route.join("/"));
   }
-
-  /// ...
-  Future<void> openFoodRecord(String foodId) {
-    assert(foodId != null);
-
-    return _analytics.logEvent(name: "edit_food_record", parameters: <String, dynamic>{
-      "food_id": foodId,
-    });
-  }
-
-  /// ...
-  Future<void> saveFoodRecord(String foodId) {
-    assert(foodId != null);
-
-    return _analytics.logEvent(name: "save_food_record", parameters: <String, dynamic>{
-      "food_id": foodId,
-    });
-  }
-
-  /// ...
-  Future<void> viewFoodDiaryDay(int deltaDays) {
-    assert(deltaDays != null);
-
-    return _analytics.logEvent(name: "view_food_diary_day", parameters: <String, dynamic>{
-      "delta_days": deltaDays,
-    });
-  }
-
-  ///
-  // TODO: search
-  // TODO: deep links
-  // TODO: setting/report viewed
-
 }

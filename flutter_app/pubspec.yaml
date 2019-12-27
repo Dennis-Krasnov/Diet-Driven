@@ -27,7 +27,6 @@ dependencies:
   ## CONFIGURATION
   connectivity: ^0.4.4
   package_info: ^0.4.0+6
-  # device_info
 
   ## FLUTTER WIDGETS
   syncfusion_flutter_charts: ^17.3.26

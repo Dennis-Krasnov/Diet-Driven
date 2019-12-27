@@ -55,8 +55,8 @@ extension FirestoreDocumentExtensions on DocumentReference {
   /// ...
   Stream<T> deserialize<T>() => snapshots().deserialize<T>();
 
-//  / Serializes a single [T] into Firestore document JSON.
-//  / Can't use compute as it raises 'Concurrent modification during iteration' exception.
+  /// Serializes a single [T] into Firestore document JSON.
+  /// Can't use compute as it raises 'Concurrent modification during iteration' exception.
   /// ...
   Future<void> setSerialized(Object object, {bool merge = false}) => setData(
     jsonSerializers.serialize(object),

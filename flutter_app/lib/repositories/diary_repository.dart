@@ -74,9 +74,6 @@ class DiaryRepository {
 
   /// Replaces [userId]'s [FoodDiaryDay] on its respective day.
   ///
-  /// Cloud functions triggers on edit:
-  /// -
-  ///
   /// Throws [PlatformException] if [userId] is empty.
   Future<void> saveFoodDiaryDay(String userId, FoodDiaryDay foodDiaryDay) async {
     assert(userId != null && userId.isNotEmpty);
@@ -88,10 +85,6 @@ class DiaryRepository {
 
   /// Deletes [userId]'s [FoodDiaryDay] on [daysSinceEpoch].
   /// `Future.sync()` runs future immediately to enable proper exception handling.
-  ///
-  /// Cloud functions triggers on delete:
-  /// - If [dayCompleted], calculates score for the day, saves in aggregate score.
-  /// - Calculates aggregate global statistics.
   ///
   /// Throws [PlatformException] if [userId] or [daysSinceEpoch] is empty.
   /// Throws [Exception] if food diary day document doesn't exist.
@@ -118,7 +111,7 @@ class DiaryRepository {
       ),
       Diet((b) => b
         ..idealNutrients = NutrientMap.fromMacros(123, 42, 397)
-        ..startDate = 18128
+        ..startDate = 18255
       ),
     ])));
   }

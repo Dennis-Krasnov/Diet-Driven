@@ -3,9 +3,12 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
+import 'package:diet_driven/blocs/blocs.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
+import 'package:diet_driven/widgets/extensions/extensions.dart';
 import 'package:diet_driven/models/models.dart';
 
 class NutrientPair {
@@ -43,20 +46,12 @@ class FoodRecordTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = foodRecord.totalNutrients.quantities;
+    final colours = BlocProvider.of<UserDataBloc>(context).loadedState.settings.theme.macroColours;
 
     final List<NutrientPair> chartData = [
-      NutrientPair(Nutrient.protein, data[Nutrient.protein], Colors.redAccent),
-      NutrientPair(Nutrient.fat, data[Nutrient.fat], Colors.yellow),
-      NutrientPair(Nutrient.carbs, data[Nutrient.carbs], Colors.lightGreen),
+      for (final macro in BlocProvider.of<UserDataBloc>(context).loadedState.settings.diary.macroOrder)
+        NutrientPair(macro, data[macro], colours[macro].colour),
     ];
-
-//    final series = <PieSeries<NutrientPair, String>>[
-//      PieSeries<NutrientPair, String>(
-//        dataSource: pieData,
-//        xValueMapper: (NutrientPair data, _) => data.nutrient.toString(),
-//        yValueMapper: (NutrientPair data, _) => data.value,
-//        dataLabelSettings: DataLabelSettings(isVisible: false)),
-//    ];
 
     return InkWell(
       onTap: onTap,
@@ -84,7 +79,6 @@ class FoodRecordTile extends StatelessWidget {
                     animationDuration: 0,
                   )
                 ],
-//                backgroundColor: Colors.blue,
                 margin: EdgeInsets.zero,
               ),
 //              child: AnimatedCircularChart(
@@ -115,20 +109,21 @@ class FoodRecordTile extends StatelessWidget {
                     children: <Widget>[
                       Expanded(
                         child: Text(
-                          "1 slice (25g)",
+                          "1 slice (25g)", // TODO
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.body2
                         ),
                       ),
-                      for (var nutrient in [Nutrient.protein, Nutrient.fat, Nutrient.carbs]) // TODO: dynamic from diary settings
+                      for (var nutrient in BlocProvider.of<UserDataBloc>(context).loadedState.settings.diary.macroOrder)
                         SizedBox(
                           width: 60, // OPTIMIZE
                           child: Text(
                             "${foodRecord.totalNutrients.quantities[nutrient].round() ?? 0} g",
+//                            textAlign: TextAlign.right,
                             textAlign: TextAlign.right,
                             style: TextStyle(
-                              fontSize: 10,
+                              fontSize: 11,
                               fontWeight: FontWeight.w700,
                               color: const Color.fromRGBO(0, 0, 0, 0.6)
                             ),

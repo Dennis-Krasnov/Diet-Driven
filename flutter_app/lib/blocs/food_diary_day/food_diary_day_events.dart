@@ -43,19 +43,17 @@ abstract class AddFoodRecords implements Completable, FoodDiaryDayEvent, Built<A
   AddFoodRecords._();
 }
 
-/// Replaces [oldRecord] with [newRecord].
+/// Replaces food record with uid of with current value of [foodRecord].
 abstract class ReplaceFoodRecord implements Completable, FoodDiaryDayEvent, Built<ReplaceFoodRecord, ReplaceFoodRecordBuilder> {
-  FoodRecord get oldRecord;
-
-  FoodRecord get newRecord;
+  FoodRecord get foodRecord;
 
   factory ReplaceFoodRecord([void Function(ReplaceFoodRecordBuilder) updates]) = _$ReplaceFoodRecord;
   ReplaceFoodRecord._();
 }
 
-/// Deletes [foodRecords] from this day.
+/// Deletes food records with [foodRecordUids] from this day.
 abstract class DeleteFoodRecords implements Completable, FoodDiaryDayEvent, Built<DeleteFoodRecords, DeleteFoodRecordsBuilder> {
-  BuiltList<FoodRecord> get foodRecords;
+  BuiltList<String> get foodRecordUids;
 
   factory DeleteFoodRecords([void Function(DeleteFoodRecordsBuilder) updates]) = _$DeleteFoodRecords;
   DeleteFoodRecords._();

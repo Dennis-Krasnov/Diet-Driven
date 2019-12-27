@@ -7,7 +7,10 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_logging/bloc_logging.dart';
+import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/models/models.dart';
 import 'package:meta/meta.dart';
+import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
@@ -77,42 +80,54 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       ));
     }
 
-    // TODO: disable these food records from further action; finally block removes them from disabled list
     if (event is ReplaceFoodRecord) {
-      // Food diary day has no error state
-      assert(state is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
-
-      try {
-        final diaryDayBuilder = loadedState.foodDiaryDay.toBuilder()
-          ..replaceFoodRecord(event.oldRecord, event.newRecord);
-
-        await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
-
-        BlocLogger().info("Updated ${event.oldRecord.foodName} on $date");
-        event?.completer?.complete();
-      } catch(error, stacktrace) {
-        BlocLogger().unexpectedError("Updating ${event.oldRecord.foodName} failed on $date", error, stacktrace);
-        event?.completer?.completeError(error, stacktrace);
-      }
+      yield* _saveFoodDiaryDay(
+        event,
+        (day) => day.replaceFoodRecord(event.foodRecord),
+        toDisable: BuiltList<String>([event.foodRecord.uid]),
+      );
     }
 
-    // TODO: disable these food records from further action; finally block removes them from disabled list
     if (event is DeleteFoodRecords) {
-      // Food diary day has no error state
-      assert(state is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
+      yield* _saveFoodDiaryDay(
+        event,
+        (day) => day.deleteFoodRecords(event.foodRecordUids),
+        toDisable: event.foodRecordUids,
+      );
+    }
+  }
 
-      try {
-        final diaryDayBuilder = loadedState.foodDiaryDay.toBuilder()
-          ..deleteFoodRecords(event.foodRecords);
+  // TODO: test this method like in user data bloc (once)
+  // TODO: add(event), simply verify(repo.save(any)).called(1); (do same thing for every user data event)
+  /// ...
+  Stream<FoodDiaryDayState> _saveFoodDiaryDay(Completable event, void Function(FoodDiaryDayBuilder) updates, {BuiltList<String> toDisable}) async* {
+    assert(event is FoodDiaryDayEvent);
 
-        await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, diaryDayBuilder.build());
+    // Food diary day has no error state
+    assert(state is FoodDiaryDayLoaded, "Food diary day bloc must be loaded");
 
-        BlocLogger().info("Deleted ${event.foodRecords.length} foods from $date");
-        event?.completer?.complete();
-      } catch(error, stacktrace) {
-        BlocLogger().unexpectedError("Deleting ${event.foodRecords.length} foods from $date failed", error, stacktrace);
-        event?.completer?.completeError(error, stacktrace);
+    try {
+      if (toDisable?.isNotEmpty ?? false) {
+        assert(toDisable.every((uid) => !loadedState.dirtyFoodRecordUids.any((dirtyFoodRecordUid) => dirtyFoodRecordUid == uid)));
+
+        // Add to set of out of sync food records
+        yield loadedState.rebuild((b) => b
+          ..dirtyFoodRecordUids = loadedState.dirtyFoodRecordUids.union(toDisable.toBuiltSet()).toBuilder()
+        );
       }
+
+      await diaryRepository.saveFoodDiaryDay(foodDiaryBloc.userId, loadedState.foodDiaryDay.rebuild(updates));
+
+      BlocLogger().info("${event.runtimeType} succeeded");
+      event.completer?.complete();
+    } catch(error, stacktrace) {
+      if (toDisable?.isNotEmpty ?? false) {
+        // Roll back food records to original state
+        yield loadedState;
+      }
+
+      BlocLogger().unexpectedError("${event.runtimeType} failed", error, stacktrace);
+      event.completer?.completeError(error, stacktrace);
     }
   }
 }

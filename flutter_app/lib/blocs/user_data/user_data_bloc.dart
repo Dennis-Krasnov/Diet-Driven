@@ -57,7 +57,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
           userRepository.userDocument$(auth.uid),
           settingsRepository.defaultSettings$(),
           Observable(settingsRepository.userSettings$(auth.uid)).startWith(null),
-          Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases).map(...) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
+          Observable<SubscriptionType>.just(SubscriptionType.all_access),
           (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => IngressUserDataArrived((b) => b
             ..authentication = auth.toBuilder()
             ..userDocument = userDocument.toBuilder()
@@ -113,20 +113,22 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     ///    ######  ########    ##       ##    #### ##    ##  ######    ######
 
     if (event is UpdateDarkMode) {
-      _updateUserSettings(event, (sb) => sb..themeSettings.update((b) => b
+      _saveUserSettings(event, (sb) => sb..theme.update((b) => b
         ..darkMode = event.darkMode
       ));
     }
 
     if (event is UpdatePrimaryColour) {
-      _updateUserSettings(event, (sb) => sb..themeSettings.update((b) => b
+      _saveUserSettings(event, (sb) => sb..theme.update((b) => b
         ..primaryColour = event.colourValue.asHexNumber
       ));
     }
   }
 
   /// ...
-  Future<void> _updateUserSettings(UserDataEvent event, void Function(SettingsBuilder) updates) async {
+  Future<void> _saveUserSettings(Completable event, void Function(SettingsBuilder) updates) async {
+    assert(event is UserDataEvent);
+
     if (state is! UserDataLoaded) {
       add(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
       return;
@@ -136,14 +138,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       await settingsRepository.saveSettings(userId, loadedState.userSettings.rebuild(updates));
 
       BlocLogger().info("${event.runtimeType} succeeded");
-      if (event is Completable) {
-        (event as Completable).completer?.complete();
-      }
+      event.completer?.complete();
     } catch(error, stacktrace) {
       BlocLogger().unexpectedError("${event.runtimeType} failed", error, stacktrace);
-      if (event is Completable) {
-        (event as Completable).completer?.completeError(error, stacktrace);
-      }
+      event.completer?.completeError(error, stacktrace);
     }
   }
 

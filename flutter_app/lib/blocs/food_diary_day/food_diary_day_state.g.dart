@@ -72,14 +72,22 @@ class _$FoodDiaryDayLoaded extends FoodDiaryDayLoaded {
   final FoodDiaryDay foodDiaryDay;
   @override
   final Diet diet;
+  @override
+  final BuiltSet<String> dirtyFoodRecordUids;
 
   factory _$FoodDiaryDayLoaded(
           [void Function(FoodDiaryDayLoadedBuilder) updates]) =>
       (new FoodDiaryDayLoadedBuilder()..update(updates)).build();
 
-  _$FoodDiaryDayLoaded._({this.foodDiaryDay, this.diet}) : super._() {
+  _$FoodDiaryDayLoaded._(
+      {this.foodDiaryDay, this.diet, this.dirtyFoodRecordUids})
+      : super._() {
     if (diet == null) {
       throw new BuiltValueNullFieldError('FoodDiaryDayLoaded', 'diet');
+    }
+    if (dirtyFoodRecordUids == null) {
+      throw new BuiltValueNullFieldError(
+          'FoodDiaryDayLoaded', 'dirtyFoodRecordUids');
     }
   }
 
@@ -97,19 +105,22 @@ class _$FoodDiaryDayLoaded extends FoodDiaryDayLoaded {
     if (identical(other, this)) return true;
     return other is FoodDiaryDayLoaded &&
         foodDiaryDay == other.foodDiaryDay &&
-        diet == other.diet;
+        diet == other.diet &&
+        dirtyFoodRecordUids == other.dirtyFoodRecordUids;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, foodDiaryDay.hashCode), diet.hashCode));
+    return $jf($jc($jc($jc(0, foodDiaryDay.hashCode), diet.hashCode),
+        dirtyFoodRecordUids.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('FoodDiaryDayLoaded')
           ..add('foodDiaryDay', foodDiaryDay)
-          ..add('diet', diet))
+          ..add('diet', diet)
+          ..add('dirtyFoodRecordUids', dirtyFoodRecordUids))
         .toString();
   }
 }
@@ -128,12 +139,19 @@ class FoodDiaryDayLoadedBuilder
   DietBuilder get diet => _$this._diet ??= new DietBuilder();
   set diet(DietBuilder diet) => _$this._diet = diet;
 
+  SetBuilder<String> _dirtyFoodRecordUids;
+  SetBuilder<String> get dirtyFoodRecordUids =>
+      _$this._dirtyFoodRecordUids ??= new SetBuilder<String>();
+  set dirtyFoodRecordUids(SetBuilder<String> dirtyFoodRecordUids) =>
+      _$this._dirtyFoodRecordUids = dirtyFoodRecordUids;
+
   FoodDiaryDayLoadedBuilder();
 
   FoodDiaryDayLoadedBuilder get _$this {
     if (_$v != null) {
       _foodDiaryDay = _$v.foodDiaryDay?.toBuilder();
       _diet = _$v.diet?.toBuilder();
+      _dirtyFoodRecordUids = _$v.dirtyFoodRecordUids?.toBuilder();
       _$v = null;
     }
     return this;
@@ -158,7 +176,9 @@ class FoodDiaryDayLoadedBuilder
     try {
       _$result = _$v ??
           new _$FoodDiaryDayLoaded._(
-              foodDiaryDay: _foodDiaryDay?.build(), diet: diet.build());
+              foodDiaryDay: _foodDiaryDay?.build(),
+              diet: diet.build(),
+              dirtyFoodRecordUids: dirtyFoodRecordUids.build());
     } catch (_) {
       String _$failedField;
       try {
@@ -166,6 +186,8 @@ class FoodDiaryDayLoadedBuilder
         _foodDiaryDay?.build();
         _$failedField = 'diet';
         diet.build();
+        _$failedField = 'dirtyFoodRecordUids';
+        dirtyFoodRecordUids.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'FoodDiaryDayLoaded', _$failedField, e.toString());
