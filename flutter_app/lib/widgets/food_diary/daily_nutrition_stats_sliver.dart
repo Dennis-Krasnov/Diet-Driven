@@ -3,26 +3,29 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-import 'package:diet_driven/models/models.dart';
-import 'package:diet_driven/models/nutrient.dart';
-import 'package:diet_driven/widgets/food_diary/food_record_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/extensions/extensions.dart';
+import 'package:diet_driven/widgets/food_diary/food_record_tile.dart';
 import 'package:diet_driven/widgets/food_diary/nutrition_header.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
+
+import 'food_diary.dart';
 
 class DailyNutritionStatsSliver extends StatelessWidget {
-  /// Nutrition stats starts before 0-indexed meals.
-  static int mealIndex = -1;
+  /// Nutrition stats starts before 1-indexed meals.
+  static int mealIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-//    final data = BlocProvider.of<FoodDiaryDayBloc>(context).loadedState?.foodDiaryDay?.combinedNutrients?.quantities;
-    final nutrientMap = BlocProvider.of<FoodDiaryDayBloc>(context).loadedState?.foodDiaryDay?.combinedNutrients ?? NutrientMap.random();
+    final nutrientMap = BlocProvider.of<FoodDiaryDayBloc>(context).loadedState?.foodDiaryDay?.combinedNutrients;
+
+    if (nutrientMap == null) {
+      return SliverToBoxAdapter(child: Container());
+    }
+
     final diet = BlocProvider.of<FoodDiaryDayBloc>(context).loadedState.diet;
     final colours = BlocProvider.of<UserDataBloc>(context).loadedState.settings.theme.macroColours;
 
@@ -31,28 +34,18 @@ class DailyNutritionStatsSliver extends StatelessWidget {
         NutrientPair(macro, nutrientMap.quantities[macro], colours[macro].colour),
     ];
 
-    return SliverStickyHeaderBuilder(
-      builder: (context, state) {
-        // Only update state if this is the current header
-        if (state.isPinned) {
-          FoodDiaryScrollBloc.scrollPercentage = state.scrollPercentage;
-          // If header is being pushed out, set next header as active
-          BlocProvider.of<FoodDiaryScrollBloc>(context).add(state.scrollPercentage == 0 ? mealIndex : mealIndex + 1);
-        }
-
-        return BlocBuilder<FoodDiaryScrollBloc, int>(
-          builder: (BuildContext context, int currentMealIndex) => NutritionHeader(
-            mealName: "Daily stats",
-            nutrientsVisible: mealIndex == currentMealIndex,
-            nutrients: BlocProvider.of<UserDataBloc>(context).loadedState.settings.diary.macroOrder,
-            onTap: () => print("nutrition pressed"),
-          )
-        );
-      },
+    return SmartSliverStickyHeader(
+      index: -1,
+      builder: (BuildContext context, bool isVisible) => NutritionHeader(
+        mealName: "Daily stats",
+        nutrientsVisible: isVisible,
+        nutrients: BlocProvider.of<UserDataBloc>(context).loadedState.settings.diary.macroOrder,
+        onTap: () => print("nutrition pressed"),
+      ),
       sliver: SliverToBoxAdapter(
         child: Padding(
           // Space between bottom of graphs and subsequent header (16 instead of 32)
-          padding: const EdgeInsets.symmetric(horizontal: 16).add(const EdgeInsets.only(bottom: 16)),
+          padding: const EdgeInsets.all(16),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
@@ -169,8 +162,13 @@ class DailyNutritionStatsSliver extends StatelessWidget {
 }
 
 class NutrientChart extends StatelessWidget {
+  /// ...
   final num percentage;
+
+  /// ...
   final Color colour;
+
+  /// ...
   final Color overAteColour;
 
   const NutrientChart({Key key, this.percentage, this.colour, this.overAteColour}) : super(key: key);
@@ -181,30 +179,30 @@ class NutrientChart extends StatelessWidget {
     final over300Colour = Colors.black;
     const invisibleColour = Color.fromRGBO(240, 240, 240, 1);
 
-    final List<ChartData> chartData = [
+    final List<NutrientChartData> chartData = [
       if (p >= 300)
-        ChartData(100, over300Colour),
+        NutrientChartData(100, over300Colour),
       if (300 > p && p >= 200) ...[
-        ChartData(p - 200, over300Colour),
-        ChartData(300 - p, overAteColour),
+        NutrientChartData(p - 200, over300Colour),
+        NutrientChartData(300 - p, overAteColour),
       ],
       if (200 > p && p >= 100) ...[
-        ChartData(p - 100, overAteColour),
-        ChartData(200 - p, colour),
+        NutrientChartData(p - 100, overAteColour),
+        NutrientChartData(200 - p, colour),
       ],
       if (100 > p) ...[
-        ChartData(p, colour),
-        ChartData(100 - p, invisibleColour),
+        NutrientChartData(p, colour),
+        NutrientChartData(100 - p, invisibleColour),
       ],
     ];
 
     return SfCircularChart(
       series: <CircularSeries>[
-        DoughnutSeries<ChartData, String>(
+        DoughnutSeries<NutrientChartData, String>(
           dataSource: chartData,
-          pointColorMapper:(ChartData data, _) => data.colour,
-          xValueMapper: (ChartData data, _) => data.colour.toString(),
-          yValueMapper: (ChartData data, _) => data.size,
+          pointColorMapper:(NutrientChartData data, _) => data.colour,
+          xValueMapper: (NutrientChartData data, _) => data.colour.toString(),
+          yValueMapper: (NutrientChartData data, _) => data.size,
           radius: "100%", // Default is 80%
           animationDuration: 0,
         )
@@ -214,12 +212,9 @@ class NutrientChart extends StatelessWidget {
   }
 }
 
-class ChartData {
+class NutrientChartData {
   final num size;
   final Color colour;
 
-  ChartData(this.size, this.colour);
-
-  @override
-  String toString() => "size: $size, colour $colour";
+  NutrientChartData(this.size, this.colour);
 }

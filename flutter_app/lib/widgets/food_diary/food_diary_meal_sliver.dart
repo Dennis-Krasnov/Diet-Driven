@@ -25,37 +25,24 @@ class FoodDiaryMealSliver extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SliverStickyHeaderBuilder(
-      builder: (context, state) {
-        // Only update state if this is the current header
-        if (state.isPinned) {
-          FoodDiaryScrollBloc.scrollPercentage = state.scrollPercentage;
-          // If header is being pushed out, set next header as active
-          BlocProvider.of<FoodDiaryScrollBloc>(context).add(state.scrollPercentage == 0
-            ? mealIndex
-            : mealIndex + 1
-          );
+    return SmartSliverStickyHeader(
+      index: mealIndex + 1,
+      builder: (BuildContext context, bool isVisible) => NutritionHeader(
+        mealName: mealInfo.mealName,
+        nutrientsVisible: isVisible,
+        nutrients: BlocProvider.of<UserDataBloc>(context).loadedState.settings.diary.macroOrder,
+        onTap: () async {
+          final searchResult = await DeepLinkNavigator.of(context).push<FoodRecord>(SearchDL("aaa"));
+
+          if (searchResult != null) {
+            BlocProvider.of<FoodDiaryDayBloc>(context).add(AddFoodRecords((b) => b
+              ..mealIndex = mealIndex
+              ..foodRecords = ListBuilder(<FoodRecord>[searchResult])
+              ..completer = infoSnackBarCompleter(context, "Successfully added food")
+            ));
+          }
         }
-
-        return BlocBuilder<FoodDiaryScrollBloc, int>(
-          builder: (BuildContext context, int currentMealIndex) => NutritionHeader(
-            mealName: mealInfo.mealName,
-            nutrientsVisible: mealIndex == currentMealIndex,
-            nutrients: BlocProvider.of<UserDataBloc>(context).loadedState.settings.diary.macroOrder,
-            onTap: () async {
-              final searchResult = await DeepLinkNavigator.of(context).push<FoodRecord>(SearchDL("aaa"));
-
-              if (searchResult != null) {
-                BlocProvider.of<FoodDiaryDayBloc>(context).add(AddFoodRecords((b) => b
-                  ..mealIndex = mealIndex
-                  ..foodRecords = ListBuilder(<FoodRecord>[searchResult])
-                  ..completer = infoSnackBarCompleter(context, "Successfully added food")
-                ));
-              }
-            }
-          ),
-        );
-      },
+      ),
       sliver: SliverList(
         delegate: SliverChildListDelegate([
           for (final foodRecord in mealData?.foodRecords ?? <FoodRecord>[])
@@ -72,7 +59,7 @@ class FoodDiaryMealSliver extends StatelessWidget {
           const SizedBox(height: 32),
         ]),
         // TODO: dynamic from diary settings // TODO: 'headername' - shortform
-      ),
+      )
     );
   }
 }

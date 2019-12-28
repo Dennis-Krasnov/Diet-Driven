@@ -21,20 +21,6 @@ class FoodDiaryDayPage extends StatefulWidget {
 }
 
 class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
-  /// Must be stateful widget to persist scroll controller state throughout builds.
-  ScrollController _controller;
-
-  @override
-  void initState() {
-    super.initState();
-    _controller = ScrollController();
-  }
-
-  @override
-  void dispose() {
-    _controller?.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,46 +38,98 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
         assert(foodDiaryDayState is FoodDiaryDayLoaded);
         final loadedState = foodDiaryDayState as FoodDiaryDayLoaded;
 
-        return NotificationListener<ScrollNotification>(
-          onNotification: (ScrollNotification notification) {
-            // Only scroll correct on end of scroll
-            if (notification is ScrollEndNotification) {
-              // Only scroll correct if pinned sticky header isn't fully visible and not currently correcting correcting
-              if (FoodDiaryScrollBloc.scrollPercentage != 0 && !FoodDiaryScrollBloc.isScrolling) {
-                FoodDiaryScrollBloc.isScrolling = true;
-
-                final pinnedHeaderStillVisible = (1 - FoodDiaryScrollBloc.scrollPercentage) * 30;
-                _controller.snapBy(pinnedHeaderStillVisible);
-              }
-              else if (FoodDiaryScrollBloc.isScrolling) {
-                FoodDiaryScrollBloc.isScrolling = false;
-              }
-            }
-
-            // Let other scroll notification listeners handle [notification]
-            return false;
-          },
-          child: ScrollConfiguration(
-            behavior: NoScrollBehaviour(),
-            child: CustomScrollView(
-              controller: _controller,
-              slivers: <Widget>[
-                DailyNutritionStatsSliver(),
-                for (final mealInfoKV in loadedState.diet.meals.enumerate) ...[
-                  FoodDiaryMealSliver(
-                    mealIndex: mealInfoKV.key,
-                    mealInfo: mealInfoKV.value,
-                    // TODO: mealData: loadedState.foodDiaryDay?.meals?.[mealInfoKV.key],
-                    mealData: loadedState.foodDiaryDay == null ? null : loadedState.foodDiaryDay.meals[mealInfoKV.key],
-                  ),
-                ]
-              ],
-            ),
-          ),
+        return SnappingScrollView(
+          headerScrollPositions: [
+            // Daily nutrition stats
+            HeaderInformation(0, Header.height),
+            // Meals
+            for (final mealInfoKV in loadedState.diet.meals.enumerate)
+              HeaderInformation(mealInfoKV.key * 250.0, Header.height),
+          ],
+          slivers: <Widget>[
+            DailyNutritionStatsSliver(),
+            for (final mealInfoKV in loadedState.diet.meals.enumerate) ...[
+              FoodDiaryMealSliver(
+                mealIndex: mealInfoKV.key,
+                mealInfo: mealInfoKV.value,
+                // TODO: mealData: loadedState.foodDiaryDay?.meals?.[mealInfoKV.key],
+                mealData: loadedState.foodDiaryDay == null ? null : loadedState.foodDiaryDay.meals[mealInfoKV.key],
+              ),
+            ]
+          ],
         );
       }
     );
   }
+}
+
+// TODO: own file!
+
+/// ...
+class SnappingScrollView extends StatefulWidget {
+  /// The slivers to place inside the viewport.
+  final List<Widget> slivers;
+
+  /// ...
+  final List<HeaderInformation> headerScrollPositions;
+
+  const SnappingScrollView({Key key, this.slivers, this.headerScrollPositions}) : super(key: key);
+
+  @override
+  _SnappingScrollViewState createState() => _SnappingScrollViewState();
+}
+
+class _SnappingScrollViewState extends State<SnappingScrollView> {
+  /// Must be stateful widget to persist scroll controller state throughout builds.
+  ScrollController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<FoodDiaryScrollBloc>(
+      create: (context) => FoodDiaryScrollBloc(),
+      child: Builder(builder: (BuildContext context) => NotificationListener<ScrollNotification>(
+        onNotification: (ScrollNotification notification) {
+          // Only scroll correct on end of scroll
+          // TODO: also store if currently being pushed out. (don't run this if not being pushed out)
+          if (notification is ScrollEndNotification && FoodDiaryScrollBloc.scrollPercentage > 0) {
+            final currentIndex = BlocProvider.of<FoodDiaryScrollBloc>(context).state;
+            final currentHeader = widget.headerScrollPositions[currentIndex];
+
+            _controller.delayedAnimateTo(currentHeader.scrollOffset + currentHeader.headerHeight);
+          }
+
+          // Let other scroll notification listeners handle [notification]
+          return false;
+        },
+        child: ScrollConfiguration(
+          behavior: NoScrollBehaviour(),
+          child: CustomScrollView(
+            controller: _controller,
+            slivers: widget.slivers,
+          ),
+        ),
+      )),
+    );
+  }
+}
+
+class HeaderInformation {
+  final double scrollOffset;
+  final double headerHeight;
+
+  HeaderInformation(this.scrollOffset, this.headerHeight);
 }
 
 

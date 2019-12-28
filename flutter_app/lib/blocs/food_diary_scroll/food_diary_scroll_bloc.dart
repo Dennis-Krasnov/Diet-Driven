@@ -8,17 +8,18 @@ import 'package:bloc_logging/bloc_logging.dart';
 
 /// Manages sticky header scroll behaviour in food diary days.
 class FoodDiaryScrollBloc extends Bloc<int, int> {
-  /// Whether header is currently being scroll corrected.
-  /// Must be static to editable within scroll notification.
-  static bool isScrolling = false;
+  /// Start with correct header's index to avoid unnecessary fade animation.
+  final int initialIndex;
 
+  // TODO: include in state to make bloc reusable!
   /// Percentage of how much the top header has been pushed out.
   /// Must be static to editable within scroll notification.
   static double scrollPercentage = 0;
 
-  /// Start with daily stats header's index.
+  FoodDiaryScrollBloc({this.initialIndex = 0});
+
   @override
-  int get initialState => -1;
+  int get initialState => initialIndex;
 
   @override
   Stream<int> mapEventToState(int event) async* {

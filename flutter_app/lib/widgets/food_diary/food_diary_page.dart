@@ -62,7 +62,6 @@ class _FoodDiaryPageState extends State<FoodDiaryPage> {
                   diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
                 )..add(InitFoodDiaryDay())
               ),
-              BlocProvider<FoodDiaryScrollBloc>(create: (context) => FoodDiaryScrollBloc()),
             ],
             child: FoodDiaryDayPage(),
           );
