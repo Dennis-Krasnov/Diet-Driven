@@ -14,9 +14,10 @@ import 'package:diet_driven/widgets/food_diary/nutrition_header.dart';
 
 import 'food_diary.dart';
 
+/// ...
 class DailyNutritionStatsSliver extends StatelessWidget {
-  /// Nutrition stats starts before 1-indexed meals.
-  static int mealIndex = 0;
+  /// Nutrition stats starts before 0-indexed meals.
+  static int scrollIndex = -1;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class DailyNutritionStatsSliver extends StatelessWidget {
     ];
 
     return SmartSliverStickyHeader(
-      index: -1,
+      index: scrollIndex,
       builder: (BuildContext context, bool isVisible) => NutritionHeader(
         mealName: "Daily stats",
         nutrientsVisible: isVisible,
@@ -161,6 +162,9 @@ class DailyNutritionStatsSliver extends StatelessWidget {
   }
 }
 
+// TODO: separate file
+// create own folder for graphs!
+/// ...
 class NutrientChart extends StatelessWidget {
   /// ...
   final num percentage;

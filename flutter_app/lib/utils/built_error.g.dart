@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'bloc_utils.dart';
+part of 'built_error.dart';
 
 // **************************************************************************
 // BuiltValueGenerator

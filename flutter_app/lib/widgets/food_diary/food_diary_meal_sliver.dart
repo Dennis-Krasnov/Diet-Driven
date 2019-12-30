@@ -7,7 +7,6 @@ import 'package:built_collection/built_collection.dart';
 import 'package:deep_link_navigation/deep_link_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_sticky_header/flutter_sticky_header.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
@@ -26,7 +25,7 @@ class FoodDiaryMealSliver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SmartSliverStickyHeader(
-      index: mealIndex + 1,
+      index: mealIndex,
       builder: (BuildContext context, bool isVisible) => NutritionHeader(
         mealName: mealInfo.mealName,
         nutrientsVisible: isVisible,

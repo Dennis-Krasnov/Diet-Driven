@@ -11,10 +11,10 @@ import 'package:merge_map/merge_map.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/blocs/user_data/user_data.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 /// Aggregates and manages authentication and settings.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {

@@ -11,10 +11,10 @@ import 'package:built_collection/built_collection.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 /// Aggregates and manages user's food diary days and diets.
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
@@ -61,7 +61,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       if (historical) {
         // Historical mode subscribes to single food diary day
         diaryDays$ = Observable<FoodDiaryDay>(diaryRepository.foodDiaryDay$(userId, date))
-          .map((day) => BuiltList(<FoodDiaryDay>[day]));
+          .map((day) => [day].toBuiltList());
 
         diaryDaysExist = await diaryRepository.foodDiaryDayExists(userId, date);
       }
@@ -95,11 +95,11 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     }
 
     if (event is IngressFoodDiaryArrived) {
-      final dateDiaryDays = MapBuilder<int, FoodDiaryDay>(Map<int, FoodDiaryDay>.fromIterable(
+      final dateDiaryDays = Map<int, FoodDiaryDay>.fromIterable(
         event.diaryDays,
         key: (day) => day.date,
         value: (day) => day,
-      ));
+      ).toMapBuilder();
 
       yield FoodDiaryLoaded((b) => b
         ..diaryDays = dateDiaryDays
@@ -130,12 +130,12 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         final diaryDayBuilder = FoodDiaryDayBuilder()
           ..date = event.date
           // Create correct number of empty meals according to diet for that day
-          ..meals = BuiltList(List<MealData>.generate(
-            loadedState.dietForDate(event.date).meals.length,
-            (i) => MealData((b) => b
-              ..foodRecords = ListBuilder()
-            )
-          ));
+          ..meals = [
+            for (var _ in loadedState.dietForDate(event.date).meals.length.range)
+              MealData((b) => b
+                ..foodRecords = ListBuilder()
+              )
+          ].toBuiltList();
 
         // Override default day with existing day if it exists
         final existingDiaryDay = loadedState.diaryDays[event.date];

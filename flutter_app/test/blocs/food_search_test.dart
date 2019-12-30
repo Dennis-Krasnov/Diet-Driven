@@ -20,7 +20,8 @@ void main() {
 
   /// Configuration
   setUp(() {
-    BlocSupervisor.delegate = LoggingBlocDelegate();
+    // TODO: don't log anything for every test!
+//    BlocSupervisor.delegate = LoggingBlocDelegate();
 
     foodRepository = MockFoodRepository();
 

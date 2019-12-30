@@ -20,6 +20,9 @@ class NutrientPair {
 }
 
 class FoodRecordTile extends StatelessWidget {
+  /// ...
+  static double height = 72;
+
   ///
   final FoodRecord foodRecord;
 
@@ -60,7 +63,7 @@ class FoodRecordTile extends StatelessWidget {
       // Disable android ripple
       splashColor: Colors.transparent,
       child: Container(
-        height: 72,
+        height: height,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(
           children: <Widget>[

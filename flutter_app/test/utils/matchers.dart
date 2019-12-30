@@ -5,7 +5,7 @@
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 final StreamMatcher doesNotEmit = emitsInOrder(<dynamic>[]);
 

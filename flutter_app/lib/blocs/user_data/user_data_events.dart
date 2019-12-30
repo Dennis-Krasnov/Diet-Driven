@@ -7,8 +7,8 @@ import 'dart:async';
 
 import 'package:built_value/built_value.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 part 'user_data_events.g.dart';
 

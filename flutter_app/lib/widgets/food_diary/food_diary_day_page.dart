@@ -4,15 +4,16 @@
  */
 
 import 'package:bloc_logging/bloc_logging.dart';
+import 'package:diet_driven/models/food_diary_day.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/extensions/extensions.dart';
 import 'package:diet_driven/widgets/food_diary/food_diary.dart';
 import 'package:diet_driven/widgets/no_scroll_behaviour.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 /// Shows single diary day.
 class FoodDiaryDayPage extends StatefulWidget {
@@ -36,15 +37,17 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
 
         // Food diary day is loaded from now on
         assert(foodDiaryDayState is FoodDiaryDayLoaded);
+        // TODO: move loadedState to state object! (for all blocs)
         final loadedState = foodDiaryDayState as FoodDiaryDayLoaded;
 
         return SnappingScrollView(
+          initialIndex: DailyNutritionStatsSliver.scrollIndex,
           headerScrollPositions: [
             // Daily nutrition stats
             HeaderInformation(0, Header.height),
             // Meals
             for (final mealInfoKV in loadedState.diet.meals.enumerate)
-              HeaderInformation(mealInfoKV.key * 250.0, Header.height),
+              HeaderInformation(_offsetForHeader(loadedState.foodDiaryDay, mealInfoKV.key), Header.height),
           ],
           slivers: <Widget>[
             DailyNutritionStatsSliver(),
@@ -61,19 +64,43 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
       }
     );
   }
+
+  double _offsetForHeader(FoodDiaryDay foodDiaryDay, int mealIndex) {
+    // Daily nutrition stats height
+    double res = 116.0;
+    print("\ncalculating for #$mealIndex");
+    print("adding 116 for nutrition stats, now $res");
+
+    // Count everything up to [mealIndex]'s header
+    final meals = foodDiaryDay.meals.sublist(0, mealIndex);
+    final foodRecords = meals.expand((m) => m.foodRecords);
+
+    // Header height
+    res += meals.length * Header.height;
+    print("adding ${meals.length * Header.height} for ${meals.length} headers, now $res");
+
+    // Food record height
+    res += foodRecords.length * FoodRecordTile.height;
+    print("adding ${foodRecords.length * FoodRecordTile.height} for ${foodRecords.length} food records, now $res");
+
+    return res;
+  }
 }
 
 // TODO: own file!
 
 /// ...
 class SnappingScrollView extends StatefulWidget {
+  /// ...
+  final int initialIndex;
+
   /// The slivers to place inside the viewport.
   final List<Widget> slivers;
 
   /// ...
   final List<HeaderInformation> headerScrollPositions;
 
-  const SnappingScrollView({Key key, this.slivers, this.headerScrollPositions}) : super(key: key);
+  const SnappingScrollView({Key key, this.initialIndex = 0, this.slivers, this.headerScrollPositions}) : super(key: key);
 
   @override
   _SnappingScrollViewState createState() => _SnappingScrollViewState();
@@ -85,6 +112,7 @@ class _SnappingScrollViewState extends State<SnappingScrollView> {
 
   @override
   void initState() {
+    print(widget.headerScrollPositions);
     super.initState();
     _controller = ScrollController();
   }
@@ -105,8 +133,9 @@ class _SnappingScrollViewState extends State<SnappingScrollView> {
           // TODO: also store if currently being pushed out. (don't run this if not being pushed out)
           if (notification is ScrollEndNotification && FoodDiaryScrollBloc.scrollPercentage > 0) {
             final currentIndex = BlocProvider.of<FoodDiaryScrollBloc>(context).state;
-            final currentHeader = widget.headerScrollPositions[currentIndex];
+            final currentHeader = widget.headerScrollPositions[currentIndex - widget.initialIndex];
 
+            print("#$currentIndex animating to ${currentHeader.scrollOffset + currentHeader.headerHeight}");
             _controller.delayedAnimateTo(currentHeader.scrollOffset + currentHeader.headerHeight);
           }
 

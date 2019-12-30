@@ -8,10 +8,10 @@ import 'package:deep_link_navigation/deep_link_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/navigation/navigation.dart';
 import 'package:diet_driven/widgets/food_diary/food_diary.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 /// ...
 /// Scaffold's appBar field requires a PreferredSizeWidget.

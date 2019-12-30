@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 # Runs Flutter tests with optimized code coverage
-flutter test --merge-coverage
+#flutter test --merge-coverage
+flutter test --coverage
 
 # Remove generated files from coverage
 lcov --remove coverage/lcov.info '*.g.dart' --output-file coverage/lcov-clean.info
@@ -14,7 +15,8 @@ genhtml coverage/lcov-clean.info -o coverage/html
 
 # Experiments
 #genhtml lcov.info -o coverage --no-function-coverage -s -p `pwd`
-open coverage/html/index.html
+#open coverage/html/index.html
+firefox coverage/html/index.html
 
 
 # Run initial/baseline lcov

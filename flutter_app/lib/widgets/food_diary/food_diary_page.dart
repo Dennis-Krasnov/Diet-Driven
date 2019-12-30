@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
+import 'package:diet_driven/utils/utils.dart';
 import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/widgets/food_diary/food_diary.dart';
 

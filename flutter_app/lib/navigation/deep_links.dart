@@ -5,8 +5,8 @@
 
 import 'package:deep_link_navigation/deep_link_navigation.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/navigation/deep_link_mixins.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 // errors
 

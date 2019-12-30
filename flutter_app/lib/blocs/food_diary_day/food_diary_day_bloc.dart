@@ -7,15 +7,15 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_logging/bloc_logging.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
-import 'package:diet_driven/models/models.dart';
 import 'package:meta/meta.dart';
 import 'package:built_collection/built_collection.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
 import 'package:diet_driven/blocs/food_diary_day/food_diary_day.dart';
+import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 /// Manages single diary day and its diet.
 class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
@@ -84,7 +84,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
       yield* _saveFoodDiaryDay(
         event,
         (day) => day.replaceFoodRecord(event.foodRecord),
-        toDisable: BuiltList<String>([event.foodRecord.uid]),
+        toDisable: [event.foodRecord.uid].toBuiltList(),
       );
     }
 
