@@ -29,20 +29,20 @@ extension DeepLinkNavigationExtensions on Dispatcher {
   void landingNavigation() {
     path<LandingDL>(
       (path) => LandingPage(),
-      subNavigation: (context) => Dispatcher()
+      subNavigation: Dispatcher()
         ..value<String, OnboardingGoalDL>(
           (goal, path) => OnboardingGoalPage(goal: goal),
-          subNavigation: (context, goal) => Dispatcher()
+          subNavigation: (goal) => Dispatcher()
             ..value<bool, OnboardingSexDL>(
               (isMale, path) => OnboardingSexPage(goal: goal, isMale: isMale),
-              subNavigation: (context, isMale) => Dispatcher()
+              subNavigation: (isMale) => Dispatcher()
                 ..value<double, OnboardingWeightDL>((kilos, path) => OnboardingWeightPage(goal: goal, isMale: isMale, kilos: kilos)),
             ),
         )
         ..path<LoginDL>(
-          (path) => Scaffold(),
-          subNavigation: (context) => Dispatcher()
-            ..path<ForgotPasswordDL>((path) => Scaffold()), // TODO: optional? email value
+          (path) => const Scaffold(),
+          subNavigation: Dispatcher()
+            ..path<ForgotPasswordDL>((path) => const Scaffold()), // TODO: optional? email value
         )
     );
   }
@@ -60,7 +60,7 @@ extension DeepLinkNavigationExtensions on Dispatcher {
   void diaryNavigation() {
     value<int, DiaryDateDL>(
       (date, path) => FoodDiaryPage(initialDate: date),
-      subNavigation: (date, context) => Dispatcher()
+      subNavigation: (date) => Dispatcher()
         ..value<String, SearchDL>((initialQuery, path) => BlocProvider<FoodSearchBloc>(create: (context) =>
           FoodSearchBloc(
             foodRepository: RepositoryProvider.of<FoodRepository>(context),

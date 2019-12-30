@@ -10,7 +10,7 @@ export 'bloc_delegate.dart';
 export 'configuration/configuration.dart';
 export 'food_diary/food_diary.dart';
 export 'food_diary_day/food_diary_day.dart';
-export 'food_diary_scroll/food_diary_scroll.dart';
 export 'food_record_edit/food_record_edit.dart';
 export 'food_search/food_search.dart';
+export 'scroll/scroll.dart';
 export 'user_data/user_data.dart';

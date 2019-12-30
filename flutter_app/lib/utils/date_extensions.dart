@@ -3,18 +3,39 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
+import 'package:intl/intl.dart';
+import 'package:time/time.dart';
+
 extension IntegerDateUtilsExtensions on int {
   /// ...
-  DateTime get asDateTime => DateTime(1970).toLocal().add(Duration(days: this));
+  DateTime get asDateTime => DateTime(1970).toLocal() + days;
 
-/// doesn't work...
-//  static int today() => null;
+  /// ...
+  String get relativeString {
+    final dt = asDateTime;
+    final now = DateTime.now().toLocal();
+    print(now);
+
+    // Relative days
+    if (this == (now - 1.days).asInt) {
+      return "Yesterday";
+    }
+    if (this == now.asInt) {
+      return "Today";
+    }
+    if (this == (now + 1.days).asInt) {
+      return "Tommorrow";
+    }
+
+    // General case
+    return DateFormat.yMMMd().format(dt);
+  }
 }
 
 extension DateTimeDateUtils on DateTime {
   /// ...
-  DateTime get today => null;
+  int get asInt => toLocal().difference(DateTime(1970).toLocal()).inDays;
 
   /// ...
-  int get asInt => toLocal().difference(DateTime(1970).toLocal()).inDays;
+  bool sameDayAs(DateTime other) => year == other.year && month == other.month && day == other.day;
 }

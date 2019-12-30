@@ -43,7 +43,7 @@ class App extends StatelessWidget {
 
         return DeepLinkMaterialApp(
           // Representation of deep link navigation hierarchy
-          navigation: (context) => Dispatcher()
+          navigation: Dispatcher()
             // Top-level
             ..landingNavigation()
             ..exceptionHandling()

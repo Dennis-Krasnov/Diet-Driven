@@ -50,13 +50,13 @@ class _AuthenticationChangeNotifierState extends State<AuthenticationChangeNotif
   @override
   void initState() {
     super.initState();
-    _authenticationStatusSubscription ??= Observable<UserDataState>(CombineLatestStream.combine2(
+    _authenticationStatusSubscription ??= CombineLatestStream.combine2<ConfigurationState, UserDataState, UserDataState>(
       // Only take loaded configurations
       widget.configurationBloc.where((configurationState) => configurationState is ConfigurationLoaded),
       // Initially starts with null authentication status
       widget.userDataBloc.skip(1),
-        (ConfigurationState configurationState, UserDataState userDataState) => userDataState,
-    ))
+      (configurationState, userDataState) => userDataState,
+    )
     // ...
       .doOnError(widget.onException) // TODO: gracefully handle this!
       .listen((userDataState) {

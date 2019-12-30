@@ -6,12 +6,13 @@
 import 'package:deep_link_navigation/deep_link_navigation.dart';
 
 import 'package:diet_driven/navigation/deep_link_mixins.dart';
+import 'package:diet_driven/navigation/extensions.dart';
 import 'package:diet_driven/utils/utils.dart';
 
 // errors
 
 class RouteNotFoundDL extends ValueDeepLink<RouteNotFound> with FullScreen {
-  RouteNotFoundDL(RouteNotFound e) : super("route-not-found", e, toString: (e) => e.route.join("/"));
+  RouteNotFoundDL(RouteNotFound e) : super("route-not-found", e, toString: (e) => e.route.path);
 }
 
 // onboarding and login

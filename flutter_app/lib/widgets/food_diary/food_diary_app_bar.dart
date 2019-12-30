@@ -59,7 +59,6 @@ class FoodDiaryAppBar extends PreferredSize {
         return PageControllerDate(
           initialPage: initialDate,
           pageController: controller,
-          // TODO: experiment with no elevation on this app bar in particular (when headers same colour as page)
           builder: (BuildContext context, int currentDate) {
             if (currentDate == null) {
               return AppBar(
@@ -70,20 +69,33 @@ class FoodDiaryAppBar extends PreferredSize {
               );
             }
             return AppBar(
+              // Disable to avoid flashing back arrow during deep link navigation
+              automaticallyImplyLeading: false,
               title: Text(
-                "Diary",
+                currentDate.relativeString,
                 style: Theme.of(context).textTheme.title,
               ),
               actions: <Widget>[
-                if (currentDate == DateTime.now().asInt)
-                  const CircleAvatar(backgroundColor: Colors.red),
-                if (currentDate - DateTime.now().asInt < -30)
-                  const CircleAvatar(),
+                // HISTORICAL FOOD DIARY DAY
+//                if (currentDate - DateTime.now().asInt < -30)
+//                  const CircleAvatar(),
                 IconButton(
                   icon: Icon(Icons.calendar_today),
                   // Doesn't build / fetch data for intermediate pages (but no animation, whatever)
-                  onPressed: () => DeepLinkNavigator.of(context).navigateTo([DiaryDateDL.today()]),
-                  //                    onPressed: () => _controller.animateToPage(currentDaysSinceEpoch(), duration: Duration(milliseconds: 100), curve: Curves.ease),
+                  onPressed: () async {
+                    final datePicked = await showDatePicker(
+                      context: context,
+                      initialDate: currentDate.asDateTime,
+                      firstDate: DateTime(0),
+                      lastDate: DateTime(2100),
+                    );
+
+                    if (datePicked != null) {
+                      print("DATE PICKED IS $datePicked");
+                      DeepLinkNavigator.of(context).navigateTo([DiaryDateDL(datePicked.asInt)]);
+                      // _controller.animateToPage(currentDaysSinceEpoch(), duration: Duration(milliseconds: 100), curve: Curves.ease),
+                    }
+                  },
                 ),
                 Text(
                   currentDate.toString(),

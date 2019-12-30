@@ -24,7 +24,18 @@ class DailyNutritionStatsSliver extends StatelessWidget {
     final nutrientMap = BlocProvider.of<FoodDiaryDayBloc>(context).loadedState?.foodDiaryDay?.combinedNutrients;
 
     if (nutrientMap == null) {
-      return SliverToBoxAdapter(child: Container());
+      return SmartSliverStickyHeader(
+        index: scrollIndex,
+        builder: (BuildContext context, bool isVisible) => NutritionHeader(
+          mealName: "Daily stats",
+          nutrientsVisible: isVisible,
+          nutrients: BlocProvider.of<UserDataBloc>(context).loadedState.settings.diary.macroOrder,
+          onTap: () => print("nutrition pressed"),
+        ),
+        sliver: const SliverToBoxAdapter(
+          child: Padding(padding: EdgeInsets.all(16)),
+        ),
+      );
     }
 
     final diet = BlocProvider.of<FoodDiaryDayBloc>(context).loadedState.diet;
@@ -83,6 +94,7 @@ class DailyNutritionStatsSliver extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
                       const SizedBox(height: 6),
+                      // TODO: CREATE A WIDGET FOR THESE ????("string"),
                       Text(
                         "${nutrientMap.quantities[nutrient]} g",
                         textAlign: TextAlign.right,

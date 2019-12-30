@@ -3,4 +3,5 @@
  * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
-export 'food_diary_scroll_bloc.dart';
+export 'scroll_bloc.dart';
+export 'scroll_state.dart';

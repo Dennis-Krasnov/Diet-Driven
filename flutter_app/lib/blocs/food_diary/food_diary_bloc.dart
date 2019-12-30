@@ -53,14 +53,14 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       _userId = event.userId;
 
       // Common interface for both the ongoing and historical versions of food diary bloc
-      Observable<BuiltList<FoodDiaryDay>> diaryDays$;
+      Stream<BuiltList<FoodDiaryDay>> diaryDays$;
 
       // Whether food diary day document(s) exist for the given time period
       bool diaryDaysExist;
 
       if (historical) {
         // Historical mode subscribes to single food diary day
-        diaryDays$ = Observable<FoodDiaryDay>(diaryRepository.foodDiaryDay$(userId, date))
+        diaryDays$ = diaryRepository.foodDiaryDay$(userId, date)
           .map((day) => [day].toBuiltList());
 
         diaryDaysExist = await diaryRepository.foodDiaryDayExists(userId, date);
@@ -68,7 +68,7 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
       else {
         // Ongoing subscription for 30 days ago and onward
         final startDate = DateTime.now().asInt - 30;
-        diaryDays$ = Observable<BuiltList<FoodDiaryDay>>(diaryRepository.allTimeFoodDiary$(userId, startAt: startDate));
+        diaryDays$ = diaryRepository.allTimeFoodDiary$(userId, startAt: startDate);
 
         diaryDaysExist = await diaryRepository.allTimeFoodDiaryExists(userId, startAt: startDate);
       }
@@ -80,14 +80,14 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
 
       // Maintain single instance of stream subscription
       await _foodDiaryEventSubscription?.cancel();
-      _foodDiaryEventSubscription = Observable<FoodDiaryEvent>(CombineLatestStream.combine2(
+      _foodDiaryEventSubscription = CombineLatestStream.combine2<BuiltList<FoodDiaryDay>, BuiltList<Diet>, FoodDiaryEvent>(
         diaryDays$,
         diaryRepository.allTimeDiet$(userId),
-        (BuiltList<FoodDiaryDay> diaryDays, BuiltList<Diet> diets) => IngressFoodDiaryArrived((b) => b
+        (diaryDays, diets) => IngressFoodDiaryArrived((b) => b
           ..diaryDays = diaryDays.toBuilder()
           ..diets = diets.toBuilder()
         )
-      ))
+      )
       // Unrecoverable failure
       .onErrorReturnWith((error) => FoodDiaryError((b) => b..error = error))
       .distinct()

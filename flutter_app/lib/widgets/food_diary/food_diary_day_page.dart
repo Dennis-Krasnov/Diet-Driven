@@ -4,16 +4,16 @@
  */
 
 import 'package:bloc_logging/bloc_logging.dart';
-import 'package:diet_driven/models/food_diary_day.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/utils/utils.dart';
 import 'package:diet_driven/widgets/extensions/extensions.dart';
 import 'package:diet_driven/widgets/food_diary/food_diary.dart';
 import 'package:diet_driven/widgets/no_scroll_behaviour.dart';
-import 'package:diet_driven/utils/utils.dart';
 
 /// Shows single diary day.
 class FoodDiaryDayPage extends StatefulWidget {
@@ -32,7 +32,7 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
         // White screen with skeleton food records
         if (foodDiaryDayState is FoodDiaryDayUninitialized) {
           // TODO: skeleton page
-          return Container(child: Center(child: Text(BlocProvider.of<FoodDiaryDayBloc>(context).state.toString()),),);
+          return Container(child: Center(child: Text(BlocProvider.of<FoodDiaryDayBloc>(context).state.toString())));
         }
 
         // Food diary day is loaded from now on
@@ -66,13 +66,16 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
   }
 
   double _offsetForHeader(FoodDiaryDay foodDiaryDay, int mealIndex) {
+    if (foodDiaryDay == null)
+      return null;
+
     // Daily nutrition stats height
     double res = 116.0;
     print("\ncalculating for #$mealIndex");
     print("adding 116 for nutrition stats, now $res");
 
     // Count everything up to [mealIndex]'s header
-    final meals = foodDiaryDay.meals.sublist(0, mealIndex);
+    final meals = foodDiaryDay?.meals?.sublist(0, mealIndex);
     final foodRecords = meals.expand((m) => m.foodRecords);
 
     // Header height
@@ -125,18 +128,21 @@ class _SnappingScrollViewState extends State<SnappingScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<FoodDiaryScrollBloc>(
-      create: (context) => FoodDiaryScrollBloc(),
+    return BlocProvider<ScrollBloc>(
+      create: (context) => ScrollBloc(initialIndex: widget.initialIndex),
       child: Builder(builder: (BuildContext context) => NotificationListener<ScrollNotification>(
         onNotification: (ScrollNotification notification) {
+          final scrollState = BlocProvider.of<ScrollBloc>(context).state;
+
           // Only scroll correct on end of scroll
           // TODO: also store if currently being pushed out. (don't run this if not being pushed out)
-          if (notification is ScrollEndNotification && FoodDiaryScrollBloc.scrollPercentage > 0) {
-            final currentIndex = BlocProvider.of<FoodDiaryScrollBloc>(context).state;
-            final currentHeader = widget.headerScrollPositions[currentIndex - widget.initialIndex];
+          if (notification is ScrollEndNotification && scrollState.scrollPercentage > 0) {
+            final currentHeader = widget.headerScrollPositions[scrollState.currentScrollIndex - widget.initialIndex];
 
-            print("#$currentIndex animating to ${currentHeader.scrollOffset + currentHeader.headerHeight}");
-            _controller.delayedAnimateTo(currentHeader.scrollOffset + currentHeader.headerHeight);
+            if (currentHeader?.scrollOffset != null) {
+              print("#${scrollState.currentScrollIndex} animating to ${currentHeader.scrollOffset + currentHeader.headerHeight}");
+              _controller.delayedAnimateTo(currentHeader.scrollOffset + currentHeader.headerHeight);
+            }
           }
 
           // Let other scroll notification listeners handle [notification]

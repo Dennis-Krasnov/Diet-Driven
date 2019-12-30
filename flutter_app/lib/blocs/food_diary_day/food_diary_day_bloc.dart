@@ -48,7 +48,7 @@ class FoodDiaryDayBloc extends Bloc<FoodDiaryDayEvent, FoodDiaryDayState> {
     if (event is InitFoodDiaryDay) {
       // Maintain single instance of stream subscription
       await _foodDiaryDayEventSubscription?.cancel();
-      _foodDiaryDayEventSubscription = Observable<FoodDiaryState>(foodDiaryBloc)
+      _foodDiaryDayEventSubscription = foodDiaryBloc
         .whereType<FoodDiaryLoaded>()
         .map<FoodDiaryDayEvent>((loadedDiaryState) => IngressFoodDiaryDayArrived((b) => b
           ..foodDiaryDay = loadedDiaryState.diaryDays[date]?.toBuilder()

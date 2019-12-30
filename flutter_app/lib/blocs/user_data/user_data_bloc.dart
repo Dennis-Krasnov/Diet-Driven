@@ -44,7 +44,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
     if (event is InitUserData) {
-      final auth$ = Observable<Authentication>(userRepository.authStateChanged$());
+      final auth$ = userRepository.authStateChanged$();
 
       final onboard$ = auth$
         .where((auth) => auth == null)
@@ -53,12 +53,12 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       // TODO: retry x times, with delay between each attempt
       final dataArrival$ = auth$
         .where((auth) => auth != null)
-        .switchMap<UserDataEvent>((auth) => CombineLatestStream.combine4(
+        .switchMap<UserDataEvent>((auth) => CombineLatestStream.combine4<UserDocument, Settings, Settings, SubscriptionType, UserDataEvent>(
           userRepository.userDocument$(auth.uid),
           settingsRepository.defaultSettings$(),
-          Observable(settingsRepository.userSettings$(auth.uid)).startWith(null),
-          Observable<SubscriptionType>.just(SubscriptionType.all_access),
-          (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => IngressUserDataArrived((b) => b
+          settingsRepository.userSettings$(auth.uid).startWith(null),
+          Stream.value(SubscriptionType.all_access),
+          (userDocument, defaultSettings, userSettings, subscriptionType) => IngressUserDataArrived((b) => b
             ..authentication = auth.toBuilder()
             ..userDocument = userDocument.toBuilder()
             ..settings = _mergeSettings(userSettings, defaultSettings).toBuilder()
@@ -72,7 +72,7 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
 
       // Maintain single instance of stream subscription
       _userDataEventSubscription?.cancel();
-      _userDataEventSubscription = Observable(MergeStream([onboard$, dataArrival$]))
+      _userDataEventSubscription = MergeStream([onboard$, dataArrival$])
         .distinct()
         .listen(add);
     }

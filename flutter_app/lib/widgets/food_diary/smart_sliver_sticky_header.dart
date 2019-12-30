@@ -30,13 +30,14 @@ class SmartSliverStickyHeader extends StatelessWidget {
         // ...
         if (state.isPinned) {
           // ...
-          BlocProvider.of<FoodDiaryScrollBloc>(context).add(state.scrollPercentage > 0 ? index + 1 : index);
-          // TODO: part of state/event!
-          FoodDiaryScrollBloc.scrollPercentage = state.scrollPercentage;
+          BlocProvider.of<ScrollBloc>(context).add(ScrollState((b) => b
+            ..currentScrollIndex = state.scrollPercentage > 0 ? index + 1 : index
+            ..scrollPercentage = state.scrollPercentage
+          ));
         }
 
-        return BlocBuilder<FoodDiaryScrollBloc, int>(
-          builder: (BuildContext context, int currentMealIndex) => builder(context, index == currentMealIndex),
+        return BlocBuilder<ScrollBloc, ScrollState>(
+          builder: (BuildContext context, ScrollState state) => builder(context, index == state.currentScrollIndex),
         );
       },
       sliver: sliver,
