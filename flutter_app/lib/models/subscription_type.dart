@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
@@ -28,8 +27,8 @@ class SubscriptionType extends EnumClass {
   ///
   static bool hasDietDrivenAccess(SubscriptionType subscriptionType) {
     return subscriptionType == all_access ||
-            subscriptionType == diet_driven_monthly ||
-            subscriptionType == diet_driven_yearly;
+           subscriptionType == diet_driven_monthly ||
+           subscriptionType == diet_driven_yearly;
   }
 
   const SubscriptionType._(String name) : super(name);

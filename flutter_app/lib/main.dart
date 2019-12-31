@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:bloc/bloc.dart';
@@ -16,21 +15,22 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 import 'package:diet_driven/widgets/core/core.dart';
 
-
 /// Load file's contents from the main asset bundle.
 Future<String> loadFileContent(String path) => rootBundle.loadString(path);
 
 Future<void> main() async {
   // Configure logging
-  BlocLogger().messageThreshold = LogLevel.ui;
-  BlocLogger().enabled = !kReleaseMode;
-  BlocLogger().blocEventsEnabled = false;
-  BlocLogger().blocTransitionsEnabled = false;
+  BlocLogger()
+    ..messageThreshold = LogLevel.ui
+    ..enabled = !kReleaseMode
+    ..blocEventsEnabled = false
+    ..blocTransitionsEnabled = false;
 
   // Log every bloc event and state transition
   BlocSupervisor.delegate = LoggingBlocDelegate();
 
   // Lock to portrait mode
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -44,26 +44,31 @@ Future<void> main() async {
     // Inject global repositories into application
     MultiRepositoryProvider(
       providers: [
-        RepositoryProvider<AnalyticsRepository>(builder: (context) => AnalyticsRepository()),
-        RepositoryProvider<ConfigurationRepository>(builder: (context) => ConfigurationRepository()),
-        RepositoryProvider<DiaryRepository>(builder: (context) => DiaryRepository()),
-        RepositoryProvider<FoodRepository>(builder: (context) => FoodRepository()),
-        RepositoryProvider<SettingsRepository>(builder: (context) => SettingsRepository()),
-        RepositoryProvider<UserRepository>(builder: (context) => UserRepository()),
+        RepositoryProvider<AnalyticsRepository>(create: (context) => AnalyticsRepository()),
+        RepositoryProvider<ConfigurationRepository>(create: (context) => ConfigurationRepository()),
+        RepositoryProvider<DiaryRepository>(create: (context) => DiaryRepository()),
+        RepositoryProvider<FoodRepository>(create: (context) => FoodRepository()),
+        RepositoryProvider<SettingsRepository>(create: (context) => SettingsRepository()),
+        RepositoryProvider<UserRepository>(create: (context) => UserRepository()),
       ],
       // Inject global blocs into application
       child: MultiBlocProvider(
         providers: [
-          BlocProvider<ConfigurationBloc>(builder: (context) =>
+          BlocProvider<ConfigurationBloc>(create: (context) =>
             ConfigurationBloc(
               configurationRepository: RepositoryProvider.of<ConfigurationRepository>(context),
-            )..dispatch(InitConfiguration())
+            )..add(InitConfiguration())
           ),
-          BlocProvider<UserDataBloc>(builder: (context) =>
+          BlocProvider<UserDataBloc>(create: (context) =>
             UserDataBloc(
               userRepository: RepositoryProvider.of<UserRepository>(context),
               settingsRepository: RepositoryProvider.of<SettingsRepository>(context),
-            )..dispatch(InitUserData())
+            )..add(InitUserData())
+          ),
+          BlocProvider<FoodDiaryBloc>(create: (context) =>
+            FoodDiaryBloc(
+              diaryRepository: RepositoryProvider.of<DiaryRepository>(context),
+            )
           ),
         ],
         child: App(),

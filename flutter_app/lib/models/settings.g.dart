@@ -7,6 +7,8 @@ part of 'settings.dart';
 // **************************************************************************
 
 Serializer<Settings> _$settingsSerializer = new _$SettingsSerializer();
+Serializer<DiarySettings> _$diarySettingsSerializer =
+    new _$DiarySettingsSerializer();
 Serializer<NavigationSettings> _$navigationSettingsSerializer =
     new _$NavigationSettingsSerializer();
 Serializer<ThemeSettings> _$themeSettingsSerializer =
@@ -22,16 +24,22 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
   Iterable<Object> serialize(Serializers serializers, Settings object,
       {FullType specifiedType = FullType.unspecified}) {
     final result = <Object>[];
-    if (object.navigationSettings != null) {
+    if (object.diary != null) {
       result
-        ..add('navigationSettings')
-        ..add(serializers.serialize(object.navigationSettings,
+        ..add('diary')
+        ..add(serializers.serialize(object.diary,
+            specifiedType: const FullType(DiarySettings)));
+    }
+    if (object.navigation != null) {
+      result
+        ..add('navigation')
+        ..add(serializers.serialize(object.navigation,
             specifiedType: const FullType(NavigationSettings)));
     }
-    if (object.themeSettings != null) {
+    if (object.theme != null) {
       result
-        ..add('themeSettings')
-        ..add(serializers.serialize(object.themeSettings,
+        ..add('theme')
+        ..add(serializers.serialize(object.theme,
             specifiedType: const FullType(ThemeSettings)));
     }
     return result;
@@ -48,14 +56,62 @@ class _$SettingsSerializer implements StructuredSerializer<Settings> {
       iterator.moveNext();
       final dynamic value = iterator.current;
       switch (key) {
-        case 'navigationSettings':
-          result.navigationSettings.replace(serializers.deserialize(value,
+        case 'diary':
+          result.diary.replace(serializers.deserialize(value,
+              specifiedType: const FullType(DiarySettings)) as DiarySettings);
+          break;
+        case 'navigation':
+          result.navigation.replace(serializers.deserialize(value,
                   specifiedType: const FullType(NavigationSettings))
               as NavigationSettings);
           break;
-        case 'themeSettings':
-          result.themeSettings.replace(serializers.deserialize(value,
+        case 'theme':
+          result.theme.replace(serializers.deserialize(value,
               specifiedType: const FullType(ThemeSettings)) as ThemeSettings);
+          break;
+      }
+    }
+
+    return result.build();
+  }
+}
+
+class _$DiarySettingsSerializer implements StructuredSerializer<DiarySettings> {
+  @override
+  final Iterable<Type> types = const [DiarySettings, _$DiarySettings];
+  @override
+  final String wireName = 'DiarySettings';
+
+  @override
+  Iterable<Object> serialize(Serializers serializers, DiarySettings object,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = <Object>[
+      'macroOrder',
+      serializers.serialize(object.macroOrder,
+          specifiedType:
+              const FullType(BuiltList, const [const FullType(Nutrient)])),
+    ];
+
+    return result;
+  }
+
+  @override
+  DiarySettings deserialize(
+      Serializers serializers, Iterable<Object> serialized,
+      {FullType specifiedType = FullType.unspecified}) {
+    final result = new DiarySettingsBuilder();
+
+    final iterator = serialized.iterator;
+    while (iterator.moveNext()) {
+      final key = iterator.current as String;
+      iterator.moveNext();
+      final dynamic value = iterator.current;
+      switch (key) {
+        case 'macroOrder':
+          result.macroOrder.replace(serializers.deserialize(value,
+                  specifiedType: const FullType(
+                      BuiltList, const [const FullType(Nutrient)]))
+              as BuiltList<dynamic>);
           break;
       }
     }
@@ -107,6 +163,20 @@ class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
         ..add(serializers.serialize(object.primaryColour,
             specifiedType: const FullType(String)));
     }
+    if (object.macroColours != null) {
+      result
+        ..add('macroColours')
+        ..add(serializers.serialize(object.macroColours,
+            specifiedType: const FullType(BuiltMap,
+                const [const FullType(Nutrient), const FullType(String)])));
+    }
+    if (object.darkMacroColours != null) {
+      result
+        ..add('darkMacroColours')
+        ..add(serializers.serialize(object.darkMacroColours,
+            specifiedType: const FullType(BuiltMap,
+                const [const FullType(Nutrient), const FullType(String)])));
+    }
     return result;
   }
 
@@ -130,6 +200,20 @@ class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
           result.primaryColour = serializers.deserialize(value,
               specifiedType: const FullType(String)) as String;
           break;
+        case 'macroColours':
+          result.macroColours.replace(serializers.deserialize(value,
+              specifiedType: const FullType(BuiltMap, const [
+                const FullType(Nutrient),
+                const FullType(String)
+              ])) as BuiltMap<dynamic, dynamic>);
+          break;
+        case 'darkMacroColours':
+          result.darkMacroColours.replace(serializers.deserialize(value,
+              specifiedType: const FullType(BuiltMap, const [
+                const FullType(Nutrient),
+                const FullType(String)
+              ])) as BuiltMap<dynamic, dynamic>);
+          break;
       }
     }
 
@@ -139,14 +223,16 @@ class _$ThemeSettingsSerializer implements StructuredSerializer<ThemeSettings> {
 
 class _$Settings extends Settings {
   @override
-  final NavigationSettings navigationSettings;
+  final DiarySettings diary;
   @override
-  final ThemeSettings themeSettings;
+  final NavigationSettings navigation;
+  @override
+  final ThemeSettings theme;
 
   factory _$Settings([void Function(SettingsBuilder) updates]) =>
       (new SettingsBuilder()..update(updates)).build();
 
-  _$Settings._({this.navigationSettings, this.themeSettings}) : super._();
+  _$Settings._({this.diary, this.navigation, this.theme}) : super._();
 
   @override
   Settings rebuild(void Function(SettingsBuilder) updates) =>
@@ -159,21 +245,23 @@ class _$Settings extends Settings {
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
     return other is Settings &&
-        navigationSettings == other.navigationSettings &&
-        themeSettings == other.themeSettings;
+        diary == other.diary &&
+        navigation == other.navigation &&
+        theme == other.theme;
   }
 
   @override
   int get hashCode {
     return $jf(
-        $jc($jc(0, navigationSettings.hashCode), themeSettings.hashCode));
+        $jc($jc($jc(0, diary.hashCode), navigation.hashCode), theme.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('Settings')
-          ..add('navigationSettings', navigationSettings)
-          ..add('themeSettings', themeSettings))
+          ..add('diary', diary)
+          ..add('navigation', navigation)
+          ..add('theme', theme))
         .toString();
   }
 }
@@ -181,24 +269,29 @@ class _$Settings extends Settings {
 class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
   _$Settings _$v;
 
-  NavigationSettingsBuilder _navigationSettings;
-  NavigationSettingsBuilder get navigationSettings =>
-      _$this._navigationSettings ??= new NavigationSettingsBuilder();
-  set navigationSettings(NavigationSettingsBuilder navigationSettings) =>
-      _$this._navigationSettings = navigationSettings;
+  DiarySettingsBuilder _diary;
+  DiarySettingsBuilder get diary =>
+      _$this._diary ??= new DiarySettingsBuilder();
+  set diary(DiarySettingsBuilder diary) => _$this._diary = diary;
 
-  ThemeSettingsBuilder _themeSettings;
-  ThemeSettingsBuilder get themeSettings =>
-      _$this._themeSettings ??= new ThemeSettingsBuilder();
-  set themeSettings(ThemeSettingsBuilder themeSettings) =>
-      _$this._themeSettings = themeSettings;
+  NavigationSettingsBuilder _navigation;
+  NavigationSettingsBuilder get navigation =>
+      _$this._navigation ??= new NavigationSettingsBuilder();
+  set navigation(NavigationSettingsBuilder navigation) =>
+      _$this._navigation = navigation;
+
+  ThemeSettingsBuilder _theme;
+  ThemeSettingsBuilder get theme =>
+      _$this._theme ??= new ThemeSettingsBuilder();
+  set theme(ThemeSettingsBuilder theme) => _$this._theme = theme;
 
   SettingsBuilder();
 
   SettingsBuilder get _$this {
     if (_$v != null) {
-      _navigationSettings = _$v.navigationSettings?.toBuilder();
-      _themeSettings = _$v.themeSettings?.toBuilder();
+      _diary = _$v.diary?.toBuilder();
+      _navigation = _$v.navigation?.toBuilder();
+      _theme = _$v.theme?.toBuilder();
       _$v = null;
     }
     return this;
@@ -223,18 +316,114 @@ class SettingsBuilder implements Builder<Settings, SettingsBuilder> {
     try {
       _$result = _$v ??
           new _$Settings._(
-              navigationSettings: _navigationSettings?.build(),
-              themeSettings: _themeSettings?.build());
+              diary: _diary?.build(),
+              navigation: _navigation?.build(),
+              theme: _theme?.build());
     } catch (_) {
       String _$failedField;
       try {
-        _$failedField = 'navigationSettings';
-        _navigationSettings?.build();
-        _$failedField = 'themeSettings';
-        _themeSettings?.build();
+        _$failedField = 'diary';
+        _diary?.build();
+        _$failedField = 'navigation';
+        _navigation?.build();
+        _$failedField = 'theme';
+        _theme?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'Settings', _$failedField, e.toString());
+      }
+      rethrow;
+    }
+    replace(_$result);
+    return _$result;
+  }
+}
+
+class _$DiarySettings extends DiarySettings {
+  @override
+  final BuiltList<Nutrient> macroOrder;
+
+  factory _$DiarySettings([void Function(DiarySettingsBuilder) updates]) =>
+      (new DiarySettingsBuilder()..update(updates)).build();
+
+  _$DiarySettings._({this.macroOrder}) : super._() {
+    if (macroOrder == null) {
+      throw new BuiltValueNullFieldError('DiarySettings', 'macroOrder');
+    }
+  }
+
+  @override
+  DiarySettings rebuild(void Function(DiarySettingsBuilder) updates) =>
+      (toBuilder()..update(updates)).build();
+
+  @override
+  DiarySettingsBuilder toBuilder() => new DiarySettingsBuilder()..replace(this);
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(other, this)) return true;
+    return other is DiarySettings && macroOrder == other.macroOrder;
+  }
+
+  @override
+  int get hashCode {
+    return $jf($jc(0, macroOrder.hashCode));
+  }
+
+  @override
+  String toString() {
+    return (newBuiltValueToStringHelper('DiarySettings')
+          ..add('macroOrder', macroOrder))
+        .toString();
+  }
+}
+
+class DiarySettingsBuilder
+    implements Builder<DiarySettings, DiarySettingsBuilder> {
+  _$DiarySettings _$v;
+
+  ListBuilder<Nutrient> _macroOrder;
+  ListBuilder<Nutrient> get macroOrder =>
+      _$this._macroOrder ??= new ListBuilder<Nutrient>();
+  set macroOrder(ListBuilder<Nutrient> macroOrder) =>
+      _$this._macroOrder = macroOrder;
+
+  DiarySettingsBuilder();
+
+  DiarySettingsBuilder get _$this {
+    if (_$v != null) {
+      _macroOrder = _$v.macroOrder?.toBuilder();
+      _$v = null;
+    }
+    return this;
+  }
+
+  @override
+  void replace(DiarySettings other) {
+    if (other == null) {
+      throw new ArgumentError.notNull('other');
+    }
+    _$v = other as _$DiarySettings;
+  }
+
+  @override
+  void update(void Function(DiarySettingsBuilder) updates) {
+    if (updates != null) updates(this);
+  }
+
+  @override
+  _$DiarySettings build() {
+    _$DiarySettings _$result;
+    try {
+      _$result = _$v ?? new _$DiarySettings._(macroOrder: macroOrder.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'macroOrder';
+        macroOrder.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'DiarySettings', _$failedField, e.toString());
       }
       rethrow;
     }
@@ -308,11 +497,20 @@ class _$ThemeSettings extends ThemeSettings {
   final bool darkMode;
   @override
   final String primaryColour;
+  @override
+  final BuiltMap<Nutrient, String> macroColours;
+  @override
+  final BuiltMap<Nutrient, String> darkMacroColours;
 
   factory _$ThemeSettings([void Function(ThemeSettingsBuilder) updates]) =>
       (new ThemeSettingsBuilder()..update(updates)).build();
 
-  _$ThemeSettings._({this.darkMode, this.primaryColour}) : super._();
+  _$ThemeSettings._(
+      {this.darkMode,
+      this.primaryColour,
+      this.macroColours,
+      this.darkMacroColours})
+      : super._();
 
   @override
   ThemeSettings rebuild(void Function(ThemeSettingsBuilder) updates) =>
@@ -326,19 +524,26 @@ class _$ThemeSettings extends ThemeSettings {
     if (identical(other, this)) return true;
     return other is ThemeSettings &&
         darkMode == other.darkMode &&
-        primaryColour == other.primaryColour;
+        primaryColour == other.primaryColour &&
+        macroColours == other.macroColours &&
+        darkMacroColours == other.darkMacroColours;
   }
 
   @override
   int get hashCode {
-    return $jf($jc($jc(0, darkMode.hashCode), primaryColour.hashCode));
+    return $jf($jc(
+        $jc($jc($jc(0, darkMode.hashCode), primaryColour.hashCode),
+            macroColours.hashCode),
+        darkMacroColours.hashCode));
   }
 
   @override
   String toString() {
     return (newBuiltValueToStringHelper('ThemeSettings')
           ..add('darkMode', darkMode)
-          ..add('primaryColour', primaryColour))
+          ..add('primaryColour', primaryColour)
+          ..add('macroColours', macroColours)
+          ..add('darkMacroColours', darkMacroColours))
         .toString();
   }
 }
@@ -356,12 +561,26 @@ class ThemeSettingsBuilder
   set primaryColour(String primaryColour) =>
       _$this._primaryColour = primaryColour;
 
+  MapBuilder<Nutrient, String> _macroColours;
+  MapBuilder<Nutrient, String> get macroColours =>
+      _$this._macroColours ??= new MapBuilder<Nutrient, String>();
+  set macroColours(MapBuilder<Nutrient, String> macroColours) =>
+      _$this._macroColours = macroColours;
+
+  MapBuilder<Nutrient, String> _darkMacroColours;
+  MapBuilder<Nutrient, String> get darkMacroColours =>
+      _$this._darkMacroColours ??= new MapBuilder<Nutrient, String>();
+  set darkMacroColours(MapBuilder<Nutrient, String> darkMacroColours) =>
+      _$this._darkMacroColours = darkMacroColours;
+
   ThemeSettingsBuilder();
 
   ThemeSettingsBuilder get _$this {
     if (_$v != null) {
       _darkMode = _$v.darkMode;
       _primaryColour = _$v.primaryColour;
+      _macroColours = _$v.macroColours?.toBuilder();
+      _darkMacroColours = _$v.darkMacroColours?.toBuilder();
       _$v = null;
     }
     return this;
@@ -382,8 +601,27 @@ class ThemeSettingsBuilder
 
   @override
   _$ThemeSettings build() {
-    final _$result = _$v ??
-        new _$ThemeSettings._(darkMode: darkMode, primaryColour: primaryColour);
+    _$ThemeSettings _$result;
+    try {
+      _$result = _$v ??
+          new _$ThemeSettings._(
+              darkMode: darkMode,
+              primaryColour: primaryColour,
+              macroColours: _macroColours?.build(),
+              darkMacroColours: _darkMacroColours?.build());
+    } catch (_) {
+      String _$failedField;
+      try {
+        _$failedField = 'macroColours';
+        _macroColours?.build();
+        _$failedField = 'darkMacroColours';
+        _darkMacroColours?.build();
+      } catch (e) {
+        throw new BuiltValueNestedFieldError(
+            'ThemeSettings', _$failedField, e.toString());
+      }
+      rethrow;
+    }
     replace(_$result);
     return _$result;
   }

@@ -146,9 +146,6 @@ class _$FoodSearchLoaded extends FoodSearchLoaded {
   _$FoodSearchLoaded._(
       {this.results, this.loading, this.query, this.queryChanged})
       : super._() {
-    if (results == null) {
-      throw new BuiltValueNullFieldError('FoodSearchLoaded', 'results');
-    }
     if (loading == null) {
       throw new BuiltValueNullFieldError('FoodSearchLoaded', 'loading');
     }
@@ -251,7 +248,7 @@ class FoodSearchLoadedBuilder
     try {
       _$result = _$v ??
           new _$FoodSearchLoaded._(
-              results: results.build(),
+              results: _results?.build(),
               loading: loading,
               query: query,
               queryChanged: queryChanged);
@@ -259,7 +256,7 @@ class FoodSearchLoadedBuilder
       String _$failedField;
       try {
         _$failedField = 'results';
-        results.build();
+        _results?.build();
       } catch (e) {
         throw new BuiltValueNestedFieldError(
             'FoodSearchLoaded', _$failedField, e.toString());

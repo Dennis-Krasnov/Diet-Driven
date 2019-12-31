@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -11,42 +10,34 @@ import 'package:built_collection/built_collection.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 
-import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 
-/// Generic Firestore document/collection helpers for serialization and deserialization.
+/// Generic Firestore document/collection extensions for serialization and deserialization.
 /// https://github.com/dart-lang/sdk/blob/master/pkg/dev_compiler/doc/GENERIC_METHODS.md
 
-/// Serializes a single [T] into Firestore document JSON.
-/// Can't use compute as it raises 'Concurrent modification during iteration' exception.
-Object serializeDocument<T>(T object) {
-  assert(object != null);
-
-  return jsonSerializers.serialize(object);
-}
-
-/// Deserialization transform on Firestore document stream.
-/// Optimized by creating own computation isolate using compute.
-///
-/// Throws [DeserializationError] if Firestore data is corrupt.
-StreamTransformer<DocumentSnapshot, T> deserializeDocumentTransform<T>() =>
-  StreamTransformer<DocumentSnapshot, T>.fromHandlers(
+extension FirestoreDocumentSnapshotDeserializationExtensions on Stream<DocumentSnapshot> {
+  /// Deserialization on Firestore document stream.
+  /// Optimized by creating own computation isolate using compute.
+  ///
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Stream<T> deserialize<T>() => transform(StreamTransformer<DocumentSnapshot, T>.fromHandlers(
     handleData: (DocumentSnapshot snapshot, EventSink<T> sink) async {
       if (snapshot != null && snapshot.data != null) {
-        sink.add(await compute(_computeDeserializeDocument, snapshot));
+        sink.add(await compute<DocumentSnapshot, T>(_computeDeserializeDocument, snapshot));
       }
     },
     handleError: (Object error, StackTrace stackTrace, EventSink<T> sink) {
       BlocLogger().unexpectedError("Deserialization document transform failed", error, stackTrace);
     }
-  );
+  ));
+}
 
-/// Deserialization transform on Firestore collection stream.
-/// Optimized by creating own computation isolate using compute.
-///
-/// Throws [DeserializationError] if Firestore data is corrupt.
-StreamTransformer<QuerySnapshot, BuiltList<T>> deserializeCollectionTransform<T>() =>
-  StreamTransformer<QuerySnapshot, BuiltList<T>>.fromHandlers(
+extension FirestoreQuerySnapshotDeserializationExtensions on Stream<QuerySnapshot> {
+  /// Deserialization on Firestore collection stream.
+  /// Optimized by creating own computation isolate using compute.
+  ///
+  /// Throws [DeserializationError] if Firestore data is corrupt.
+  Stream<BuiltList<T>> deserialize<T>() => transform(StreamTransformer<QuerySnapshot, BuiltList<T>>.fromHandlers(
     handleData: (QuerySnapshot snapshot, EventSink<BuiltList<T>> sink) async {
       if (snapshot != null && snapshot.documents.isNotEmpty) {
         // Deserialize each document
@@ -56,11 +47,29 @@ StreamTransformer<QuerySnapshot, BuiltList<T>> deserializeCollectionTransform<T>
     handleError: (Object error, StackTrace stackTrace, EventSink<BuiltList<T>> sink) {
       BlocLogger().unexpectedError("Deserialization collection transform failed", error, stackTrace);
     }
+  ));
+}
+
+
+extension FirestoreDocumentExtensions on DocumentReference {
+  /// ...
+  Stream<T> deserialize<T>() => snapshots().deserialize<T>();
+
+  /// Serializes a single [T] into Firestore document JSON.
+  /// Can't use compute as it raises 'Concurrent modification during iteration' exception.
+  /// ...
+  Future<void> setSerialized(Object object, {bool merge = false}) => setData(
+    jsonSerializers.serialize(object),
+    merge: merge
   );
+}
+
+extension FirestoreCollectionExtensions on Query {
+  /// ...
+  Stream<BuiltList<T>> deserialize<T>() => snapshots().deserialize<T>();
+}
 
 /// Inserts Firestore document id into [doc] as `_id` field.
-///
-/// Throws [NoSuchMethodError] if [doc] or [doc.data] is null.
 Map<String, dynamic> _dataWithId(DocumentSnapshot doc) => doc.data..putIfAbsent("_id", () => doc.documentID);
 
 /// Must be top-level function for compute.
@@ -68,9 +77,7 @@ T _computeDeserializeDocument<T>(DocumentSnapshot snapshot) {
   return jsonSerializers.deserialize(_dataWithId(snapshot));
 }
 
-/// OPTIMIZE: create BuiltList from within compute!
-/// Must be top-level function for compute.
+/// Must be top-level function for compute, isolates only work with primitive lists.
 List<T> _computeDeserializeCollection<T>(QuerySnapshot snapshot) {
   return snapshot.documents.map<T>((snap) => jsonSerializers.deserialize(_dataWithId(snap))).toList();
-  // .toList() is necessary for List<T>
 }

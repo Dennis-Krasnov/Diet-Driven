@@ -7,10 +7,17 @@ part of 'food_diary_events.dart';
 // **************************************************************************
 
 class _$InitFoodDiary extends InitFoodDiary {
+  @override
+  final String userId;
+
   factory _$InitFoodDiary([void Function(InitFoodDiaryBuilder) updates]) =>
       (new InitFoodDiaryBuilder()..update(updates)).build();
 
-  _$InitFoodDiary._() : super._();
+  _$InitFoodDiary._({this.userId}) : super._() {
+    if (userId == null) {
+      throw new BuiltValueNullFieldError('InitFoodDiary', 'userId');
+    }
+  }
 
   @override
   InitFoodDiary rebuild(void Function(InitFoodDiaryBuilder) updates) =>
@@ -22,17 +29,18 @@ class _$InitFoodDiary extends InitFoodDiary {
   @override
   bool operator ==(Object other) {
     if (identical(other, this)) return true;
-    return other is InitFoodDiary;
+    return other is InitFoodDiary && userId == other.userId;
   }
 
   @override
   int get hashCode {
-    return 398441077;
+    return $jf($jc(0, userId.hashCode));
   }
 
   @override
   String toString() {
-    return newBuiltValueToStringHelper('InitFoodDiary').toString();
+    return (newBuiltValueToStringHelper('InitFoodDiary')..add('userId', userId))
+        .toString();
   }
 }
 
@@ -40,7 +48,19 @@ class InitFoodDiaryBuilder
     implements Builder<InitFoodDiary, InitFoodDiaryBuilder> {
   _$InitFoodDiary _$v;
 
+  String _userId;
+  String get userId => _$this._userId;
+  set userId(String userId) => _$this._userId = userId;
+
   InitFoodDiaryBuilder();
+
+  InitFoodDiaryBuilder get _$this {
+    if (_$v != null) {
+      _userId = _$v.userId;
+      _$v = null;
+    }
+    return this;
+  }
 
   @override
   void replace(InitFoodDiary other) {
@@ -57,7 +77,7 @@ class InitFoodDiaryBuilder
 
   @override
   _$InitFoodDiary build() {
-    final _$result = _$v ?? new _$InitFoodDiary._();
+    final _$result = _$v ?? new _$InitFoodDiary._(userId: userId);
     replace(_$result);
     return _$result;
   }

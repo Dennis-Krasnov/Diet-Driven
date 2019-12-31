@@ -1,27 +1,31 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:bloc_logging/bloc_logging.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:merge_map/merge_map.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/blocs.dart';
+import 'package:diet_driven/blocs/user_data/user_data.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 /// Aggregates and manages authentication and settings.
-/// App shows skeleton navigation until [UserDataBloc] is loaded.
 class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   final UserRepository userRepository;
+
   final SettingsRepository settingsRepository;
+
+  UserDataLoaded get loadedState => state as UserDataLoaded;
+
+  /// Current user's id.
+  String get userId => loadedState.authentication.uid;
 
   StreamSubscription<UserDataEvent> _userDataEventSubscription;
 
@@ -32,20 +36,15 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
   UserDataState get initialState => UserDataUninitialized();
 
   @override
-  void dispose() {
+  Future<void> close() {
     _userDataEventSubscription?.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
   Stream<UserDataState> mapEventToState(UserDataEvent event) async* {
     if (event is InitUserData) {
-      if (currentState is! UserDataUninitialized) {
-        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be uninitialized")));
-        return;
-      }
-
-      final auth$ = Observable<Authentication>(userRepository.authStateChanged$());
+      final auth$ = userRepository.authStateChanged$();
 
       final onboard$ = auth$
         .where((auth) => auth == null)
@@ -54,12 +53,12 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
       // TODO: retry x times, with delay between each attempt
       final dataArrival$ = auth$
         .where((auth) => auth != null)
-        .switchMap<UserDataEvent>((auth) => CombineLatestStream.combine4(
+        .switchMap<UserDataEvent>((auth) => CombineLatestStream.combine4<UserDocument, Settings, Settings, SubscriptionType, UserDataEvent>(
           userRepository.userDocument$(auth.uid),
           settingsRepository.defaultSettings$(),
-          Observable(settingsRepository.userSettings$(auth.uid)).startWith(null),
-          Observable<SubscriptionType>.just(SubscriptionType.all_access), // TODO: (List<PurchaseDetails> purchases).map(...) from https://github.com/flutter/plugins/tree/master/packages/in_app_purchase
-          (UserDocument userDocument, Settings defaultSettings, Settings userSettings, SubscriptionType subscriptionType) => IngressUserDataArrived((b) => b
+          settingsRepository.userSettings$(auth.uid).startWith(null),
+          Stream.value(SubscriptionType.all_access),
+          (userDocument, defaultSettings, userSettings, subscriptionType) => IngressUserDataArrived((b) => b
             ..authentication = auth.toBuilder()
             ..userDocument = userDocument.toBuilder()
             ..settings = _mergeSettings(userSettings, defaultSettings).toBuilder()
@@ -72,9 +71,10 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
         .onErrorReturnWith((dynamic error) => UserDataError((b) => b..error = error));
 
       // Maintain single instance of stream subscription
-      _userDataEventSubscription ??= Observable(MergeStream([onboard$, dataArrival$]))
+      _userDataEventSubscription?.cancel();
+      _userDataEventSubscription = MergeStream([onboard$, dataArrival$])
         .distinct()
-        .listen(dispatch);
+        .listen(add);
     }
 
     if (event is IngressUserDataArrived) {
@@ -113,62 +113,42 @@ class UserDataBloc extends Bloc<UserDataEvent, UserDataState> {
     ///    ######  ########    ##       ##    #### ##    ##  ######    ######
 
     if (event is UpdateDarkMode) {
-      if (currentState is! UserDataLoaded) {
-        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
-        return;
-      }
-
-      try {
-        final settingsBuilder = _userSettings.toBuilder()
-          ..themeSettings.update((b) => b
-            ..darkMode = event.darkMode
-          );
-
-        await settingsRepository.saveSettings(userId, settingsBuilder.build());
-
-        BlocLogger().info("Dark mode ${event.darkMode ? "enabled" : "disabled"}");
-        event?.completer?.complete();
-      } catch(error, stacktrace) {
-        BlocLogger().unexpectedError("Dark mode update failed", error, stacktrace);
-        event?.completer?.completeError(error, stacktrace);
-      }
+      _saveUserSettings(event, (sb) => sb..theme.update((b) => b
+        ..darkMode = event.darkMode
+      ));
     }
 
     if (event is UpdatePrimaryColour) {
-      if (currentState is! UserDataLoaded) {
-        dispatch(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
-        return;
-      }
-
-      try {
-        final settingsBuilder = _userSettings.toBuilder()
-          ..themeSettings.update((b) => b
-            ..primaryColour = hexNumberCodeToString(event.colourValue)
-          );
-
-        await settingsRepository.saveSettings(userId, settingsBuilder.build());
-
-        BlocLogger().info("Primary colour now ${event.colourValue}");
-        event?.completer?.complete();
-      } catch(error, stacktrace) {
-        BlocLogger().unexpectedError("Primary colour update failed", error, stacktrace);
-        event?.completer?.completeError(error, stacktrace);
-      }
+      _saveUserSettings(event, (sb) => sb..theme.update((b) => b
+        ..primaryColour = event.colourValue.asHexNumber
+      ));
     }
   }
 
-  /// Current user's id.
-  /// Only use when it's certain that [currentState] is [UserDataLoaded].
-  String get userId => (currentState as UserDataLoaded).authentication.uid;
+  /// ...
+  Future<void> _saveUserSettings(Completable event, void Function(SettingsBuilder) updates) async {
+    assert(event is UserDataEvent);
 
-  /// Current user's user settings.
-  /// Only use when it's certain that [currentState] is [UserDataLoaded].
-  Settings get _userSettings => (currentState as UserDataLoaded).userSettings;
+    if (state is! UserDataLoaded) {
+      add(UserDataError((b) => b..error = StateError("User data bloc must be loaded")));
+      return;
+    }
+
+    try {
+      await settingsRepository.saveSettings(userId, loadedState.userSettings.rebuild(updates));
+
+      BlocLogger().info("${event.runtimeType} succeeded");
+      event.completer?.complete();
+    } catch(error, stacktrace) {
+      BlocLogger().unexpectedError("${event.runtimeType} failed", error, stacktrace);
+      event.completer?.completeError(error, stacktrace);
+    }
+  }
 
   /// Merges user [Settings] with default [Settings] field-by-field.
   /// Default settings are used unless explicitly overwritten by user's custom settings.
   Settings _mergeSettings(Settings userSettings, Settings defaultSettings) {
-    ArgumentError.checkNotNull(defaultSettings, "Default settings"); // TOTEST
+    ArgumentError.checkNotNull(defaultSettings, "Default settings");
 
     // userSettings may be null due to missing firestore document
     if (userSettings == null) {

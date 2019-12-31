@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
@@ -26,8 +25,8 @@ class FoodRepository {
 
     // TODO: memoize results using https://pub.dev/packages/memoize
 
-    final result = await curry(_cloudFunctions, "searchFoodsByQuery")({"query": query});
-    return jsonSerializers.deserialize(result.data);
+    final result = await _cloudFunctions.name("searchFoodsByQuery")({"query": query});
+    return result.deserialize();
   }
 
   /// Fetches [BuiltList] of relevant food search suggestions based on [query].
@@ -38,7 +37,7 @@ class FoodRepository {
     assert(query != null && query.isNotEmpty);
 
     // TODO: memoize suggestions using https://pub.dev/packages/memoize
-    final result = await curry(_cloudFunctions, "foodSuggestions")(query);
+    final result = await _cloudFunctions.name("foodSuggestions")(query);
     return BuiltList<String>.from(result.data);
   }
 

@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:flutter/material.dart';
@@ -34,7 +33,7 @@ class ThemeSettingsPage extends StatelessWidget {
     return BlocBuilder<UserDataBloc, UserDataState>(
       builder: (BuildContext context, UserDataState userDataState) {
         // User's current primary colour
-        final primaryColour = Color((userDataState as UserDataLoaded).settings.themeSettings.primaryColourValue);
+        final primaryColour = Color((userDataState as UserDataLoaded).settings.theme.primaryColourValue);
 
         return Scaffold(
           appBar: AppBar(
@@ -62,9 +61,9 @@ class ThemeSettingsPage extends StatelessWidget {
                 SwitchListTile(
                   title: const Text('Dark mode'),
                   secondary: const Icon(Icons.brightness_2),
-                  value: (userDataState as UserDataLoaded).settings.themeSettings.darkMode,
+                  value: (userDataState as UserDataLoaded).settings.theme.darkMode,
                   /// TODO: make food diary follow similar pattern!
-                  onChanged: (bool value) => BlocProvider.of<UserDataBloc>(context).dispatch(UpdateDarkMode((b) => b
+                  onChanged: (bool value) => BlocProvider.of<UserDataBloc>(context).add(UpdateDarkMode((b) => b
                     ..darkMode = value
                     ..completer = infoSnackBarCompleter(context, "Dark mode ${value ? "enabled" : "disabled"}")
                   )),
@@ -77,7 +76,7 @@ class ThemeSettingsPage extends StatelessWidget {
                 ),
                 MaterialColorPicker(
                   allowShades: false,
-                  onMainColorChange: (ColorSwatch colour) => BlocProvider.of<UserDataBloc>(context).dispatch(UpdatePrimaryColour((b) => b
+                  onMainColorChange: (ColorSwatch colour) => BlocProvider.of<UserDataBloc>(context).add(UpdatePrimaryColour((b) => b
                     ..colourValue = colour.value
                   )),
                   selectedColor: primaryColour,

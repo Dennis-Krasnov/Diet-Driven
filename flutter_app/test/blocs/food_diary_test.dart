@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -15,7 +14,7 @@ import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
-import '../test_utils.dart';
+import '../utils/utils.dart';
 
 void main() {
   FoodDiaryBloc sut;
@@ -23,19 +22,6 @@ void main() {
   /// Mocks
   DiaryRepository diaryRepository;
   Completer<void> completer;
-
-  /// Data
-  const userId = "1234";
-
-  final foodRecords = BuiltList<FoodRecord>(<FoodRecord>[
-    FoodRecord.random(),
-    FoodRecord.random(),
-  ]);
-
-  final diet = Diet((b) => b
-    ..idealNutrients = NutrientMap.random()
-    ..startDate = 0
-  );
 
   /// Configuration
   setUp(() {
@@ -46,240 +32,202 @@ void main() {
 
     sut = FoodDiaryBloc(
       diaryRepository: diaryRepository,
-      userId: userId,
     );
   });
 
-  tearDown(() {
-    sut?.dispose();
-  });
-
-  void _setupEventTestMocks() {
-    when(diaryRepository.allTimeFoodDiaryExists(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async => true);
-    when(diaryRepository.allTimeFoodDiary$(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async* {
-      yield BuiltList(<FoodDiaryDay>[
-        generateFoodDiaryDay(23, []),
-        generateFoodDiaryDay(24, [["Apple"]])
-      ]);
-    });
-
-    when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) async* {
-      yield BuiltList(<Diet>[diet]);
-    });
-  }
-
   /// Tests
   test("Start with initial state", () {
-    expect(sut.userId, userId);
+    expect(sut.userId, null);
     expect(sut.date, null);
     expect(sut.initialState, FoodDiaryUninitialized());
   });
 
   test("Yield error state on invalid events", () async {
-    expectLater(
-      sut.state,
-      emitsInOrder(<dynamic>[
-        FoodDiaryUninitialized(),
-        BuiltErrorMatcher("Food diary bloc must be loaded"),
-        BuiltErrorMatcher("Food diary bloc must be uninitialized"),
-      ])
-    );
+    sut.expectEmits([
+      FoodDiaryUninitialized(),
+      BuiltErrorMatcher("Food diary bloc must be loaded"),
+    ]);
 
-    sut.dispatch(GlobalAddFoodRecords((b) => b
+    sut.add(GlobalAddFoodRecords((b) => b
       ..date = 5232
       ..mealIndex = 0
       ..foodRecords = ListBuilder()
     ));
-
-    await delay(1);
-    sut.dispatch(InitFoodDiary());
   });
 
   group("Reactive ingress streams", () {
     test("Yield loaded state for valid non-empty streams", () {
-      when(diaryRepository.allTimeFoodDiaryExists(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async => true);
-      when(diaryRepository.allTimeFoodDiary$(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async* {
-        await delay(1);
-        yield BuiltList(<FoodDiaryDay>[
+      when(diaryRepository.allTimeFoodDiaryExists(userA.uid, startAt: anyNamed("startAt"))).future(true);
+      when(diaryRepository.allTimeFoodDiary$(userA.uid, startAt: anyNamed("startAt"))).streamFutures([
+        1.tick.value(BuiltList<FoodDiaryDay>([
           generateFoodDiaryDay(23, []),
           generateFoodDiaryDay(24, [["Apple"]]),
-        ]);
-
-        await delay(1);
-        yield BuiltList(<FoodDiaryDay>[
+        ])),
+        2.ticks.value(BuiltList<FoodDiaryDay>([
           generateFoodDiaryDay(24, [[], ["Apricot"]]),
           generateFoodDiaryDay(25, []),
-        ]);
-      });
-      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) async* {
-        yield BuiltList(<Diet>[diet]);
-      });
+        ])),
+      ]);
+      when(diaryRepository.allTimeDiet$(userA.uid)).stream([BuiltList<Diet>([dietA])]);
 
-      expectLater(
-        sut.state,
-        emitsInOrder(<FoodDiaryState>[
-          FoodDiaryUninitialized(),
-          // Tick #1
-          FoodDiaryLoaded((b) => b
-            ..diaryDays = MapBuilder({
-              23: generateFoodDiaryDay(23, []),
-              24: generateFoodDiaryDay(24, [["Apple"]]),
-            })
-            ..diets = ListBuilder(<Diet>[diet])
-          ),
-          // Tick #2
-          FoodDiaryLoaded((b) => b
-          // Results are completely overridden
-            ..diaryDays = MapBuilder({
-              24: generateFoodDiaryDay(24, [[], ["Apricot"]]),
-              25: generateFoodDiaryDay(25, []),
-            })
-            ..diets = ListBuilder(<Diet>[diet])
-          ),
-        ])
-      );
+      sut.add(InitFoodDiary((b) => b..userId = userA.uid));
 
-      sut.dispatch(InitFoodDiary());
+      sut.expectEmits(<FoodDiaryState>[
+        FoodDiaryUninitialized(),
+        // Tick #1
+        FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder({
+            23: generateFoodDiaryDay(23, []),
+            24: generateFoodDiaryDay(24, [["Apple"]]),
+          })
+          ..diets = ListBuilder(<Diet>[dietA])
+        ),
+        // Tick #2
+        FoodDiaryLoaded((b) => b
+        // Results are completely overridden
+          ..diaryDays = MapBuilder({
+            24: generateFoodDiaryDay(24, [[], ["Apricot"]]),
+            25: generateFoodDiaryDay(25, []),
+          })
+          ..diets = ListBuilder(<Diet>[dietA])
+        ),
+      ]);
     });
 
     test("Yield loaded state for valid empty streams", () {
-      when(diaryRepository.allTimeFoodDiaryExists(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async => false);
-      when(diaryRepository.allTimeFoodDiary$(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async* {
-        await delay(1);
-        yield BuiltList(<FoodDiaryDay>[
+      when(diaryRepository.allTimeFoodDiaryExists(userA.uid, startAt: anyNamed("startAt"))).future(false);
+      when(diaryRepository.allTimeFoodDiary$(userA.uid, startAt: anyNamed("startAt"))).streamFutures([
+        1.tick.value(BuiltList<FoodDiaryDay>([
           generateFoodDiaryDay(23, []),
           generateFoodDiaryDay(24, [["Apple"]]),
-        ]);
-
-        await delay(1);
-        yield BuiltList(<FoodDiaryDay>[
+        ])),
+        2.tick.value(BuiltList<FoodDiaryDay>([
           generateFoodDiaryDay(24, [[], ["Apricot"]]),
           generateFoodDiaryDay(25, []),
-        ]);
-      });
-      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) async* {
-        yield BuiltList(<Diet>[diet]);
-      });
+        ])),
+      ]);
+      when(diaryRepository.allTimeDiet$(userA.uid)).stream([BuiltList<Diet>([dietA])]);
 
-      expectLater(
-        sut.state,
-        emitsInOrder(<FoodDiaryState>[
-          FoodDiaryUninitialized(),
-          // Tick #0
-          FoodDiaryLoaded((b) => b
-            ..diaryDays = MapBuilder()
-            ..diets = ListBuilder(<Diet>[diet])
-          ),
-          // Tick #1
-          FoodDiaryLoaded((b) => b
-            ..diaryDays = MapBuilder({
-              23: generateFoodDiaryDay(23, []),
-              24: generateFoodDiaryDay(24, [["Apple"]]),
-            })
-            ..diets = ListBuilder(<Diet>[diet])
-          ),
-          // Tick #2
-          FoodDiaryLoaded((b) => b
-          // Results are completely overridden
-            ..diaryDays = MapBuilder({
-              24: generateFoodDiaryDay(24, [[], ["Apricot"]]),
-              25: generateFoodDiaryDay(25, []),
-            })
-            ..diets = ListBuilder(<Diet>[diet])
-          ),
-        ])
-      );
+      sut.add(InitFoodDiary((b) => b..userId = userA.uid));
 
-      sut.dispatch(InitFoodDiary());
+      sut.expectEmits(<FoodDiaryState>[
+        FoodDiaryUninitialized(),
+        // Tick #0
+        FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder()
+          ..diets = ListBuilder(<Diet>[dietA])
+        ),
+        // Tick #1
+        FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder({
+            23: generateFoodDiaryDay(23, []),
+            24: generateFoodDiaryDay(24, [["Apple"]]),
+          })
+          ..diets = ListBuilder(<Diet>[dietA])
+        ),
+        // Tick #2
+        FoodDiaryLoaded((b) => b
+        // Results are completely overridden
+          ..diaryDays = MapBuilder({
+            24: generateFoodDiaryDay(24, [[], ["Apricot"]]),
+            25: generateFoodDiaryDay(25, []),
+          })
+          ..diets = ListBuilder(<Diet>[dietA])
+        ),
+      ]);
     });
 
     test("Yield error state on errorous food diary stream", () async {
-      when(diaryRepository.allTimeFoodDiaryExists(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async => true);
-      when(diaryRepository.allTimeFoodDiary$(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async* {
-        yield BuiltList(<FoodDiaryDay>[
+      when(diaryRepository.allTimeFoodDiaryExists(userA.uid, startAt: anyNamed("startAt"))).future(true);
+      // Must be async generator function
+      when(diaryRepository.allTimeFoodDiary$(userA.uid, startAt: anyNamed("startAt"))).thenAnswer((_) async* {
+        yield BuiltList<FoodDiaryDay>([
           generateFoodDiaryDay(23, []),
           generateFoodDiaryDay(24, [["Apple"]]),
         ]);
 
-        await delay(1);
+        await 1.tick.delay;
         throw Exception("Food diary failed");
       });
-      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) async* {
-        yield BuiltList(<Diet>[diet]);
-      });
+      when(diaryRepository.allTimeDiet$(userA.uid)).stream([BuiltList<Diet>([dietA])]);
 
-      expectLater(
-        sut.state,
-        emitsInOrder(<dynamic>[
-          FoodDiaryUninitialized(),
-          FoodDiaryLoaded((b) => b
-            ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: generateFoodDiaryDay(23, []),
-              24: generateFoodDiaryDay(24, [["Apple"]]),
-            })
-            ..diets = ListBuilder(<Diet>[diet])
-          ),
-          // Ensure first error was last state before stream close
-          BuiltErrorMatcher("Food diary failed"),
-          emitsDone,
-        ])
-      );
+      sut.add(InitFoodDiary((b) => b..userId = userA.uid));
 
-      sut.dispatch(InitFoodDiary());
+      sut.expectEmits([
+        FoodDiaryUninitialized(),
+        FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
+            23: generateFoodDiaryDay(23, []),
+            24: generateFoodDiaryDay(24, [["Apple"]]),
+          })
+          ..diets = ListBuilder(<Diet>[dietA])
+        ),
+        // Ensure first error was last state before stream close
+        BuiltErrorMatcher("Food diary failed"),
+        emitsDone,
+      ]);
 
-      // Extra time is given to avoid flakiness
-      await delay(5);
-      sut.dispose();
+      // Extra time to avoid flakiness
+      await 5.ticks.delay;
+      sut.close();
     });
 
     test("Yield error state on errorous all time diet stream", () async {
-      when(diaryRepository.allTimeFoodDiaryExists(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async => true);
-      when(diaryRepository.allTimeFoodDiary$(userId, startAt: anyNamed("startAt"))).thenAnswer((_) async* {
-        yield BuiltList(<FoodDiaryDay>[
+      when(diaryRepository.allTimeFoodDiaryExists(userA.uid, startAt: anyNamed("startAt"))).future(true);
+      when(diaryRepository.allTimeFoodDiary$(userA.uid, startAt: anyNamed("startAt"))).stream([
+        BuiltList<FoodDiaryDay>([
           generateFoodDiaryDay(23, []),
           generateFoodDiaryDay(24, [["Apple"]]),
-        ]);
-      });
-      when(diaryRepository.allTimeDiet$(userId)).thenAnswer((_) async* {
-        yield BuiltList(<Diet>[diet]);
+        ]),
+      ]);
+      // Must be async generator function
+      when(diaryRepository.allTimeDiet$(userA.uid)).thenAnswer((_) async* {
+        yield BuiltList(<Diet>[dietA]);
 
-        await delay(1);
+        await 1.tick.delay;
         throw Exception("Diet failed");
       });
 
-      expectLater(
-        sut.state,
-        emitsInOrder(<dynamic>[
-          FoodDiaryUninitialized(),
-          FoodDiaryLoaded((b) => b
-            ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
-              23: generateFoodDiaryDay(23, []),
-              24: generateFoodDiaryDay(24, [["Apple"]]),
-            })
-            ..diets = ListBuilder(<Diet>[diet])
-          ),
-          // Ensure first error was last state before stream close
-          BuiltErrorMatcher("Diet failed"),
-          emitsDone,
-        ])
-      );
+      sut.add(InitFoodDiary((b) => b..userId = userA.uid));
 
-      sut.dispatch(InitFoodDiary());
+      sut.expectEmits([
+        FoodDiaryUninitialized(),
+        FoodDiaryLoaded((b) => b
+          ..diaryDays = MapBuilder(<int, FoodDiaryDay>{
+            23: generateFoodDiaryDay(23, []),
+            24: generateFoodDiaryDay(24, [["Apple"]]),
+          })
+          ..diets = ListBuilder(<Diet>[dietA])
+        ),
+        // Ensure first error was last state before stream close
+        BuiltErrorMatcher("Diet failed"),
+        emitsDone,
+      ]);
 
-      // Extra time is given to avoid flakiness
-      await delay(5);
-      sut.dispose();
+      // Extra time to avoid flakiness
+      await 5.ticks.delay;
+      sut.close();
     });
   });
 
   group("Global food record addition", () {
+    setUp(() {
+      // TODO: do in global setup, override only when needed? - or keep explicit!?
+      when(diaryRepository.allTimeFoodDiaryExists(userA.uid, startAt: anyNamed("startAt"))).future(true);
+      when(diaryRepository.allTimeFoodDiary$(userA.uid, startAt: anyNamed("startAt"))).stream([
+        BuiltList<FoodDiaryDay>([
+          generateFoodDiaryDay(23, []),
+          generateFoodDiaryDay(24, [["Apple"]]),
+        ]),
+      ]);
+      when(diaryRepository.allTimeDiet$(userA.uid)).stream([BuiltList<Diet>([dietA])]);
+    });
+
     test("Add to existing day", () async {
-      _setupEventTestMocks();
+      sut.add(InitFoodDiary((b) => b..userId = userA.uid));
 
-      sut.dispatch(InitFoodDiary());
-
-      await delay(1);
-      sut.dispatch(GlobalAddFoodRecords((b) => b
+      await 1.tick.delay;
+      sut.add(GlobalAddFoodRecords((b) => b
         ..date = 24
         ..mealIndex = 0
         ..foodRecords = foodRecords.toBuilder()
@@ -290,7 +238,7 @@ void main() {
       expect(completer.isCompleted, true);
 
       verify(diaryRepository.saveFoodDiaryDay(
-        userId,
+        userA.uid,
         generateFoodDiaryDay(24, [["Apple"]]).rebuild((b) => b
           ..addFoodRecords(0, foodRecords)
         )
@@ -298,12 +246,10 @@ void main() {
     });
 
     test("Add to new day", () async {
-      _setupEventTestMocks();
+      sut.add(InitFoodDiary((b) => b..userId = userA.uid));
 
-      sut.dispatch(InitFoodDiary());
-
-      await delay(1);
-      sut.dispatch(GlobalAddFoodRecords((b) => b
+      await 1.tick.delay;
+      sut.add(GlobalAddFoodRecords((b) => b
         ..date = 25
         ..mealIndex = 1
         ..foodRecords = foodRecords.toBuilder()
@@ -314,7 +260,7 @@ void main() {
       expect(completer.isCompleted, true);
 
       verify(diaryRepository.saveFoodDiaryDay(
-        userId,
+        userA.uid,
         FoodDiaryDay((b) => b
           ..date = 25
           ..meals = BuiltList(List<MealData>.generate(4, (e) => MealData()))
@@ -324,13 +270,12 @@ void main() {
     });
 
     test("Reject completer on add error", () async {
-      _setupEventTestMocks();
       when(diaryRepository.saveFoodDiaryDay(any, any)).thenThrow(eventFailedException);
 
-      sut.dispatch(InitFoodDiary());
+      sut.add(InitFoodDiary((b) => b..userId = userA.uid));
 
-      await delay(1);
-      sut.dispatch(GlobalAddFoodRecords((b) => b
+      await 1.tick.delay;
+      sut.add(GlobalAddFoodRecords((b) => b
         ..date = 25
         ..mealIndex = 1
         ..foodRecords = foodRecords.toBuilder()
@@ -341,7 +286,7 @@ void main() {
       expect(completer.isCompleted, true);
 
       verify(diaryRepository.saveFoodDiaryDay(
-        userId,
+        userA.uid,
         FoodDiaryDay((b) => b
           ..date = 25
           ..meals = BuiltList(List<MealData>.generate(4, (e) => MealData()))
@@ -352,24 +297,19 @@ void main() {
   });
 
   group("FoodDiaryLoaded::dietForDate", () {
-    final secondDiet = Diet((b) => b
-      ..idealNutrients = NutrientMap.random()
-      ..startDate = 100
-    );
-
     final loadedState = FoodDiaryLoaded((b) => b
       ..diaryDays = MapBuilder()
       ..diets = ListBuilder(<Diet>[
-        diet,
-        secondDiet,
+        dietA,
+        dietB,
       ])
     );
 
     test("Returns respective diet", () {
-      expect(loadedState.dietForDate(0), diet);
-      expect(loadedState.dietForDate(10), diet);
-      expect(loadedState.dietForDate(100), secondDiet);
-      expect(loadedState.dietForDate(1000), secondDiet);
+      expect(loadedState.dietForDate(0), dietA);
+      expect(loadedState.dietForDate(10), dietA);
+      expect(loadedState.dietForDate(100), dietB);
+      expect(loadedState.dietForDate(1000), dietB);
     });
 
     test("Throws StateError if earliest diet starts after requested date", () {

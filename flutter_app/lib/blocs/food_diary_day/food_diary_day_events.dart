@@ -1,22 +1,21 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
 
 import 'package:built_value/built_value.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
+
 import 'package:diet_driven/models/models.dart';
-import 'package:flutter/services.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 part 'food_diary_day_events.g.dart';
 
 abstract class FoodDiaryDayEvent {}
 
-/// Subscribes to bloc state stream.
+/// Subscribes to food diary bloc state stream.
 abstract class InitFoodDiaryDay implements FoodDiaryDayEvent, Built<InitFoodDiaryDay, InitFoodDiaryDayBuilder> {
   factory InitFoodDiaryDay([void Function(InitFoodDiaryDayBuilder) updates]) = _$InitFoodDiaryDay;
   InitFoodDiaryDay._();
@@ -44,23 +43,18 @@ abstract class AddFoodRecords implements Completable, FoodDiaryDayEvent, Built<A
   AddFoodRecords._();
 }
 
-/// Replaces [oldRecord] with [newRecord].
+/// Replaces food record with uid of with current value of [foodRecord].
 abstract class ReplaceFoodRecord implements Completable, FoodDiaryDayEvent, Built<ReplaceFoodRecord, ReplaceFoodRecordBuilder> {
-  FoodRecord get oldRecord;
-
-  FoodRecord get newRecord;
+  FoodRecord get foodRecord;
 
   factory ReplaceFoodRecord([void Function(ReplaceFoodRecordBuilder) updates]) = _$ReplaceFoodRecord;
   ReplaceFoodRecord._();
 }
 
-/// Deletes [foodRecords] from this day.
+/// Deletes food records with [foodRecordUids] from this day.
 abstract class DeleteFoodRecords implements Completable, FoodDiaryDayEvent, Built<DeleteFoodRecords, DeleteFoodRecordsBuilder> {
-  BuiltList<FoodRecord> get foodRecords;
+  BuiltList<String> get foodRecordUids;
 
   factory DeleteFoodRecords([void Function(DeleteFoodRecordsBuilder) updates]) = _$DeleteFoodRecords;
   DeleteFoodRecords._();
 }
-
-/// Moves [foodRecords] from this day to specified [mealIndex].
-//MoveFoodRecords

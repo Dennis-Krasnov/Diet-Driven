@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 library serializers;
@@ -33,10 +32,12 @@ part 'serializers.g.dart';
   // User data
   Authentication,
   UserDocument,
-  Settings,
   SubscriptionType,
+
+  Settings,
   ThemeSettings,
   NavigationSettings,
+  DiarySettings
 ])
 
 // Built value default serializer

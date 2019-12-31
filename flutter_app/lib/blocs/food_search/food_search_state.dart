@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
 import 'package:built_value/built_value.dart';
+
 import 'package:diet_driven/models/models.dart';
 
 part 'food_search_state.g.dart';
@@ -42,11 +42,13 @@ abstract class FoodSearchUninitializedBuilder implements FoodSearchStateBuilder,
   FoodSearchUninitializedBuilder._();
 }
 
-/// ...
-/// describe what happens...
-/// See FoodSearchBloc state diagram in documentation.
+/// Food suggestion, typing, loading, or results based on fields.
+/// See search bloc state diagram in documentation for details.
 abstract class FoodSearchLoaded implements FoodSearchState, Built<FoodSearchLoaded, FoodSearchLoadedBuilder> {
   /// Suggestions for [query] or results of [query].
+  /// Failed suggestions if [null] and query is "".
+  /// Failed search if [null] and query isn't "".
+  @nullable
   BuiltList<FoodRecord> get results;
 
   /// Whether awaiting search results from server.

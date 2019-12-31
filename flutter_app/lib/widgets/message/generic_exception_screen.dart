@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:flutter/material.dart';
@@ -20,8 +19,8 @@ class ErrorPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final UserDataBloc _userDataBloc = BlocProvider.of<UserDataBloc>(context);
 
-    String name = _userDataBloc.currentState is UserDataLoaded
-        ? (_userDataBloc.currentState as UserDataLoaded).authentication?.displayName
+    String name = _userDataBloc.state is UserDataLoaded
+        ? (_userDataBloc.state as UserDataLoaded).authentication?.displayName
         : "mr. anonymous";
 
     return Scaffold(

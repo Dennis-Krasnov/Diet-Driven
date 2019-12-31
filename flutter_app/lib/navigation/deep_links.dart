@@ -1,11 +1,18 @@
+/*
+ * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
+ */
+
 import 'package:deep_link_navigation/deep_link_navigation.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
+
 import 'package:diet_driven/navigation/deep_link_mixins.dart';
+import 'package:diet_driven/navigation/extensions.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 // errors
 
 class RouteNotFoundDL extends ValueDeepLink<RouteNotFound> with FullScreen {
-  RouteNotFoundDL(RouteNotFound e) : super("route-not-found", e, toString: (e) => e.route.join("/"));
+  RouteNotFoundDL(RouteNotFound e) : super("route-not-found", e, toString: (e) => e.route.path);
 }
 
 // onboarding and login
@@ -47,7 +54,11 @@ class OnboardingWeightDL extends ValueDeepLink<double> {
 class DiaryDateDL extends ValueDeepLink<int> {
   DiaryDateDL(int date) : super("diary", date);
 
-  DiaryDateDL.today() : super("diary", currentDaysSinceEpoch());
+  DiaryDateDL.today() : super("diary", DateTime.now().asInt);
+}
+
+class SearchDL extends ValueDeepLink<String> with FullScreen {
+  SearchDL(String initialQuery) : super("search", initialQuery);
 }
 
 // TODO: custom built serializer for deep links!!!! - giant map both ways / use json serializer!?
@@ -60,6 +71,8 @@ class MeasureDL extends DeepLink {
 class ReportsDL extends DeepLink {
   ReportsDL() : super("reports");
 }
+
+// individual reports are: with SubscriberOnly
 
 // TODO: enum
 class UserDL extends ValueDeepLink<String> {

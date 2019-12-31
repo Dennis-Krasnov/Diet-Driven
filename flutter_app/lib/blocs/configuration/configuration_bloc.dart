@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -11,15 +10,15 @@ import 'package:bloc_logging/bloc_logging.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/configuration/configuration.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
 
 /// Aggregates and manages app-wide runtime configuration.
-/// App shows skeleton navigation until [ConfigurationBloc] is loaded.
 class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   final ConfigurationRepository configurationRepository;
+
+  ConfigurationLoaded get loadedState => state as ConfigurationLoaded;
 
   StreamSubscription<ConfigurationEvent> _configurationEventSubscription;
 
@@ -29,37 +28,33 @@ class ConfigurationBloc extends Bloc<ConfigurationEvent, ConfigurationState> {
   ConfigurationState get initialState => ConfigurationUninitialized();
 
   @override
-  void dispose() {
+  Future<void> close() {
     _configurationEventSubscription?.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
   Stream<ConfigurationState> mapEventToState(ConfigurationEvent event) async* {
     if (event is InitConfiguration) {
-      if (currentState is! ConfigurationUninitialized) {
-        dispatch(ConfigurationError((b) => b..error = StateError("Configuration bloc must be uninitialized")));
-        return;
-      }
-
       // Maintain single instance of stream subscription
-      _configurationEventSubscription ??= Observable<ConfigurationEvent>(CombineLatestStream.combine3(
-        Observable<RemoteConfiguration>.fromFuture(configurationRepository.fetchRemoteConfig())
+      await _configurationEventSubscription?.cancel();
+      _configurationEventSubscription = CombineLatestStream.combine3<RemoteConfiguration, PackageInformation, ConnectivityStatus, ConfigurationEvent>(
+        configurationRepository.fetchRemoteConfig().asStream()
           .doOnError((Object error, StackTrace stacktrace) => BlocLogger().expectedError("Default configuration used", error, stacktrace))
           .onErrorReturn(RemoteConfiguration()),
-        Observable<PackageInformation>.fromFuture(configurationRepository.fetchPackageInfo()),
-        // FIXME: start with needed on ios for some reason...
-        Observable<ConnectivityStatus>(configurationRepository.connectivity$()).startWith(ConnectivityStatus.disconnected), // TODO .doOnData((data) => "CONNECTIVITY ARRIVED: $data")
-        (RemoteConfiguration remoteConfiguration, PackageInformation packageInfo, ConnectivityStatus connectivity) => IngressConfigurationArrived((b) => b
+        configurationRepository.fetchPackageInfo().asStream(),
+        // FIXME: start with needed on ios for some reason... .startWith(ConnectivityStatus.disconnected).doOnData(print),
+        configurationRepository.connectivity$(),
+        (remoteConfiguration, packageInfo, connectivity) => IngressConfigurationArrived((b) => b
           ..remoteConfiguration = remoteConfiguration.toBuilder()
           ..packageInfo = packageInfo.toBuilder()
           ..connectivity = connectivity
         ),
-      ))
+      )
       // Unrecoverable failure
       .onErrorReturnWith((dynamic error) => ConfigurationError((b) => b..error = error))
       .distinct()
-      .listen(dispatch);
+      .listen(add);
     }
 
     if (event is IngressConfigurationArrived) {

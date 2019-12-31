@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'dart:async';
@@ -9,101 +8,101 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:bloc_logging/bloc_logging.dart';
 import 'package:built_collection/built_collection.dart';
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:meta/meta.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'package:diet_driven/blocs/blocs.dart';
 import 'package:diet_driven/blocs/food_diary/food_diary.dart';
 import 'package:diet_driven/models/models.dart';
 import 'package:diet_driven/repositories/repositories.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 /// Aggregates and manages user's food diary days and diets.
-/// Diary tab shows skeleton app bar until [FoodDiaryBloc] is loaded.
 class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
   final DiaryRepository diaryRepository;
 
-  /// Authenticated user's id.
-  final String userId;
+  /// Mutable authenticated user's id.
+  String _userId;
+  String get userId => _userId;
 
   /// Optional parameter to view historical data from single day.
   final int date;
 
+  /// Whether diary loads single diary day instead of 30 days ago and onwards.
+  bool get historical => date != null;
+
+  FoodDiaryLoaded get loadedState => state as FoodDiaryLoaded;
+
   StreamSubscription<FoodDiaryEvent> _foodDiaryEventSubscription;
 
-  FoodDiaryBloc({@required this.diaryRepository, @required this.userId, this.date}) :
+  FoodDiaryBloc({@required this.diaryRepository, this.date}) :
     assert(diaryRepository != null),
-    assert(userId != null && userId.isNotEmpty),
     assert(date == null || date >= 0);
 
   @override
   FoodDiaryState get initialState => FoodDiaryUninitialized();
 
   @override
-  void dispose() {
+  Future<void> close() {
     _foodDiaryEventSubscription?.cancel();
-    super.dispose();
+    return super.close();
   }
 
   @override
   Stream<FoodDiaryState> mapEventToState(FoodDiaryEvent event) async* {
     if (event is InitFoodDiary) {
-      if (currentState is! FoodDiaryUninitialized) {
-        dispatch(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be uninitialized")));
-        return;
-      }
+      _userId = event.userId;
 
       // Common interface for both the ongoing and historical versions of food diary bloc
-      Observable<BuiltList<FoodDiaryDay>> diaryDays$;
+      Stream<BuiltList<FoodDiaryDay>> diaryDays$;
 
       // Whether food diary day document(s) exist for the given time period
       bool diaryDaysExist;
 
-      // Ongoing subscription
-      if (!historical) {
-        // A month ago from today
-        final startDate = currentDaysSinceEpoch() - 30;
-        diaryDays$ = Observable<BuiltList<FoodDiaryDay>>(diaryRepository.allTimeFoodDiary$(userId, startAt: startDate));
-
-        diaryDaysExist = await diaryRepository.allTimeFoodDiaryExists(userId, startAt: startDate);
-      }
-      // Historical date
-      else {
-        diaryDays$ = Observable<FoodDiaryDay>(diaryRepository.foodDiaryDay$(userId, date))
-          .map((day) => BuiltList(<FoodDiaryDay>[day]));
+      if (historical) {
+        // Historical mode subscribes to single food diary day
+        diaryDays$ = diaryRepository.foodDiaryDay$(userId, date)
+          .map((day) => [day].toBuiltList());
 
         diaryDaysExist = await diaryRepository.foodDiaryDayExists(userId, date);
       }
+      else {
+        // Ongoing subscription for 30 days ago and onward
+        final startDate = DateTime.now().asInt - 30;
+        diaryDays$ = diaryRepository.allTimeFoodDiary$(userId, startAt: startDate);
 
-      // If nothing found in the time period, then start off with an empty diary.
+        diaryDaysExist = await diaryRepository.allTimeFoodDiaryExists(userId, startAt: startDate);
+      }
+
+      // Start with nothing if no days were found in time period
       if (!diaryDaysExist) {
         diaryDays$ = diaryDays$.startWith(BuiltList());
       }
 
       // Maintain single instance of stream subscription
-      _foodDiaryEventSubscription ??= Observable<FoodDiaryEvent>(CombineLatestStream.combine2(
-        Observable<BuiltList<FoodDiaryDay>>(diaryDays$),
-        Observable<BuiltList<Diet>>(diaryRepository.allTimeDiet$(userId)),
-        (BuiltList<FoodDiaryDay> diaryDays, BuiltList<Diet> diets) => IngressFoodDiaryArrived((b) => b
+      await _foodDiaryEventSubscription?.cancel();
+      _foodDiaryEventSubscription = CombineLatestStream.combine2<BuiltList<FoodDiaryDay>, BuiltList<Diet>, FoodDiaryEvent>(
+        diaryDays$,
+        diaryRepository.allTimeDiet$(userId),
+        (diaryDays, diets) => IngressFoodDiaryArrived((b) => b
           ..diaryDays = diaryDays.toBuilder()
           ..diets = diets.toBuilder()
         )
-      ))
+      )
       // Unrecoverable failure
-      .onErrorReturnWith((dynamic error) => FoodDiaryError((b) => b..error = error))
+      .onErrorReturnWith((error) => FoodDiaryError((b) => b..error = error))
       .distinct()
-      .listen(dispatch);
+      .listen(add);
     }
 
     if (event is IngressFoodDiaryArrived) {
-      final diaryDaysMap = BuiltMap<int, FoodDiaryDay>.from(Map<int, FoodDiaryDay>.fromIterable(
+      final dateDiaryDays = Map<int, FoodDiaryDay>.fromIterable(
         event.diaryDays,
-        key: (dynamic day) => day.date,
-        value: (dynamic day) => day
-      ));
+        key: (day) => day.date,
+        value: (day) => day,
+      ).toMapBuilder();
 
       yield FoodDiaryLoaded((b) => b
-        ..diaryDays = diaryDaysMap.toBuilder()
+        ..diaryDays = dateDiaryDays
         ..diets = event.diets.toBuilder()
       );
 
@@ -120,8 +119,8 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
     }
 
     if (event is GlobalAddFoodRecords) {
-      if (currentState is! FoodDiaryLoaded) {
-        dispatch(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be loaded")));
+      if (state is! FoodDiaryLoaded) {
+        add(FoodDiaryError((b) => b..error = StateError("Food diary bloc must be loaded")));
         return;
       }
 
@@ -131,15 +130,15 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         final diaryDayBuilder = FoodDiaryDayBuilder()
           ..date = event.date
           // Create correct number of empty meals according to diet for that day
-          ..meals = BuiltList(List<MealData>.generate(
-            (currentState as FoodDiaryLoaded).dietForDate(event.date).meals.length,
-            (i) => MealData((b) => b
-              ..foodRecords = ListBuilder()
-            )
-          ));
+          ..meals = [
+            for (var _ in loadedState.dietForDate(event.date).meals.length.range)
+              MealData((b) => b
+                ..foodRecords = ListBuilder()
+              )
+          ].toBuiltList();
 
         // Override default day with existing day if it exists
-        final existingDiaryDay = (currentState as FoodDiaryLoaded).diaryDays[event.date];
+        final existingDiaryDay = loadedState.diaryDays[event.date];
         if (existingDiaryDay != null) {
           diaryDayBuilder.replace(existingDiaryDay);
         }
@@ -155,11 +154,6 @@ class FoodDiaryBloc extends Bloc<FoodDiaryEvent, FoodDiaryState> {
         event?.completer?.completeError(error, stacktrace);
       }
     }
-
     // TODO: copy event copies onto self, instead of copying into another bloc
   }
-
-  /// ...
-  /// TODO: use this everywhere!
-  bool get historical => date != null;
 }

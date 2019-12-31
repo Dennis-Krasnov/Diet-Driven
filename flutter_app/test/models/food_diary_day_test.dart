@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_collection/built_collection.dart';
@@ -11,8 +10,6 @@ import 'package:diet_driven/models/models.dart';
 
 void main() {
   FoodDiaryDay day;
-
-  // TOTEST: by id, not by identical values!!!
 
   /// Data
   final peach = FoodRecord((b) => b
@@ -77,6 +74,8 @@ void main() {
     expect(() => day.toBuilder()..addFoodRecords(0, null), throwsArgumentError);
     expect(() => day.toBuilder()..addFoodRecords(0, BuiltList(<FoodRecord>[])), throwsArgumentError);
 
+    expect(() => day.toBuilder()..addFoodRecords(0, BuiltList(<FoodRecord>[peach])), throwsArgumentError);
+
     // Behaviour
     expect(day.meals[0].foodRecords, [peach, orange]);
     expect(day.meals[1].foodRecords, isEmpty);
@@ -92,17 +91,14 @@ void main() {
 
   test("Replace food records", () {
     // Exceptions
-    expect(() => day.toBuilder()..replaceFoodRecord(null, tomato), throwsArgumentError);
-    expect(() => day.toBuilder()..replaceFoodRecord(potato, apricot), throwsArgumentError);
-
-    expect(() => day.toBuilder()..replaceFoodRecord(tomato, null), throwsArgumentError);
-    expect(() => day.toBuilder()..replaceFoodRecord(tomato, peach), throwsArgumentError);
+    expect(() => day.toBuilder()..replaceFoodRecord(null), throwsArgumentError);
+    expect(() => day.toBuilder()..replaceFoodRecord(apricot), throwsArgumentError);
 
     // Behaviour
     expect(day.meals[0].foodRecords, [peach, orange]);
 
     day = day.rebuild((b) => b
-      ..replaceFoodRecord(orange, potato)
+      ..replaceFoodRecord(potato.rebuild((b) => b..uid = orange.uid))
     );
 
     expect(day.meals[0].foodRecords, [peach, potato]);
@@ -111,15 +107,15 @@ void main() {
   test("Delete food records", () {
     // Exceptions
     expect(() => day.toBuilder()..deleteFoodRecords(null), throwsArgumentError);
-    expect(() => day.toBuilder()..deleteFoodRecords(BuiltList(<FoodRecord>[])), throwsArgumentError);
-    expect(() => day.toBuilder()..deleteFoodRecords(BuiltList(<FoodRecord>[apricot])), throwsArgumentError);
+    expect(() => day.toBuilder()..deleteFoodRecords(BuiltList(<String>[])), throwsArgumentError);
+    expect(() => day.toBuilder()..deleteFoodRecords(BuiltList(<String>[apricot.uid])), throwsArgumentError);
 
     // Behaviour
     expect(day.meals[0].foodRecords, [peach, orange]);
     expect(day.meals[2].foodRecords, [tomato]);
 
     day = day.rebuild((b) => b
-      ..deleteFoodRecords(BuiltList(<FoodRecord>[peach, tomato]))
+      ..deleteFoodRecords(BuiltList(<String>[peach.uid, tomato.uid]))
     );
 
     expect(day.meals[0].foodRecords, [orange]);
@@ -131,10 +127,11 @@ void main() {
 
     // Behaviour
     expect(day.meals[0].foodRecords, [peach, orange]);
+    expect(day.meals[1].foodRecords, isEmpty);
     expect(day.meals[2].foodRecords, [tomato]);
 
     day = day.rebuild((b) => b
-      ..moveFoodRecords(1, BuiltList(<FoodRecord>[peach, tomato]))
+      ..moveFoodRecords(1, BuiltList(<String>[peach.uid, tomato.uid]))
     );
 
     expect(day.meals[0].foodRecords, [orange]);

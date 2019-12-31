@@ -1,7 +1,6 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_value/built_value.dart';
@@ -17,7 +16,7 @@ abstract class FoodRecordResult implements Built<FoodRecordResult, FoodRecordRes
   FoodRecord get foodRecord;
 
   ///
-  FoodLoggingTab get resultType; // TODO: store list of where it's appeared? would have to update all results when a new one comes in - recursion?!
+//  FoodLoggingTab get resultType; // TODO: store list of where it's appeared? would have to update all results when a new one comes in - recursion?!
 
   ///
   bool get existsInDiary;

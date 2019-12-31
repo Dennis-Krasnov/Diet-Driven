@@ -1,19 +1,18 @@
 /*
  * Copyright (c) 2019. Dennis Krasnov. All rights reserved.
- * Use of this source code is governed by the MIT license that can be found
- * in the LICENSE file.
+ * Use of this source code is governed by the MIT license that can be found in the LICENSE file.
  */
 
 import 'package:built_value/built_value.dart';
 
-import 'package:diet_driven/blocs/bloc_utils.dart';
 import 'package:diet_driven/models/models.dart';
+import 'package:diet_driven/utils/utils.dart';
 
 part 'user_data_state.g.dart';
 
 abstract class UserDataState {}
 
-/// Splash page blocks rest of application.
+/// Global splash page.
 abstract class UserDataUninitialized implements UserDataState, Built<UserDataUninitialized, UserDataUninitializedBuilder> {
   factory UserDataUninitialized([void Function(UserDataUninitializedBuilder b)]) = _$UserDataUninitialized;
   UserDataUninitialized._();
@@ -25,8 +24,7 @@ abstract class UserDataFailed implements BuiltError, UserDataState, Built<UserDa
   UserDataFailed._();
 }
 
-// TODO: create separate onboarding bloc
-/// Unauthenticated user onboarding / sign in.
+/// Redirection to onboarding / sign in.
 abstract class UserDataUnauthenticated implements UserDataState, Built<UserDataUnauthenticated, UserDataUnauthenticatedBuilder> {
   factory UserDataUnauthenticated([void Function(UserDataUnauthenticatedBuilder b)]) = _$UserDataUnauthenticated;
   UserDataUnauthenticated._();
