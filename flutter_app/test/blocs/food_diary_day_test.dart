@@ -158,6 +158,5 @@ void main() {
       // TODO: verify once for each, TEST THAT DIRTY FOOD RECORDS WORK!
       verify(diaryRepository.saveFoodDiaryDay(userA.uid, any)).called(2);
     });
-
   });
 }

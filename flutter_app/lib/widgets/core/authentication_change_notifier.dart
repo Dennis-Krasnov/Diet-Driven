@@ -6,6 +6,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:diet_driven/blocs/blocs.dart';
@@ -14,12 +15,6 @@ import 'package:diet_driven/blocs/blocs.dart';
 class AuthenticationChangeNotifier extends StatefulWidget {
   /// {@macro flutter.widgets.child}
   final Widget child;
-
-  /// ...
-  final ConfigurationBloc configurationBloc;
-
-  /// ...
-  final UserDataBloc userDataBloc;
 
   /// ...
   final Function(UserDataLoaded) onAuthenticated;
@@ -33,8 +28,6 @@ class AuthenticationChangeNotifier extends StatefulWidget {
   const AuthenticationChangeNotifier({
     Key key,
     @required this.child,
-    @required this.configurationBloc,
-    @required this.userDataBloc,
     @required this.onAuthenticated,
     @required this.onUnauthenticated,
     @required this.onException,
@@ -50,16 +43,34 @@ class _AuthenticationChangeNotifierState extends State<AuthenticationChangeNotif
   @override
   void initState() {
     super.initState();
-    _authenticationStatusSubscription ??= CombineLatestStream.combine2<ConfigurationState, UserDataState, UserDataState>(
-      // Only take loaded configurations
-      widget.configurationBloc.where((configurationState) => configurationState is ConfigurationLoaded),
-      // Initially starts with null authentication status
-      widget.userDataBloc.skip(1),
-      (configurationState, userDataState) => userDataState,
-    )
-    // ...
-      .doOnError(widget.onException) // TODO: gracefully handle this!
-      .listen((userDataState) {
+
+    final configurationBloc = BlocProvider.of<ConfigurationBloc>(context);
+    final userDataBloc = BlocProvider.of<UserDataBloc>(context);
+
+    // Wait until configuration bloc emits a loaded state
+    final configurationLoaded$ = configurationBloc
+      .whereType<ConfigurationLoaded>()
+      .take(1);
+
+    // Then switch over to overlapping pairs of user data states
+    // eg. [a, b], [b, c], [c, d], etc.
+    final userDataStateChange$ = configurationLoaded$
+      .switchMap((_) => userDataBloc)
+      // Start with uninitialized state to immediately make a pair and dispatch an event
+      .startWith(UserDataUninitialized())
+      .bufferCount(2, 1)
+      // Keep only significant changes
+      .where((userDataStatePair) =>
+        userDataStatePair[0] is UserDataUninitialized
+        || _userUid(userDataStatePair[0]) != _userUid(userDataStatePair[1])
+      )
+      // Then return new user data state
+      .map((userDataStatePair) => userDataStatePair[1]);
+
+    _authenticationStatusSubscription ??= userDataStateChange$.listen((userDataState) {
+      if (userDataState is UserDataUninitialized) {
+        return;
+      }
       if (userDataState is UserDataUnauthenticated) {
         return widget.onUnauthenticated();
       }
@@ -69,8 +80,17 @@ class _AuthenticationChangeNotifierState extends State<AuthenticationChangeNotif
       if (userDataState is UserDataFailed) {
         return widget.onException(userDataState.error);
       }
-      return widget.onException(UnimplementedError());
+      widget.onException(UnimplementedError());
     });
+  }
+
+  /// ...
+  /// Nullable.
+  String _userUid(UserDataState userDataState) {
+    if (userDataState is! UserDataLoaded) {
+      return null;
+    }
+    return (userDataState as UserDataLoaded).authentication.uid;
   }
 
   @override

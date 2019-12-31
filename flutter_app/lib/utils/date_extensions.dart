@@ -14,7 +14,6 @@ extension IntegerDateUtilsExtensions on int {
   String get relativeString {
     final dt = asDateTime;
     final now = DateTime.now().toLocal();
-    print(now);
 
     // Relative days
     if (this == (now - 1.days).asInt) {

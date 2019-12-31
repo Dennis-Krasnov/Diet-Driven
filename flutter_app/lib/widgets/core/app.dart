@@ -58,8 +58,6 @@ class App extends StatelessWidget {
             // Navigates to respective page on authentication status change
             // Only executes callbacks once configuration bloc is loaded
             body: AuthenticationChangeNotifier(
-              configurationBloc: BlocProvider.of<ConfigurationBloc>(context),
-              userDataBloc: BlocProvider.of<UserDataBloc>(context),
               // Navigate to user's default page
               onAuthenticated: (userDataLoaded) {
                 BlocProvider.of<FoodDiaryBloc>(context).add(InitFoodDiary((b) => b

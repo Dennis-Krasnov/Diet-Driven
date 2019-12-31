@@ -47,7 +47,7 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
             HeaderInformation(0, Header.height),
             // Meals
             for (final mealInfoKV in loadedState.diet.meals.enumerate)
-              HeaderInformation(_offsetForHeader(loadedState.foodDiaryDay, mealInfoKV.key), Header.height),
+              HeaderInformation(_offsetForMealHeader(loadedState.foodDiaryDay, mealInfoKV.key), Header.height),
           ],
           slivers: <Widget>[
             DailyNutritionStatsSliver(),
@@ -65,26 +65,25 @@ class _FoodDiaryDayPageState extends State<FoodDiaryDayPage> {
     );
   }
 
-  double _offsetForHeader(FoodDiaryDay foodDiaryDay, int mealIndex) {
+  double _offsetForMealHeader(FoodDiaryDay foodDiaryDay, int mealIndex) {
     if (foodDiaryDay == null)
       return null;
 
     // Daily nutrition stats height
     double res = 116.0;
-    print("\ncalculating for #$mealIndex");
-    print("adding 116 for nutrition stats, now $res");
 
     // Count everything up to [mealIndex]'s header
-    final meals = foodDiaryDay?.meals?.sublist(0, mealIndex);
+    final meals = foodDiaryDay.meals.sublist(0, mealIndex);
     final foodRecords = meals.expand((m) => m.foodRecords);
 
     // Header height
     res += meals.length * Header.height;
-    print("adding ${meals.length * Header.height} for ${meals.length} headers, now $res");
+
+    // Padding height
+    res += meals.length * 32;
 
     // Food record height
     res += foodRecords.length * FoodRecordTile.height;
-    print("adding ${foodRecords.length * FoodRecordTile.height} for ${foodRecords.length} food records, now $res");
 
     return res;
   }
@@ -115,7 +114,6 @@ class _SnappingScrollViewState extends State<SnappingScrollView> {
 
   @override
   void initState() {
-    print(widget.headerScrollPositions);
     super.initState();
     _controller = ScrollController();
   }
@@ -140,7 +138,6 @@ class _SnappingScrollViewState extends State<SnappingScrollView> {
             final currentHeader = widget.headerScrollPositions[scrollState.currentScrollIndex - widget.initialIndex];
 
             if (currentHeader?.scrollOffset != null) {
-              print("#${scrollState.currentScrollIndex} animating to ${currentHeader.scrollOffset + currentHeader.headerHeight}");
               _controller.delayedAnimateTo(currentHeader.scrollOffset + currentHeader.headerHeight);
             }
           }
