@@ -24,9 +24,7 @@
 [![codecov](https://codecov.io/gh/Dennis-Krasnov/Diet-Driven/branch/bloc/graph/badge.svg)](https://codecov.io/gh/Dennis-Krasnov/Diet-Driven)
 [![Codemagic build status](https://api.codemagic.io/apps/5c06ef582e049200090a4954/5c7871872dea180008e1d030/status_badge.svg)](https://codemagic.io/apps/5c06ef582e049200090a4954/5c7871872dea180008e1d030/latest_build)
 
-...
 This is the directory containing the Flutter mobile app
-...
 
 ## What is Diet Driven?
 Diet Driven is an open source calorie counter app created in frustration of current solutions and their lack of features and customization.
