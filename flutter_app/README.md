@@ -25,17 +25,19 @@
 [![Codemagic build status](https://api.codemagic.io/apps/5c06ef582e049200090a4954/5c7871872dea180008e1d030/status_badge.svg)](https://codemagic.io/apps/5c06ef582e049200090a4954/5c7871872dea180008e1d030/latest_build)
 
 ...
-This is the directory containing the Flutter mobile app!...
+This is the directory containing the Flutter mobile app
 ...
 
 ## What is Diet Driven?
-Diet Driven is an open source calorie counter app created in frustration of current solutions and their lack of features and customization. Flutter, lalala...
+Diet Driven is an open source calorie counter app created in frustration of current solutions and their lack of features and customization.
 
+<!---
 <p align="center">
   <img src="https://raw.githubusercontent.com/jesusrp98/spacex-go/master/screenshots/0.png" width="256" hspace="4">
   <img src="https://raw.githubusercontent.com/jesusrp98/spacex-go/master/screenshots/1.png" width="256" hspace="4">
   <img src="https://raw.githubusercontent.com/jesusrp98/spacex-go/master/screenshots/2.png" width="256" hspace="4">
 </p>
+-->
 
 ## Features
 * **Food record logging**: objectively keep track of how much you've eaten.
@@ -76,11 +78,10 @@ Diet Driven is written in dart and Flutter. See the [installation instructions](
 - Add google-services.json to /app/
 
 ### Firebase
-(see ... directory (link) README for firebase instructions)
 Create your own Firebase application as seen on this [Firebase codelab](https://codelabs.developers.google.com/codelabs/flutter-firebase/#5). For Android you need to provide own `google-services.json` file. For iOS, you need to provide your own `???` file.
 
 #### Firebase Authentication
-Turn on anonymous login and ...
+Turn on anonymous login.
 
 #### Cloud Firestore
 ...
