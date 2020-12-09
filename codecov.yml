@@ -1,2 +1,0 @@
-ignore:
-  - "**/*.g.dart" # Exclude generated files
