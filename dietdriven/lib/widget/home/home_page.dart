@@ -2,10 +2,13 @@ import 'package:dietdriven/widget/home/home_screen.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends Page<void> {
-  const HomePage({LocalKey key}) : super(key: key);
+  HomePage() : super(key: Key("Home page"));
 
   @override
   Route<void> createRoute(BuildContext context) {
-    return MaterialPageRoute(builder: (context) => HomeScreen());
+    return MaterialPageRoute(
+      builder: (context) => HomeScreen(),
+      settings: this,
+    );
   }
 }

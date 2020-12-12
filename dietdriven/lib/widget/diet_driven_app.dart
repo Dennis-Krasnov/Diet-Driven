@@ -13,24 +13,28 @@ class DietDrivenApp extends StatelessWidget {
     return MaterialApp(
       title: "Diet Driven",
       home: BlocBuilder<NavigationCubit, NavigationState>(
-        // TODO
-        // buildWhen: (previousState, state) {
-        //   return true;
-        // },
+        buildWhen: (previousState, state) {
+          // Rebuild only on major navigation state changes
+          return previousState.runtimeType != state.runtimeType;
+        },
         builder: (context, state) {
+          print("state is $state");
           return Navigator(
             pages: [
               if (state is Unauthorized)
                 LandingPage(),
               if (state is UnrecoverableFailure)
-                UnrecoverableFailurePage(), // TODO: pass error
+                UnrecoverableFailurePage(error: state.error, stackTrace: state.stackTrace),
               if (state is Authorized)
-                // TODO: handle deep links??
-                HomePage(), // TODO: pass deep link (when it changes)
+                HomePage(),
             ],
-            onPopPage: (route, result) => route.didPop(result), // FIXME
+            onPopPage: (route, result) {
+              print("global on page pop, ${route.didPop(result)}, $route, $result");
+              return route.didPop(result); // FIXME, document
+            }
+          // onPopPage: (route, result) => false,
           );
-        }
+        },
       ),
     );
   }

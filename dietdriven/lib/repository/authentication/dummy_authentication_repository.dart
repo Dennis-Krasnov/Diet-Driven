@@ -8,6 +8,7 @@ class DummyAuthenticationRepository implements AuthenticationRepository {
     yield null;
     await 5.seconds.delay;
     yield User();
+    await 1.hours.delay;
   }
 
   @override

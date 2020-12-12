@@ -2,10 +2,13 @@ import 'package:dietdriven/widget/landing/landing_screen.dart';
 import 'package:flutter/material.dart';
 
 class LandingPage extends Page<void> {
-  const LandingPage({LocalKey key}) : super(key: key);
+  LandingPage() : super(key: Key("Landing page"));
 
   @override
   Route<void> createRoute(BuildContext context) {
-    return MaterialPageRoute(builder: (context) => LandingScreen());
+    return MaterialPageRoute(
+      builder: (context) => LandingScreen(),
+      settings: this,
+    );
   }
 }
