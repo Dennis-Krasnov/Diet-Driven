@@ -1,35 +1,37 @@
+import 'package:dietdriven/domain/user.dart';
 import 'package:dietdriven/navigation/prelude.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/cupertino.dart';
 
-abstract class NavigationState extends Equatable {}
+class NavigationState extends Equatable {
+  final User user; // TODO: nullable
+  final List<DeepLink> deepLinkHistory;
 
-/// ...
-class Unauthorized extends NavigationState {
+  NavigationState({this.user, this.deepLinkHistory});
+
+  NavigationState.splash() : user = null, deepLinkHistory = [
+    DeepLink(currentPage: DeepLinkPage.splash, splashDeepLink: SplashDeepLink())
+  ];
+
+  NavigationState.unauthenticated() : user = null, deepLinkHistory = [
+    DeepLink(currentPage: DeepLinkPage.landing, landingDeepLink: LandingDeepLink())
+  ];
+
+  DeepLink get currentDeepLink {
+    assert(deepLinkHistory.isNotEmpty);
+    return deepLinkHistory.last;
+  }
+
+  NavigationState copyWith({
+    User user,
+    String error,
+    List<DeepLink> deepLinkHistory,
+  }) => NavigationState(
+    user: user ?? this.user,
+    deepLinkHistory: deepLinkHistory ?? this.deepLinkHistory,
+  );
+
   @override
-  List<Object> get props => [];
-}
-
-/// ...
-class UnrecoverableFailure extends NavigationState {
-  final String error;
-  final String stackTrace;
-  // TODO: final bool isAuthorized, offer to sign out only of isAuthorized
-
-  UnrecoverableFailure({this.error, this.stackTrace});
-
-  @override
-  List<Object> get props => [error];
-}
-
-/// ... (stack of ...)
-class Authorized extends NavigationState {
-  final List<DeepLinkPayload> history;
-
-  Authorized({@required this.history});
-
-  @override
-  List<Object> get props => [history];
+  List<Object> get props => [user, deepLinkHistory];
 
   @override
   bool get stringify => true;

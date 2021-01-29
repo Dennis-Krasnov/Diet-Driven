@@ -5,6 +5,7 @@ import 'package:time/time.dart';
 class DummyAuthenticationRepository implements AuthenticationRepository {
   @override
   Stream<User> authStateChanges() async* {
+    await 1.seconds.delay;
     yield null;
     await 5.seconds.delay;
     yield User();

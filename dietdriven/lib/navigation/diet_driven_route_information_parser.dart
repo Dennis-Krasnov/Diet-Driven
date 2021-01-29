@@ -1,44 +1,83 @@
 import 'package:dietdriven/navigation/prelude.dart';
 import 'package:flutter/material.dart';
 
-// class DietDrivenRouteInformationParser implements RouteInformationParser<TempDeepLink> {
-//   @override
-//   Future<TempDeepLink> parseRouteInformation(RouteInformation routeInformation) {
-//     print("parseRouteInformation ${routeInformation.location} ${routeInformation.state}");
-//     return SynchronousFuture(TempDeepLink.diary);
-//     // return Future.sync(() => TempDeepLink.diary);
-//   }
-//
-//   @override
-//   RouteInformation restoreRouteInformation(TempDeepLink configuration) {
-//     print("restoreRouteInformation $configuration");
-//     return RouteInformation(location: "/diary");
-//     // TODO: use state instead???
-//   }
-// }
+class DietDrivenRouteInformationParser extends RouteInformationParser<DeepLink> {
+  final test1 = DeepLink(
+    currentPage: DeepLinkPage.home,
+    homeDeepLink: HomeDeepLink(
+      currentPage: HomeDeepLinkPage.diary,
+      diaryDeepLink: DiaryDeepLink(date: 123, userId: "Dennis"),
+    ),
+  );
 
-class DietDrivenRouteInformationParser extends RouteInformationParser<DeepLinkPayload> {
+  final test2 = DeepLink(
+    currentPage: DeepLinkPage.home,
+    homeDeepLink: HomeDeepLink(
+      currentPage: HomeDeepLinkPage.diet,
+      dietDeepLink: DietDeepLink(),
+    ),
+  );
+
+  final test3 = DeepLink(
+    currentPage: DeepLinkPage.landing,
+    landingDeepLink: LandingDeepLink(),
+  );
+
+  final test4 = DeepLink(
+    currentPage: DeepLinkPage.failure,
+    failureDeepLink: FailureDeepLink(error: "test4 failure"),
+  );
+
+  final test5 = DeepLink(
+    currentPage: DeepLinkPage.splash,
+    splashDeepLink: SplashDeepLink()
+  );
+
+  // TODO: implement parsing both ways in an extension in /lib/navigation/deep_link
+
   @override
-  Future<DeepLinkPayload> parseRouteInformation(RouteInformation routeInformation) async {
-    print("parseRouteInformation: ${routeInformation.location}");
-    final uri = Uri.parse(routeInformation.location);
+  Future<DeepLink> parseRouteInformation(RouteInformation routeInformation) async {
+    print("DietDrivenRouteInformationParser - parseRouteInformation - ${routeInformation.location}");
 
-    if (uri.pathSegments.length >= 2) {
-      var remaining = uri.pathSegments[1];
-      return DeepLinkPayload.details(int.tryParse(remaining));
-    } else {
-      return DeepLinkPayload.home();
+    if (routeInformation.location == "/") {
+      return test5;
     }
+    if (routeInformation.location == "test1") {
+      return test1;
+    }
+    if (routeInformation.location == "test2") {
+      return test2;
+    }
+    if (routeInformation.location == "test3") {
+      return test3;
+    }
+    if (routeInformation.location == "test4") {
+      return test4;
+    }
+
+    throw UnimplementedError();
   }
 
   @override
-  RouteInformation restoreRouteInformation(DeepLinkPayload path) {
-    if (path.isHomePage) {
-      return RouteInformation(location: '/');
+  RouteInformation restoreRouteInformation(DeepLink path) {
+    print("DietDrivenRouteInformationParser - restoreRouteInformation - $path");
+
+    if (path == test1) {
+      return RouteInformation(location: "test1");
     }
-    if (path.isDetailsPage) {
-      return RouteInformation(location: '/book/${path.id}');
+    if (path == test2) {
+      return RouteInformation(location: "test2");
     }
-    return null;
+    if (path == test3) {
+      return RouteInformation(location: "test3");
+    }
+    if (path == test4) {
+      return RouteInformation(location: "test4");
+    }
+    if (path == test5) {
+      return RouteInformation(location: "/");
+    }
+
+    throw UnimplementedError();
   }
 }

@@ -8,7 +8,7 @@ class DietDrivenBackButtonDispatcher extends RootBackButtonDispatcher {
 
   @override
   Future<bool> didPopRoute() async {
-    print("dispatcher didPopRoute");
+    print("DietDrivenBackButtonDispatcher - didPopRoute");
     return navigationCubit.pop();
   }
 }

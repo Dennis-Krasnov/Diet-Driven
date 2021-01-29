@@ -4,13 +4,14 @@ import 'package:dietdriven/bloc/navigation/prelude.dart';
 import 'package:dietdriven/domain/user.dart';
 import 'package:dietdriven/navigation/prelude.dart';
 import 'package:dietdriven/repository/authentication/authentication_repository.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 /// Manages navigation state.
 class NavigationCubit extends Cubit<NavigationState> {
   final AuthenticationRepository _authenticationRepository;
 
-  NavigationCubit(this._authenticationRepository) : super(Unauthorized());
+  NavigationCubit(this._authenticationRepository) : super(NavigationState.splash());
 
   StreamSubscription<NavigationState> _authenticationSubscription;
 
@@ -19,66 +20,93 @@ class NavigationCubit extends Cubit<NavigationState> {
     await _authenticationSubscription?.cancel();
 
     // Reset cubit state
-    if (state is! Unauthorized) {
+    if (state != NavigationState.splash()) {
       print("reset cubit state");
-      emit(Unauthorized());
+      emit(NavigationState.splash());
     }
     
-    // Maps nullable user to navigation state
-    _authenticationSubscription = _authenticationRepository.authStateChanges()
+    // Maps user changes to navigation state
+    _authenticationSubscription = _authenticationRepository.authStateChanges() // TODO: buffer stream a bit if it's non-null shortly after null
       .transform<NavigationState>(StreamTransformer.fromHandlers(
         handleData: (user, sink) {
+          print("handle data $user");
+
+          // User logged out
           if (user == null) {
-            sink.add(Unauthorized());
+            if (state != NavigationState.unauthenticated()) {
+              sink.add(NavigationState.unauthenticated());
+            }
+
+            print("user log out");
             return;
           }
 
-          if (state is Authorized) {
-            print("PREVIOUS");
+          // User logged in
+          if (state.user == null) {
+            final defaultDeepLink = DietDrivenRouteInformationParser().test1; // FIXME
+            sink.add(NavigationState(user: user, deepLinkHistory: [defaultDeepLink]));
+
+            print("user logged in");
             return;
           }
 
-          print("EMPTY/default");
-          sink.add(Authorized(history: [DeepLinkPayload.details(0)])); // TODO: create a constructor on Authorized for this
+          // TODO
+          // Subscriber-only pages
+          // final isNonPayingUser = !user.paidUser;
+          // final isOnDietPage = state.currentDeepLink.currentPage == DeepLinkPage.home && state.currentDeepLink.homeDeepLink.currentPage == HomeDeepLinkPage.diet;
+          // final isOnSettingsPage = state.currentDeepLink.currentPage == DeepLinkPage.home && state.currentDeepLink.homeDeepLink.currentPage == HomeDeepLinkPage.settings;
+          // if (isNonPayingUser && (isOnDietPage || isOnSettingsPage)) {
+          //   // sink.add(...);
+          //   return;
+          // }
         },
         handleError: (error, stacktrace, sink) {
-          // TODO: test this!
-          sink.add(UnrecoverableFailure(error: error.toString(), stackTrace: stacktrace.toString()));
+          print("handle error $error");
+          final deepLink = DeepLink(currentPage: DeepLinkPage.failure, failureDeepLink: FailureDeepLink(error: error));
+          sink.add(NavigationState(user: null, deepLinkHistory: [deepLink]));
+          // // TODO: test this!
+          // sink.add(UnrecoverableFailure(error: error.toString(), stackTrace: stacktrace.toString()));
         },
         handleDone: (sink) {
-          sink.add(UnrecoverableFailure(error: "Authentication state stream ended"));
+          print("handle done");
+          // sink.add(UnrecoverableFailure(error: "Authentication state stream ended"));
         },
       ))
       .listen(emit);
   }
 
-  void replace(DeepLinkPayload deepLinkPayload) {
+  void replace(DeepLink deepLinkPayload) {
 
   }
 
-  void push(DeepLinkPayload deepLinkPayload) {
+  void push(DeepLink deepLinkPayload) {
 
   }
 
   bool pop() {
-    assert(state is Authorized); // FIXME
-    final authorized = state as Authorized;
-
-    if (authorized.history.length == 1) {
+    if (state.deepLinkHistory.length == 1) {
       // Quit from application
       return false;
     }
 
-    emit(Authorized(history: List.from(authorized.history)..removeLast()));
+    emit(state.copyWith(deepLinkHistory: List.from(state.deepLinkHistory)..removeLast()));
 
     // Don't quit from application
     return true;
   }
 
-  void goto(int index) {
-    assert(state is Authorized); // FIXME
-    final authorized = state as Authorized;
-    print("goto $index, $state");
-    emit(Authorized(history: List.from(authorized.history)..add(DeepLinkPayload.details(index))));
+  /// ...
+  void switchHomeScreenPages(HomeDeepLinkPage homeDeepLinkPage) {
+    assert(state.user != null);
+    assert(state.currentDeepLink.currentPage == DeepLinkPage.home);
+
+    emit(state.copyWith(
+      deepLinkHistory: List.from(state.deepLinkHistory)
+        ..add(state.currentDeepLink.copyWith(
+          homeDeepLink: state.currentDeepLink.homeDeepLink.copyWith(
+            currentPage: homeDeepLinkPage,
+          )
+        ))
+    ));
   }
 }
