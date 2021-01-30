@@ -71,3 +71,12 @@ jobs:
         with:
           name: ios-app
           path: build/ios/iphoneos/Runner.app
+
+  build-web:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: TODO
+        run: echo TODO
