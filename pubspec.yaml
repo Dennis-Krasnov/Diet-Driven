@@ -24,6 +24,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  # Firebase
+  firebase_core: "0.7.0"
+
   ## Dart utilities
   time: ^1.4.0
   equatable: ^1.2.5

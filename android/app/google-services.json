@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1040717744580",
+    "project_id": "fitness-driven",
+    "storage_bucket": "fitness-driven.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1040717744580:android:d49fe5e35549ed50f4bc91",
+        "android_client_info": {
+          "package_name": "dev.krasnov.dietdriven"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1040717744580-82rok8dbh3kitptku2cqu89s99peob3e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAQAexZ7jBIItldBZR_eRRLpymbNyGXMto"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1040717744580-82rok8dbh3kitptku2cqu89s99peob3e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
