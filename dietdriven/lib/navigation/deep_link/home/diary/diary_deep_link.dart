@@ -9,4 +9,7 @@ class DiaryDeepLink extends Equatable {
 
   @override
   List<Object> get props => [userId, date];
+
+  @override
+  bool get stringify => true;
 }

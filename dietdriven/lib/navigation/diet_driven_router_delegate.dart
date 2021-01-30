@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+/// ...
+/// ...
 class DietDrivenRouterDelegate extends RouterDelegate<DeepLink> with ChangeNotifier {
   final NavigationCubit navigationCubit;
 
@@ -44,31 +46,30 @@ class DietDrivenRouterDelegate extends RouterDelegate<DeepLink> with ChangeNotif
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<NavigationCubit, NavigationState>(
-      builder: (context, state) {
-        print("navigation cubit is $state");
-        print("navigation cubit current is ${state.currentDeepLink}");
-        return Navigator(
-          pages: [
-            if (state.currentDeepLink.currentPage == DeepLinkPage.splash)
-              SplashPage(deepLink: state.currentDeepLink.splashDeepLink),
+    // Retrieve part of a state and react to changes only when the selected part changes
+    final currentPage = context.select((NavigationCubit cubit) => cubit.state.currentDeepLink.currentPage);
 
-            if (state.currentDeepLink.currentPage == DeepLinkPage.landing)
-              LandingPage(deepLink: state.currentDeepLink.landingDeepLink),
+    print("DietDrivenRouterDelegate BLOC BUILDER");
 
-            // if (state.currentDeepLink.currentPage == DeepLinkPage.login)
-            // ... TODO
+    return Navigator(
+      pages: [
+        if (currentPage == DeepLinkPage.splash)
+          SplashPage(),
 
-            if (state.currentDeepLink.currentPage == DeepLinkPage.failure)
-              UnrecoverableFailurePage(deepLink: state.currentDeepLink.failureDeepLink),
+        if (currentPage == DeepLinkPage.landing)
+          LandingPage(),
 
-            if (state.currentDeepLink.currentPage == DeepLinkPage.home)
-              HomePage(deepLink: state.currentDeepLink.homeDeepLink),
-          ],
-          onPopPage: (route, result) => false, // FIXME: document
-          transitionDelegate: NoAnimationTransitionDelegate(),
-        );
-      },
+        // if (currentPage == DeepLinkPage.login)
+        // ... TODO
+
+        if (currentPage == DeepLinkPage.failure)
+          UnrecoverableFailurePage(),
+
+        if (currentPage == DeepLinkPage.home)
+          HomePage(),
+      ],
+      onPopPage: (route, result) => false, // FIXME: document
+      transitionDelegate: NoAnimationTransitionDelegate(),
     );
   }
 }

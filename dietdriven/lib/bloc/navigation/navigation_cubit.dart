@@ -11,6 +11,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class NavigationCubit extends Cubit<NavigationState> {
   final AuthenticationRepository _authenticationRepository;
 
+  /// ...
+  final PlatformRouteInformationProvider platformRouteInformationProvider = PlatformRouteInformationProvider(
+      initialRouteInformation: RouteInformation(location: "/")
+  );
+
   NavigationCubit(this._authenticationRepository) : super(NavigationState.splash());
 
   StreamSubscription<NavigationState> _authenticationSubscription;
@@ -34,7 +39,7 @@ class NavigationCubit extends Cubit<NavigationState> {
           // User logged out
           if (user == null) {
             if (state != NavigationState.unauthenticated()) {
-              sink.add(NavigationState.unauthenticated());
+              sink.add(NavigationState.unauthenticated()); // TODO: don't subscribe init, re-use replace
             }
 
             print("user log out");
@@ -44,7 +49,7 @@ class NavigationCubit extends Cubit<NavigationState> {
           // User logged in
           if (state.user == null) {
             final defaultDeepLink = DietDrivenRouteInformationParser().test1; // FIXME
-            sink.add(NavigationState(user: user, deepLinkHistory: [defaultDeepLink]));
+            sink.add(NavigationState(user: user, deepLinkHistory: [defaultDeepLink]));  // TODO: don't subscribe init, re-use replace
 
             print("user logged in");
             return;
@@ -80,7 +85,10 @@ class NavigationCubit extends Cubit<NavigationState> {
   }
 
   void push(DeepLink deepLinkPayload) {
-
+    // FIXME: don't push if state.deepLinkHistory.last == deepLinkPayload
+    emit(state.copyWith(
+        deepLinkHistory: List.from(state.deepLinkHistory)..add(deepLinkPayload)
+    ));
   }
 
   bool pop() {
@@ -100,6 +108,8 @@ class NavigationCubit extends Cubit<NavigationState> {
     assert(state.user != null);
     assert(state.currentDeepLink.currentPage == DeepLinkPage.home);
 
+    // TODO: delegate to push, it performs validity checks there ...
+    // TODO: ensure where I'm going doesn't have a null deep link...
     emit(state.copyWith(
       deepLinkHistory: List.from(state.deepLinkHistory)
         ..add(state.currentDeepLink.copyWith(
