@@ -36,6 +36,6 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: android-apk
-          path: ~/dietdriven/build/app/outputs/flutter-apk/app-release.apk
+          path: ~/build/app/outputs/flutter-apk/app-release.apk
   
 #   - run: flutter test
