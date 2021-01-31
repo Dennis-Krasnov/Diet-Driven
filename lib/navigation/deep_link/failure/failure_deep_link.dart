@@ -5,6 +5,10 @@ class FailureDeepLink extends Equatable {
 
   FailureDeepLink({this.error});
 
+  bool isValid() {
+    return error.isNotEmpty;
+  }
+
   @override
   List<Object> get props => [error];
 }

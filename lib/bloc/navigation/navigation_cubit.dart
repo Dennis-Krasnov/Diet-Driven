@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dietdriven/bloc/navigation/prelude.dart';
-import 'package:dietdriven/domain/user.dart';
+import 'package:dietdriven/domain/user_account.dart';
 import 'package:dietdriven/navigation/prelude.dart';
 import 'package:dietdriven/repository/authentication/authentication_repository.dart';
 import 'package:flutter/cupertino.dart';
@@ -21,6 +21,8 @@ class NavigationCubit extends Cubit<NavigationState> {
   StreamSubscription<NavigationState> _authenticationSubscription;
 
   Future<void> initializeSubscription() async {
+    print("PlatformRouteInformationProvider initializeSubscription");
+
     // Maintain single instance of stream subscription
     await _authenticationSubscription?.cancel();
 

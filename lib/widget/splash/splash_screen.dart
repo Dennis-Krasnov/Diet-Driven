@@ -5,6 +5,6 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(appBar: AppBar(title: Text("splash screen")));
+    return Scaffold(backgroundColor: Colors.white);
   }
 }

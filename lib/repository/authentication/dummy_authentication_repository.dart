@@ -1,14 +1,14 @@
-import 'package:dietdriven/domain/user.dart';
+import 'package:dietdriven/domain/user_account.dart';
 import 'package:dietdriven/repository/authentication/authentication_repository.dart';
 import 'package:time/time.dart';
 
 class DummyAuthenticationRepository implements AuthenticationRepository {
   @override
-  Stream<User> authStateChanges() async* {
-    await 1.seconds.delay;
+  Stream<UserAccount> authStateChanges() async* {
+    await 30.seconds.delay;
     yield null;
     await 5.seconds.delay;
-    yield User();
+    yield UserAccount();
     await 1.hours.delay;
   }
 

@@ -1,9 +1,9 @@
-import 'package:dietdriven/domain/user.dart';
+import 'package:dietdriven/domain/user_account.dart';
 import 'package:dietdriven/navigation/prelude.dart';
 import 'package:equatable/equatable.dart';
 
 class NavigationState extends Equatable {
-  final User user; // TODO: nullable
+  final UserAccount user; // TODO: nullable
   final List<DeepLink> deepLinkHistory;
 
   NavigationState({this.user, this.deepLinkHistory});
@@ -22,7 +22,7 @@ class NavigationState extends Equatable {
   }
 
   NavigationState copyWith({
-    User user,
+    UserAccount user,
     String error,
     List<DeepLink> deepLinkHistory,
   }) => NavigationState(

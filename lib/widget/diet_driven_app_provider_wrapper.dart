@@ -1,6 +1,7 @@
 import 'package:dietdriven/bloc/navigation/prelude.dart';
 import 'package:dietdriven/repository/authentication/authentication_repository.dart';
 import 'package:dietdriven/repository/authentication/dummy_authentication_repository.dart';
+import 'package:dietdriven/repository/authentication/firebase_authentication_repository.dart';
 import 'package:dietdriven/widget/diet_driven_app.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,7 +14,8 @@ class DietDrivenAppProviderWrapper extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<AuthenticationRepository>(
-          create: (context) => DummyAuthenticationRepository(),
+          // create: (context) => DummyAuthenticationRepository(),
+          create: (context) => FirebaseAuthenticationRepository(),
         ),
       ],
       child: MultiBlocProvider(

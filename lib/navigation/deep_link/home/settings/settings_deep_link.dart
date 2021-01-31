@@ -2,7 +2,7 @@ import 'package:equatable/equatable.dart';
 
 /// ...
 class SettingsDeepLink extends Equatable {
-  final bool isOnProfile;
+  final bool isOnProfile; // TODO: not nullable
 
   SettingsDeepLink({this.isOnProfile});
 
@@ -11,6 +11,10 @@ class SettingsDeepLink extends Equatable {
   }) => SettingsDeepLink(
     isOnProfile: isOnProfile ?? this.isOnProfile,
   );
+
+  bool isValid() {
+    return true;
+  }
 
   @override
   List<Object> get props => [isOnProfile];

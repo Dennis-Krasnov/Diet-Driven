@@ -1,9 +1,9 @@
-import 'package:dietdriven/domain/user.dart';
+import 'package:dietdriven/domain/user_account.dart';
 
 /// Interface for user authentication and authorization.
 abstract class AuthenticationRepository {
   /// Notifies about changes to the user's sign-in state (null for lack of user).
-  Stream<User> authStateChanges();
+  Stream<UserAccount> authStateChanges();
 
   /// Sends a sign in with email link to provided email address.
   Future<void> sendSignInLinkToEmail(String email);

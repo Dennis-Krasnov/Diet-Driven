@@ -7,6 +7,12 @@ class DiaryDeepLink extends Equatable {
 
   DiaryDeepLink({this.userId, this.date});
 
+  bool isValid() {
+    if (userId.length != 28) return false;
+    if (date < 0) return false;
+    return true;
+  }
+
   @override
   List<Object> get props => [userId, date];
 
