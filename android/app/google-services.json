@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1040717744580-hspc6s4kuc25rt2ca0u4tfqls3nkab0t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "dev.krasnov.dietdriven",
+            "certificate_hash": "f8a7c39623d61445acad07e407cfd10e6b58f063"
+          }
+        },
+        {
           "client_id": "1040717744580-82rok8dbh3kitptku2cqu89s99peob3e.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "1040717744580-82rok8dbh3kitptku2cqu89s99peob3e.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "1040717744580-1j6jo3gmuhg8k73bsdd97jenbfnht2fk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "dev.krasnov.dietdriven"
+              }
             }
           ]
         }

@@ -11,13 +11,37 @@ void main() {
     expect(true, deepLink.isValid());
   });
 
-  test("Visit landing page", () {
-    final deepLink = DeepLink(
-      currentPage: DeepLinkPage.landing,
-      landingDeepLink: LandingDeepLink(),
-    );
+  group("Visit landing page", () {
+    test("Visit landing page", () {
+      final deepLink = DeepLink(
+        currentPage: DeepLinkPage.landing,
+        landingDeepLink: LandingDeepLink(),
+      );
 
-    expect(true, deepLink.isValid());
+      expect(true, deepLink.isValid());
+    });
+
+    test("Visit landing submitted page", () {
+      final deepLink = DeepLink(
+        currentPage: DeepLinkPage.landing,
+        landingDeepLink: LandingDeepLink(
+          submittedEmail: "dennis.krasnov@gmail.com"
+        ),
+      );
+
+      expect(true, deepLink.isValid());
+    });
+
+    test("Fail on invalid submitted email", () {
+      final deepLink = DeepLink(
+        currentPage: DeepLinkPage.landing,
+        landingDeepLink: LandingDeepLink(
+          submittedEmail: "",
+        ),
+      );
+
+      expect(false, deepLink.isValid());
+    });
   });
 
   group("Visit login page", () {

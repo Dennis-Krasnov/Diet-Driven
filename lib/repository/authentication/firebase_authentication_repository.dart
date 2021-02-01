@@ -14,6 +14,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
       if (user == null) return null;
 
       return UserAccount(
+        email: user.email,
         paidUser: false,
       );
     });
@@ -22,13 +23,42 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
     // ));
 
   @override
-  Future<void> sendSignInLinkToEmail(String email) {
-    return auth.sendSignInLinkToEmail(email: email, actionCodeSettings: null); // TODO: dynamic link settings!
+  Future<String> sendSignInLinkToEmail(String email) async {
+    try {
+      await auth.sendSignInLinkToEmail(email: email, actionCodeSettings: ActionCodeSettings(
+        // androidPackageName: "dev.krasnov.dietdriven",
+        // androidMinimumVersion: "1.0.0",
+        // iOSBundleId: "dev.krasnov.dietdriven",
+        dynamicLinkDomain: "dietdriven.page.link",
+        handleCodeInApp: true,
+        url: "https://dietdriven.krasnov.dev/please_login_lol", // TODO: document that one has to create url prefix in dashboard, and add url allowlist regex, and add dietdriven.krasnov.dev to auth/sign-in-method/authorized domains
+        // url: "dietdriven.krasnov.dev",
+      ));
+
+      return null;
+    } on FirebaseAuthException catch(e) {
+      return e.message;
+    }
   }
 
+  // https://fitness-driven.firebaseapp.com/__/auth/action?apiKey=AIzaSyCjhyVG6E9_NHfd0JdrWwmbSnhXAkS3Ur8&mode=signIn&oobCode=S4VuICbMfzMva1Pd7WJpbogw3Ys5o7NSY8oGRlUCis0AAAF3W1Yd5w&continueUrl=https://dietdriven.krasnov.dev/please_login_lol&lang=en
+  // https://fitness-driven.firebaseapp.com
+    // /__/auth/action
+    // ?apiKey=AIzaSyCjhyVG6E9_NHfd0JdrWwmbSnhXAkS3Ur8
+    // &mode=signIn
+    // &oobCode=S4VuICbMfzMva1Pd7WJpbogw3Ys5o7NSY8oGRlUCis0AAAF3W1Yd5w
+    // &continueUrl=https://dietdriven.krasnov.dev/please_login_lol
+    // &lang=en
+
   @override
-  Future<void> signInWithEmailLink(String email, String emailLink) {
-    return auth.signInWithEmailLink(email: email, emailLink: emailLink);
+  Future<String> signInWithEmailLink(String email, String emailLink) async {
+    print("trying with $email ; $emailLink");
+    try {
+      await auth.signInWithEmailLink(email: email, emailLink: emailLink);
+      return null;
+    } on FirebaseAuthException catch(e) {
+      return e.message;
+    }
   }
 
   @override

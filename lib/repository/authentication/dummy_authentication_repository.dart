@@ -8,18 +8,18 @@ class DummyAuthenticationRepository implements AuthenticationRepository {
     await 30.seconds.delay;
     yield null;
     await 5.seconds.delay;
-    yield UserAccount();
+    yield UserAccount(email: "dennis.krasnov@gmail.com");
     await 1.hours.delay;
   }
 
   @override
-  Future<void> sendSignInLinkToEmail(String email) async {
-    return;
+  Future<String> sendSignInLinkToEmail(String email) async {
+    return null;
   }
 
   @override
-  Future<void> signInWithEmailLink(String email, String emailLink) async {
-    return;
+  Future<String> signInWithEmailLink(String email, String emailLink) async {
+    return null;
   }
 
   @override

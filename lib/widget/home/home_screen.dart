@@ -1,5 +1,7 @@
 import 'package:dietdriven/bloc/navigation/prelude.dart';
+import 'package:dietdriven/domain/user_account.dart';
 import 'package:dietdriven/navigation/prelude.dart';
+import 'package:dietdriven/repository/authentication/authentication_repository.dart';
 import 'package:dietdriven/widget/home/settings/settings_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,7 +28,23 @@ class HomeScreen extends StatelessWidget {
       body: IndexedStack(
         index: pages.indexOf(currentPage),
         children: [
-          Center(child: Container(width: 100, height: 100, color: Colors.red)),
+          // Center(child: Container(width: 100, height: 100, color: Colors.red)),
+          Center(child: Column(
+            children: [
+              StreamBuilder<UserAccount>(
+                stream: Provider.of<AuthenticationRepository>(context, listen: false).authStateChanges(),
+                builder: (context, user) {
+                  return Text("WELCOME ${user.data?.email}");
+                }
+              ),
+              RaisedButton(
+                onPressed: () async {
+                  await Provider.of<AuthenticationRepository>(context, listen: false).signOut();
+                },
+                child: Text("log out"),
+              ),
+            ],
+          )),
           Center(child: Container(width: 100, height: 100, color: Colors.orange)),
           SettingsNavigation(),
         ],
