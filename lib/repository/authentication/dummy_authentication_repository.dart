@@ -8,7 +8,7 @@ class DummyAuthenticationRepository implements AuthenticationRepository {
     await 30.seconds.delay;
     yield null;
     await 5.seconds.delay;
-    yield UserAccount(email: "dennis.krasnov@gmail.com");
+    yield UserAccount(uid: "0SbCLr1mVPTyePSwWoOANS1epVr2", email: "dennis.krasnov@gmail.com");
     await 1.hours.delay;
   }
 

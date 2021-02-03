@@ -14,15 +14,7 @@ class SettingsScreen extends StatelessWidget {
       body: Center(child: FlatButton(
         child: Text("go to profile"),
         onPressed: () {
-          final curr = context.read<NavigationCubit>().state.currentDeepLink;
-          final deepLink = curr.copyWith(
-            homeDeepLink: curr.homeDeepLink.copyWith(
-              settingsDeepLink: SettingsDeepLink(
-                isOnProfile: true,
-              ),
-            ),
-          );
-          context.read<NavigationCubit>().push(deepLink);
+          context.read<NavigationCubit>().push(DeepLink.home(HomeDeepLink.settings(SettingsDeepLink.profile())));
         },
       )),
     );

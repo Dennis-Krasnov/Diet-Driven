@@ -1,13 +1,21 @@
+import 'package:dietdriven/bloc/landing_submitted/landing_submitted_cubit.dart';
 import 'package:dietdriven/bloc/navigation/prelude.dart';
-import 'package:dietdriven/repository/authentication/authentication_repository.dart';
+import 'package:dietdriven/widget/build_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LandingSubmittedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Retrieve part of a state and react to changes only when the selected part changes
-    final submittedEmail = context.select((NavigationCubit cubit) => cubit.state.currentDeepLink.landingDeepLink.submittedEmail);
+    // Rebuild only when the selected part of navigation state changes
+    final submittedEmail = context.select((NavigationCubit cubit) => cubit.state.deepLinkHistory.last?.landingDeepLink?.submittedEmail);
+
+    buildLog.v("LandingSubmittedScreen - rebuild: submittedEmail=$submittedEmail");
+
+    // Handle race condition between the navigator removing this page and the navigation state updating
+    if (submittedEmail == null) {
+      return Container();
+    }
 
     return Scaffold(
       body: Padding(
@@ -23,8 +31,7 @@ class LandingSubmittedScreen extends StatelessWidget {
                 style: Theme.of(context).textTheme.headline5,
               ),
               TextField(
-                // TODO: wrap in cubit!
-                onChanged: (emailLink) => context.read<AuthenticationRepository>().signInWithEmailLink(submittedEmail, emailLink),
+                onChanged: (emailLink) => context.read<LandingSubmittedCubit>().signInWithEmailLink(submittedEmail, emailLink),
               ),
               SizedBox(height: 8),
               Text(
@@ -33,11 +40,11 @@ class LandingSubmittedScreen extends StatelessWidget {
               ),
               SizedBox(height: 32),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () => context.read<LandingSubmittedCubit>().resendMagicLink(submittedEmail),
                 child: Text("Resend magic link"),
               ),
               FlatButton(
-                onPressed: () {},
+                onPressed: () => context.read<NavigationCubit>().pop(),
                 child: Text("Wrong email?"),
               ),
               Expanded(child: Container()),

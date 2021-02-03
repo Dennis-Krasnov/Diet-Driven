@@ -1,83 +1,30 @@
 import 'package:dietdriven/navigation/prelude.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:logger/logger.dart';
 
 class DietDrivenRouteInformationParser extends RouteInformationParser<DeepLink> {
-  final test1 = DeepLink(
-    currentPage: DeepLinkPage.home,
-    homeDeepLink: HomeDeepLink(
-      currentPage: HomeDeepLinkPage.diary,
-      diaryDeepLink: DiaryDeepLink(date: 123, userId: "Dennis"),
-    ),
-  );
+  static final Logger _log = Logger(printer: PrettyPrinter(printTime: true));
 
-  final test2 = DeepLink(
-    currentPage: DeepLinkPage.home,
-    homeDeepLink: HomeDeepLink(
-      currentPage: HomeDeepLinkPage.diet,
-      dietDeepLink: DietDeepLink(),
-    ),
-  );
-
-  final test3 = DeepLink(
-    currentPage: DeepLinkPage.landing,
-    landingDeepLink: LandingDeepLink(),
-  );
-
-  final test4 = DeepLink(
-    currentPage: DeepLinkPage.failure,
-    failureDeepLink: FailureDeepLink(error: "test4 failure"),
-  );
-
-  final test5 = DeepLink(
-    currentPage: DeepLinkPage.splash,
-    splashDeepLink: SplashDeepLink()
-  );
-
-  // TODO: implement parsing both ways in an extension in /lib/navigation/deep_link
-
+  /// Converts the given route information into parsed data to pass to a [RouterDelegate].
+  /// Returns [SynchronousFuture] since deserialization can be done synchronously and the [Router]
+  /// does not need to wait for the next microtask to pass the data to the [RouterDelegate].
   @override
   Future<DeepLink> parseRouteInformation(RouteInformation routeInformation) async {
-    print("DietDrivenRouteInformationParser - parseRouteInformation - ${routeInformation.location}");
-
-    if (routeInformation.location == "/") {
-      return test5;
+    _log.i("DietDrivenRouteInformationParser - parseRouteInformation: ${routeInformation.location}");
+    try {
+      return SynchronousFuture(DeepLink.deserialize(routeInformation.location));
+    } catch(e) { // TODO also specific exceptions: on A catch(e) {...}
+      _log.i("DietDrivenRouteInformationParser - parseRouteInformation - failed deserialization", e);
+      return SynchronousFuture(DeepLink.failure(FailureDeepLink(error: e.toString())));
     }
-    if (routeInformation.location == "test1") {
-      return test1;
-    }
-    if (routeInformation.location == "test2") {
-      return test2;
-    }
-    if (routeInformation.location == "test3") {
-      return test3;
-    }
-    if (routeInformation.location == "test4") {
-      return test4;
-    }
-
-    throw UnimplementedError();
   }
 
+  /// Restore the route information from the given configuration.
+  /// Required for route information reporting which is used for updating browser history for the web application.
   @override
   RouteInformation restoreRouteInformation(DeepLink path) {
-    print("DietDrivenRouteInformationParser - restoreRouteInformation - $path");
-
-    if (path == test1) {
-      return RouteInformation(location: "test1");
-    }
-    if (path == test2) {
-      return RouteInformation(location: "test2");
-    }
-    if (path == test3) {
-      return RouteInformation(location: "test3");
-    }
-    if (path == test4) {
-      return RouteInformation(location: "test4");
-    }
-    if (path == test5) {
-      return RouteInformation(location: "/");
-    }
-
-    throw UnimplementedError();
+    _log.i("DietDrivenRouteInformationParser - restoreRouteInformation: $path");
+    return RouteInformation(location: path.serialize());
   }
 }

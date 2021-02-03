@@ -1,6 +1,7 @@
 import 'package:dietdriven/bloc/navigation/prelude.dart';
 import 'package:dietdriven/repository/authentication/authentication_repository.dart';
 import 'package:dietdriven/repository/authentication/dummy_authentication_repository.dart';
+import 'package:logger_flutter/logger_flutter.dart';
 import 'package:dietdriven/repository/authentication/firebase_authentication_repository.dart';
 import 'package:dietdriven/widget/diet_driven_app.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +25,11 @@ class DietDrivenAppProviderWrapper extends StatelessWidget {
             create: (BuildContext context) => NavigationCubit(context.read<AuthenticationRepository>())..initializeSubscription(),
           ),
         ],
-        child: DietDrivenApp(),
+        child: LogConsoleOnShake(
+          dark: false,
+          debugOnly: false, // FIXME
+          child: DietDrivenApp(),
+        ),
       ),
     );
   }

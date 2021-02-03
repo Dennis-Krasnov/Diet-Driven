@@ -9,17 +9,24 @@ class NavigationState extends Equatable {
   NavigationState({this.user, this.deepLinkHistory});
 
   NavigationState.splash() : user = null, deepLinkHistory = [
-    DeepLink(currentPage: DeepLinkPage.splash, splashDeepLink: SplashDeepLink())
+    DeepLink.splash(SplashDeepLink()),
   ];
 
   NavigationState.unauthenticated() : user = null, deepLinkHistory = [
-    DeepLink(currentPage: DeepLinkPage.landing, landingDeepLink: LandingDeepLink())
+    DeepLink.landing(LandingDeepLink.base()),
   ];
 
-  DeepLink get currentDeepLink {
+  // TODO: nullable
+  // returning null is also false!
+  DeepLink mostRecentWhere(bool test(DeepLink dl)) {
     assert(deepLinkHistory.isNotEmpty);
-    return deepLinkHistory.last;
+    return deepLinkHistory.reversed.firstWhere((dl) => test(dl), orElse: () => null);
   }
+
+  // DeepLink get currentDeepLink {
+  //   assert(deepLinkHistory.isNotEmpty);
+  //   return deepLinkHistory.last;
+  // }
 
   NavigationState copyWith({
     UserAccount user,

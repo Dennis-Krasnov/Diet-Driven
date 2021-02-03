@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
-// https://flutter.dev/docs/release/breaking-changes/route-transition-record-and-transition-delegate
+/// To be used in transitionDelegate field of [Navigator].
+/// Taken from https://flutter.dev/docs/release/breaking-changes/route-transition-record-and-transition-delegate.
 class NoAnimationTransitionDelegate extends TransitionDelegate<void> {
   @override
   Iterable<RouteTransitionRecord> resolve({

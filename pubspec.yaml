@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Firebase
+  ## Firebase
   firebase_core: 0.7.0
   firebase_auth: ^0.20.0+1
 
@@ -32,8 +32,19 @@ dependencies:
   time: ^1.4.0
   equatable: ^1.2.5
 
+  ## Logging
+  logger: ^0.9.4
+  logger_flutter:
+    git: https://github.com/ewertonrp/logger_flutter.git
+#  logger_flutter: ^0.7.1
+
   ## BLOC
   flutter_bloc: ^6.1.1
+
+  ## Serialization
+  protobuf: ^1.1.0
+
+  # grpc: ^2.9.0 # https://pub.dev/packages/grpc/example
 
 dev_dependencies:
   flutter_test:

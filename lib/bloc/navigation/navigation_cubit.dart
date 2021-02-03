@@ -6,29 +6,32 @@ import 'package:dietdriven/navigation/prelude.dart';
 import 'package:dietdriven/repository/authentication/authentication_repository.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 
 /// Manages navigation state.
 class NavigationCubit extends Cubit<NavigationState> {
   final AuthenticationRepository _authenticationRepository;
 
+  NavigationCubit(this._authenticationRepository) : super(NavigationState.splash());
+
   /// ...
   final PlatformRouteInformationProvider platformRouteInformationProvider = PlatformRouteInformationProvider(
-      initialRouteInformation: RouteInformation(location: "/")
+      initialRouteInformation: RouteInformation(location: DeepLink.splash(SplashDeepLink()).serialize())
   );
-
-  NavigationCubit(this._authenticationRepository) : super(NavigationState.splash());
 
   StreamSubscription<NavigationState> _authenticationSubscription;
 
+  static final Logger _log = Logger(printer: PrettyPrinter(printTime: true));
+
   Future<void> initializeSubscription() async {
-    print("PlatformRouteInformationProvider initializeSubscription");
+    _log.d("NavigationCubit - initializeSubscription");
 
     // Maintain single instance of stream subscription
     await _authenticationSubscription?.cancel();
 
     // Reset cubit state
     if (state != NavigationState.splash()) {
-      print("reset cubit state");
+      _log.d("NavigationCubit - reset cubit state");
       emit(NavigationState.splash());
     }
     
@@ -36,7 +39,7 @@ class NavigationCubit extends Cubit<NavigationState> {
     _authenticationSubscription = _authenticationRepository.authStateChanges() // TODO: buffer stream a bit if it's non-null shortly after null
       .transform<NavigationState>(StreamTransformer.fromHandlers(
         handleData: (user, sink) {
-          print("handle data $user");
+          _log.i("NavigationCubit - authStateChanges - handleData: $user");
 
           // User logged out
           if (user == null) {
@@ -44,16 +47,16 @@ class NavigationCubit extends Cubit<NavigationState> {
               sink.add(NavigationState.unauthenticated()); // TODO: don't subscribe init, re-use replace
             }
 
-            print("user log out");
+            _log.d("NavigationCubit - authStateChanges - handleData: no user found");
             return;
           }
 
           // User logged in
           if (state.user == null) {
-            final defaultDeepLink = DietDrivenRouteInformationParser().test1; // FIXME
-            sink.add(NavigationState(user: user, deepLinkHistory: [defaultDeepLink]));  // TODO: don't subscribe init, re-use replace
+            final deepLink = DeepLink.home(HomeDeepLink.diary(DiaryDeepLink.today(userId: user.uid)));
+            sink.add(NavigationState(user: user, deepLinkHistory: [deepLink])); // TODO: don't subscribe init, re-use replace
 
-            print("user logged in");
+            _log.d("NavigationCubit - authStateChanges - handleData: user logged in");
             return;
           }
 
@@ -68,14 +71,14 @@ class NavigationCubit extends Cubit<NavigationState> {
           // }
         },
         handleError: (error, stacktrace, sink) {
-          print("handle error $error");
-          final deepLink = DeepLink(currentPage: DeepLinkPage.failure, failureDeepLink: FailureDeepLink(error: error));
+          _log.e("NavigationCubit - authStateChanges - handleError", error, stacktrace);
+          final deepLink = DeepLink.failure(FailureDeepLink(error: error));
           sink.add(NavigationState(user: null, deepLinkHistory: [deepLink]));
           // // TODO: test this!
           // sink.add(UnrecoverableFailure(error: error.toString(), stackTrace: stacktrace.toString()));
         },
         handleDone: (sink) {
-          print("handle done");
+          _log.wtf("NavigationCubit - authStateChanges - handleDone");
           // sink.add(UnrecoverableFailure(error: "Authentication state stream ended"));
         },
       ))
@@ -86,39 +89,65 @@ class NavigationCubit extends Cubit<NavigationState> {
 
   }
 
-  void push(DeepLink deepLinkPayload) {
-    // FIXME: don't push if state.deepLinkHistory.last == deepLinkPayload
+  void push(DeepLink deepLink) {
+    _log.i("NavigationCubit - push: $deepLink");
+
+    // ...
+    if (!deepLink.isValid()) {
+      _log.d("NavigationCubit - push wasn't valid");
+      // TODO: make isValid() return a nullable String, if not null, it returns the error message.
+      final failureDeepLink = DeepLink.failure(FailureDeepLink(error: "Invalid deep link: $deepLink"));
+      emit(state.copyWith(
+        deepLinkHistory: List.from(state.deepLinkHistory)..add(failureDeepLink)
+      ));
+      return;
+    }
+
+    // ...
+    if (state.deepLinkHistory.last == deepLink) {
+      _log.d("NavigationCubit - push - was a duplicate");
+      return;
+    }
+
+    // ...
     emit(state.copyWith(
-        deepLinkHistory: List.from(state.deepLinkHistory)..add(deepLinkPayload)
+      deepLinkHistory: List.from(state.deepLinkHistory)..add(deepLink)
     ));
   }
 
+  /// Returns whether this delegate handles the request.
+  /// Returning false will cause the entire app to be popped.
   bool pop() {
+    _log.i("NavigationCubit - pop");
+
     if (state.deepLinkHistory.length == 1) {
-      // Quit from application
       return false;
     }
 
     emit(state.copyWith(deepLinkHistory: List.from(state.deepLinkHistory)..removeLast()));
 
-    // Don't quit from application
     return true;
   }
 
   /// ...
   void switchHomeScreenPages(HomeDeepLinkPage homeDeepLinkPage) {
     assert(state.user != null);
-    assert(state.currentDeepLink.currentPage == DeepLinkPage.home);
+    assert(state.deepLinkHistory.last.currentPage == DeepLinkPage.home);
+    switch (homeDeepLinkPage) {
+      case HomeDeepLinkPage.diary:
+        push(DeepLink.home(HomeDeepLink.diary(DiaryDeepLink.today(userId: state.user.uid))));
+        break;
 
-    // TODO: delegate to push, it performs validity checks there ...
-    // TODO: ensure where I'm going doesn't have a null deep link...
-    emit(state.copyWith(
-      deepLinkHistory: List.from(state.deepLinkHistory)
-        ..add(state.currentDeepLink.copyWith(
-          homeDeepLink: state.currentDeepLink.homeDeepLink.copyWith(
-            currentPage: homeDeepLinkPage,
-          )
-        ))
-    ));
+      case HomeDeepLinkPage.diet:
+        push(DeepLink.home(HomeDeepLink.diet(DietDeepLink())));
+        break;
+
+      case HomeDeepLinkPage.settings:
+        push(DeepLink.home(HomeDeepLink.settings(SettingsDeepLink.base())));
+        break;
+
+      default:
+        throw UnimplementedError("Couldn't switchHomeScreenPages to $homeDeepLinkPage");
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:dietdriven/bloc/landing/landing_cubit.dart';
 import 'package:dietdriven/bloc/landing/prelude.dart';
+import 'package:dietdriven/widget/build_logger.dart';
 import 'package:dietdriven/widget/landing/success_fail_icon.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter/material.dart';
@@ -58,7 +59,7 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget build(BuildContext context) {
     return BlocBuilder<LandingCubit, LandingState>(
       builder: (context, state) {
-        print("REBULD: $state");
+        buildLog.v("LandingScreen - rebuild: completed=${state.hasCompletedInput}, valid=${state.isValidEmailAddress}");
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.all(32.0),

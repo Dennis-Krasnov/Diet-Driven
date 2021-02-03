@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "dev.krasnov.fitness.proto";
+package deeplink;
+
+message DietDrivenDeepLinkProto {
+  string firebase_dynamic_link = 1; // Optional
+
+  oneof current_page {
+    SplashDeepLinkProto splash = 2;
+    LandingDeepLinkProto landing = 3;
+    LoginDeepLinkProto login = 4;
+    FailureDeepLinkProto failure = 5;
+    HomeDeepLinkProto home = 6;
+  }
+}
+
+message SplashDeepLinkProto {
+
+}
+
+message LandingDeepLinkProto {
+  string submitted_email = 1; // Optional
+}
+
+message LoginDeepLinkProto {
+  string email = 1;
+  string sign_in_link = 2;
+}
+
+message FailureDeepLinkProto {
+  string error = 1; // Not-empty
+}
+
+message HomeDeepLinkProto {
+  oneof current_page {
+    DiaryDeepLinkProto diary = 1;
+    DietDeepLinkProto diet = 2;
+    SettingsDeepLinkProto settings = 3;
+  }
+}
+
+message DiaryDeepLinkProto {
+  string user_uuid = 1; // 28 characters
+  int32 date = 2; // 0 <= date
+}
+
+message DietDeepLinkProto {
+
+}
+
+message SettingsDeepLinkProto {
+  bool isOnProfile = 1;
+}

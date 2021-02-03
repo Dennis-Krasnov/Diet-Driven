@@ -14,6 +14,7 @@ class FirebaseAuthenticationRepository implements AuthenticationRepository {
       if (user == null) return null;
 
       return UserAccount(
+        uid: user.uid,
         email: user.email,
         paidUser: false,
       );

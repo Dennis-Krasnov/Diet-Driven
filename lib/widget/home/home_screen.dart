@@ -2,27 +2,36 @@ import 'package:dietdriven/bloc/navigation/prelude.dart';
 import 'package:dietdriven/domain/user_account.dart';
 import 'package:dietdriven/navigation/prelude.dart';
 import 'package:dietdriven/repository/authentication/authentication_repository.dart';
+import 'package:dietdriven/widget/build_logger.dart';
 import 'package:dietdriven/widget/home/settings/settings_navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger_flutter/logger_flutter.dart';
 import 'package:provider/provider.dart';
 
 /// Manages bottom nav, deep links.
 class HomeScreen extends StatelessWidget {
   const HomeScreen({Key key}) : super(key: key);
 
+  static final pages = [
+    HomeDeepLinkPage.diary,
+    HomeDeepLinkPage.diet,
+    HomeDeepLinkPage.settings,
+  ];
+
   @override
   Widget build(BuildContext context) {
-    final pages = [
-      HomeDeepLinkPage.diary,
-      HomeDeepLinkPage.diet,
-      HomeDeepLinkPage.settings,
-    ];
+    // Rebuild only when the selected part of navigation state changes
+    final currentPage = context.select((NavigationCubit cubit) =>
+      cubit.state.mostRecentWhere((dl) => dl.currentPage == DeepLinkPage.home)?.homeDeepLink?.currentPage
+    );
 
-    // Retrieve part of a state and react to changes only when the selected part changes
-    final currentPage = context.select((NavigationCubit cubit) => cubit.state.currentDeepLink.homeDeepLink.currentPage);
+    buildLog.v("HomeScreen - rebuild: currentPage=$currentPage");
 
-    print("HomeScreen BLOC BUILDER");
+    // Handle race condition between the navigator removing this page and the navigation state updating
+    if (currentPage == null) {
+      return Container();
+    }
 
     return Scaffold(
       body: IndexedStack(
@@ -30,11 +39,12 @@ class HomeScreen extends StatelessWidget {
         children: [
           // Center(child: Container(width: 100, height: 100, color: Colors.red)),
           Center(child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               StreamBuilder<UserAccount>(
                 stream: Provider.of<AuthenticationRepository>(context, listen: false).authStateChanges(),
                 builder: (context, user) {
-                  return Text("WELCOME ${user.data?.email}");
+                  return Text("WELCOME ${user.data}");
                 }
               ),
               RaisedButton(
@@ -50,18 +60,17 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
+        onPressed: () => LogConsole.open(context),
+        child: Icon(Icons.help),
+        // {
           // TODO: firebase dynamic link looks like this:
           // TODO: encapsulate login as a method on the cubit
-          context.read<NavigationCubit>().platformRouteInformationProvider.didPushRoute("test1");
-        },
+        //   context.read<NavigationCubit>().platformRouteInformationProvider.didPushRoute("test1");
+        // },
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: pages.indexOf(currentPage),
-        onTap: (int index) {
-          print("tapped $index");
-          context.read<NavigationCubit>().switchHomeScreenPages(pages[index]);
-        },
+        onTap: (int index) => context.read<NavigationCubit>().switchHomeScreenPages(pages[index]),
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.menu_book), label: "Diary"),
           BottomNavigationBarItem(icon: Icon(Icons.no_food), label: "Diet"),
